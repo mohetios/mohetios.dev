@@ -1,0 +1,152 @@
+{
+  "site": {
+    "name": "Mohetios.dev",
+    "tagline": "The architecture of becoming.",
+    "description": "Notes on software, systems, open-source projects, and the long process of becoming a better builder.",
+    "footer": "Everything should be wonderfully perfect in every way."
+  },
+  "nav": {
+    "home": "Home",
+    "blog": "Blog",
+    "lab": "Lab",
+    "projects": "Projects",
+    "about": "About"
+  },
+  "actions": {
+    "readBlog": "Read the blog",
+    "exploreLab": "Explore the lab",
+    "viewProjects": "View projects",
+    "switchToEnglish": "English",
+    "switchToPersian": "فارسی"
+  },
+  "sections": {
+    "latestWriting": "Latest writing",
+    "latestWritingDescription": "Long-form notes from the workshop.",
+    "labNotes": "Lab notes",
+    "labNotesDescription": "Shorter observations, experiments, and unfinished ideas from the workshop.",
+    "featuredProjects": "Featured projects",
+    "featuredProjectsDescription": "Open-source work, product experiments, and research-shaped systems.",
+    "principles": "Working principles",
+    "principlesDescription": "The current operating notes for Mohetios as a public workshop."
+  },
+  "empty": {
+    "blogTitle": "No writing yet",
+    "blogDescription": "Blog posts will appear here once published.",
+    "labTitle": "No lab notes yet",
+    "labDescription": "Exploratory notes will appear here once published.",
+    "projectsTitle": "No projects yet",
+    "projectsDescription": "Project notes will appear here once published."
+  },
+  "pages": {
+    "blogTitle": "Blog",
+    "blogDescription": "Long-form technical writing, product engineering notes, and implementation records.",
+    "labTitle": "Lab",
+    "labDescription": "Shorter notes, exploratory models, and ideas that are still becoming clear.",
+    "projectsTitle": "Projects",
+    "projectsDescription": "Open-source work, product experiments, and research-shaped software systems."
+  },
+  "badges": {
+    "blog": "Blog",
+    "lab": "Lab"
+  },
+  "content": {
+    "toc": "On this page",
+    "related": "Related notes",
+    "updated": "Updated",
+    "actions": {
+      "readArticle": "Read article",
+      "openProject": "Open project",
+      "backToBlog": "Back to writing",
+      "backToLab": "Back to lab",
+      "backToProjects": "Back to projects"
+    },
+    "meta": {
+      "status": "Status",
+      "tags": "Tags",
+      "stack": "Stack",
+      "started": "Started",
+      "updated": "Updated",
+      "repository": "Repository",
+      "website": "Website"
+    },
+    "blog": {
+      "seoTitle": "Writing · Mohetios.dev",
+      "eyebrow": "Writing archive",
+      "title": "Writing",
+      "description": "Long-form notes on software, product engineering, systems, and the practice of building.",
+      "latest": "Latest article",
+      "placeholder": "Featured article"
+    },
+    "lab": {
+      "seoTitle": "Lab · Mohetios.dev",
+      "eyebrow": "Experimental notebook",
+      "title": "Lab",
+      "description": "Experiments, research notes, unfinished models, and working thoughts from the workshop.",
+      "defaultStatus": "Exploring",
+      "workingNote": "This is a working note: useful enough to preserve, but not necessarily a final article.",
+      "stats": {
+        "notes": "Notes",
+        "active": "Active",
+        "latest": "Latest update"
+      }
+    },
+    "projects": {
+      "seoTitle": "Projects · Mohetios.dev",
+      "eyebrow": "Project archive",
+      "title": "Projects",
+      "description": "Open-source products, tools, prototypes, and long-term systems I am building in public.",
+      "featured": "Featured projects",
+      "featuredDescription": "The main systems and experiments currently shaping the workshop.",
+      "archive": "Project archive"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "The architecture of becoming.",
+      "description": "Notes on software, systems, open-source projects, and the long process of becoming a better builder."
+    },
+    "workshop": {
+      "label": "Current workshop",
+      "footer": "Building in public, one note at a time.",
+      "items": {
+        "softwareSystems": "Software systems",
+        "openSourceProducts": "Open-source products",
+        "aiTravelTools": "AI travel tools",
+        "geometryNotes": "Geometry notes"
+      }
+    },
+    "featured": {
+      "label": "Lead note",
+      "placeholder": "Featured note",
+      "action": "Read the note"
+    },
+    "tracks": {
+      "title": "Three tracks",
+      "description": "The site is organized as writing, experiments, and shipped work.",
+      "blog": {
+        "title": "Blog",
+        "description": "Long-form engineering and product writing."
+      },
+      "lab": {
+        "title": "Lab",
+        "description": "Experiments, research notes, and unfinished ideas."
+      },
+      "projects": {
+        "title": "Projects",
+        "description": "Shipped, open-source, and product work."
+      }
+    },
+    "principles": {
+      "items": {
+        "smallUseful": "Build small, useful things before naming large systems.",
+        "preservePath": "Write notes that preserve the path, not only the conclusion.",
+        "clearInterfaces": "Prefer clear interfaces, stable tools, and honest constraints.",
+        "openWorkshop": "Keep the workshop open enough for others to fork, question, and extend."
+      }
+    },
+    "cta": {
+      "title": "Follow the work as it unfolds.",
+      "description": "Read the notes, inspect the projects, and follow the experiments behind the systems."
+    }
+  }
+}
