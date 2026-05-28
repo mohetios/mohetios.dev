@@ -104,6 +104,7 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'cloudflare_pages',
     prerender: {
+      concurrency: 1,
       crawlLinks: true,
       routes: getContentRoutes()
     }

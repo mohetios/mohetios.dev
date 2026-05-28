@@ -24,6 +24,8 @@ Build for Cloudflare Pages SSR:
 pnpm build
 ```
 
+The build script sets `NODE_OPTIONS=--max-old-space-size=4096` because Nuxt Content plus prerendering can exceed the default Node heap on Cloudflare Pages.
+
 Preview a production build:
 
 ```bash
