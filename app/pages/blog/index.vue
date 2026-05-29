@@ -42,16 +42,16 @@ useMohetSeo({
         />
 
         <div v-if="tags.length" class="flex flex-wrap gap-2 border-y border-default py-4">
-          <UBadge
+          <NuxtLink
             v-for="tag in tags"
             :key="tag"
             :to="localePath(`/tags/${normalizeTagSlug(tag)}`)"
-            color="neutral"
-            variant="soft"
-            class="hover:bg-muted"
+            class="inline-flex"
           >
-            {{ tag }}
-          </UBadge>
+            <UBadge color="neutral" variant="soft" class="hover:bg-muted">
+              {{ tag }}
+            </UBadge>
+          </NuxtLink>
         </div>
 
         <UPageGrid v-if="remainingPosts.length">

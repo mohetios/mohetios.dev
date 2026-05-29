@@ -221,16 +221,16 @@ useSeoMeta({
                 {{ t('tags.related') }}
               </h2>
               <div class="flex flex-wrap gap-2">
-                <UBadge
+                <NuxtLink
                   v-for="tag in relatedTags"
                   :key="tag.slug"
                   :to="localePath(`/tags/${tag.slug}`)"
-                  color="neutral"
-                  variant="soft"
-                  class="hover:bg-muted"
+                  class="inline-flex"
                 >
-                  {{ tag.label }} {{ tag.count }}
-                </UBadge>
+                  <UBadge color="neutral" variant="soft" class="hover:bg-muted">
+                    {{ tag.label }} {{ tag.count }}
+                  </UBadge>
+                </NuxtLink>
               </div>
             </div>
           </UCard>

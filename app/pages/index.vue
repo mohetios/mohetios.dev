@@ -166,16 +166,16 @@ function formatDate(date?: string | Date) {
             </p>
 
             <div v-if="featuredPost.tags?.length" class="mt-5 flex flex-wrap gap-2">
-              <UBadge
+              <NuxtLink
                 v-for="tag in featuredPost.tags"
                 :key="tag"
                 :to="localePath(`/tags/${normalizeTagSlug(tag)}`)"
-                color="neutral"
-                variant="soft"
-                class="hover:bg-muted"
+                class="inline-flex"
               >
-                {{ tag }}
-              </UBadge>
+                <UBadge color="neutral" variant="soft" class="hover:bg-muted">
+                  {{ tag }}
+                </UBadge>
+              </NuxtLink>
             </div>
 
             <UButton

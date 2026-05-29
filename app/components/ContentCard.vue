@@ -44,17 +44,17 @@ const localePath = useLocalePath()
 
     <template v-if="tags?.length" #footer>
       <div class="flex flex-wrap gap-2">
-        <UBadge
+        <NuxtLink
           v-for="tag in tags"
           :key="tag"
           :to="localePath(`/tags/${normalizeTagSlug(tag)}`)"
-          color="neutral"
-          variant="soft"
-          size="sm"
-          class="hover:bg-muted"
+          class="inline-flex"
+          @click.stop
         >
-          {{ tag }}
-        </UBadge>
+          <UBadge color="neutral" variant="soft" size="sm" class="hover:bg-muted">
+            {{ tag }}
+          </UBadge>
+        </NuxtLink>
       </div>
     </template>
   </UPageCard>
