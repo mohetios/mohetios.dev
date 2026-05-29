@@ -1,55 +1,28 @@
-import { readdirSync, statSync } from 'node:fs'
-import { join, relative, sep } from 'node:path'
+import { getPrerenderContentRoutes } from './app/utils/content'
 
 const staticRoutes = [
   '/',
-  '/fa',
   '/en',
-  '/fa/blog',
+  '/fa',
   '/en/blog',
-  '/fa/lab',
+  '/fa/blog',
   '/en/lab',
-  '/fa/projects',
+  '/fa/lab',
   '/en/projects',
-  '/fa/about',
-  '/en/about'
+  '/fa/projects',
+  '/en/about',
+  '/fa/about'
 ]
 
 function getContentRoutes() {
-  const contentDir = join(process.cwd(), 'content')
-  const routes = new Set(staticRoutes)
-
-  function walk(dir: string) {
-    for (const entry of readdirSync(dir)) {
-      const fullPath = join(dir, entry)
-
-      if (statSync(fullPath).isDirectory()) {
-        walk(fullPath)
-        continue
-      }
-
-      if (!entry.endsWith('.md')) {
-        continue
-      }
-
-      const segments = relative(contentDir, fullPath)
-        .split(sep)
-        .map((segment) => segment.replace(/\.md$/, ''))
-        .filter((segment) => segment !== 'index')
-        .map((segment) => segment.toLowerCase())
-
-      routes.add(`/${segments.join('/')}`)
-    }
-  }
-
-  walk(contentDir)
+  const routes = new Set([...staticRoutes, ...getPrerenderContentRoutes()])
 
   return [...routes].sort()
 }
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxt/eslint', '@nuxtjs/i18n', '@nuxt/ui', '@nuxt/content', '@nuxt/image'],
+  modules: ['@nuxt/eslint', '@nuxtjs/i18n', '@nuxt/ui', '@nuxt/image', 'nitro-cloudflare-dev'],
 
   devtools: {
     enabled: true
@@ -57,7 +30,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      titleTemplate: '%s - Mohetios.dev',
+      titleTemplate: '%s',
       meta: [
         {
           name: 'description',
@@ -67,23 +40,20 @@ export default defineNuxtConfig({
         { property: 'og:site_name', content: 'Mohetios.dev' },
         { property: 'og:type', content: 'website' },
         { property: 'og:url', content: 'https://mohetios.dev' },
-        { name: 'twitter:card', content: 'summary_large_image' }
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'theme-color', content: '#ffffff', media: '(prefers-color-scheme: light)' },
+        { name: 'theme-color', content: '#020617', media: '(prefers-color-scheme: dark)' }
       ],
       link: [
-        { rel: 'canonical', href: 'https://mohetios.dev' },
-        { rel: 'icon', href: '/favicon.ico' }
+        { rel: 'icon', href: '/favicon.ico' },
+        { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/icons/favicon-16x16.png' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/icons/favicon-32x32.png' },
+        { rel: 'apple-touch-icon', href: '/icons/apple-touch-icon.png' }
       ]
     }
   },
 
   css: ['~/assets/css/main.css'],
-
-  content: {
-    database: {
-      type: 'd1',
-      bindingName: 'DB'
-    }
-  },
 
   routeRules: {
     '/': { prerender: true },
@@ -96,14 +66,49 @@ export default defineNuxtConfig({
     '/fa/projects/**': { prerender: true },
     '/en/projects/**': { prerender: true },
     '/fa/about': { prerender: true },
-    '/en/about': { prerender: true }
+    '/en/about': { prerender: true },
+    '/_nuxt/**': {
+      headers: {
+        'Cache-Control': 'public, max-age=31536000, immutable'
+      }
+    },
+    '/content/**': {
+      headers: {
+        'Cache-Control': 'public, max-age=31536000, immutable'
+      }
+    },
+    '/icons/**': {
+      headers: {
+        'Cache-Control': 'public, max-age=31536000, immutable'
+      }
+    },
+    '/*.woff': {
+      headers: {
+        'Cache-Control': 'public, max-age=31536000, immutable'
+      }
+    },
+    '/*.woff2': {
+      headers: {
+        'Cache-Control': 'public, max-age=31536000, immutable'
+      }
+    }
+  },
+
+  sourcemap: {
+    server: false,
+    client: false
   },
 
   compatibilityDate: '2026-05-28',
 
   nitro: {
     preset: 'cloudflare_pages',
+    compressPublicAssets: { brotli: true, gzip: true },
+    minify: true,
+    sourceMap: false,
+    timing: false,
     prerender: {
+      autoSubfolderIndex: false,
       concurrency: 1,
       crawlLinks: true,
       routes: getContentRoutes()
@@ -146,18 +151,18 @@ export default defineNuxtConfig({
     },
     locales: [
       {
-        code: 'fa',
-        name: 'فارسی',
-        file: 'fa.json',
-        dir: 'rtl',
-        language: 'fa-IR'
-      },
-      {
         code: 'en',
         name: 'English',
         file: 'en.json',
         dir: 'ltr',
         language: 'en-US'
+      },
+      {
+        code: 'fa',
+        name: 'فارسی',
+        file: 'fa.json',
+        dir: 'rtl',
+        language: 'fa-IR'
       }
     ]
   },
@@ -172,5 +177,5 @@ export default defineNuxtConfig({
       lg: 1024,
       xl: 1280
     }
-  },
+  }
 })

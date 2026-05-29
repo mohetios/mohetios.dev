@@ -10,6 +10,7 @@ defineProps<{
 }>()
 
 const { locale } = useI18n()
+const localePath = useLocalePath()
 </script>
 
 <template>
@@ -43,7 +44,15 @@ const { locale } = useI18n()
 
     <template v-if="tags?.length" #footer>
       <div class="flex flex-wrap gap-2">
-        <UBadge v-for="tag in tags" :key="tag" color="neutral" variant="soft" size="sm">
+        <UBadge
+          v-for="tag in tags"
+          :key="tag"
+          :to="localePath(`/tags/${normalizeTagSlug(tag)}`)"
+          color="neutral"
+          variant="soft"
+          size="sm"
+          class="hover:bg-muted"
+        >
           {{ tag }}
         </UBadge>
       </div>

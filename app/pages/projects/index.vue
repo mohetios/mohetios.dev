@@ -1,20 +1,6 @@
 <script setup lang="ts">
 const { locale, t } = useI18n()
-const contentPrefix = computed(() => `/${locale.value}/projects/`)
-
-const { data: projects } = await useAsyncData(
-  `projects:index:${locale.value}`,
-  () =>
-    queryCollection('projects')
-      .where('path', 'LIKE', `${contentPrefix.value}%`)
-      .order('date', 'DESC')
-      .all(),
-  { watch: [locale] }
-)
-
-const visibleProjects = computed(
-  () => projects.value?.filter((project) => project.draft !== true) || []
-)
+const visibleProjects = computed(() => getProjects(locale.value))
 const featuredProjects = computed(() => {
   const featured = visibleProjects.value.filter((project) => project.featured)
 
@@ -26,9 +12,10 @@ const otherProjects = computed(() =>
   )
 )
 
-useSeoMeta({
+useMohetSeo({
   title: () => t('content.projects.seoTitle'),
-  description: () => t('pages.projectsDescription')
+  description: () => t('pages.projectsDescription'),
+  path: () => `/${locale.value}/projects`
 })
 </script>
 

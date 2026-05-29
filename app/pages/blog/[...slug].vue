@@ -4,40 +4,16 @@ const { locale, t } = useI18n()
 const localePath = useLocalePath()
 const slug = computed(() => (route.params.slug as string[]).join('/'))
 const path = computed(() => `/${locale.value}/blog/${slug.value}`)
-
-const { data: post } = await useAsyncData(
-  `blog:${path.value}`,
-  () => queryCollection('blog').where('path', '=', path.value).first(),
-  { watch: [path] }
-)
+const post = computed(() => getBlogPost(path.value))
 
 if (!post.value || post.value.draft) {
   throw createError({ statusCode: 404, statusMessage: 'Blog post not found', fatal: true })
 }
 
-const contentPrefix = computed(() => `/${locale.value}/blog/`)
-const { data: posts } = await useAsyncData(
-  `blog:surround:${locale.value}:${slug.value}`,
-  () =>
-    queryCollection('blog')
-      .where('path', 'LIKE', `${contentPrefix.value}%`)
-      .order('date', 'DESC')
-      .all(),
-  { watch: [path] }
-)
-
-const tocLinks = computed(() => post.value?.body?.toc?.links || [])
+const posts = computed(() => getBlogPosts(locale.value))
+const tocLinks = computed(() => post.value?.tocData || [])
 const showToc = computed(() => tocLinks.value.length > 2)
-const visiblePosts = computed(() => posts.value?.filter((item) => item.draft !== true) || [])
-const surround = computed(() => {
-  const index = visiblePosts.value.findIndex((item) => item.path === path.value)
-
-  if (index < 0) {
-    return []
-  }
-
-  return [visiblePosts.value[index + 1] || null, visiblePosts.value[index - 1] || null]
-})
+const surround = computed(() => getSurround(posts.value, path.value))
 const relatedPosts = computed(() => {
   const currentTags = new Set(post.value?.tags || [])
 
@@ -45,20 +21,19 @@ const relatedPosts = computed(() => {
     return []
   }
 
-  return visiblePosts.value
+  return posts.value
     .filter((item) => item.path !== path.value && item.tags?.some((tag) => currentTags.has(tag)))
     .slice(0, 3)
 })
 
-useSeoMeta({
+useMohetSeo({
   title: () => `${post.value?.title} · ${t('badges.blog')} · Mohetios.dev`,
   description: post.value.description,
-  ogTitle: post.value.title,
-  ogDescription: post.value.description,
-  ogImage: post.value.thumbnail,
-  ogUrl: `https://mohetios.dev${post.value.path}`,
-  articlePublishedTime: post.value.date?.toString(),
-  articleModifiedTime: post.value.updated?.toString()
+  path: () => post.value?.path,
+  image: () => post.value?.thumbnail,
+  type: 'article',
+  publishedTime: () => post.value?.date,
+  modifiedTime: () => post.value?.updated
 })
 </script>
 
@@ -82,7 +57,7 @@ useSeoMeta({
 
       <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_16rem]">
         <article class="min-w-0">
-          <ContentRenderer :value="post" class="prose-mohetios mx-auto max-w-3xl" />
+          <ContentHtml :html="post.content" class="prose-mohetios mx-auto max-w-3xl" />
         </article>
 
         <aside v-if="showToc" class="hidden lg:block">

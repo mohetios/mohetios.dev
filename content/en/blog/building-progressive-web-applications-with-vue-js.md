@@ -2,75 +2,38 @@
 title: Building Progressive Web Applications with Vue.js
 thumbnail: /content/Building-Progressive-Web-Applications-with-Vuejs.webp
 date: 2021-09-11T16:33:46.294Z
-description:
-  Progressive web apps (PWAs) were initially introduced by Google in 2015
-  and proved to bring many advantages to the web platform. In this book, we
-  are going to examine how to empower our web apps to be fast and reliable,
-  and to provide an immersive user experience with offline support.
-toc: false
-intro: false
-cat: library
-comments: true
-newsletter: true
+description: Notes on building Vue-powered progressive web apps with service workers, offline support, manifests, IndexedDB, background sync, and push notifications.
+tags:
+  - books
+  - vue
+  - pwa
+  - frontend
 ---
 
-## Introduction
+## Reading Notes
 
-`From Book`
+_Building Progressive Web Applications with Vue.js_ is a practical guide to making web apps behave more like installed software: fast startup, offline behavior, background work, install prompts, and deeper browser integration.
 
-Progressive web apps (PWAs) were initially introduced by Google in 2015
-and proved to bring many advantages to the web platform. In this book, we
-are going to examine how to empower our web apps to be fast and reliable,
-and to provide an immersive user experience with offline support.
+The book is useful because it treats PWA features as product capabilities, not only browser APIs. Offline support, push notifications, and background sync are only valuable when they match a real user workflow.
 
-### Chapter 1
+## Useful Ideas
 
-In Chapter 1, we create our first PWA. I guide you in all the steps you
-need to know to add offline capabilities and to make a simple web app
-a PWA.
+### Service Workers Change the Runtime
 
-### Chapter 2
+A service worker sits between the app and the network. That makes it powerful, but also risky. Cache rules, update behavior, and fallback responses become part of the application contract.
 
-In Chapter 2, we take a look at the web app manifest, which is a
-simple, but powerful, specification that allows the browsers when can
-install a web app like a native app according to the operating system.
+### Offline Is a Product Decision
 
-### Chapter 3
+Offline support should not mean "cache everything." A good PWA decides which screens must keep working, which data can be stale, and how the UI explains sync state to the user.
 
-In Chapter 3, we study service workers, which are an amazing mechanism to
-handle background events with JavaScript.
+### Browser Storage Needs Design
 
-### Chapter 4
+IndexedDB and cache storage are not just implementation details. They shape how much data the app can retain, how recovery works, and how users move between online and offline sessions.
 
-In Chapter 4, we examine cache
-storage and good-practice workflows to keep our offline data updated.
+## Why It Still Matters
 
-### Chapter 5
+Even when a project ships as a native app, PWA thinking is useful. It forces the team to reason about network failure, local state, installation friction, and perceived performance.
 
-In Chapter 5, we look at the main features and advantages of using Vue.js, a
-modern JavaScript framework.
+## Get the Book
 
-### Chapter 6
-
-In Chapter 6, we study how to use a database
-supported widely in modern browsers, called IndexedDB, and how we can
-take advantage of its asynchronous capabilities to empower our PWAs.
-
-### Chapter 7
-
-In Chapter 7, we look at a simple, but powerful, application programming
-interface, called Background Sync, that will allow our app to make the user
-experience easy.
-
-### Chapter 8
-
-In Chapter 8, we improve our engagement with our app
-and examine how to add push notifications to it. Last,
-
-### Chapter 9
-
-in Chapter 9, we polish the details of our app and make it available to the world.
-
-## How to Get
-
-- Apress (Buy): [Building Progressive Web Applications with Vue.js : Reliable, Fast, and Engaging Apps with Vue.js](https://www.apress.com/gp/book/9781484253335)
+- Apress: [Building Progressive Web Applications with Vue.js](https://www.apress.com/gp/book/9781484253335)

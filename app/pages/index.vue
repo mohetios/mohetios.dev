@@ -1,49 +1,16 @@
 <script setup lang="ts">
 const { locale, t } = useI18n()
 const localePath = useLocalePath()
-
-const { data: posts } = await useAsyncData(
-  `home:blog:${locale.value}`,
-  async () => {
-    const prefix = `/${locale.value}/blog/`
-    return queryCollection('blog')
-      .where('path', 'LIKE', `${prefix}%`)
-      .order('date', 'DESC')
-      .limit(3)
-      .all()
-  },
-  { watch: [locale] }
-)
-const { data: labNotes } = await useAsyncData(
-  `home:lab:${locale.value}`,
-  async () => {
-    const prefix = `/${locale.value}/lab/`
-    return queryCollection('lab')
-      .where('path', 'LIKE', `${prefix}%`)
-      .order('date', 'DESC')
-      .limit(3)
-      .all()
-  },
-  { watch: [locale] }
-)
-const { data: projects } = await useAsyncData(
-  `home:projects:${locale.value}`,
-  async () => {
-    const prefix = `/${locale.value}/projects/`
-    return queryCollection('projects')
-      .where('path', 'LIKE', `${prefix}%`)
-      .order('date', 'DESC')
-      .limit(3)
-      .all()
-  },
-  { watch: [locale] }
-)
+const posts = computed(() => getBlogPosts(locale.value, 3))
+const labNotes = computed(() => getLabNotes(locale.value, 3))
+const projects = computed(() => getProjects(locale.value, 3))
 
 const featuredPost = computed(() => posts.value?.find((post) => post.thumbnail) || posts.value?.[0])
 
-useSeoMeta({
+useMohetSeo({
   title: () => t('site.name'),
-  description: () => t('site.description')
+  description: () => t('site.description'),
+  path: () => `/${locale.value}`
 })
 
 const workshopItems = computed(() => [
@@ -199,7 +166,14 @@ function formatDate(date?: string | Date) {
             </p>
 
             <div v-if="featuredPost.tags?.length" class="mt-5 flex flex-wrap gap-2">
-              <UBadge v-for="tag in featuredPost.tags" :key="tag" color="neutral" variant="soft">
+              <UBadge
+                v-for="tag in featuredPost.tags"
+                :key="tag"
+                :to="localePath(`/tags/${normalizeTagSlug(tag)}`)"
+                color="neutral"
+                variant="soft"
+                class="hover:bg-muted"
+              >
                 {{ tag }}
               </UBadge>
             </div>

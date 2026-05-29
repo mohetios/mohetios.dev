@@ -1,27 +1,17 @@
 <script setup lang="ts">
 const { locale, t } = useI18n()
-const contentPrefix = computed(() => `/${locale.value}/blog/`)
-
-const { data: posts } = await useAsyncData(
-  `blog:index:${locale.value}`,
-  () =>
-    queryCollection('blog')
-      .where('path', 'LIKE', `${contentPrefix.value}%`)
-      .order('date', 'DESC')
-      .all(),
-  { watch: [locale] }
-)
-
-const visiblePosts = computed(() => posts.value?.filter((post) => post.draft !== true) || [])
+const localePath = useLocalePath()
+const visiblePosts = computed(() => getBlogPosts(locale.value))
 const featuredPost = computed(() => visiblePosts.value[0])
 const remainingPosts = computed(() => visiblePosts.value.slice(1))
 const tags = computed(() =>
   [...new Set(visiblePosts.value.flatMap((post) => post.tags || []))].slice(0, 12)
 )
 
-useSeoMeta({
+useMohetSeo({
   title: () => t('content.blog.seoTitle'),
-  description: () => t('pages.blogDescription')
+  description: () => t('pages.blogDescription'),
+  path: () => `/${locale.value}/blog`
 })
 </script>
 
@@ -52,7 +42,14 @@ useSeoMeta({
         />
 
         <div v-if="tags.length" class="flex flex-wrap gap-2 border-y border-default py-4">
-          <UBadge v-for="tag in tags" :key="tag" color="neutral" variant="soft">
+          <UBadge
+            v-for="tag in tags"
+            :key="tag"
+            :to="localePath(`/tags/${normalizeTagSlug(tag)}`)"
+            color="neutral"
+            variant="soft"
+            class="hover:bg-muted"
+          >
             {{ tag }}
           </UBadge>
         </div>

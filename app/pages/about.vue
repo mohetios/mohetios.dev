@@ -2,32 +2,17 @@
 const { locale, t } = useI18n()
 const path = computed(() => `/${locale.value}/about`)
 const legacyPath = computed(() => `/${locale.value}/pages/about`)
-
-const { data: page } = await useAsyncData(
-  `page:about:${locale.value}`,
-  async () => {
-    const localizedPage = await queryCollection('pages').where('path', '=', path.value).first()
-
-    if (localizedPage) {
-      return localizedPage
-    }
-
-    return queryCollection('pages').where('path', '=', legacyPath.value).first()
-  },
-  { watch: [locale] }
-)
+const page = computed(() => getPage(path.value) || getPage(legacyPath.value))
 
 if (!page.value || page.value.draft) {
   throw createError({ statusCode: 404, statusMessage: 'About page not found', fatal: true })
 }
 
-useSeoMeta({
+useMohetSeo({
   title: () => `${page.value?.title} · Mohetios.dev`,
   description: page.value.description,
-  ogTitle: page.value.title,
-  ogDescription: page.value.description,
-  ogImage: page.value.thumbnail,
-  ogUrl: `https://mohetios.dev${page.value.path}`
+  path: () => page.value?.path,
+  image: () => page.value?.thumbnail
 })
 </script>
 
@@ -49,7 +34,7 @@ useSeoMeta({
       />
 
       <article class="mx-auto max-w-3xl rounded-2xl border border-default bg-default p-5 sm:p-8">
-        <ContentRenderer :value="page" class="prose-mohetios" />
+        <ContentHtml :html="page.content" class="prose-mohetios" />
       </article>
     </UPageBody>
   </UPage>

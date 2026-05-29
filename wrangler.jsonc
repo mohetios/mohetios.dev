@@ -2,7 +2,11 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "mohetios",
   "compatibility_date": "2026-05-28",
+  "compatibility_flags": ["nodejs_compat"],
   "pages_build_output_dir": "./dist",
+
+  // Local bindings for `nuxt dev` via nitro-cloudflare-dev and for `wrangler pages dev`.
+  // Production and preview bindings still need to be configured on the Cloudflare Pages project.
   "d1_databases": [
     {
       "binding": "DB",

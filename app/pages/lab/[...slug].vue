@@ -4,48 +4,25 @@ const { locale, t } = useI18n()
 const localePath = useLocalePath()
 const slug = computed(() => (route.params.slug as string[]).join('/'))
 const path = computed(() => `/${locale.value}/lab/${slug.value}`)
-
-const { data: note } = await useAsyncData(
-  `lab:${path.value}`,
-  () => queryCollection('lab').where('path', '=', path.value).first(),
-  { watch: [path] }
-)
+const note = computed(() => getLabNote(path.value))
 
 if (!note.value || note.value.draft) {
   throw createError({ statusCode: 404, statusMessage: 'Lab note not found', fatal: true })
 }
 
-const contentPrefix = computed(() => `/${locale.value}/lab/`)
-const { data: notes } = await useAsyncData(
-  `lab:surround:${locale.value}:${slug.value}`,
-  () =>
-    queryCollection('lab')
-      .where('path', 'LIKE', `${contentPrefix.value}%`)
-      .order('date', 'DESC')
-      .all(),
-  { watch: [path] }
-)
-
-const tocLinks = computed(() => note.value?.body?.toc?.links || [])
+const notes = computed(() => getLabNotes(locale.value))
+const tocLinks = computed(() => note.value?.tocData || [])
 const showToc = computed(() => tocLinks.value.length > 2)
-const visibleNotes = computed(() => notes.value?.filter((item) => item.draft !== true) || [])
-const surround = computed(() => {
-  const index = visibleNotes.value.findIndex((item) => item.path === path.value)
+const surround = computed(() => getSurround(notes.value, path.value))
 
-  if (index < 0) {
-    return []
-  }
-
-  return [visibleNotes.value[index + 1] || null, visibleNotes.value[index - 1] || null]
-})
-
-useSeoMeta({
+useMohetSeo({
   title: () => `${note.value?.title} · ${t('badges.lab')} · Mohetios.dev`,
   description: note.value.description,
-  ogTitle: note.value.title,
-  ogDescription: note.value.description,
-  ogImage: note.value.thumbnail,
-  ogUrl: `https://mohetios.dev${note.value.path}`
+  path: () => note.value?.path,
+  image: () => note.value?.thumbnail,
+  type: 'article',
+  publishedTime: () => note.value?.date,
+  modifiedTime: () => note.value?.updated
 })
 </script>
 
@@ -71,7 +48,7 @@ useSeoMeta({
             </p>
           </div>
 
-          <ContentRenderer :value="note" class="prose-mohetios mx-auto max-w-3xl" />
+          <ContentHtml :html="note.content" class="prose-mohetios mx-auto max-w-3xl" />
         </article>
 
         <aside class="hidden lg:block">

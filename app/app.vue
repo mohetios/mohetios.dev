@@ -21,7 +21,8 @@ useSeoMeta({
   description: () => t('site.description'),
   ogTitle: () => t('site.name'),
   ogDescription: () => t('site.description'),
-  ogUrl: 'https://mohetios.dev',
+  ogSiteName: 'Mohetios.dev',
+  ogType: 'website',
   twitterCard: 'summary'
 })
 </script>

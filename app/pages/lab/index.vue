@@ -1,18 +1,6 @@
 <script setup lang="ts">
 const { locale, t } = useI18n()
-const contentPrefix = computed(() => `/${locale.value}/lab/`)
-
-const { data: notes } = await useAsyncData(
-  `lab:index:${locale.value}`,
-  () =>
-    queryCollection('lab')
-      .where('path', 'LIKE', `${contentPrefix.value}%`)
-      .order('date', 'DESC')
-      .all(),
-  { watch: [locale] }
-)
-
-const visibleNotes = computed(() => notes.value?.filter((note) => note.draft !== true) || [])
+const visibleNotes = computed(() => getLabNotes(locale.value))
 const latestUpdate = computed(() => visibleNotes.value[0]?.updated || visibleNotes.value[0]?.date)
 const activeNotes = computed(
   () =>
@@ -21,9 +9,10 @@ const activeNotes = computed(
     ).length
 )
 
-useSeoMeta({
+useMohetSeo({
   title: () => t('content.lab.seoTitle'),
-  description: () => t('pages.labDescription')
+  description: () => t('pages.labDescription'),
+  path: () => `/${locale.value}/lab`
 })
 </script>
 

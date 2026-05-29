@@ -4,38 +4,14 @@ const { locale, t } = useI18n()
 const localePath = useLocalePath()
 const slug = computed(() => (route.params.slug as string[]).join('/'))
 const path = computed(() => `/${locale.value}/projects/${slug.value}`)
-
-const { data: project } = await useAsyncData(
-  `projects:${path.value}`,
-  () => queryCollection('projects').where('path', '=', path.value).first(),
-  { watch: [path] }
-)
+const project = computed(() => getProject(path.value))
 
 if (!project.value || project.value.draft) {
   throw createError({ statusCode: 404, statusMessage: 'Project not found', fatal: true })
 }
 
-const contentPrefix = computed(() => `/${locale.value}/projects/`)
-const { data: projects } = await useAsyncData(
-  `projects:surround:${locale.value}:${slug.value}`,
-  () =>
-    queryCollection('projects')
-      .where('path', 'LIKE', `${contentPrefix.value}%`)
-      .order('date', 'DESC')
-      .all(),
-  { watch: [path] }
-)
-
-const visibleProjects = computed(() => projects.value?.filter((item) => item.draft !== true) || [])
-const surround = computed(() => {
-  const index = visibleProjects.value.findIndex((item) => item.path === path.value)
-
-  if (index < 0) {
-    return []
-  }
-
-  return [visibleProjects.value[index + 1] || null, visibleProjects.value[index - 1] || null]
-})
+const visibleProjects = computed(() => getProjects(locale.value))
+const surround = computed(() => getSurround(visibleProjects.value, path.value))
 const relatedProjects = computed(() => {
   const currentTags = new Set(project.value?.tags || [])
 
@@ -77,13 +53,14 @@ function formatMetaValue(label: string, value: unknown) {
   return String(value)
 }
 
-useSeoMeta({
+useMohetSeo({
   title: () => `${project.value?.title} · ${t('nav.projects')} · Mohetios.dev`,
   description: project.value.description,
-  ogTitle: project.value.title,
-  ogDescription: project.value.description,
-  ogImage: project.value.thumbnail,
-  ogUrl: `https://mohetios.dev${project.value.path}`
+  path: () => project.value?.path,
+  image: () => project.value?.thumbnail,
+  type: 'article',
+  publishedTime: () => project.value?.date,
+  modifiedTime: () => project.value?.updated
 })
 </script>
 
@@ -111,7 +88,7 @@ useSeoMeta({
 
       <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_19rem]">
         <article class="min-w-0">
-          <ContentRenderer :value="project" class="prose-mohetios max-w-none" />
+          <ContentHtml :html="project.content" class="prose-mohetios max-w-none" />
         </article>
 
         <aside class="lg:order-last">
