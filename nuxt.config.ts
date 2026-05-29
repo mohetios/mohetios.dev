@@ -67,11 +67,6 @@ export default defineNuxtConfig({
     '/en/projects/**': { prerender: true },
     '/fa/about': { prerender: true },
     '/en/about': { prerender: true },
-    '/_nuxt/**': {
-      headers: {
-        'Cache-Control': 'public, max-age=31536000, immutable'
-      }
-    },
     '/content/**': {
       headers: {
         'Cache-Control': 'public, max-age=31536000, immutable'
@@ -97,6 +92,10 @@ export default defineNuxtConfig({
   sourcemap: {
     server: false,
     client: false
+  },
+
+  experimental: {
+    emitRouteChunkError: 'automatic-immediate'
   },
 
   compatibilityDate: '2026-05-28',
@@ -177,5 +176,5 @@ export default defineNuxtConfig({
       lg: 1024,
       xl: 1280
     }
-  }
+  },
 })
