@@ -1,6 +1,6 @@
 ---
 title: Designing Data-Intensive Applications, 2nd Edition
-date: 2026-05-28
+date: 2026-05-16
 thumbnail: /content/designing-data-intensive-applications-2e.webp
 description: Notes on Martin Kleppmann and Chris Riccomini's second edition of Designing Data-Intensive Applications, a broad map of reliable, scalable, and maintainable data systems.
 tags:
@@ -46,4 +46,4 @@ This is a reference book for moments when a system starts growing beyond a singl
 
 ## Get the Book
 
-- O'Reilly: [Designing Data-Intensive Applications, 2nd Edition](https://www.oreilly.com/library/view/designing-data-intensive-applications/9781098119058/)
+- Official site: [Designing Data-Intensive Applications](https://dataintensive.net/)

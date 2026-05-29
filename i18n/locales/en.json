@@ -1,7 +1,7 @@
 {
   "site": {
     "name": "Mohetios.dev",
-    "tagline": "The architecture of becoming.",
+    "tagline": "Where ideas unfold into systems.",
     "description": "A technical notebook for software, product thinking, open-source work, and the slow craft of building better systems.",
     "footer": "Built slowly. Written honestly. Kept open."
   },
@@ -11,6 +11,13 @@
     "lab": "Lab",
     "projects": "Projects",
     "about": "About"
+  },
+  "footer": {
+    "navigationLabel": "Footer navigation",
+    "sections": {
+      "explore": "Explore",
+      "connect": "Connect"
+    }
   },
   "actions": {
     "readBlog": "Read writing",
@@ -119,7 +126,7 @@
   },
   "home": {
     "hero": {
-      "title": "The architecture of becoming.",
+      "title": "Where ideas unfold into systems.",
       "description": "A technical notebook for software, product thinking, open-source work, and the slow craft of building better systems."
     },
     "workshop": {

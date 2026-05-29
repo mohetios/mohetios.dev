@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="120" viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">
+  <title>Mohetios Golpich Footer Pattern Tile</title>
+
+  <defs>
+    <linearGradient id="paperGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#FCFBF8"/>
+    </linearGradient>
+
+    <filter id="paperNoise" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="2" seed="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 0.05"/>
+      </feComponentTransfer>
+    </filter>
+
+    <symbol id="petal" viewBox="-6 -8 12 16">
+      <path d="M0,-7 C2.8,-5.7 4.4,-2.2 0,6 C-4.4,-2.2 -2.8,-5.7 0,-7Z"/>
+    </symbol>
+
+    <symbol id="flower" viewBox="-14 -14 28 28">
+      <g fill="#DDE8F0" stroke="#2F628A" stroke-width="0.55">
+        <use href="#petal" transform="rotate(0)"/>
+        <use href="#petal" transform="rotate(45)"/>
+        <use href="#petal" transform="rotate(90)"/>
+        <use href="#petal" transform="rotate(135)"/>
+        <use href="#petal" transform="rotate(180)"/>
+        <use href="#petal" transform="rotate(225)"/>
+        <use href="#petal" transform="rotate(270)"/>
+        <use href="#petal" transform="rotate(315)"/>
+      </g>
+      <circle r="3.3" fill="#E4ECE5" stroke="#6E8C74" stroke-width="0.5"/>
+      <circle r="1.1" fill="#C6A15B"/>
+    </symbol>
+
+    <symbol id="golpich-vine" viewBox="0 0 52 52">
+      <path d="M3,50 C10,40 7,31 17,24 C25,18 34,19 31,28 C29,34 18,33 18,26 C18,15 29,8 43,10 C47,10 49,9 50,7"
+            fill="none" stroke="#6E8C74" stroke-width="0.65" stroke-linecap="round" opacity="0.95"/>
+      <path d="M12,34 C14.5,31.5 18.5,31.5 21,34 C17.5,36.5 14.5,36.5 12,34Z"
+            fill="#E4ECE5" stroke="#6E8C74" stroke-width="0.35"/>
+      <path d="M28,18 C30.5,15.5 34.5,15.5 37,18 C33.5,20.5 30.5,20.5 28,18Z"
+            fill="#DDE8F0" stroke="#2F628A" stroke-width="0.35"/>
+      <use href="#flower" x="8" y="2" width="14" height="14"/>
+      <use href="#flower" x="18" y="23" width="10" height="10" opacity="0.9"/>
+      <use href="#flower" x="37" y="3" width="9" height="9" opacity="0.8"/>
+    </symbol>
+
+    <symbol id="medallion" viewBox="-16 -16 32 32">
+      <path d="M0,-14 C3,-12 6,-12 9,-14 C9,-11 11,-9 14,-9 C12,-6 12,-3 14,0 C11,0 9,2 9,5 C6,3 3,3 0,5 C0,2 -2,0 -5,0 C-3,-3 -3,-6 -5,-9 C-2,-9 0,-11 0,-14Z"
+            fill="none" stroke="#C6A15B" stroke-width="0.7"/>
+      <circle r="9.8" fill="none" stroke="#A9C2D8" stroke-width="0.45"/>
+      <text x="0" y="2.6" text-anchor="middle" font-size="8" font-family="Georgia, serif" fill="#1E4265" font-weight="700">M</text>
+    </symbol>
+
+    <style>
+      .name { font-family: Georgia, 'Times New Roman', serif; font-size: 8.5px; fill: #1E4265; font-weight: 500; }
+      .title { font-family: Inter, Avenir, Helvetica, Arial, sans-serif; font-size: 3.45px; fill: #486A56; font-weight: 500; }
+      .tagline { font-family: Georgia, 'Times New Roman', serif; font-size: 3.45px; fill: #223244; font-style: italic; }
+      .domain { font-family: Georgia, 'Times New Roman', serif; font-size: 9.2px; fill: #1E4265; font-weight: 500; }
+      .subtitle { font-family: Georgia, 'Times New Roman', serif; font-size: 4.2px; fill: #486A56; font-style: italic; }
+      .contact { font-family: Inter, Avenir, Helvetica, Arial, sans-serif; font-size: 3.6px; fill: #223244; }
+      .muted { fill: #66727D; }
+      .rule { stroke: #C6A15B; stroke-width: 0.35; stroke-linecap: round; }
+      .icon { fill: none; stroke: #486A56; stroke-width: 0.55; stroke-linecap: round; stroke-linejoin: round; }
+      .smallMark { fill: #C6A15B; }
+      .boardTitle { font-family: Inter, Avenir, Helvetica, Arial, sans-serif; font-size: 6px; fill: #223244; font-weight: 600; }
+      .boardLabel { font-family: Inter, Avenir, Helvetica, Arial, sans-serif; font-size: 3px; fill: #66727D; }
+      .token { font-family: 'Courier New', monospace; font-size: 2.6px; fill: #223244; }
+      .darkTitle { font-family: Inter, Avenir, Helvetica, Arial, sans-serif; font-size: 6px; fill: #EEF3F7; font-weight: 600; }
+      .darkLabel { font-family: Inter, Avenir, Helvetica, Arial, sans-serif; font-size: 3px; fill: #A9B6C2; }
+      .darkToken { font-family: 'Courier New', monospace; font-size: 2.6px; fill: #EEF3F7; }
+    </style>
+  </defs>
+
+  <rect width="240" height="120" fill="transparent"/>
+  <g opacity="0.62">
+    <use href="#golpich-vine" x="0" y="14" width="60" height="60"/>
+    <use href="#golpich-vine" x="48" y="20" width="60" height="60"/>
+    <use href="#golpich-vine" x="96" y="14" width="60" height="60"/>
+    <use href="#golpich-vine" x="144" y="20" width="60" height="60"/>
+    <use href="#golpich-vine" x="192" y="14" width="60" height="60"/>
+  </g>
+</svg>

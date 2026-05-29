@@ -41,8 +41,8 @@ export default defineNuxtConfig({
         { property: 'og:type', content: 'website' },
         { property: 'og:url', content: 'https://mohetios.dev' },
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'theme-color', content: '#ffffff', media: '(prefers-color-scheme: light)' },
-        { name: 'theme-color', content: '#020617', media: '(prefers-color-scheme: dark)' }
+        { name: 'theme-color', content: '#FCFBF8', media: '(prefers-color-scheme: light)' },
+        { name: 'theme-color', content: '#0F1823', media: '(prefers-color-scheme: dark)' }
       ],
       link: [
         { rel: 'icon', href: '/favicon.ico' },

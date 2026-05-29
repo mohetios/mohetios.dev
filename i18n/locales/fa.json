@@ -12,6 +12,13 @@
     "projects": "پروژه‌ها",
     "about": "درباره"
   },
+  "footer": {
+    "navigationLabel": "ناوبری پایین صفحه",
+    "sections": {
+      "explore": "بخش‌ها",
+      "connect": "ارتباط"
+    }
+  },
   "actions": {
     "readBlog": "خواندن نوشته‌ها",
     "exploreLab": "ورود به آزمایشگاه",

@@ -1,6 +1,6 @@
 ---
 title: Just Enough Research
-date: 2026-05-28
+date: 2026-05-16
 thumbnail: /content/just-enough-research.webp
 description: Notes on Erika Hall's compact guide to using research to reduce product risk and make better design decisions.
 tags:

@@ -1,10 +1,20 @@
 # Mohetios.dev
 
-Personal technical blog and portfolio for Mohetios.
+Personal publishing site for Ali Zemani: a bilingual engineering notebook, project archive, and reading log focused on software, web systems, product engineering, physics, and technical experiments.
 
-Built with Nuxt, Nuxt Content v3, Nuxt UI, and Tailwind CSS through Nuxt UI. Deployment target is Cloudflare Pages.
+The site is built with Nuxt 4, Nuxt UI, Nuxt Content, Tailwind CSS, Velite, and `@nuxtjs/i18n`. It is designed for Cloudflare Pages.
 
-## Development
+## What Lives Here
+
+- `content/en/blog` and `content/fa/blog`: long-form posts and book notes
+- `content/en/lab` and `content/fa/lab`: experiments, prototypes, and research notes
+- `content/en/projects` and `content/fa/projects`: project writeups
+- `content/{locale}/about.md`: localized standalone pages
+- `app/`: Nuxt application code, components, pages, utilities, and shared CSS
+- `i18n/locales`: UI labels for English and Persian
+- `public/content`: images and post thumbnails
+
+## Local Development
 
 Install dependencies:
 
@@ -12,32 +22,44 @@ Install dependencies:
 pnpm install
 ```
 
-Start the dev server:
+Run the development server:
 
 ```bash
 pnpm dev
 ```
 
-Build for Cloudflare Pages SSR:
+Run focused checks:
 
 ```bash
-pnpm build
+pnpm lint
+pnpm typecheck
+pnpm format:check
 ```
 
-The build script sets `NODE_OPTIONS=--max-old-space-size=4096` because Nuxt Content plus prerendering can exceed the default Node heap on Cloudflare Pages.
-
-Preview a production build:
+Build for Cloudflare Pages:
 
 ```bash
-pnpm preview
+pnpm build:pages
 ```
 
-Deploy with Wrangler direct upload:
+Preview the Pages build locally:
+
+```bash
+pnpm preview:pages
+```
+
+Deploy the generated Pages output:
 
 ```bash
 pnpm deploy:pages
 ```
 
-Use Cloudflare Pages deploys for this project, not `wrangler deploy`.
+## Content Notes
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for Cloudflare Pages and D1 binding notes.
+English is the default locale. Persian content renders RTL through the app-level locale direction binding. Keep localized UI strings in `i18n/locales/en.json` and `i18n/locales/fa.json`; keep prose content in the matching `content/{locale}` tree.
+
+Blog images should use real post or book-cover assets when possible, stored under `public/content` and referenced from frontmatter with `thumbnail`.
+
+## License
+
+Code is licensed under the terms in [LICENSE](./LICENSE). Written content and images may have separate ownership or source-specific restrictions.
