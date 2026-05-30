@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { locale, locales, t } = useI18n()
 const localePath = useLocalePath()
-const switchLocalePath = useSwitchLocalePath()
+const route = useRoute()
 
 const navigation = computed(() => [
   { label: t('nav.home'), to: localePath('/') },
@@ -13,6 +13,11 @@ const navigation = computed(() => [
 
 const nextLocale = computed(
   () => locales.value.find((item) => item.code !== locale.value) || locales.value[0]
+)
+const nextLocalePath = computed(() =>
+  nextLocale.value
+    ? getLocalizedRoutePath(route.path, nextLocale.value.code, { fallbackToSection: true })
+    : undefined
 )
 </script>
 
@@ -39,8 +44,8 @@ const nextLocale = computed(
 
     <template #right>
       <UButton
-        v-if="nextLocale"
-        :to="switchLocalePath(nextLocale.code)"
+        v-if="nextLocale && nextLocalePath"
+        :to="nextLocalePath"
         color="neutral"
         variant="ghost"
         icon="i-lucide-languages"

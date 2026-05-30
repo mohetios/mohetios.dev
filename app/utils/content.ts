@@ -60,6 +60,18 @@ const blog = blogJson as BlogPost[]
 const lab = labJson as LabNote[]
 const projects = projectsJson as Project[]
 const pages = pagesJson as Page[]
+const staticLocalizedPaths = new Set([
+  '/en',
+  '/fa',
+  '/en/blog',
+  '/fa/blog',
+  '/en/lab',
+  '/fa/lab',
+  '/en/projects',
+  '/fa/projects',
+  '/en/about',
+  '/fa/about'
+])
 
 function byDateDesc<T extends { date?: string }>(items: T[]) {
   return [...items].sort(
@@ -69,6 +81,54 @@ function byDateDesc<T extends { date?: string }>(items: T[]) {
 
 function visible<T extends { draft?: boolean }>(items: T[]) {
   return items.filter((item) => item.draft !== true)
+}
+
+function normalizeRoutePath(path: string) {
+  if (!path || path === '/') {
+    return '/'
+  }
+
+  return `/${path.replace(/^\/+|\/+$/g, '')}`.toLowerCase()
+}
+
+function localizedContentPaths() {
+  return new Set(
+    [...visible(blog), ...visible(lab), ...visible(projects), ...visible(pages)].map((item) =>
+      normalizeRoutePath(item.path)
+    )
+  )
+}
+
+export function routeExists(path: string) {
+  const normalized = normalizeRoutePath(path)
+
+  return staticLocalizedPaths.has(normalized) || localizedContentPaths().has(normalized)
+}
+
+export function getLocalizedRoutePath(
+  path: string,
+  targetLocale: string,
+  options: { fallbackToSection?: boolean } = {}
+) {
+  const normalized = normalizeRoutePath(path)
+  const suffix = normalized.replace(/^\/(fa|en)(?=\/|$)/, '') || '/'
+  const localizedPath = normalizeRoutePath(`/${targetLocale}${suffix === '/' ? '' : suffix}`)
+
+  if (routeExists(localizedPath)) {
+    return localizedPath
+  }
+
+  if (!options.fallbackToSection) {
+    return undefined
+  }
+
+  const section = suffix.match(/^\/(blog|lab|projects)(?=\/|$)/)?.[1]
+
+  if (section) {
+    return `/${targetLocale}/${section}`
+  }
+
+  return `/${targetLocale}`
 }
 
 export const normalizeTagSlug = (value: string) =>

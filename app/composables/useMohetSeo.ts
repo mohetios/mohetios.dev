@@ -75,37 +75,57 @@ export function useMohetSeo(input: SeoInput) {
 
   useHead({
     link: computed(() => {
-      const normalized = canonicalPath.value.replace(/^\/(fa|en)(?=\/|$)/, '') || '/'
       const localeCodes = locales.value.map((item) => (typeof item === 'string' ? item : item.code))
       const orderedLocaleCodes = [
         defaultLocale,
         ...localeCodes.filter((code) => code !== defaultLocale)
       ]
 
-      const alternates = orderedLocaleCodes.map((code) => {
-        return {
-          rel: 'alternate',
-          hreflang: code,
-          href: absoluteUrl(`/${code}${normalized === '/' ? '' : normalized}`)
-        }
+      const alternates = orderedLocaleCodes.flatMap((code) => {
+        const localizedPath = getLocalizedRoutePath(canonicalPath.value, code)
+
+        return localizedPath
+          ? [
+              {
+                rel: 'alternate',
+                hreflang: code,
+                href: absoluteUrl(localizedPath)
+              }
+            ]
+          : []
       })
+      const defaultLocalizedPath = getLocalizedRoutePath(canonicalPath.value, defaultLocale)
+      const defaultAlternate = defaultLocalizedPath
+        ? [
+            {
+              rel: 'alternate',
+              hreflang: 'x-default',
+              href: absoluteUrl(defaultLocalizedPath)
+            }
+          ]
+        : []
 
       return [
         { rel: 'canonical', href: canonicalUrl.value },
         ...alternates,
-        {
-          rel: 'alternate',
-          hreflang: 'x-default',
-          href: absoluteUrl(`/${defaultLocale}${normalized === '/' ? '' : normalized}`)
-        }
+        ...defaultAlternate
       ]
     }),
-    meta: computed(() => [
-      { property: 'og:locale', content: locale.value === 'fa' ? 'fa_IR' : 'en_US' },
-      {
-        property: 'og:locale:alternate',
-        content: locale.value === 'fa' ? 'en_US' : 'fa_IR'
-      }
-    ])
+    meta: computed(() => {
+      const alternateLocale = locale.value === 'fa' ? 'en' : 'fa'
+      const alternatePath = getLocalizedRoutePath(canonicalPath.value, alternateLocale)
+
+      return [
+        { property: 'og:locale', content: locale.value === 'fa' ? 'fa_IR' : 'en_US' },
+        ...(alternatePath
+          ? [
+              {
+                property: 'og:locale:alternate',
+                content: locale.value === 'fa' ? 'en_US' : 'fa_IR'
+              }
+            ]
+          : [])
+      ]
+    })
   })
 }
