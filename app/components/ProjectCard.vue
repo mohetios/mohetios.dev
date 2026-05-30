@@ -11,19 +11,14 @@ defineProps<{
   repo?: string
   website?: string
   actionLabel: string
+  hideMedia?: boolean
 }>()
 </script>
 
 <template>
   <UPageCard :to="to" variant="subtle" class="h-full overflow-hidden">
-    <template v-if="thumbnail" #header>
-      <NuxtImg
-        :src="thumbnail"
-        :alt="title"
-        loading="lazy"
-        class="aspect-video w-full rounded-lg object-cover"
-        sizes="xs:100vw md:50vw lg:520px"
-      />
+    <template v-if="!hideMedia" #header>
+      <ContentCardMedia :title="title" :thumbnail="thumbnail" sizes="xs:100vw md:50vw lg:520px" />
     </template>
 
     <template #leading>

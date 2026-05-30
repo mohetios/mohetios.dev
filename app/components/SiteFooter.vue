@@ -65,7 +65,14 @@ const footerSections = computed<FooterSection[]>(() => [
     <div class="site-footer__inner">
       <section class="site-footer__brand" :aria-label="t('site.name')">
         <NuxtLink :to="localePath('/')" class="site-footer__mark" :aria-label="t('site.name')">
-          <span class="logo-mark site-footer__logo">م</span>
+          <img
+            src="/icons/android-chrome-512x512.png"
+            alt=""
+            width="72"
+            height="72"
+            class="site-logo-image site-footer__logo"
+            aria-hidden="true"
+          />
           <span>
             <span class="logo-mark site-footer__name">{{ t('site.name') }}</span>
             <span class="site-footer__tagline">{{ t('site.tagline') }}</span>

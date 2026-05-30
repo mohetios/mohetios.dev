@@ -137,13 +137,17 @@ function formatDate(date?: string | Date) {
               fetchpriority="high"
               class="aspect-[4/3] h-full w-full object-cover md:aspect-auto"
               sizes="xs:100vw md:50vw lg:560px"
+              placeholder
             />
           </div>
           <div
             v-else
-            class="flex aspect-[4/3] items-center justify-center bg-muted/40 p-8 text-sm font-medium uppercase tracking-widest text-muted md:aspect-auto"
+            class="flex aspect-[4/3] min-h-64 w-full flex-col items-center justify-center gap-4 bg-muted/40 p-8 text-sm font-medium uppercase tracking-widest text-muted md:aspect-auto md:h-full"
           >
-            {{ t('home.featured.placeholder') }}
+            <div class="grid size-16 place-items-center rounded-full border border-default bg-default/70">
+              <UIcon name="i-lucide-image" class="size-7 text-muted" />
+            </div>
+            <span>{{ t('home.featured.placeholder') }}</span>
           </div>
 
           <div class="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
@@ -257,7 +261,7 @@ function formatDate(date?: string | Date) {
             </p>
           </div>
 
-          <div v-if="labNotes?.length" class="grid gap-4">
+          <div v-if="labNotes?.length" class="grid auto-rows-fr gap-4">
             <ContentCard
               v-for="note in labNotes"
               :key="note.id"
@@ -268,6 +272,7 @@ function formatDate(date?: string | Date) {
               :badge="t('badges.lab')"
               :tags="note.tags"
               :thumbnail="note.thumbnail"
+              hide-media
             />
           </div>
           <EmptyState
@@ -287,7 +292,7 @@ function formatDate(date?: string | Date) {
             </p>
           </div>
 
-          <div v-if="projects?.length" class="grid gap-4">
+          <div v-if="projects?.length" class="grid auto-rows-fr gap-4">
             <ContentCard
               v-for="project in projects"
               :key="project.id"
@@ -298,6 +303,7 @@ function formatDate(date?: string | Date) {
               :badge="project.status"
               :tags="project.tags"
               :thumbnail="project.thumbnail"
+              hide-media
             />
           </div>
           <EmptyState

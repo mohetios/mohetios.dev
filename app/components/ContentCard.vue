@@ -7,6 +7,7 @@ defineProps<{
   badge?: string
   tags?: string[]
   thumbnail?: string
+  hideMedia?: boolean
 }>()
 
 const { locale } = useI18n()
@@ -15,13 +16,11 @@ const localePath = useLocalePath()
 
 <template>
   <UPageCard :title="title" :description="description" :to="to" variant="subtle" class="h-full">
-    <template v-if="thumbnail" #header>
-      <NuxtImg
-        :src="thumbnail"
-        :alt="title"
-        loading="lazy"
-        class="aspect-video w-full rounded-md object-cover"
-        sizes="xs:100vw sm:50vw lg:33vw"
+    <template v-if="!hideMedia" #header>
+      <ContentCardMedia
+        :title="title"
+        :thumbnail="thumbnail"
+        image-class="aspect-video w-full rounded-md object-cover"
       />
     </template>
 

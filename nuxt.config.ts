@@ -1,5 +1,13 @@
 import { getPrerenderContentRoutes } from './app/utils/content'
 
+const siteUrl = 'https://mohetios.dev'
+const htmlCacheHeaders = {
+  'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400'
+}
+const immutableAssetHeaders = {
+  'Cache-Control': 'public, max-age=31536000, immutable'
+}
+
 const staticRoutes = [
   '/',
   '/en',
@@ -22,7 +30,15 @@ function getContentRoutes() {
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxt/eslint', '@nuxtjs/i18n', '@nuxt/ui', '@nuxt/image', 'nitro-cloudflare-dev'],
+  modules: [
+    '@nuxt/eslint',
+    '@nuxtjs/i18n',
+    '@nuxt/ui',
+    '@nuxt/image',
+    '@nuxtjs/sitemap',
+    '@nuxtjs/robots',
+    'nitro-cloudflare-dev'
+  ],
 
   devtools: {
     enabled: true
@@ -39,15 +55,27 @@ export default defineNuxtConfig({
         },
         { property: 'og:site_name', content: 'Mohetios.dev' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:url', content: 'https://mohetios.dev' },
+        { property: 'og:url', content: siteUrl },
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'theme-color', content: '#FCFBF8', media: '(prefers-color-scheme: light)' },
         { name: 'theme-color', content: '#0F1823', media: '(prefers-color-scheme: dark)' }
       ],
       link: [
-        { rel: 'icon', href: '/favicon.ico' },
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/icons/favicon-16x16.png' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/icons/favicon-32x32.png' },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '192x192',
+          href: '/icons/android-chrome-192x192.png'
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '512x512',
+          href: '/icons/android-chrome-512x512.png'
+        },
         { rel: 'apple-touch-icon', href: '/icons/apple-touch-icon.png' }
       ]
     }
@@ -55,37 +83,63 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  site: {
+    url: siteUrl,
+    name: 'Mohetios.dev'
+  },
+
   routeRules: {
     '/': { prerender: true },
-    '/fa': { prerender: true },
-    '/en': { prerender: true },
-    '/fa/blog/**': { prerender: true },
-    '/en/blog/**': { prerender: true },
-    '/fa/lab/**': { prerender: true },
-    '/en/lab/**': { prerender: true },
-    '/fa/projects/**': { prerender: true },
-    '/en/projects/**': { prerender: true },
-    '/fa/about': { prerender: true },
-    '/en/about': { prerender: true },
-    '/content/**': {
+    '/fa': { prerender: true, headers: htmlCacheHeaders },
+    '/en': { prerender: true, headers: htmlCacheHeaders },
+    '/fa/blog/**': { prerender: true, headers: htmlCacheHeaders },
+    '/en/blog/**': { prerender: true, headers: htmlCacheHeaders },
+    '/fa/lab/**': { prerender: true, headers: htmlCacheHeaders },
+    '/en/lab/**': { prerender: true, headers: htmlCacheHeaders },
+    '/fa/projects/**': { prerender: true, headers: htmlCacheHeaders },
+    '/en/projects/**': { prerender: true, headers: htmlCacheHeaders },
+    '/fa/tags/**': { prerender: true, headers: htmlCacheHeaders },
+    '/en/tags/**': { prerender: true, headers: htmlCacheHeaders },
+    '/fa/about': { prerender: true, headers: htmlCacheHeaders },
+    '/en/about': { prerender: true, headers: htmlCacheHeaders },
+    '/_nuxt/**': {
       headers: {
-        'Cache-Control': 'public, max-age=31536000, immutable'
+        ...immutableAssetHeaders,
+        'X-Robots-Tag': 'noindex'
       }
+    },
+    '/content/**': {
+      headers: immutableAssetHeaders
     },
     '/icons/**': {
-      headers: {
-        'Cache-Control': 'public, max-age=31536000, immutable'
-      }
+      headers: immutableAssetHeaders
+    },
+    '/patterns/**': {
+      headers: immutableAssetHeaders
     },
     '/*.woff': {
-      headers: {
-        'Cache-Control': 'public, max-age=31536000, immutable'
-      }
+      headers: immutableAssetHeaders
     },
     '/*.woff2': {
-      headers: {
-        'Cache-Control': 'public, max-age=31536000, immutable'
-      }
+      headers: immutableAssetHeaders
+    },
+    '/*.webp': {
+      headers: immutableAssetHeaders
+    },
+    '/*.png': {
+      headers: immutableAssetHeaders
+    },
+    '/*.jpg': {
+      headers: immutableAssetHeaders
+    },
+    '/*.jpeg': {
+      headers: immutableAssetHeaders
+    },
+    '/*.svg': {
+      headers: immutableAssetHeaders
+    },
+    '/*.ico': {
+      headers: immutableAssetHeaders
     }
   },
 
@@ -110,7 +164,7 @@ export default defineNuxtConfig({
       autoSubfolderIndex: false,
       concurrency: 1,
       crawlLinks: true,
-      routes: getContentRoutes()
+      routes: [...getContentRoutes(), '/robots.txt', '/sitemap.xml']
     }
   },
 
@@ -167,14 +221,33 @@ export default defineNuxtConfig({
   },
 
   image: {
-    provider: 'none',
-    quality: 80,
+    provider: process.env.NODE_ENV === 'production' ? 'cloudflare' : 'none',
+    quality: 70,
     screens: {
       xs: 320,
       sm: 640,
       md: 768,
       lg: 1024,
       xl: 1280
+    },
+    cloudflare: {
+      baseURL: process.env.NUXT_BASE_URL || siteUrl
     }
+  },
+
+  robots: {
+    sitemap: ['/sitemap.xml'],
+    cacheControl: 'max-age=14400, must-revalidate',
+    credits: false
+  },
+
+  sitemap: {
+    urls: () => getContentRoutes(),
+    autoLastmod: true,
+    discoverImages: true,
+    discoverVideos: false,
+    minify: true,
+    cacheMaxAgeSeconds: 3600,
+    credits: false
   },
 })

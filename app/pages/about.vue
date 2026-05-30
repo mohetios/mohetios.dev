@@ -18,22 +18,16 @@ useMohetSeo({
 
 <template>
   <UPage v-if="page">
-    <UPageHeader :title="page.title" :description="page.description" class="mx-auto max-w-4xl">
-      <template #headline>
-        <ContentMeta :updated="page.updated" :status="t('nav.about')" />
-      </template>
-    </UPageHeader>
+    <ContentHero
+      :title="page.title"
+      :description="page.description"
+      :thumbnail="page.thumbnail"
+      :updated="page.updated"
+      :status="t('nav.about')"
+    />
 
     <UPageBody>
-      <NuxtImg
-        v-if="page.thumbnail"
-        :src="page.thumbnail"
-        :alt="page.title"
-        class="mx-auto mb-10 aspect-[16/9] w-full max-w-4xl rounded-2xl object-cover ring ring-default"
-        sizes="xs:100vw lg:860px"
-      />
-
-      <article class="mx-auto max-w-3xl rounded-2xl border border-default bg-default p-5 sm:p-8">
+      <article class="mx-auto max-w-3xl">
         <ContentHtml :html="page.content" class="prose-mohetios" />
       </article>
     </UPageBody>

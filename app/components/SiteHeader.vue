@@ -11,12 +11,8 @@ const navigation = computed(() => [
   { label: t('nav.about'), to: localePath('/about') }
 ])
 
-const languageItems = computed(() =>
-  locales.value.map((item) => ({
-    label: item.name,
-    to: switchLocalePath(item.code),
-    active: item.code === locale.value
-  }))
+const nextLocale = computed(
+  () => locales.value.find((item) => item.code !== locale.value) || locales.value[0]
 )
 </script>
 
@@ -35,10 +31,6 @@ const languageItems = computed(() =>
         class="flex items-center gap-2 font-semibold tracking-tight"
         :aria-label="t('site.name')"
       >
-        <span
-          class="logo-mark grid size-8 place-items-center border border-default bg-default text-sm font-bold"
-          >م</span
-        >
         <span class="logo-mark">{{ t('site.name') }}</span>
       </NuxtLink>
     </template>
@@ -46,14 +38,15 @@ const languageItems = computed(() =>
     <UNavigationMenu :items="navigation" variant="link" class="hidden lg:flex" />
 
     <template #right>
-      <UDropdownMenu :items="languageItems">
-        <UButton
-          color="neutral"
-          variant="ghost"
-          icon="i-lucide-languages"
-          :label="locale.toUpperCase()"
-        />
-      </UDropdownMenu>
+      <UButton
+        v-if="nextLocale"
+        :to="switchLocalePath(nextLocale.code)"
+        color="neutral"
+        variant="ghost"
+        icon="i-lucide-languages"
+        :label="nextLocale.code.toUpperCase()"
+        class="cursor-pointer"
+      />
       <UColorModeButton />
     </template>
 

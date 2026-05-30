@@ -28,19 +28,18 @@ useMohetSeo({
 
 <template>
   <UPage v-if="note">
-    <UPageHeader :title="note.title" :description="note.description" class="mx-auto max-w-4xl">
-      <template #headline>
-        <ContentMeta
-          :date="note.date"
-          :updated="note.updated"
-          :status="note.status || t('content.lab.defaultStatus')"
-        />
-      </template>
-      <ContentTagList :tags="note.tags" />
-    </UPageHeader>
+    <ContentHero
+      :title="note.title"
+      :description="note.description"
+      :thumbnail="note.thumbnail"
+      :date="note.date"
+      :updated="note.updated"
+      :status="note.status || t('content.lab.defaultStatus')"
+      :tags="note.tags"
+    />
 
     <UPageBody>
-      <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_17rem]">
+      <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_16rem]">
         <article class="min-w-0">
           <div class="mx-auto mb-8 max-w-3xl rounded-2xl border border-default bg-muted/30 p-5">
             <p class="text-sm leading-7 text-muted">
@@ -77,7 +76,7 @@ useMohetSeo({
         </aside>
       </div>
 
-      <div class="mx-auto mt-12 max-w-4xl space-y-8">
+      <div class="mx-auto mt-12 max-w-6xl space-y-8">
         <UButton
           :to="localePath('/lab')"
           color="neutral"

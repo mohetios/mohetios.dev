@@ -102,6 +102,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+:where(a[href], button, [role='button']):not(:disabled, [aria-disabled='true']) {
+  cursor: pointer;
+}
+
 [dir='rtl'] {
   --font-body: Vazirmatn, ui-sans-serif, system-ui, sans-serif;
   --font-content: Vazirmatn, ui-sans-serif, system-ui, sans-serif;
@@ -113,6 +117,12 @@ body {
 
 [dir='rtl'] .logo-mark {
   font-family: 'FarhangDot', Vazirmatn, sans-serif;
+}
+
+.site-logo-image {
+  display: block;
+  flex: 0 0 auto;
+  object-fit: contain;
 }
 
 [dir='rtl'] ol {
@@ -311,15 +321,8 @@ body {
 }
 
 .site-footer__logo {
-  display: grid;
-  width: 3rem;
-  height: 3rem;
-  place-items: center;
-  border: 1px solid var(--ui-border-accented);
-  background: color-mix(in oklab, var(--color-surface) 82%, var(--color-gold));
-  color: var(--color-primary);
-  font-size: 1.125rem;
-  font-weight: 800;
+  width: 4.5rem;
+  height: 4.5rem;
 }
 
 .site-footer__name {

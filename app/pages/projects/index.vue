@@ -60,6 +60,7 @@ useMohetSeo({
               :repo="project.repo"
               :website="project.website"
               :action-label="t('content.actions.openProject')"
+              hide-media
             />
           </UPageGrid>
         </section>
@@ -83,6 +84,7 @@ useMohetSeo({
               :repo="project.repo"
               :website="project.website"
               :action-label="t('content.actions.openProject')"
+              hide-media
             />
           </UPageGrid>
         </section>

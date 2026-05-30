@@ -66,29 +66,20 @@ useMohetSeo({
 
 <template>
   <UPage v-if="project">
-    <UPageHeader
+    <ContentHero
       :title="project.title"
       :description="project.description"
-      class="mx-auto max-w-5xl"
-    >
-      <template #headline>
-        <ContentMeta :date="project.date" :updated="project.updated" :status="project.status" />
-      </template>
-      <ContentTagList :tags="project.tags" />
-    </UPageHeader>
+      :thumbnail="project.thumbnail"
+      :date="project.date"
+      :updated="project.updated"
+      :status="project.status"
+      :tags="project.tags"
+    />
 
     <UPageBody>
-      <NuxtImg
-        v-if="project.thumbnail"
-        :src="project.thumbnail"
-        :alt="project.title"
-        class="mx-auto mb-10 aspect-[16/9] w-full max-w-6xl rounded-2xl object-cover ring ring-default"
-        sizes="xs:100vw lg:1100px"
-      />
-
-      <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_19rem]">
+      <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_16rem]">
         <article class="min-w-0">
-          <ContentHtml :html="project.content" class="prose-mohetios max-w-none" />
+          <ContentHtml :html="project.content" class="prose-mohetios mx-auto max-w-3xl" />
         </article>
 
         <aside class="lg:order-last">
@@ -150,7 +141,7 @@ useMohetSeo({
         </aside>
       </div>
 
-      <div class="mx-auto mt-12 max-w-5xl space-y-8">
+      <div class="mx-auto mt-12 max-w-6xl space-y-8">
         <UButton
           :to="localePath('/projects')"
           color="neutral"
@@ -166,7 +157,7 @@ useMohetSeo({
           <h2 class="mb-4 text-xl font-semibold tracking-tight text-highlighted">
             {{ t('content.related') }}
           </h2>
-          <UPageGrid>
+          <div class="grid gap-4 sm:grid-cols-2">
             <ProjectCard
               v-for="related in relatedProjects"
               :key="related.id"
@@ -181,8 +172,9 @@ useMohetSeo({
               :repo="related.repo"
               :website="related.website"
               :action-label="t('content.actions.openProject')"
+              hide-media
             />
-          </UPageGrid>
+          </div>
         </section>
       </div>
     </UPageBody>

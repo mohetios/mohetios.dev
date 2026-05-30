@@ -39,22 +39,17 @@ useMohetSeo({
 
 <template>
   <UPage v-if="post">
-    <UPageHeader :title="post.title" :description="post.description" class="mx-auto max-w-4xl">
-      <template #headline>
-        <ContentMeta :date="post.date" :updated="post.updated" :status="t('badges.blog')" />
-      </template>
-      <ContentTagList :tags="post.tags" />
-    </UPageHeader>
+    <ContentHero
+      :title="post.title"
+      :description="post.description"
+      :thumbnail="post.thumbnail"
+      :date="post.date"
+      :updated="post.updated"
+      :status="t('badges.blog')"
+      :tags="post.tags"
+    />
 
     <UPageBody>
-      <NuxtImg
-        v-if="post.thumbnail"
-        :src="post.thumbnail"
-        :alt="post.title"
-        class="mx-auto mb-10 aspect-[16/9] w-full max-w-5xl rounded-2xl object-cover ring ring-default"
-        sizes="xs:100vw lg:960px"
-      />
-
       <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_16rem]">
         <article class="min-w-0">
           <ContentHtml :html="post.content" class="prose-mohetios mx-auto max-w-3xl" />
@@ -67,7 +62,7 @@ useMohetSeo({
         </aside>
       </div>
 
-      <div class="mx-auto mt-12 max-w-4xl space-y-8">
+      <div class="mx-auto mt-12 max-w-6xl space-y-8">
         <UButton
           :to="localePath('/blog')"
           color="neutral"
@@ -83,7 +78,7 @@ useMohetSeo({
           <h2 class="mb-4 text-xl font-semibold tracking-tight text-highlighted">
             {{ t('content.related') }}
           </h2>
-          <div class="grid gap-4 sm:grid-cols-3">
+          <div class="grid gap-4 sm:grid-cols-2">
             <ContentListCard
               v-for="related in relatedPosts"
               :key="related.id"

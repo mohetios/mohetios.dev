@@ -15,14 +15,8 @@ defineProps<{
 
 <template>
   <UPageCard :to="to" variant="subtle" class="h-full">
-    <template v-if="thumbnail && !compact" #header>
-      <NuxtImg
-        :src="thumbnail"
-        :alt="title"
-        loading="lazy"
-        class="aspect-video w-full rounded-lg object-cover"
-        sizes="xs:100vw sm:50vw lg:33vw"
-      />
+    <template v-if="!compact" #header>
+      <ContentCardMedia :title="title" :thumbnail="thumbnail" />
     </template>
 
     <template #leading>

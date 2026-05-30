@@ -24,12 +24,16 @@ defineProps<{
       class="aspect-[4/3] h-full w-full object-cover md:aspect-auto"
       loading="eager"
       sizes="xs:100vw md:42vw lg:520px"
+      placeholder
     />
     <div
       v-else
-      class="flex aspect-[4/3] items-center justify-center bg-muted/40 p-8 text-xs font-medium uppercase tracking-widest text-muted md:aspect-auto"
+      class="flex aspect-[4/3] min-h-64 w-full flex-col items-center justify-center gap-4 bg-muted/40 p-8 text-xs font-medium uppercase tracking-widest text-muted md:aspect-auto md:h-full"
     >
-      {{ placeholder }}
+      <div class="grid size-16 place-items-center rounded-full border border-default bg-default/70">
+        <UIcon name="i-lucide-image" class="size-7 text-muted" />
+      </div>
+      <span>{{ placeholder }}</span>
     </div>
 
     <div class="flex flex-col justify-center p-6 sm:p-8">

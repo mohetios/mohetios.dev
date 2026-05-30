@@ -2,7 +2,7 @@
   "site": {
     "name": "Mohetios.dev",
     "tagline": "Where ideas unfold into systems.",
-    "description": "A technical notebook for software, product thinking, open-source work, and the slow craft of building better systems.",
+    "description": "A technical notebook for software, product engineering, open-source work, and the practice of building useful systems.",
     "footer": "Built slowly. Written honestly. Kept open."
   },
   "nav": {
@@ -28,19 +28,19 @@
   },
   "sections": {
     "latestWriting": "Latest writing",
-    "latestWritingDescription": "Long-form notes on engineering, product work, and the decisions behind the code.",
+    "latestWritingDescription": "Technical notes, product decisions, and implementation records from real work.",
     "labNotes": "Lab notes",
-    "labNotesDescription": "Small experiments, rough models, and ideas still under pressure.",
+    "labNotesDescription": "Small experiments, rough prototypes, and early ideas that are still being tested.",
     "featuredProjects": "Featured projects",
-    "featuredProjectsDescription": "Open-source work, product experiments, and systems built in public.",
+    "featuredProjectsDescription": "Open-source work, product experiments, systems built under real constraints.",
     "principles": "Working principles",
-    "principlesDescription": "A few rules that keep the work grounded, useful, and honest."
+    "principlesDescription": "A few practical rules for keeping the work clear, useful, and grounded."
   },
   "empty": {
     "blogTitle": "No writing published yet",
-    "blogDescription": "New essays and technical notes will appear here.",
+    "blogDescription": "Technical notes and essays will appear here.",
     "labTitle": "No lab notes yet",
-    "labDescription": "Experiments and working notes will appear here.",
+    "labDescription": "Experiments, prototypes, and working notes will appear here.",
     "projectsTitle": "No projects published yet",
     "projectsDescription": "Project notes and case studies will appear here."
   },
@@ -48,9 +48,9 @@
     "blogTitle": "Writing",
     "blogDescription": "Technical essays, product notes, implementation records, and lessons from real projects.",
     "labTitle": "Lab",
-    "labDescription": "A place for experiments, research notes, early models, and unfinished ideas.",
+    "labDescription": "Experiments, prototypes, research notes, and unfinished ideas worth tracking.",
     "projectsTitle": "Projects",
-    "projectsDescription": "Open-source work, product experiments, and long-term systems I am building in public."
+    "projectsDescription": "Open-source work, product experiments, and practical systems built in public."
   },
   "badges": {
     "blog": "Writing",
@@ -59,17 +59,17 @@
   "tags": {
     "eyebrow": "Tag",
     "titlePrefix": "#",
-    "description": "{count} notes across {types}.",
+    "description": "{count} items across {types}.",
     "all": "All",
     "writing": "Writing",
     "lab": "Lab",
     "projects": "Projects",
-    "latest": "Latest in this tag",
-    "results": "All tagged notes",
+    "latest": "Latest with this tag",
+    "results": "All tagged items",
     "related": "Related tags",
     "counts": "Content types",
     "emptyTitle": "No content found for this tag",
-    "emptyDescription": "This tag may exist in an old link, or the related notes have not been published yet.",
+    "emptyDescription": "This tag may belong to an old link, or the related content has not been published yet.",
     "backToWriting": "Back to writing",
     "allTags": "All tags"
   },
@@ -97,17 +97,17 @@
       "seoTitle": "Writing · Mohetios.dev",
       "eyebrow": "Writing archive",
       "title": "Writing",
-      "description": "Essays and technical notes on software, systems, product engineering, and the practice of building.",
+      "description": "Notes on software, product engineering, architecture, and the craft of building with care.",
       "latest": "Latest article",
       "placeholder": "Featured article"
     },
     "lab": {
       "seoTitle": "Lab · Mohetios.dev",
-      "eyebrow": "Experimental notebook",
+      "eyebrow": "Working notebook",
       "title": "Lab",
-      "description": "Experiments, research notes, rough models, and ideas that are not finished yet.",
+      "description": "A place for prototypes, technical experiments, research fragments, and ideas before they become polished work.",
       "defaultStatus": "Exploring",
-      "workingNote": "This is a working note. It is useful enough to keep, but not final enough to pretend otherwise.",
+      "workingNote": "This is a working note: useful enough to keep, but not final enough to present as a finished conclusion.",
       "stats": {
         "notes": "Notes",
         "active": "Active",
@@ -118,25 +118,25 @@
       "seoTitle": "Projects · Mohetios.dev",
       "eyebrow": "Project archive",
       "title": "Projects",
-      "description": "Open-source products, tools, prototypes, and systems built through real constraints.",
+      "description": "Open-source products, tools, prototypes, and systems shaped by real constraints.",
       "featured": "Featured projects",
-      "featuredDescription": "The main systems currently shaping my work.",
+      "featuredDescription": "The main projects currently shaping my public work.",
       "archive": "Project archive"
     }
   },
   "home": {
     "hero": {
       "title": "Where ideas unfold into systems.",
-      "description": "A technical notebook for software, product thinking, open-source work, and the slow craft of building better systems."
+      "description": "A technical notebook for software, product engineering, open-source work, and the practice of building useful systems."
     },
     "workshop": {
       "label": "Current focus",
-      "footer": "One project, one note, one sharper system at a time.",
+      "footer": "Less noise, clearer notes, better software — one useful piece at a time.",
       "items": {
-        "softwareSystems": "Software systems",
-        "openSourceProducts": "Open-source products",
-        "aiTravelTools": "AI travel tools",
-        "geometryNotes": "Geometry notes"
+        "softwareSystems": "Web systems",
+        "openSourceProducts": "Open-source work",
+        "aiTravelTools": "Product engineering",
+        "geometryNotes": "Technical writing"
       }
     },
     "featured": {
@@ -145,32 +145,32 @@
       "action": "Read the note"
     },
     "tracks": {
-      "title": "Three paths through the work",
-      "description": "Writing for the thinking, lab notes for the experiments, projects for the things that ship.",
+      "title": "Three ways to follow the work",
+      "description": "Writing explains the thinking, Lab tracks experiments, Projects show what is being built.",
       "blog": {
         "title": "Writing",
-        "description": "Essays, engineering notes, and product reflections."
+        "description": "Technical essays, engineering notes, and product reflections."
       },
       "lab": {
         "title": "Lab",
-        "description": "Experiments, research fragments, and unfinished models."
+        "description": "Prototypes, research fragments, and ideas still being tested."
       },
       "projects": {
         "title": "Projects",
-        "description": "Open-source work, prototypes, and product systems."
+        "description": "Open-source work, practical tools, and product systems."
       }
     },
     "principles": {
       "items": {
-        "smallUseful": "Build small, useful things before giving them grand names.",
-        "preservePath": "Write the path, not just the polished conclusion.",
+        "smallUseful": "Build small, useful things before giving them large names.",
+        "preservePath": "Write the path, not only the polished result.",
         "clearInterfaces": "Prefer clear interfaces, stable tools, and honest constraints.",
-        "openWorkshop": "Keep the work open enough to be questioned, forked, and improved."
+        "openWorkshop": "Keep the work open enough to be reviewed, forked, and improved."
       }
     },
     "cta": {
       "title": "Follow the work as it takes shape.",
-      "description": "Read the notes, inspect the projects, and trace the experiments behind the systems."
+      "description": "Read the notes, inspect the projects, and trace the decisions behind the systems."
     }
   }
 }
