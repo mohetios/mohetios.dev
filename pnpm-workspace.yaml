@@ -9,7 +9,6 @@ allowBuilds:
   workerd: true
 minimumReleaseAgeExclude:
   - '@cloudflare/workers-types@4.20260528.1'
-  - '@cloudflare/workers-types@4.20260530.1'
   - '@eslint/plugin-kit@0.7.2'
   - '@iconify-json/lucide@1.2.111'
   - '@vue/language-core@3.3.3'

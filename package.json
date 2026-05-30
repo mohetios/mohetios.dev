@@ -29,7 +29,7 @@
     "tailwindcss": "^4.3.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260530.1",
+    "@cloudflare/workers-types": "4.20260528.1",
     "@nuxt/eslint": "^1.15.2",
     "@types/node": "^25.9.1",
     "eslint": "^10.4.1",
