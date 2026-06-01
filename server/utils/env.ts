@@ -1,36 +1,40 @@
-import { createError, type H3Event } from 'h3'
 import type { D1Database } from '@cloudflare/workers-types'
 
-type CloudflareRuntime = {
-  cloudflare?: {
-    env?: Partial<CloudflareEnv>
-  }
-}
-
-type RuntimeCarrier = {
-  runtime?: CloudflareRuntime
-}
-
-export type CloudflareEnv = {
+export type ServerEnv = {
   DB: D1Database
-  JWT_SECRET?: string
-  AUTH_TOKEN_TTL_SECONDS?: string
-  ALLOW_PUBLIC_REGISTER?: string
+  JWT_SECRET: string
+  AUTH_TOKEN_TTL_SECONDS: string
+  ALLOW_PUBLIC_REGISTER: string
 }
 
-export function getCloudflareEnv(event: H3Event): CloudflareEnv {
-  const legacyRequest = event as H3Event & { req?: RuntimeCarrier }
-  const runtimeEnv =
-    event.context.cloudflare?.env ||
-    (event.node?.req as RuntimeCarrier | undefined)?.runtime?.cloudflare?.env ||
-    legacyRequest.req?.runtime?.cloudflare?.env
+export function getServerEnv(event: any): ServerEnv {
+  const runtimeConfig = useRuntimeConfig(event)
 
-  if (!runtimeEnv?.DB) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Cloudflare DB binding is not available'
-    })
+  const cloudflareEnv =
+    event?.req?.runtime?.cloudflare?.env || event?.context?.cloudflare?.env || {}
+
+  const DB = cloudflareEnv.DB as D1Database | undefined
+
+  if (!DB) {
+    throw new Error('D1 binding DB is not configured')
   }
 
-  return runtimeEnv as CloudflareEnv
+  const JWT_SECRET = String(runtimeConfig.jwtSecret || '') || String(cloudflareEnv.JWT_SECRET || '')
+
+  if (!JWT_SECRET) {
+    throw new Error('JWT secret is not configured')
+  }
+
+  return {
+    DB,
+    JWT_SECRET,
+    AUTH_TOKEN_TTL_SECONDS:
+      String(runtimeConfig.authTokenTtlSeconds || '') ||
+      String(cloudflareEnv.AUTH_TOKEN_TTL_SECONDS || '604800'),
+    ALLOW_PUBLIC_REGISTER:
+      String(runtimeConfig.allowPublicRegister || '') ||
+      String(cloudflareEnv.ALLOW_PUBLIC_REGISTER || 'false')
+  }
 }
+
+export type CloudflareEnv = ServerEnv

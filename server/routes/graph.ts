@@ -7,12 +7,12 @@ import { Query } from '../queries'
 import { typeDefs } from '../schema'
 import { getBearerToken } from '../utils/auth'
 import { verifyAuthToken } from '../utils/crypto'
-import { getCloudflareEnv } from '../utils/env'
+import { getServerEnv } from '../utils/env'
 import type { UserRole } from '../../shared/constants/permissions'
 
 export type GraphQLContext = {
   event: H3Event
-  env: ReturnType<typeof getCloudflareEnv>
+  env: ReturnType<typeof getServerEnv>
   db: ReturnType<typeof getDb>
   userId?: string
   username?: string
@@ -20,7 +20,7 @@ export type GraphQLContext = {
 }
 
 const createGraphQLContext = async (event: H3Event): Promise<GraphQLContext> => {
-  const env = getCloudflareEnv(event)
+  const env = getServerEnv(event)
   const db = getDb(event)
   const token = getBearerToken(event)
   const claims = token ? await verifyAuthToken(token, env) : null

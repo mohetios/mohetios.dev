@@ -91,6 +91,9 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    jwtSecret: '',
+    authTokenTtlSeconds: '604800',
+    allowPublicRegister: 'false',
     public: {
       'graphql-client': {
         clients: {
