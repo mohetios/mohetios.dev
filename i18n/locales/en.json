@@ -11,6 +11,7 @@
     "lab": "Lab",
     "projects": "Projects",
     "about": "About",
+    "profile": "Profile",
     "dashboard": "Dashboard"
   },
   "auth": {
@@ -46,6 +47,10 @@
     "logout": "Logout",
     "errors": {
       "generic": "Authentication failed"
+    },
+    "status": {
+      "authenticated": "Authenticated",
+      "guest": "Guest"
     }
   },
   "dashboard": {
@@ -55,6 +60,20 @@
     "emptyName": "No name set",
     "role": "Role",
     "backToSite": "Back to site"
+  },
+  "profile": {
+    "eyebrow": "Member area",
+    "title": "Profile",
+    "description": "Your basic Mohetios account identity. This area is still experimental.",
+    "status": "Status",
+    "fields": {
+      "username": "Username",
+      "role": "Role"
+    },
+    "experimental": {
+      "title": "Experimental area",
+      "description": "Member profiles, comments, and internal features are still being shaped. For now, this page only confirms your account access."
+    }
   },
   "footer": {
     "navigationLabel": "Footer navigation",

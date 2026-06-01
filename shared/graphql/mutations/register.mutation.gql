@@ -5,6 +5,10 @@ mutation Register($input: RegisterInput!) {
       id
       username
       role
+      displayName
+      bio
+      website
+      avatarUrl
       createdAt
     }
   }

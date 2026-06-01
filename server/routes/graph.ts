@@ -8,6 +8,7 @@ import { typeDefs } from '../schema'
 import { getBearerToken } from '../utils/auth'
 import { verifyAuthToken } from '../utils/crypto'
 import { getCloudflareEnv } from '../utils/env'
+import type { UserRole } from '../../shared/constants/permissions'
 
 export type GraphQLContext = {
   event: H3Event
@@ -15,7 +16,7 @@ export type GraphQLContext = {
   db: ReturnType<typeof getDb>
   userId?: string
   username?: string
-  userRole?: 'ADMIN' | 'USER'
+  userRole?: Exclude<UserRole, 'GUEST'>
 }
 
 const createGraphQLContext = async (event: H3Event): Promise<GraphQLContext> => {

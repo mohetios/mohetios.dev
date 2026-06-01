@@ -1,6 +1,7 @@
 import { GraphQLError } from 'graphql'
 import { getHeader, type H3Event } from 'h3'
 
+import { canRole, type Permission, type UserRole } from '../../shared/constants/permissions'
 import type { GraphQLContext } from '../routes/graph'
 
 const usernamePattern = /^[a-z0-9][a-z0-9._-]{2,31}$/i
@@ -33,10 +34,31 @@ export function getBearerToken(event: H3Event) {
   return authorization.slice('Bearer '.length).trim() || null
 }
 
+export function normalizeUserRole(role: unknown): Exclude<UserRole, 'GUEST'> {
+  if (role === 'OWNER' || role === 'ADMIN') return 'OWNER'
+
+  return 'MEMBER'
+}
+
 export function requireAuth(context: GraphQLContext) {
   if (!context.userId) {
     throw new GraphQLError('Authentication required')
   }
 
-  return context.userId
+  const { userId } = context
+
+  return userId
+}
+
+export function requirePermission(
+  context: { userId?: string; userRole?: UserRole },
+  permission: Permission
+) {
+  const userId = requireAuth(context as GraphQLContext)
+
+  if (!canRole(context.userRole, permission)) {
+    throw new GraphQLError('Permission denied')
+  }
+
+  return userId
 }

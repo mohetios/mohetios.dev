@@ -1,5 +1,7 @@
 /// <reference types="@cloudflare/workers-types" />
 
+import type { Permission } from './shared/constants/permissions'
+
 declare global {
   interface CloudflareEnv {
     DB: D1Database
@@ -17,6 +19,12 @@ declare module 'h3' {
       env: CloudflareEnv
       context: ExecutionContext
     }
+  }
+}
+
+declare module '#app' {
+  interface PageMeta {
+    requiredPermission?: Permission
   }
 }
 

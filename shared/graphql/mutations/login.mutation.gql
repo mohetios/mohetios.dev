@@ -5,6 +5,10 @@ mutation Login($input: LoginInput!) {
       id
       username
       role
+      displayName
+      bio
+      website
+      avatarUrl
       createdAt
     }
   }

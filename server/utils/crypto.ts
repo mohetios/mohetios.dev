@@ -1,15 +1,17 @@
 import { createError } from 'h3'
 
+import type { UserRole } from '../../shared/constants/permissions'
 import type { User } from '../models/schema'
+import { normalizeUserRole } from './auth'
 import type { CloudflareEnv } from './env'
 
 const defaultIterations = 210000
 const defaultTtlSeconds = 60 * 60 * 24 * 7
 
-type AuthClaims = {
+export type AuthClaims = {
   sub: string
   username: string
-  role: User['role']
+  role: Exclude<UserRole, 'GUEST'>
   iat: number
   exp: number
 }
@@ -141,7 +143,7 @@ export async function signAuthToken(
     JSON.stringify({
       sub: user.id,
       username: user.username,
-      role: user.role,
+      role: normalizeUserRole(user.role),
       iat: now,
       exp: now + expiresIn
     } satisfies AuthClaims)
@@ -171,7 +173,7 @@ export async function verifyAuthToken(token: string, env: CloudflareEnv) {
   if (
     !claims.sub ||
     typeof claims.username !== 'string' ||
-    (claims.role !== 'ADMIN' && claims.role !== 'USER') ||
+    (claims.role !== 'OWNER' && claims.role !== 'MEMBER') ||
     typeof claims.exp !== 'number' ||
     claims.exp <= Math.floor(Date.now() / 1000)
   ) {

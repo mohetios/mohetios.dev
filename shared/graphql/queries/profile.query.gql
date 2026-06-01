@@ -1,5 +1,5 @@
-query Me {
-  me {
+query MemberProfile {
+  memberProfile {
     id
     username
     role

@@ -1,5 +1,5 @@
-query Me {
-  me {
+mutation UpdateMyProfile($input: UpdateProfileInput!) {
+  updateMyProfile(input: $input) {
     id
     username
     role

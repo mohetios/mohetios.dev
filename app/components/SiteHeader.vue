@@ -24,24 +24,41 @@ const nextLocalePath = computed(() =>
 
 const accountItems = computed(() => {
   if (auth.user.value) {
+    const items: Array<{
+      label: string
+      icon: string
+      disabled?: boolean
+      to?: string
+      onSelect?: () => Promise<void>
+    }> = [
+      {
+        label: auth.user.value.username,
+        icon: 'i-lucide-user',
+        disabled: true
+      },
+      {
+        label: t('nav.profile'),
+        icon: 'i-lucide-circle-user-round',
+        to: localePath('/member/profile')
+      }
+    ]
+
+    if (auth.can('dashboard:view')) {
+      items.push({
+        label: t('nav.dashboard'),
+        icon: 'i-lucide-layout-dashboard',
+        to: localePath('/dashboard')
+      })
+    }
+
+    items.push({
+      label: t('auth.logout'),
+      icon: 'i-lucide-log-out',
+      onSelect: logout
+    })
+
     return [
-      [
-        {
-          label: auth.user.value.username,
-          icon: 'i-lucide-user',
-          disabled: true
-        },
-        {
-          label: t('nav.dashboard'),
-          icon: 'i-lucide-layout-dashboard',
-          to: localePath('/dashboard')
-        },
-        {
-          label: t('auth.logout'),
-          icon: 'i-lucide-log-out',
-          onSelect: logout
-        }
-      ]
+      items
     ]
   }
 

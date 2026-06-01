@@ -35,6 +35,9 @@ importers:
       graphql:
         specifier: ^16.14.0
         version: 16.14.0
+      graphql-request:
+        specifier: ^7.4.0
+        version: 7.4.0(graphql@16.14.0)
       graphql-yoga:
         specifier: ^5.21.0
         version: 5.21.0(graphql@16.14.0)

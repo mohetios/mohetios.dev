@@ -1,3 +1,4 @@
+import { canRole, type Permission } from '~~/shared/constants/permissions'
 import type { AuthInput } from '~~/shared/schemas/auth.schema'
 import type { AuthUser } from '~~/shared/types/auth'
 
@@ -77,14 +78,34 @@ async function requestGraphql<T>(
   return response.data
 }
 
+const authUserFields = `
+  id
+  username
+  role
+  displayName
+  bio
+  website
+  avatarUrl
+  createdAt
+`
+
 export function useAuth() {
   const token = useCookie<string | null>(tokenCookieKey, {
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
     maxAge: 60 * 60 * 24 * 7
   })
+
   const user = useState<AuthUser | null>('auth:user', () => null)
+
+  const role = computed(() => user.value?.role ?? 'GUEST')
+  const isOwner = computed(() => user.value?.role === 'OWNER')
+  const isMember = computed(() => user.value?.role === 'MEMBER')
   const isAuthenticated = computed(() => Boolean(token.value && user.value))
+
+  function can(permission: Permission) {
+    return canRole(user.value?.role, permission)
+  }
 
   function setToken(value: string) {
     token.value = value
@@ -119,16 +140,14 @@ export function useAuth() {
         `
           query Me {
             me {
-              id
-              username
-              role
-              createdAt
+              ${authUserFields}
             }
           }
         `,
         {},
         currentToken
       )
+
       user.value = data.me
 
       if (!data.me) {
@@ -150,10 +169,7 @@ export function useAuth() {
             login(input: $input) {
               token
               user {
-                id
-                username
-                role
-                createdAt
+                ${authUserFields}
               }
             }
           }
@@ -178,10 +194,7 @@ export function useAuth() {
             register(input: $input) {
               token
               user {
-                id
-                username
-                role
-                createdAt
+                ${authUserFields}
               }
             }
           }
@@ -219,7 +232,11 @@ export function useAuth() {
   return {
     token,
     user,
+    role,
+    isOwner,
+    isMember,
     isAuthenticated,
+    can,
     setToken,
     clearToken: clearSession,
     clearSession,

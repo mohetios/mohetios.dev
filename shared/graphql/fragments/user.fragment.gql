@@ -2,5 +2,9 @@ fragment AuthUserFields on User {
   id
   username
   role
+  displayName
+  bio
+  website
+  avatarUrl
   createdAt
 }

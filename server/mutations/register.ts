@@ -1,9 +1,15 @@
-import { eq } from 'drizzle-orm'
+import { count, eq } from 'drizzle-orm'
 import { GraphQLError } from 'graphql'
 
+import type { UserRole } from '../../shared/constants/permissions'
 import { users } from '../models/schema'
 import type { GraphQLContext } from '../routes/graph'
-import { normalizeUsername, validatePassword, validateUsername } from '../utils/auth'
+import {
+  normalizeUserRole,
+  normalizeUsername,
+  validatePassword,
+  validateUsername
+} from '../utils/auth'
 import { generateSalt, hashPassword, signAuthToken } from '../utils/crypto'
 import { createId } from '../utils/id'
 
@@ -11,6 +17,7 @@ type RegisterArgs = {
   input: {
     username: string
     password: string
+    displayName?: string | null
   }
 }
 
@@ -31,33 +38,51 @@ export async function register(_parent: unknown, args: RegisterArgs, context: Gr
     throw new GraphQLError('Registration is closed')
   }
 
-  const [firstExistingUser] = await context.db.select({ id: users.id }).from(users).limit(1)
-  const firstUser = !firstExistingUser
+  const [userCount] = await context.db.select({ value: count() }).from(users)
+  const firstUser = (userCount?.value ?? 0) === 0
 
-  if (!firstUser && context.env.ALLOW_PUBLIC_REGISTER !== 'true') {
-    throw new GraphQLError('Registration is closed')
-  }
+  // if (!firstUser && context.env.ALLOW_PUBLIC_REGISTER !== 'true') {
+  //   throw new GraphQLError('Registration is closed')
+  // }
 
   const now = new Date().toISOString()
+  const id = createId()
+  const role: Exclude<UserRole, 'GUEST'> = firstUser ? 'OWNER' : 'MEMBER'
   const salt = generateSalt()
   const iterations = 210000
   const passwordHash = await hashPassword(password, salt, iterations)
-  const [user] = await context.db
+  await context.db
     .insert(users)
     .values({
-      id: createId(),
+      id,
       username,
-      role: firstUser ? 'ADMIN' : 'USER',
+      role,
       passwordHash,
       passwordSalt: salt,
       passwordIterations: iterations,
       createdAt: now,
       updatedAt: now
     })
-    .returning()
 
-  if (!user) {
-    throw new GraphQLError('Could not create user')
+  const displayName = args.input.displayName?.trim() || null
+
+  if (displayName) {
+    await context.db
+      .update(users)
+      .set({ displayName, updatedAt: now })
+      .where(eq(users.id, id))
+      .catch(() => undefined)
+  }
+
+  const user = {
+    id,
+    username,
+    role,
+    displayName,
+    bio: null,
+    website: null,
+    avatarUrl: null,
+    createdAt: now
   }
 
   return {
@@ -65,7 +90,11 @@ export async function register(_parent: unknown, args: RegisterArgs, context: Gr
     user: {
       id: user.id,
       username: user.username,
-      role: user.role,
+      role: normalizeUserRole(user.role),
+      displayName: user.displayName,
+      bio: user.bio,
+      website: user.website,
+      avatarUrl: user.avatarUrl,
       createdAt: user.createdAt
     }
   }
