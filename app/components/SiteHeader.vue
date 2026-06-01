@@ -2,6 +2,8 @@
 const { locale, locales, t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+const auth = useAuth()
+const isCheckingAuth = ref(false)
 
 const navigation = computed(() => [
   { label: t('nav.home'), to: localePath('/') },
@@ -19,6 +21,68 @@ const nextLocalePath = computed(() =>
     ? getLocalizedRoutePath(route.path, nextLocale.value.code, { fallbackToSection: true })
     : undefined
 )
+
+const accountItems = computed(() => {
+  if (auth.user.value) {
+    return [
+      [
+        {
+          label: auth.user.value.name || auth.user.value.email,
+          icon: 'i-lucide-user',
+          disabled: true
+        },
+        {
+          label: t('nav.dashboard'),
+          icon: 'i-lucide-layout-dashboard',
+          to: localePath('/dashboard')
+        },
+        {
+          label: t('auth.logout'),
+          icon: 'i-lucide-log-out',
+          onSelect: logout
+        }
+      ]
+    ]
+  }
+
+  return [
+    [
+      {
+        label: t('auth.login.title'),
+        icon: 'i-lucide-log-in',
+        to: localePath('/login')
+      },
+      {
+        label: t('auth.register.title'),
+        icon: 'i-lucide-user-plus',
+        to: localePath('/register')
+      }
+    ]
+  ]
+})
+
+onMounted(async () => {
+  auth.restoreToken()
+
+  if (!auth.token.value || auth.user.value) {
+    return
+  }
+
+  isCheckingAuth.value = true
+
+  try {
+    await auth.fetchMe()
+  } catch {
+    auth.clearToken()
+  } finally {
+    isCheckingAuth.value = false
+  }
+})
+
+async function logout() {
+  await auth.logout()
+  await navigateTo(localePath('/login'))
+}
 </script>
 
 <template>
@@ -43,6 +107,16 @@ const nextLocalePath = computed(() =>
     <UNavigationMenu :items="navigation" variant="link" class="hidden lg:flex" />
 
     <template #right>
+      <UDropdownMenu :items="accountItems">
+        <UButton
+          color="neutral"
+          variant="ghost"
+          icon="i-lucide-circle-user-round"
+          :loading="isCheckingAuth"
+          :aria-label="auth.user.value ? t('nav.dashboard') : t('auth.login.title')"
+        />
+      </UDropdownMenu>
+
       <UButton
         v-if="nextLocale && nextLocalePath"
         :to="nextLocalePath"

@@ -34,6 +34,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxtjs/i18n',
     '@nuxt/ui',
+    'nuxt-charts',
     '@nuxt/image',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots',

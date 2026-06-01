@@ -2,6 +2,7 @@ allowBuilds:
   '@parcel/watcher': false
   '@tailwindcss/oxide': false
   esbuild: false
+  maplibre-gl: false
   sharp: true
   ttf2woff2: false
   unrs-resolver: false

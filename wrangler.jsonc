@@ -11,7 +11,8 @@
     {
       "binding": "DB",
       "database_name": "mohetios-dev-content",
-      "database_id": "3ad937ef-5dfd-4040-bb81-30358caabc92"
+      "database_id": "3ad937ef-5dfd-4040-bb81-30358caabc92",
+      "migrations_dir": "drizzle/migrations"
     }
   ]
 }
