@@ -1,40 +1,59 @@
-type AuthUser = {
-  id: string
-  email: string
-  name: string | null
-  role: 'ADMIN' | 'USER'
-  createdAt: string
-  updatedAt: string
-}
+import type { AuthInput } from '~~/shared/schemas/auth.schema'
+import type { AuthUser } from '~~/shared/types/auth'
 
-type AuthInput = {
-  email: string
-  password: string
-  name?: string
+const tokenCookieKey = 'mohetios_auth_token'
+const graphqlEndpoint = '/graph'
+
+type AuthPayload = {
+  token: string
+  user: AuthUser
 }
 
 type GraphqlResponse<T> = {
   data?: T
-  errors?: Array<{ message: string }>
+  errors?: Array<{ message?: string }>
 }
 
-const tokenStorageKey = 'mohetios_auth_token'
+type GraphqlClientError = {
+  statusCode?: number
+  gqlErrors?: Array<{ message?: string }>
+  message?: string
+  response?: {
+    status?: number
+    errors?: Array<{ message?: string }>
+    message?: string
+  }
+}
 
-const userFields = `
-  id
-  email
-  name
-  role
-  createdAt
-  updatedAt
-`
+function getGraphqlErrorMessage(error: unknown) {
+  if (!error || typeof error !== 'object') {
+    return 'Authentication request failed'
+  }
+
+  const graphqlError = error as GraphqlClientError
+  const message =
+    graphqlError.gqlErrors?.[0]?.message ||
+    graphqlError.response?.errors?.[0]?.message ||
+    graphqlError.response?.message ||
+    graphqlError.message
+
+  if (message) {
+    return message
+  }
+
+  const statusCode = graphqlError.statusCode || graphqlError.response?.status
+
+  return statusCode
+    ? `Authentication request failed with HTTP ${statusCode}`
+    : 'Authentication request failed'
+}
 
 async function requestGraphql<T>(
   query: string,
   variables: Record<string, unknown> = {},
   token?: string | null
 ) {
-  const response = await $fetch<GraphqlResponse<T>>('/api/graphql', {
+  const response = await $fetch<GraphqlResponse<T>>(graphqlEndpoint, {
     method: 'POST',
     headers: token
       ? {
@@ -59,33 +78,29 @@ async function requestGraphql<T>(
 }
 
 export function useAuth() {
-  const token = useState<string | null>('auth:token', () => null)
+  const token = useCookie<string | null>(tokenCookieKey, {
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 60 * 60 * 24 * 7
+  })
   const user = useState<AuthUser | null>('auth:user', () => null)
   const isAuthenticated = computed(() => Boolean(token.value && user.value))
 
   function setToken(value: string) {
     token.value = value
-
-    if (import.meta.client) {
-      localStorage.setItem(tokenStorageKey, value)
-    }
+    useGqlToken(value)
   }
 
-  function clearToken() {
+  function clearSession() {
     token.value = null
     user.value = null
-
-    if (import.meta.client) {
-      localStorage.removeItem(tokenStorageKey)
-    }
+    useGqlToken(null)
   }
 
   function restoreToken() {
-    if (!import.meta.client || token.value) {
-      return token.value
+    if (token.value) {
+      useGqlToken(token.value)
     }
-
-    token.value = localStorage.getItem(tokenStorageKey)
 
     return token.value
   }
@@ -99,73 +114,94 @@ export function useAuth() {
       return null
     }
 
-    const data = await requestGraphql<{ me: AuthUser | null }>(
-      `
-        query Me {
-          me {
-            ${userFields}
+    try {
+      const data = await requestGraphql<{ me: AuthUser | null }>(
+        `
+          query Me {
+            me {
+              id
+              username
+              role
+              createdAt
+            }
           }
-        }
-      `,
-      {},
-      currentToken
-    )
+        `,
+        {},
+        currentToken
+      )
+      user.value = data.me
 
-    user.value = data.me
+      if (!data.me) {
+        clearSession()
+      }
 
-    if (!data.me) {
-      clearToken()
+      return data.me
+    } catch (error) {
+      clearSession()
+      throw new Error(getGraphqlErrorMessage(error))
     }
-
-    return data.me
   }
 
   async function login(input: AuthInput) {
-    const data = await requestGraphql<{ login: { token: string; user: AuthUser } }>(
-      `
-        mutation Login($input: LoginInput!) {
-          login(input: $input) {
-            token
-            user {
-              ${userFields}
+    try {
+      const data = await requestGraphql<{ login: AuthPayload }>(
+        `
+          mutation Login($input: LoginInput!) {
+            login(input: $input) {
+              token
+              user {
+                id
+                username
+                role
+                createdAt
+              }
             }
           }
-        }
-      `,
-      { input }
-    )
+        `,
+        { input }
+      )
 
-    setToken(data.login.token)
-    user.value = data.login.user
+      setToken(data.login.token)
+      user.value = data.login.user
 
-    return data.login
+      return data.login
+    } catch (error) {
+      throw new Error(getGraphqlErrorMessage(error))
+    }
   }
 
   async function register(input: AuthInput) {
-    const data = await requestGraphql<{ register: { token: string; user: AuthUser } }>(
-      `
-        mutation Register($input: RegisterInput!) {
-          register(input: $input) {
-            token
-            user {
-              ${userFields}
+    try {
+      const data = await requestGraphql<{ register: AuthPayload }>(
+        `
+          mutation Register($input: RegisterInput!) {
+            register(input: $input) {
+              token
+              user {
+                id
+                username
+                role
+                createdAt
+              }
             }
           }
-        }
-      `,
-      { input }
-    )
+        `,
+        { input }
+      )
 
-    setToken(data.register.token)
-    user.value = data.register.user
+      setToken(data.register.token)
+      user.value = data.register.user
 
-    return data.register
+      return data.register
+    } catch (error) {
+      throw new Error(getGraphqlErrorMessage(error))
+    }
   }
 
   async function logout() {
-    const currentToken = restoreToken()
+    restoreToken()
 
-    if (currentToken) {
+    if (token.value) {
       await requestGraphql<{ logout: boolean }>(
         `
           mutation Logout {
@@ -173,11 +209,11 @@ export function useAuth() {
           }
         `,
         {},
-        currentToken
+        token.value
       ).catch(() => undefined)
     }
 
-    clearToken()
+    clearSession()
   }
 
   return {
@@ -185,7 +221,8 @@ export function useAuth() {
     user,
     isAuthenticated,
     setToken,
-    clearToken,
+    clearToken: clearSession,
+    clearSession,
     restoreToken,
     fetchMe,
     login,

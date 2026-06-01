@@ -1,0 +1,6 @@
+fragment AuthUserFields on User {
+  id
+  username
+  role
+  createdAt
+}

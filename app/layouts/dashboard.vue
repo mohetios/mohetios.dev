@@ -12,8 +12,7 @@ const dashboardNavigation = computed(() => [
   {
     label: 'Leads',
     icon: 'i-lucide-users',
-    to: localePath('/dashboard/leads'),
-    disabled: true
+    to: localePath('/dashboard/leads')
   },
   {
     label: 'Inbox',
@@ -23,20 +22,17 @@ const dashboardNavigation = computed(() => [
   {
     label: 'Comments',
     icon: 'i-lucide-message-square',
-    to: localePath('/dashboard/comments'),
-    disabled: true
+    to: localePath('/dashboard/comments')
   },
   {
     label: 'Forms',
     icon: 'i-lucide-file-text',
-    to: localePath('/dashboard/forms'),
-    disabled: true
+    to: localePath('/dashboard/forms')
   },
   {
     label: 'Analytics',
     icon: 'i-lucide-chart-column',
-    to: localePath('/dashboard/analytics'),
-    disabled: true
+    to: localePath('/dashboard/analytics')
   }
 ])
 
@@ -47,18 +43,16 @@ const searchGroups = computed(() => [
     items: dashboardNavigation.value.map((item) => ({
       ...item,
       onSelect: () => {
-        if (!item.disabled) {
-          return navigateTo(item.to)
-        }
+        return navigateTo(item.to)
       }
     }))
   }
 ])
 
 const accountLabel = computed(
-  () => auth.user.value?.name || auth.user.value?.email || 'Dashboard user'
+  () => auth.user.value?.username || 'Dashboard user'
 )
-const accountDescription = computed(() => auth.user.value?.email || t('dashboard.role'))
+const accountDescription = computed(() => auth.user.value?.role || t('dashboard.role'))
 const backToSiteLabel = computed(() => t('dashboard.backToSite'))
 const accountMenuItems = computed(() => [
   [

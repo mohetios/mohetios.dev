@@ -38,7 +38,8 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots',
-    'nitro-cloudflare-dev'
+    'nitro-cloudflare-dev',
+    'nuxt-graphql-client'
   ],
 
   devtools: {
@@ -87,6 +88,20 @@ export default defineNuxtConfig({
   site: {
     url: siteUrl,
     name: 'Mohetios.dev'
+  },
+
+  runtimeConfig: {
+    public: {
+      'graphql-client': {
+        clients: {
+          default: {
+            host: '/graph'
+          }
+        },
+        documentPaths: ['../shared/graphql'],
+        codegen: false
+      }
+    }
   },
 
   routeRules: {

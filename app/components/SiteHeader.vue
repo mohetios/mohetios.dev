@@ -27,7 +27,7 @@ const accountItems = computed(() => {
     return [
       [
         {
-          label: auth.user.value.name || auth.user.value.email,
+          label: auth.user.value.username,
           icon: 'i-lucide-user',
           disabled: true
         },

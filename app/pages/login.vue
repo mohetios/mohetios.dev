@@ -5,10 +5,14 @@ const toast = useToast()
 const auth = useAuth()
 
 const state = reactive({
-  email: '',
+  username: '',
   password: ''
 })
 const loading = ref(false)
+
+definePageMeta({
+  middleware: ['auth']
+})
 
 useMohetSeo({
   title: () => t('auth.login.title'),
@@ -50,12 +54,11 @@ async function onSubmit() {
       </div>
 
       <UForm :state="state" class="space-y-4" @submit="onSubmit">
-        <UFormField name="email" :label="t('auth.fields.email')" required>
+        <UFormField name="username" :label="t('auth.fields.username')" required>
           <UInput
-            v-model="state.email"
-            type="email"
-            autocomplete="email"
-            icon="i-lucide-mail"
+            v-model="state.username"
+            autocomplete="username"
+            icon="i-lucide-user"
             size="lg"
             class="w-full"
           />

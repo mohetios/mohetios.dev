@@ -8,6 +8,13 @@
       "when": 1780254666350,
       "tag": "0000_loving_spectrum",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1780325802557,
+      "tag": "0001_natural_hulk",
+      "breakpoints": true
     }
   ]
 }

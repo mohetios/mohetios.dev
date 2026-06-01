@@ -15,7 +15,7 @@
   },
   "auth": {
     "fields": {
-      "name": "Name",
+      "username": "Username",
       "email": "Email",
       "password": "Password"
     },
@@ -36,12 +36,12 @@
     "resetPassword": {
       "eyebrow": "Account recovery",
       "title": "Reset password",
-      "description": "Enter your email address and we will prepare the password reset flow.",
+      "description": "Enter your username and we will prepare the password reset flow.",
       "action": "Send reset link",
       "link": "Forgot password?",
       "remembered": "Remembered your password?",
       "sentTitle": "Reset request noted",
-      "sentDescription": "Password reset delivery is a template for now and will be connected to email later."
+      "sentDescription": "Password reset delivery is a template for now and will be connected later."
     },
     "logout": "Logout",
     "errors": {
