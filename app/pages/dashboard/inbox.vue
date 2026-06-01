@@ -58,7 +58,8 @@ const messages = ref<InboxMessage[]>([
     fromName: 'Jonas Meyer',
     fromEmail: 'jonas@atelier.jobs',
     subject: 'Senior product engineer opportunity',
-    preview: 'We are looking for someone who can bridge product systems and implementation quality.',
+    preview:
+      'We are looking for someone who can bridge product systems and implementation quality.',
     body: 'Hello,\n\nWe are looking for a senior product engineer who can bridge product systems and implementation quality. Your writing around practical systems matched what our team needs.\n\nWould you be open to a conversation?',
     category: 'job',
     status: 'unread',
@@ -157,12 +158,7 @@ const filteredMessages = computed(() => {
       message.category === activeFilter.value
     const matchesCategory =
       selectedCategory === 'all categories' || message.category === selectedCategory
-    const haystack = [
-      message.fromName,
-      message.fromEmail,
-      message.subject,
-      message.preview
-    ]
+    const haystack = [message.fromName, message.fromEmail, message.subject, message.preview]
       .join(' ')
       .toLowerCase()
 
@@ -255,9 +251,7 @@ function restoreSelected() {
 
         <template #right>
           <div class="flex items-center gap-2">
-            <UButton color="neutral" variant="ghost" icon="i-lucide-refresh-cw">
-              Refresh
-            </UButton>
+            <UButton color="neutral" variant="ghost" icon="i-lucide-refresh-cw"> Refresh </UButton>
             <UButton color="neutral" variant="outline" icon="i-lucide-archive" disabled>
               Archive all read
             </UButton>
@@ -359,7 +353,9 @@ function restoreSelected() {
           </div>
 
           <div v-else class="p-8 text-center">
-            <div class="mx-auto mb-3 flex size-10 items-center justify-center rounded-full bg-muted">
+            <div
+              class="mx-auto mb-3 flex size-10 items-center justify-center rounded-full bg-muted"
+            >
               <UIcon name="i-lucide-mail-x" class="size-5 text-muted" />
             </div>
             <h3 class="text-sm font-medium text-highlighted">No messages found</h3>
@@ -438,7 +434,12 @@ function restoreSelected() {
                     ]
                   ]"
                 >
-                  <UButton color="neutral" variant="ghost" icon="i-lucide-more-horizontal" size="sm" />
+                  <UButton
+                    color="neutral"
+                    variant="ghost"
+                    icon="i-lucide-more-horizontal"
+                    size="sm"
+                  />
                 </UDropdownMenu>
               </div>
             </div>
@@ -488,13 +489,13 @@ function restoreSelected() {
         <UCard v-else>
           <div class="flex min-h-[420px] items-center justify-center text-center">
             <div class="max-w-sm">
-              <div class="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-muted">
+              <div
+                class="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-muted"
+              >
                 <UIcon name="i-lucide-mail-open" class="size-6 text-muted" />
               </div>
               <h2 class="text-base font-semibold text-highlighted">Select a message</h2>
-              <p class="mt-2 text-sm text-muted">
-                Choose a message from the inbox to review it.
-              </p>
+              <p class="mt-2 text-sm text-muted">Choose a message from the inbox to review it.</p>
             </div>
           </div>
         </UCard>

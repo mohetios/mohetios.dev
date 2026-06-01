@@ -5,7 +5,8 @@ export default defineEventHandler((event) => {
     return
   }
 
-  const assetExtensionPattern = /\.(?:js|mjs|css|json|map|wasm|woff2?|ttf|otf|png|jpe?g|webp|svg|ico)$/i
+  const assetExtensionPattern =
+    /\.(?:js|mjs|css|json|map|wasm|woff2?|ttf|otf|png|jpe?g|webp|svg|ico)$/i
 
   if (!assetExtensionPattern.test(path)) {
     return

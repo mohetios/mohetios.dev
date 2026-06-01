@@ -43,4 +43,3 @@ For web projects, the constraint is usually content, deployment, data, or UI. Fo
 - [ ] Decide whether the private Arduino sonar repository can be described publicly beyond its name.
 - [ ] Add a note on how Konar's web front page connected to the hardware experiments, if it did.
 - [ ] Extract reusable lessons for future device-to-web prototypes.
-

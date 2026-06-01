@@ -144,7 +144,9 @@ function formatDate(date?: string | Date) {
             v-else
             class="flex aspect-[4/3] min-h-64 w-full flex-col items-center justify-center gap-4 bg-muted/40 p-8 text-sm font-medium uppercase tracking-widest text-muted md:aspect-auto md:h-full"
           >
-            <div class="grid size-16 place-items-center rounded-full border border-default bg-default/70">
+            <div
+              class="grid size-16 place-items-center rounded-full border border-default bg-default/70"
+            >
               <UIcon name="i-lucide-image" class="size-7 text-muted" />
             </div>
             <span>{{ t('home.featured.placeholder') }}</span>

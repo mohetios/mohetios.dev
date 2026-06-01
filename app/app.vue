@@ -11,8 +11,7 @@ const appLocale = computed(() => {
 const pathWithoutLocale = computed(() => route.path.replace(/^\/(en|fa)(?=\/|$)/, '') || '/')
 const isPanelRoute = computed(
   () =>
-    pathWithoutLocale.value === '/dashboard' ||
-    pathWithoutLocale.value.startsWith('/dashboard/')
+    pathWithoutLocale.value === '/dashboard' || pathWithoutLocale.value.startsWith('/dashboard/')
 )
 
 useHead({

@@ -37,11 +37,7 @@ function normalizeUrl(value: string | null | undefined, maxLength: number, label
 }
 
 export const profileMutations = {
-  updateMyProfile: async (
-    _parent: unknown,
-    args: UpdateProfileArgs,
-    context: GraphQLContext
-  ) => {
+  updateMyProfile: async (_parent: unknown, args: UpdateProfileArgs, context: GraphQLContext) => {
     const userId = requirePermission(context, 'profile:update')
     const displayName = normalizeText(args.input.displayName, 80, 'Display name')
     const bio = normalizeText(args.input.bio, 280, 'Bio')

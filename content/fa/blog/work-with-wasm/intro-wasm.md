@@ -2,7 +2,7 @@
 title: آشنایی با WASM
 date: 2023-09-12T16:33:46.294Z
 thumbnail: /content/web-assembly-logo.webp
-description: "وب‌اسمبلی (WebAssembly) یک استاندارد باز است که امکان اجرای کدهای باینری بهینه را در محیط‌های جاوا اسکریپت فراهم می‌کند. هدف اصلی آن افزایش سرعت و کارایی برنامه‌های وب است، اما می‌توان آن را در محیط‌های دیگر نیز اجرا کرد."
+description: 'وب‌اسمبلی (WebAssembly) یک استاندارد باز است که امکان اجرای کدهای باینری بهینه را در محیط‌های جاوا اسکریپت فراهم می‌کند. هدف اصلی آن افزایش سرعت و کارایی برنامه‌های وب است، اما می‌توان آن را در محیط‌های دیگر نیز اجرا کرد.'
 
 toc: true
 intro: false
@@ -119,12 +119,12 @@ tinygo build -o main.wasm -target wasm -no-debug -opt=2 main.go
   <body>
     <h1>سلام از WebAssembly و Go!</h1>
     <script>
-      const go = new Go();
-      WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject)
+      const go = new Go()
+      WebAssembly.instantiateStreaming(fetch('main.wasm'), go.importObject)
         .then((result) => {
-          go.run(result.instance);
+          go.run(result.instance)
         })
-        .catch((err) => console.error("خطا:", err));
+        .catch((err) => console.error('خطا:', err))
     </script>
   </body>
 </html>
@@ -194,18 +194,18 @@ tinygo build -o main.wasm -target wasm -no-debug main.go
     <button id="calc">محاسبه</button>
     <p>نتیجه: <span id="result">0</span></p>
     <script>
-      const go = new Go();
-      WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject)
+      const go = new Go()
+      WebAssembly.instantiateStreaming(fetch('main.wasm'), go.importObject)
         .then((result) => {
-          go.run(result.instance);
-          document.getElementById("calc").addEventListener("click", () => {
-            const a = parseInt(document.getElementById("a").value);
-            const b = parseInt(document.getElementById("b").value);
-            const res = window.add(a, b);
-            document.getElementById("result").textContent = res;
-          });
+          go.run(result.instance)
+          document.getElementById('calc').addEventListener('click', () => {
+            const a = parseInt(document.getElementById('a').value)
+            const b = parseInt(document.getElementById('b').value)
+            const res = window.add(a, b)
+            document.getElementById('result').textContent = res
+          })
         })
-        .catch((err) => console.error("خطا:", err));
+        .catch((err) => console.error('خطا:', err))
     </script>
   </body>
 </html>
@@ -261,12 +261,12 @@ tinygo build -o main.wasm -target wasm -no-debug main.go
   <body>
     <h1>تغییر DOM با Go و WASM</h1>
     <script>
-      const go = new Go();
-      WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject)
+      const go = new Go()
+      WebAssembly.instantiateStreaming(fetch('main.wasm'), go.importObject)
         .then((result) => {
-          go.run(result.instance);
+          go.run(result.instance)
         })
-        .catch((err) => console.error("خطا:", err));
+        .catch((err) => console.error('خطا:', err))
     </script>
   </body>
 </html>

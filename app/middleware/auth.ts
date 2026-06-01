@@ -10,8 +10,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const pathWithoutLocale = to.path.replace(/^\/(en|fa)(?=\/|$)/, '') || '/'
   const isDashboardRoute =
     pathWithoutLocale === '/dashboard' || pathWithoutLocale.startsWith('/dashboard/')
-  const isMemberRoute =
-    pathWithoutLocale === '/member' || pathWithoutLocale.startsWith('/member/')
+  const isMemberRoute = pathWithoutLocale === '/member' || pathWithoutLocale.startsWith('/member/')
   const isAuthRoute =
     pathWithoutLocale === '/login' ||
     pathWithoutLocale === '/register' ||

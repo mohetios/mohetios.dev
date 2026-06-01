@@ -1,6 +1,6 @@
 ---
 title: Bandersnatch Interactive
-description: "A browser-based HTML5 video player that restores the interactive structure of Black Mirror: Bandersnatch from a local video file."
+description: 'A browser-based HTML5 video player that restores the interactive structure of Black Mirror: Bandersnatch from a local video file.'
 date: 2019-01-16
 updated: 2025-12-16
 status: Stable archive

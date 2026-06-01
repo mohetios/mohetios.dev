@@ -105,11 +105,7 @@ export function useMohetSeo(input: SeoInput) {
           ]
         : []
 
-      return [
-        { rel: 'canonical', href: canonicalUrl.value },
-        ...alternates,
-        ...defaultAlternate
-      ]
+      return [{ rel: 'canonical', href: canonicalUrl.value }, ...alternates, ...defaultAlternate]
     }),
     meta: computed(() => {
       const alternateLocale = locale.value === 'fa' ? 'en' : 'fa'

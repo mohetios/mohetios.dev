@@ -2,30 +2,30 @@
 
 ## Working Agreement
 
-* Make small, focused changes.
-* Inspect existing patterns before editing.
-* Prefer simple code over architecture ceremony.
-* Preserve user work. Do not remove unrelated files.
-* Use `rg` / `rg --files` for search.
-* Do not run long-running commands unless explicitly requested.
-* Do not run deploy commands unless explicitly requested.
-* Do not introduce new frameworks or large abstractions without a clear need.
-* Keep the project enjoyable to modify.
+- Make small, focused changes.
+- Inspect existing patterns before editing.
+- Prefer simple code over architecture ceremony.
+- Preserve user work. Do not remove unrelated files.
+- Use `rg` / `rg --files` for search.
+- Do not run long-running commands unless explicitly requested.
+- Do not run deploy commands unless explicitly requested.
+- Do not introduce new frameworks or large abstractions without a clear need.
+- Keep the project enjoyable to modify.
 
 ## Default Checks
 
 Use targeted checks when practical:
 
-* `pnpm lint`
-* `pnpm typecheck`
-* focused file inspection
+- `pnpm lint`
+- `pnpm typecheck`
+- focused file inspection
 
 Do not run these unless the user asks or the change requires them:
 
-* `pnpm dev`
-* `pnpm build`
-* deployment commands
-* destructive database commands
+- `pnpm dev`
+- `pnpm build`
+- deployment commands
+- destructive database commands
 
 If a command is expensive, risky, or environment-dependent, explain the reason before running it.
 
@@ -35,14 +35,14 @@ Mohetios.dev is a personal engineering notebook, portfolio, lab, and lightweight
 
 The site should feel:
 
-* minimal
-* editorial
-* technical
-* calm
-* honest
-* not SaaS-hype
-* not over-designed
-* not over-architected
+- minimal
+- editorial
+- technical
+- calm
+- honest
+- not SaaS-hype
+- not over-designed
+- not over-architected
 
 Brand line:
 
@@ -50,16 +50,16 @@ Brand line:
 
 ## Current Stack
 
-* Nuxt 4
-* Nuxt UI
-* Tailwind CSS
-* Velite for typed/build-time content
-* Cloudflare Pages / Nitro
-* Cloudflare D1
-* Drizzle ORM
-* GraphQL Yoga
-* nuxt-graphql-client
-* JWT-based basic dashboard auth
+- Nuxt 4
+- Nuxt UI
+- Tailwind CSS
+- Velite for typed/build-time content
+- Cloudflare Pages / Nitro
+- Cloudflare D1
+- Drizzle ORM
+- GraphQL Yoga
+- nuxt-graphql-client
+- JWT-based basic dashboard auth
 
 Important: do not use Nuxt Content APIs. Nuxt Content has been removed from this project. Do not use `queryCollection`, `ContentRenderer`, or Nuxt Content composables.
 
@@ -93,14 +93,14 @@ app/
 
 Use `app/` for:
 
-* pages
-* layouts
-* Vue components
-* client composables
-* route middleware
-* dashboard UI
-* content UI
-* Nuxt UI components
+- pages
+- layouts
+- Vue components
+- client composables
+- route middleware
+- dashboard UI
+- content UI
+- Nuxt UI components
 
 Do not put server-only logic in `app/`.
 
@@ -137,13 +137,13 @@ server/
 
 Use:
 
-* `server/routes/graph.ts` for the `/graph` endpoint and GraphQL Yoga setup.
-* `server/schema.ts` for GraphQL SDL.
-* `server/queries/*.ts` for Query resolvers.
-* `server/mutations/*.ts` for Mutation resolvers.
-* `server/models/schema.ts` for Drizzle table definitions.
-* `server/models/client.ts` for D1/Drizzle client creation.
-* `server/utils/*.ts` for compact server helpers.
+- `server/routes/graph.ts` for the `/graph` endpoint and GraphQL Yoga setup.
+- `server/schema.ts` for GraphQL SDL.
+- `server/queries/*.ts` for Query resolvers.
+- `server/mutations/*.ts` for Mutation resolvers.
+- `server/models/schema.ts` for Drizzle table definitions.
+- `server/models/client.ts` for D1/Drizzle client creation.
+- `server/utils/*.ts` for compact server helpers.
 
 Do not create these unless explicitly needed:
 
@@ -174,12 +174,12 @@ server/routes/graph.ts
 
 This file may contain:
 
-* GraphQL Yoga creation
-* schema creation
-* context creation
-* GET/POST method handling
-* production GraphiQL blocking
-* resolver connection
+- GraphQL Yoga creation
+- schema creation
+- context creation
+- GET/POST method handling
+- production GraphiQL blocking
+- resolver connection
 
 Do not split GraphQL setup into `gql.ts`, `context.ts`, `schema.ts`, and `resolvers.ts` unless the file becomes genuinely hard to maintain.
 
@@ -195,9 +195,9 @@ Keep all GraphQL SDL there.
 
 Only split the schema later if:
 
-* it exceeds roughly 300–400 lines
-* merge conflicts become common
-* feature domains become hard to scan
+- it exceeds roughly 300–400 lines
+- merge conflicts become common
+- feature domains become hard to scan
 
 For now, one schema file is preferred.
 
@@ -228,10 +228,10 @@ Do not create repository/service/action layers by default.
 
 Only split DB logic out when:
 
-* the resolver file exceeds roughly 250–300 lines
-* the same DB logic is repeated 3+ times
-* testing becomes hard
-* the feature becomes business-critical
+- the resolver file exceeds roughly 250–300 lines
+- the same DB logic is repeated 3+ times
+- testing becomes hard
+- the feature becomes business-critical
 
 ## Models
 
@@ -268,23 +268,23 @@ shared/
 
 Allowed in `shared/`:
 
-* `.gql` / `.graphql` operation documents
-* pure TypeScript types
-* pure constants
-* pure validation schemas
-* pure formatting or normalization helpers
+- `.gql` / `.graphql` operation documents
+- pure TypeScript types
+- pure constants
+- pure validation schemas
+- pure formatting or normalization helpers
 
 Forbidden in `shared/`:
 
-* Vue imports
-* Nuxt composables
-* Nitro / H3 imports
-* Drizzle client
-* D1 bindings
-* JWT secret logic
-* password hashing
-* Cloudflare runtime access
-* server resolver code
+- Vue imports
+- Nuxt composables
+- Nitro / H3 imports
+- Drizzle client
+- D1 bindings
+- JWT secret logic
+- password hashing
+- Cloudflare runtime access
+- server resolver code
 
 ## GraphQL Client Generation
 
@@ -319,13 +319,13 @@ Auth is basic and dashboard-focused.
 
 Current scope:
 
-* username + password
-* no email requirement
-* password hashing
-* JWT token
-* first registered user becomes `ADMIN`
-* later registration is blocked unless explicitly enabled
-* dashboard is protected by middleware
+- username + password
+- no email requirement
+- password hashing
+- JWT token
+- first registered user becomes `ADMIN`
+- later registration is blocked unless explicitly enabled
+- dashboard is protected by middleware
 
 Use:
 
@@ -381,19 +381,19 @@ Use Nuxt UI dashboard primitives where useful.
 
 Keep the dashboard small:
 
-* Overview
-* Leads
-* Inbox
-* Comments
-* Forms
-* Analytics
+- Overview
+- Leads
+- Inbox
+- Comments
+- Forms
+- Analytics
 
 Do not add:
 
-* Automations
-* System
-* Settings
-* CMS/admin content manager
+- Automations
+- System
+- Settings
+- CMS/admin content manager
 
 Dashboard content management is not needed because content is Jamstack/Velite-based.
 
@@ -423,10 +423,10 @@ If the project uses `@nuxtjs/i18n`, preserve the existing locale strategy.
 
 General rules:
 
-* Keep visible UI labels localized if the existing screen is localized.
-* Preserve Persian RTL support.
-* Use logical CSS properties where practical.
-* Do not hardcode English text inside reusable components if existing patterns use locale files.
+- Keep visible UI labels localized if the existing screen is localized.
+- Preserve Persian RTL support.
+- Use logical CSS properties where practical.
+- Do not hardcode English text inside reusable components if existing patterns use locale files.
 
 If the current page is not localized yet, follow nearby project patterns rather than inventing a new i18n structure.
 
@@ -436,24 +436,24 @@ Use Nuxt UI and Tailwind CSS.
 
 Visual direction:
 
-* calm
-* minimal
-* editorial
-* technical
-* warm light theme
-* green primary accent
-* clean spacing
-* subtle borders
-* no generic SaaS clutter
+- calm
+- minimal
+- editorial
+- technical
+- warm light theme
+- green primary accent
+- clean spacing
+- subtle borders
+- no generic SaaS clutter
 
 Avoid:
 
-* heavy enterprise dashboard UI
-* unnecessary gradients
-* noisy charts
-* too many badges
-* overusing icons
-* complex layout abstractions
+- heavy enterprise dashboard UI
+- unnecessary gradients
+- noisy charts
+- too many badges
+- overusing icons
+- complex layout abstractions
 
 ## Feature Development Path
 
@@ -528,10 +528,10 @@ Do not run database push/migration commands unless the user asks or the task cle
 
 If changing database schema, report:
 
-* table changes
-* migration file created
-* command needed to apply migration
-* any data risk
+- table changes
+- migration file created
+- command needed to apply migration
+- any data risk
 
 ## Commands
 
@@ -572,33 +572,33 @@ If the workspace is not a git repository, be extra careful and make minimal edit
 
 Prefer:
 
-* direct code
-* clear naming
-* small files
-* local logic
-* generated GraphQL functions
-* Nuxt UI components
-* simple Drizzle queries in resolvers
+- direct code
+- clear naming
+- small files
+- local logic
+- generated GraphQL functions
+- Nuxt UI components
+- simple Drizzle queries in resolvers
 
 Avoid:
 
-* abstractions too early
-* extra folders
-* duplicate state systems
-* manual GraphQL request wrappers when generated functions exist
-* hidden magic
-* large “framework inside framework” patterns
+- abstractions too early
+- extra folders
+- duplicate state systems
+- manual GraphQL request wrappers when generated functions exist
+- hidden magic
+- large “framework inside framework” patterns
 
 ## Completion Report
 
 After code edits, report:
 
-* files changed
-* files created
-* files removed
-* commands run
-* checks passed/failed
-* assumptions
-* follow-up needed
+- files changed
+- files created
+- files removed
+- commands run
+- checks passed/failed
+- assumptions
+- follow-up needed
 
 Keep reports short and practical.

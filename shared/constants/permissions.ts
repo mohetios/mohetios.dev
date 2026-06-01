@@ -27,9 +27,6 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
   GUEST: []
 }
 
-export const canRole = (
-  role: UserRole | null | undefined,
-  permission: Permission
-) => {
+export const canRole = (role: UserRole | null | undefined, permission: Permission) => {
   return ROLE_PERMISSIONS[role ?? 'GUEST'].includes(permission)
 }

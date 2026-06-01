@@ -1,7 +1,7 @@
 ---
 title: About Me
 thumbnail: /content/physics.webp
-description: "I’m Ali Zemani, a product-minded software engineer building practical systems across web, mobile, cloud, AI-assisted workflows, and product engineering."
+description: 'I’m Ali Zemani, a product-minded software engineer building practical systems across web, mobile, cloud, AI-assisted workflows, and product engineering.'
 ---
 
 ## About Me

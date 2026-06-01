@@ -40,4 +40,3 @@ The useful part of these repositories is the iteration path: start with a simple
 - [ ] Add implementation notes about date conversion and display logic.
 - [ ] Capture the public `zcalendar` demo as a visual reference.
 - [ ] Extract reusable lessons for a lab note on localized date interfaces.
-

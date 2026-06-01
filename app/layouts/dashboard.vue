@@ -49,9 +49,7 @@ const searchGroups = computed(() => [
   }
 ])
 
-const accountLabel = computed(
-  () => auth.user.value?.username || 'Dashboard user'
-)
+const accountLabel = computed(() => auth.user.value?.username || 'Dashboard user')
 const accountDescription = computed(() => auth.user.value?.role || t('dashboard.role'))
 const backToSiteLabel = computed(() => t('dashboard.backToSite'))
 const accountMenuItems = computed(() => [
@@ -135,8 +133,6 @@ async function logout() {
       </template>
 
       <template #footer="{ collapsed }">
-     
-
         <UDropdownMenu :items="accountMenuItems">
           <UButton
             color="neutral"

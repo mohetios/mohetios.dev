@@ -57,9 +57,7 @@ const accountItems = computed(() => {
       onSelect: logout
     })
 
-    return [
-      items
-    ]
+    return [items]
   }
 
   return [

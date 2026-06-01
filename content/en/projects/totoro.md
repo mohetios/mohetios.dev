@@ -41,4 +41,3 @@ The useful lesson is that a publishing system should not hide its source of trut
 - [ ] Compare Totoro with the current Mohetios.dev content pipeline.
 - [ ] Add screenshots or archive links if the deployed site is still available.
 - [ ] Decide whether this page should become a historical project page or fold into a broader publishing-systems note.
-

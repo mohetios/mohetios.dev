@@ -51,18 +51,16 @@ export async function register(_parent: unknown, args: RegisterArgs, context: Gr
   const salt = generateSalt()
   const iterations = 210000
   const passwordHash = await hashPassword(password, salt, iterations)
-  await context.db
-    .insert(users)
-    .values({
-      id,
-      username,
-      role,
-      passwordHash,
-      passwordSalt: salt,
-      passwordIterations: iterations,
-      createdAt: now,
-      updatedAt: now
-    })
+  await context.db.insert(users).values({
+    id,
+    username,
+    role,
+    passwordHash,
+    passwordSalt: salt,
+    passwordIterations: iterations,
+    createdAt: now,
+    updatedAt: now
+  })
 
   const displayName = args.input.displayName?.trim() || null
 

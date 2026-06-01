@@ -2,7 +2,7 @@
 title: Introduction to WASM
 date: 2025-04-27
 thumbnail: /content/web-assembly-logo.webp
-description: "WebAssembly (WASM) is an open standard that enables the execution of optimized binary code in JavaScript environments. Its primary goal is to enhance the speed and efficiency of web applications, but it can also be run in other environments."
+description: 'WebAssembly (WASM) is an open standard that enables the execution of optimized binary code in JavaScript environments. Its primary goal is to enhance the speed and efficiency of web applications, but it can also be run in other environments.'
 toc: true
 intro: false
 comments: true
@@ -118,12 +118,12 @@ Next, create an `index.html` file:
   <body>
     <h1>Hello from WebAssembly and Go!</h1>
     <script>
-      const go = new Go();
-      WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject)
+      const go = new Go()
+      WebAssembly.instantiateStreaming(fetch('main.wasm'), go.importObject)
         .then((result) => {
-          go.run(result.instance);
+          go.run(result.instance)
         })
-        .catch((err) => console.error("Error:", err));
+        .catch((err) => console.error('Error:', err))
     </script>
   </body>
 </html>
@@ -193,18 +193,18 @@ Update `index.html` like this:
     <button id="calc">Calculate</button>
     <p>Result: <span id="result">0</span></p>
     <script>
-      const go = new Go();
-      WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject)
+      const go = new Go()
+      WebAssembly.instantiateStreaming(fetch('main.wasm'), go.importObject)
         .then((result) => {
-          go.run(result.instance);
-          document.getElementById("calc").addEventListener("click", () => {
-            const a = parseInt(document.getElementById("a").value);
-            const b = parseInt(document.getElementById("b").value);
-            const res = window.add(a, b);
-            document.getElementById("result").textContent = res;
-          });
+          go.run(result.instance)
+          document.getElementById('calc').addEventListener('click', () => {
+            const a = parseInt(document.getElementById('a').value)
+            const b = parseInt(document.getElementById('b').value)
+            const res = window.add(a, b)
+            document.getElementById('result').textContent = res
+          })
         })
-        .catch((err) => console.error("Error:", err));
+        .catch((err) => console.error('Error:', err))
     </script>
   </body>
 </html>
@@ -260,12 +260,12 @@ Simplify `index.html`:
   <body>
     <h1>Modifying DOM with Go and WASM</h1>
     <script>
-      const go = new Go();
-      WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject)
+      const go = new Go()
+      WebAssembly.instantiateStreaming(fetch('main.wasm'), go.importObject)
         .then((result) => {
-          go.run(result.instance);
+          go.run(result.instance)
         })
-        .catch((err) => console.error("Error:", err));
+        .catch((err) => console.error('Error:', err))
     </script>
   </body>
 </html>

@@ -48,4 +48,3 @@ Mamoochi appears to continue a long-running pattern in this workspace: build pra
 - [ ] Add a comparison with Totoro and Mohetios.dev.
 - [ ] Capture the Cloudflare deployment assumptions.
 - [ ] Decide whether Mamoochi should become the main Bagche technical story or stay one project inside the Bagche workspace.
-

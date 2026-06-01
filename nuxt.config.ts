@@ -265,5 +265,5 @@ export default defineNuxtConfig({
     minify: true,
     cacheMaxAgeSeconds: 3600,
     credits: false
-  },
+  }
 })

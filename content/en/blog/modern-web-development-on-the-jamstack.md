@@ -2,7 +2,7 @@
 title: Modern Web Development on the JAMstack
 date: 2021-08-11T12:29:12.649Z
 thumbnail: /content/Modern-Web-Development-on-the-JAMstack.webp
-description: "Notes on the JAMstack model: prerendered markup, CDN delivery, APIs, and the tradeoffs behind fast, secure web publishing."
+description: 'Notes on the JAMstack model: prerendered markup, CDN delivery, APIs, and the tradeoffs behind fast, secure web publishing.'
 tags:
   - books
   - jamstack

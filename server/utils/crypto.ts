@@ -5,7 +5,8 @@ import type { User } from '../models/schema'
 import { normalizeUserRole } from './auth'
 import type { CloudflareEnv } from './env'
 
-const defaultIterations = 210000
+const maxPbkdf2Iterations = 100_000
+const defaultIterations = 100_000
 const defaultTtlSeconds = 60 * 60 * 24 * 7
 
 export type AuthClaims = {
@@ -17,19 +18,29 @@ export type AuthClaims = {
 }
 
 function bytesToBase64Url(bytes: Uint8Array) {
-  const binary = Array.from(bytes, (byte) => String.fromCharCode(byte)).join('')
+  let binary = ''
+
+  for (const byte of bytes) {
+    binary += String.fromCharCode(byte)
+  }
 
   return btoa(binary).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '')
 }
 
 function base64UrlToBytes(value: string) {
-  const base64 = value.replaceAll('-', '+').replaceAll('_', '/').padEnd(
-    Math.ceil(value.length / 4) * 4,
-    '='
-  )
-  const binary = atob(base64)
+  const base64 = value
+    .replaceAll('-', '+')
+    .replaceAll('_', '/')
+    .padEnd(Math.ceil(value.length / 4) * 4, '=')
 
-  return Uint8Array.from(binary, (char) => char.charCodeAt(0))
+  const binary = atob(base64)
+  const bytes = new Uint8Array(binary.length)
+
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index)
+  }
+
+  return bytes
 }
 
 function textToBase64Url(value: string) {
@@ -40,21 +51,26 @@ function base64UrlToText(value: string) {
   return new TextDecoder().decode(base64UrlToBytes(value))
 }
 
-function timingSafeEqual(left: string, right: string) {
+function timingSafeEqualBase64Url(left: string, right: string) {
   const leftBytes = base64UrlToBytes(left)
   const rightBytes = base64UrlToBytes(right)
 
-  if (leftBytes.length !== rightBytes.length) {
-    return false
-  }
+  const length = Math.max(leftBytes.length, rightBytes.length)
+  let diff = leftBytes.length ^ rightBytes.length
 
-  let diff = 0
-
-  for (let index = 0; index < leftBytes.length; index += 1) {
-    diff |= leftBytes[index]! ^ rightBytes[index]!
+  for (let index = 0; index < length; index += 1) {
+    diff |= (leftBytes[index] ?? 0) ^ (rightBytes[index] ?? 0)
   }
 
   return diff === 0
+}
+
+function normalizePbkdf2Iterations(iterations?: number) {
+  if (!Number.isFinite(iterations) || !iterations || iterations <= 0) {
+    return defaultIterations
+  }
+
+  return Math.min(Math.floor(iterations), maxPbkdf2Iterations)
 }
 
 function getJwtSecret(env: CloudflareEnv) {
@@ -74,7 +90,10 @@ async function getHmacKey(secret: string) {
   return crypto.subtle.importKey(
     'raw',
     new TextEncoder().encode(secret),
-    { name: 'HMAC', hash: 'SHA-256' },
+    {
+      name: 'HMAC',
+      hash: 'SHA-256'
+    },
     false,
     ['sign', 'verify']
   )
@@ -87,6 +106,17 @@ async function signHmac(value: string, secret: string) {
   return bytesToBase64Url(new Uint8Array(signature))
 }
 
+async function verifyHmac(value: string, signature: string, secret: string) {
+  const key = await getHmacKey(secret)
+
+  return crypto.subtle.verify(
+    'HMAC',
+    key,
+    base64UrlToBytes(signature),
+    new TextEncoder().encode(value)
+  )
+}
+
 export function generateSalt() {
   const salt = new Uint8Array(16)
   crypto.getRandomValues(salt)
@@ -94,11 +124,9 @@ export function generateSalt() {
   return bytesToBase64Url(salt)
 }
 
-export async function hashPassword(
-  password: string,
-  salt: string,
-  iterations = defaultIterations
-) {
+export async function hashPassword(password: string, salt: string, iterations = defaultIterations) {
+  const safeIterations = normalizePbkdf2Iterations(iterations)
+
   const key = await crypto.subtle.importKey(
     'raw',
     new TextEncoder().encode(password),
@@ -106,12 +134,13 @@ export async function hashPassword(
     false,
     ['deriveBits']
   )
+
   const bits = await crypto.subtle.deriveBits(
     {
       name: 'PBKDF2',
       hash: 'SHA-256',
       salt: base64UrlToBytes(salt),
-      iterations
+      iterations: safeIterations
     },
     key,
     256
@@ -126,9 +155,14 @@ export async function verifyPassword(
   salt: string,
   iterations = defaultIterations
 ) {
-  const hash = await hashPassword(password, salt, iterations)
+  const safeIterations = normalizePbkdf2Iterations(iterations)
+  const hash = await hashPassword(password, salt, safeIterations)
 
-  return timingSafeEqual(hash, storedHash)
+  return timingSafeEqualBase64Url(hash, storedHash)
+}
+
+export function getPasswordIterations() {
+  return defaultIterations
 }
 
 export async function signAuthToken(
@@ -137,8 +171,15 @@ export async function signAuthToken(
 ) {
   const now = Math.floor(Date.now() / 1000)
   const ttlSeconds = Number(env.AUTH_TOKEN_TTL_SECONDS || defaultTtlSeconds)
-  const expiresIn = Number.isFinite(ttlSeconds) ? ttlSeconds : defaultTtlSeconds
-  const header = textToBase64Url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
+  const expiresIn = Number.isFinite(ttlSeconds) && ttlSeconds > 0 ? ttlSeconds : defaultTtlSeconds
+
+  const header = textToBase64Url(
+    JSON.stringify({
+      alg: 'HS256',
+      typ: 'JWT'
+    })
+  )
+
   const payload = textToBase64Url(
     JSON.stringify({
       sub: user.id,
@@ -148,6 +189,7 @@ export async function signAuthToken(
       exp: now + expiresIn
     } satisfies AuthClaims)
   )
+
   const body = `${header}.${payload}`
   const signature = await signHmac(body, getJwtSecret(env))
 
@@ -161,28 +203,43 @@ export async function verifyAuthToken(token: string, env: CloudflareEnv) {
     return null
   }
 
-  const body = `${header}.${payload}`
-  const expectedSignature = await signHmac(body, getJwtSecret(env))
+  try {
+    const parsedHeader = JSON.parse(base64UrlToText(header)) as {
+      alg?: string
+      typ?: string
+    }
 
-  if (!timingSafeEqual(signature, expectedSignature)) {
+    if (parsedHeader.alg !== 'HS256' || parsedHeader.typ !== 'JWT') {
+      return null
+    }
+
+    const body = `${header}.${payload}`
+    const isValidSignature = await verifyHmac(body, signature, getJwtSecret(env))
+
+    if (!isValidSignature) {
+      return null
+    }
+
+    const claims = JSON.parse(base64UrlToText(payload)) as Partial<AuthClaims>
+    const now = Math.floor(Date.now() / 1000)
+
+    if (
+      !claims.sub ||
+      typeof claims.username !== 'string' ||
+      (claims.role !== 'OWNER' && claims.role !== 'MEMBER') ||
+      typeof claims.iat !== 'number' ||
+      typeof claims.exp !== 'number' ||
+      claims.exp <= now
+    ) {
+      return null
+    }
+
+    return {
+      sub: claims.sub,
+      username: claims.username,
+      role: claims.role
+    }
+  } catch {
     return null
-  }
-
-  const claims = JSON.parse(base64UrlToText(payload)) as Partial<AuthClaims>
-
-  if (
-    !claims.sub ||
-    typeof claims.username !== 'string' ||
-    (claims.role !== 'OWNER' && claims.role !== 'MEMBER') ||
-    typeof claims.exp !== 'number' ||
-    claims.exp <= Math.floor(Date.now() / 1000)
-  ) {
-    return null
-  }
-
-  return {
-    sub: claims.sub,
-    username: claims.username,
-    role: claims.role
   }
 }

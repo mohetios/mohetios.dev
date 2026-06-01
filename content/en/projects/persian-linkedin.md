@@ -40,4 +40,3 @@ Persian LinkedIn is not a large product, but it is a good example of localized t
 - [ ] Add before/after screenshots from the archived repository.
 - [ ] Document the selector strategy and what broke over time.
 - [ ] Connect this page to the broader Persian text tooling lab note.
-
