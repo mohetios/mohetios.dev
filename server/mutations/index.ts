@@ -1,3 +1,4 @@
+import { inboxMutations } from './inbox'
 import { login } from './login'
 import { logout } from './logout'
 import { profileMutations } from './profile'
@@ -7,5 +8,6 @@ export const Mutation = {
   login,
   register,
   logout,
+  ...inboxMutations,
   ...profileMutations
 }

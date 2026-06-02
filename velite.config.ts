@@ -89,7 +89,7 @@ const projects = defineCollection({
 
 const pages = defineCollection({
   name: 'Page',
-  pattern: '*/about.md',
+  pattern: '*/{about,contact}.md',
   schema: s.object(baseContent).transform((data) => ({
     ...data,
     content: withHeadingIds(data.content, data.tocData),

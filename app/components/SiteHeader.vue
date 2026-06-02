@@ -10,7 +10,8 @@ const navigation = computed(() => [
   { label: t('nav.blog'), to: localePath('/blog') },
   { label: t('nav.lab'), to: localePath('/lab') },
   { label: t('nav.projects'), to: localePath('/projects') },
-  { label: t('nav.about'), to: localePath('/about') }
+  { label: t('nav.about'), to: localePath('/about') },
+  { label: t('nav.contact'), to: localePath('/contact') }
 ])
 
 const nextLocale = computed(

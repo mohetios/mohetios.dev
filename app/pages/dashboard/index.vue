@@ -4,17 +4,7 @@ definePageMeta({
   middleware: ['auth']
 })
 
-const { locale, locales, t } = useI18n()
-const route = useRoute()
-
-const nextLocale = computed(
-  () => locales.value.find((item) => item.code !== locale.value) || locales.value[0]
-)
-const nextLocalePath = computed(() =>
-  nextLocale.value
-    ? getLocalizedRoutePath(route.path, nextLocale.value.code, { fallbackToSection: true })
-    : undefined
-)
+const { t } = useI18n()
 
 useMohetSeo({
   title: () => t('dashboard.title'),
@@ -102,15 +92,9 @@ const leadSources = [
   { key: 'referral', name: 'Referral', value: 10, color: '#93b09a' }
 ]
 
-const leadSourceCategories = Object.fromEntries(
-  leadSources.map((source) => [
-    source.key,
-    {
-      name: source.name,
-      color: source.color
-    }
-  ])
-)
+const maxAudienceVisits = Math.max(...audienceData.map((item) => item.visits))
+const maxLeadCount = Math.max(...audienceData.map((item) => item.leads))
+const totalLeadSources = leadSources.reduce((total, source) => total + source.value, 0)
 
 const topPages = [
   { page: '/hire', value: 52 },
@@ -191,16 +175,7 @@ const inbox = [
 
         <template #right>
           <div class="flex items-center gap-2">
-            <UDashboardSearchButton collapsed tooltip :kbds="[]" />
-            <UColorModeButton color="neutral" variant="ghost" />
-            <UButton
-              v-if="nextLocale && nextLocalePath"
-              :to="nextLocalePath"
-              color="neutral"
-              variant="ghost"
-              icon="i-lucide-languages"
-              :label="nextLocale.code.toUpperCase()"
-            />
+            <DashboardHeaderActions />
             <USelect
               v-model="dateRange"
               :items="['Today', 'Last 7 days', 'Last 30 days', 'Last 90 days']"
@@ -281,16 +256,40 @@ const inbox = [
               </div>
             </template>
 
-            <ClientOnly>
-              <LineChart
-                :data="audienceData"
-                :categories="audienceCategories"
-                :height="320"
-                :x-formatter="(_tick: number, index?: number) => audienceLabels[index || 0] || ''"
-                :y-num-ticks="4"
-                y-grid-line
-              />
-            </ClientOnly>
+            <div class="space-y-4">
+              <div class="grid min-h-72 items-end gap-3 sm:grid-cols-10">
+                <div
+                  v-for="(item, index) in audienceData"
+                  :key="audienceLabels[index]"
+                  class="flex min-h-64 flex-col justify-end gap-2"
+                >
+                  <div class="flex flex-1 items-end gap-1">
+                    <div
+                      class="w-full rounded-t-sm bg-primary/70"
+                      :style="{ height: `${Math.max((item.visits / maxAudienceVisits) * 100, 4)}%` }"
+                    />
+                    <div
+                      class="w-full rounded-t-sm bg-info/70"
+                      :style="{ height: `${Math.max((item.leads / maxLeadCount) * 100, 4)}%` }"
+                    />
+                  </div>
+                  <p class="truncate text-center text-[0.7rem] text-muted">
+                    {{ audienceLabels[index] }}
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-3 text-xs text-muted">
+                <span class="inline-flex items-center gap-2">
+                  <span class="size-2 rounded-full bg-primary/70" />
+                  {{ audienceCategories.visits.name }}
+                </span>
+                <span class="inline-flex items-center gap-2">
+                  <span class="size-2 rounded-full bg-info/70" />
+                  {{ audienceCategories.leads.name }}
+                </span>
+              </div>
+            </div>
           </UCard>
 
           <UCard>
@@ -302,31 +301,29 @@ const inbox = [
             </template>
 
             <div class="space-y-5">
-              <ClientOnly>
-                <DonutChart
-                  :data="leadSources.map((source) => source.value)"
-                  :categories="leadSourceCategories"
-                  :height="260"
-                  :radius="96"
-                  :arc-width="28"
-                  hide-legend
-                />
-              </ClientOnly>
-
               <div class="grid gap-2">
                 <div
                   v-for="source in leadSources"
                   :key="source.key"
-                  class="flex items-center justify-between gap-3 text-sm"
+                  class="space-y-2"
                 >
-                  <div class="flex min-w-0 items-center gap-2">
-                    <span
-                      class="size-2 shrink-0 rounded-full"
-                      :style="{ backgroundColor: source.color }"
-                    />
-                    <span class="truncate text-muted">{{ source.name }}</span>
+                  <div class="flex items-center justify-between gap-3 text-sm">
+                    <div class="flex min-w-0 items-center gap-2">
+                      <span
+                        class="size-2 shrink-0 rounded-full"
+                        :style="{ backgroundColor: source.color }"
+                      />
+                      <span class="truncate text-muted">{{ source.name }}</span>
+                    </div>
+                    <UBadge color="neutral" variant="subtle">{{ source.value }}</UBadge>
                   </div>
-                  <UBadge color="neutral" variant="subtle">{{ source.value }}</UBadge>
+
+                  <UProgress
+                    :model-value="source.value"
+                    :max="totalLeadSources"
+                    color="primary"
+                    size="sm"
+                  />
                 </div>
               </div>
             </div>

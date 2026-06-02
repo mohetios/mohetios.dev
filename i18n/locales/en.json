@@ -11,6 +11,7 @@
     "lab": "Lab",
     "projects": "Projects",
     "about": "About",
+    "contact": "Contact",
     "profile": "Profile",
     "dashboard": "Dashboard"
   },
@@ -234,6 +235,76 @@
     "cta": {
       "title": "Follow the work as it takes shape.",
       "description": "Read the notes, inspect the projects, and trace the decisions behind the systems."
+    }
+  },
+  "contact": {
+    "topics": {
+      "project": "Project / freelance work",
+      "consulting": "Technical consulting",
+      "collaboration": "Collaboration",
+      "writing": "Writing / article / interview",
+      "other": "Other"
+    },
+    "validation": {
+      "name": "Please enter your name.",
+      "email": "Please enter a valid email address.",
+      "topic": "Please choose a topic.",
+      "message": "Please write a little more context."
+    },
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "you[at]example.com",
+      "topic": "Topic",
+      "topicPlaceholder": "Choose the closest topic",
+      "company": "Company",
+      "companyPlaceholder": "Optional",
+      "website": "Website",
+      "websitePlaceholder": "Optional",
+      "message": "Message",
+      "messagePlaceholder": "Tell me what you are building, what you need, and what kind of collaboration you have in mind.",
+      "privacyNote": "Your message goes directly to my private inbox. No newsletter, no automated marketing.",
+      "submit": "Start a conversation",
+      "optionalContext": "Optional context"
+    },
+    "success": {
+      "title": "Message received.",
+      "description": "Thanks for reaching out. I will review the context and reply if there is a clear fit.",
+      "sendAnother": "Send another message"
+    },
+    "error": {
+      "title": "Message could not be sent.",
+      "description": "Please try again in a moment.",
+      "migration": "The contact inbox table is missing. Apply the latest database migration.",
+      "verificationTitle": "Verification required.",
+      "verificationDescription": "Please complete the verification before sending your message."
+    },
+    "sidebar": {
+      "label": "Open for thoughtful work",
+      "title": "Useful context helps me reply better.",
+      "description": "A clear message about the problem, product, timeline, and expected role is more useful than a generic intro."
+    },
+    "channels": {
+      "email": {
+        "title": "Email",
+        "description": "hi[at]mohetios.dev"
+      },
+      "work": {
+        "title": "Best fit",
+        "description": "Product engineering, frontend architecture, AI workflows, dashboards, and practical technical writing."
+      },
+      "response": {
+        "title": "Response style",
+        "description": "I prioritize specific messages with real context over broad or automated outreach."
+      }
+    },
+    "focus": {
+      "productEngineering": "Product engineering",
+      "frontendArchitecture": "Frontend architecture",
+      "aiWorkflows": "AI workflows",
+      "dashboards": "Dashboards",
+      "technicalWriting": "Technical writing"
     }
   }
 }

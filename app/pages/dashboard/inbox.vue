@@ -1,10 +1,12 @@
 <script setup lang="ts">
 type InboxCategory = 'lead' | 'job' | 'freelance' | 'general' | 'system'
 type InboxStatus = 'unread' | 'read' | 'archived' | 'spam'
+type InboxChannel = 'contact_form' | 'email' | 'system' | 'manual'
 type BadgeColor = 'primary' | 'info' | 'success' | 'neutral' | 'warning' | 'error'
 
 type InboxMessage = {
   id: string
+  channel: InboxChannel
   fromName: string
   fromEmail: string
   subject: string
@@ -13,12 +15,46 @@ type InboxMessage = {
   category: InboxCategory
   status: InboxStatus
   time: string
-  source?: string
+  source: string
+  topic?: string | null
+  company?: string | null
+  website?: string | null
+  createdAt: string
+}
+
+type GraphqlResponse<T> = {
+  data?: T
+  errors?: Array<{ message?: string }>
+}
+
+type InboxMessagesQuery = {
+  inboxMessages: Array<{
+    id: string
+    channel: string
+    status: string
+    category: string
+    fromName: string
+    fromEmail: string
+    subject: string
+    preview: string
+    body: string
+    topic?: string | null
+    company?: string | null
+    website?: string | null
+    source?: string | null
+    createdAt: string
+    updatedAt: string
+  }>
+}
+
+type UpdateInboxMessageStatusMutation = {
+  updateInboxMessageStatus: InboxMessagesQuery['inboxMessages'][number]
 }
 
 definePageMeta({
   layout: 'dashboard',
-  middleware: ['auth']
+  middleware: ['auth'],
+  requiredPermission: 'inbox:manage'
 })
 
 useMohetSeo({
@@ -39,108 +75,48 @@ const activeFilter = ref<(typeof filters)[number]['value']>('all')
 const search = ref('')
 const categoryFilter = ref('All categories')
 const internalNote = ref('')
+const isRefreshing = ref(false)
+const toast = useToast()
 
-const messages = ref<InboxMessage[]>([
-  {
-    id: 'msg-1',
-    fromName: 'Sarah Chen',
-    fromEmail: 'sarah@northstar.studio',
-    subject: 'Project inquiry for an editorial product',
-    preview: 'I found your work through Mohetios and wanted to ask about a small product build.',
-    body: 'Hi Mohet,\n\nI found your work through Mohetios and wanted to ask about a small product build for an editorial research team. We need a calm publishing workflow, lightweight review states, and a public archive that can grow without becoming noisy.\n\nCould you share availability for a discovery call next week?',
-    category: 'lead',
-    status: 'unread',
-    time: '1h ago',
-    source: 'hi@mohetios.dev'
+const messages = ref<InboxMessage[]>([])
+const {
+  data: loadedMessages,
+  pending: isLoading,
+  error: inboxLoadError,
+  refresh: refreshInboxMessages
+} = await useAsyncData<InboxMessage[]>(
+  'dashboard:inbox-messages',
+  async () => {
+    const result = await requestInboxGraphql<InboxMessagesQuery>(`
+      query InboxMessages {
+        inboxMessages {
+          id
+          channel
+          status
+          category
+          fromName
+          fromEmail
+          subject
+          preview
+          body
+          topic
+          company
+          website
+          source
+          createdAt
+          updatedAt
+        }
+      }
+    `)
+
+    return result.inboxMessages.map(normalizeMessage)
   },
   {
-    id: 'msg-2',
-    fromName: 'Jonas Meyer',
-    fromEmail: 'jonas@atelier.jobs',
-    subject: 'Senior product engineer opportunity',
-    preview:
-      'We are looking for someone who can bridge product systems and implementation quality.',
-    body: 'Hello,\n\nWe are looking for a senior product engineer who can bridge product systems and implementation quality. Your writing around practical systems matched what our team needs.\n\nWould you be open to a conversation?',
-    category: 'job',
-    status: 'unread',
-    time: '3h ago',
-    source: 'hi@mohetios.dev'
-  },
-  {
-    id: 'msg-3',
-    fromName: 'Mina Studio',
-    fromEmail: 'hello@mina.studio',
-    subject: 'Collaboration proposal',
-    preview: 'We are preparing a technical publication and would like to collaborate.',
-    body: 'Hi Mohet,\n\nWe are preparing a technical publication about small web tools and durable product thinking. Your site has the tone we are looking for, and we would like to discuss a collaboration.',
-    category: 'freelance',
-    status: 'read',
-    time: '5h ago',
-    source: 'hi@mohetios.dev'
-  },
-  {
-    id: 'msg-4',
-    fromName: 'Nadia Rahimi',
-    fromEmail: 'nadia@example.com',
-    subject: 'Question about pricing',
-    preview: 'Do you take short consulting calls for product architecture reviews?',
-    body: 'Hi,\n\nDo you take short consulting calls for product architecture reviews? I have a Nuxt and Cloudflare project that needs a second opinion before launch.',
-    category: 'lead',
-    status: 'unread',
-    time: '8h ago',
-    source: 'hi@mohetios.dev'
-  },
-  {
-    id: 'msg-5',
-    fromName: 'Cloudflare Email Routing',
-    fromEmail: 'no-reply@cloudflare.com',
-    subject: 'Email Routing test message',
-    preview: 'This is a test message for your configured route.',
-    body: 'This is a test message confirming that Email Routing can receive mail for this destination. No action is required.',
-    category: 'system',
-    status: 'read',
-    time: '1d ago',
-    source: 'hi@mohetios.dev'
-  },
-  {
-    id: 'msg-6',
-    fromName: 'Mohetios.dev',
-    fromEmail: 'notifications@mohetios.dev',
-    subject: 'New comment awaiting review',
-    preview: 'A new comment was submitted on the edge caching note.',
-    body: 'A new comment was submitted on /writing/edge-caching and is waiting for moderation.\n\nComment preview: Great breakdown of the cache invalidation tradeoffs.',
-    category: 'system',
-    status: 'read',
-    time: '1d ago',
-    source: 'notifications@mohetios.dev'
-  },
-  {
-    id: 'msg-7',
-    fromName: 'SEO Growth Team',
-    fromEmail: 'rankfast@example.net',
-    subject: 'Rank #1 on Google guaranteed',
-    preview: 'We can deliver thousands of backlinks and instant traffic.',
-    body: 'Hello website owner,\n\nWe can deliver thousands of backlinks and instant traffic for your domain. Reply now for a special discount.',
-    category: 'general',
-    status: 'spam',
-    time: '2d ago',
-    source: 'hi@mohetios.dev'
-  },
-  {
-    id: 'msg-8',
-    fromName: 'System Digest',
-    fromEmail: 'digest@mohetios.dev',
-    subject: 'Weekly dashboard digest',
-    preview: 'A quiet summary of traffic, notes, and message activity.',
-    body: 'Weekly digest\n\n- 24 new leads\n- 8 unread emails\n- 5 pending comments\n- 31 form submissions\n\nThis is mock data for the dashboard prototype.',
-    category: 'system',
-    status: 'archived',
-    time: '3d ago',
-    source: 'digest@mohetios.dev'
+    default: () => []
   }
-])
+)
 
-const selectedMessageId = ref(messages.value[0]?.id)
+const selectedMessageId = ref<string | undefined>()
 const selectedMessage = computed(
   () => messages.value.find((message) => message.id === selectedMessageId.value) || null
 )
@@ -166,12 +142,44 @@ const filteredMessages = computed(() => {
   })
 })
 
-watch(filteredMessages, (currentMessages) => {
-  if (currentMessages.some((message) => message.id === selectedMessageId.value)) {
+watch(
+  loadedMessages,
+  (currentMessages) => {
+    messages.value = currentMessages || []
+
+    if (!messages.value.some((message) => message.id === selectedMessageId.value)) {
+      selectedMessageId.value = messages.value[0]?.id
+    }
+  },
+  { immediate: true }
+)
+
+watch(
+  filteredMessages,
+  (currentMessages) => {
+    if (currentMessages.some((message) => message.id === selectedMessageId.value)) {
+      return
+    }
+
+    selectedMessageId.value = currentMessages[0]?.id
+  },
+  { immediate: true }
+)
+
+watch(inboxLoadError, (error) => {
+  if (!error || import.meta.server) {
     return
   }
 
-  selectedMessageId.value = currentMessages[0]?.id
+  if (import.meta.dev) {
+    console.error('[dashboard:inbox:load-error]', error)
+  }
+
+  toast.add({
+    color: 'error',
+    icon: 'i-lucide-circle-alert',
+    title: getInboxErrorMessage(error)
+  })
 })
 
 function getCategoryLabel(category: InboxCategory) {
@@ -212,11 +220,204 @@ function getStatusColor(status: InboxStatus): BadgeColor {
   )[status]
 }
 
-function updateSelectedStatus(status: InboxStatus) {
+function getChannelLabel(channel: InboxChannel) {
+  return (
+    {
+      contact_form: 'Contact form',
+      email: 'Email',
+      system: 'System',
+      manual: 'Manual'
+    } satisfies Record<InboxChannel, string>
+  )[channel]
+}
+
+function normalizeMessage(message: {
+  id: string
+  channel: string
+  status: string
+  category: string
+  fromName: string
+  fromEmail: string
+  subject: string
+  preview: string
+  body: string
+  topic?: string | null
+  company?: string | null
+  website?: string | null
+  source?: string | null
+  createdAt: string
+}) {
+  const channel = message.channel.toLowerCase() as InboxChannel
+
+  return {
+    id: message.id,
+    channel,
+    fromName: message.fromName,
+    fromEmail: message.fromEmail,
+    subject: message.subject,
+    preview: message.preview,
+    body: message.body,
+    category: message.category.toLowerCase() as InboxCategory,
+    status: message.status.toLowerCase() as InboxStatus,
+    time: formatMessageTime(message.createdAt),
+    source: message.source || getChannelLabel(channel),
+    topic: message.topic,
+    company: message.company,
+    website: message.website,
+    createdAt: message.createdAt
+  }
+}
+
+function formatMessageTime(value: string) {
+  const date = new Date(value)
+  const diffMs = Date.now() - date.getTime()
+  const minute = 60 * 1000
+  const hour = 60 * minute
+  const day = 24 * hour
+
+  if (!Number.isFinite(date.getTime())) return value
+  if (diffMs < minute) return 'just now'
+  if (diffMs < hour) return `${Math.floor(diffMs / minute)}m ago`
+  if (diffMs < day) return `${Math.floor(diffMs / hour)}h ago`
+
+  return `${Math.floor(diffMs / day)}d ago`
+}
+
+function getInboxErrorMessage(error: unknown) {
+  if (!error || typeof error !== 'object') {
+    return 'Inbox could not be loaded'
+  }
+
+  const currentError = error as {
+    data?: { message?: string; statusMessage?: string }
+    message?: string
+    statusMessage?: string
+  }
+  const message =
+    currentError.data?.message ||
+    currentError.data?.statusMessage ||
+    currentError.statusMessage ||
+    currentError.message
+
+  if (!message) {
+    return 'Inbox could not be loaded'
+  }
+
+  if (message.includes('no such table: inbox_messages')) {
+    return 'Inbox database table is missing. Apply the latest migration.'
+  }
+
+  return message
+}
+
+async function requestInboxGraphql<T>(query: string, variables: Record<string, unknown> = {}) {
+  const auth = useAuth()
+  const token = auth.restoreToken()
+
+  const response = await $fetch<GraphqlResponse<T>>('/graph', {
+    method: 'POST',
+    headers: token
+      ? {
+          Authorization: `Bearer ${token}`
+        }
+      : undefined,
+    body: {
+      query,
+      variables
+    }
+  })
+
+  if (response.errors?.length) {
+    throw new Error(response.errors[0]?.message || 'GraphQL request failed')
+  }
+
+  if (!response.data) {
+    throw new Error('GraphQL request failed')
+  }
+
+  return response.data
+}
+
+async function loadMessages() {
+  isRefreshing.value = true
+
+  try {
+    await refreshInboxMessages()
+
+    if (inboxLoadError.value) {
+      throw inboxLoadError.value
+    }
+  } catch (error) {
+    if (import.meta.dev) {
+      console.error('[dashboard:inbox:load-error]', error)
+    }
+
+    toast.add({
+      color: 'error',
+      icon: 'i-lucide-circle-alert',
+      title: getInboxErrorMessage(error)
+    })
+  } finally {
+    isRefreshing.value = false
+  }
+}
+
+async function updateSelectedStatus(status: InboxStatus) {
   const message = messages.value.find((item) => item.id === selectedMessageId.value)
 
-  if (message) {
-    message.status = status
+  if (!message) {
+    return
+  }
+
+  const previousStatus = message.status
+  message.status = status
+
+  try {
+    const result = await requestInboxGraphql<UpdateInboxMessageStatusMutation>(
+      `
+        mutation UpdateInboxMessageStatus($id: ID!, $status: InboxStatus!) {
+          updateInboxMessageStatus(id: $id, status: $status) {
+            id
+            channel
+            status
+            category
+            fromName
+            fromEmail
+            subject
+            preview
+            body
+            topic
+            company
+            website
+            source
+            createdAt
+            updatedAt
+          }
+        }
+      `,
+      {
+        id: message.id,
+        status: status.toUpperCase()
+      }
+    )
+    const updated = normalizeMessage(result.updateInboxMessageStatus)
+    const index = messages.value.findIndex((item) => item.id === updated.id)
+
+    if (index !== -1) {
+      messages.value[index] = updated
+    }
+  } catch (error) {
+    message.status = previousStatus
+
+    if (import.meta.dev) {
+      console.error('[dashboard:inbox:status-error]', error)
+    }
+
+    toast.add({
+      color: 'error',
+      icon: 'i-lucide-circle-alert',
+      title: getInboxErrorMessage(error)
+    })
   }
 }
 
@@ -239,6 +440,7 @@ function spamSelected() {
 function restoreSelected() {
   updateSelectedStatus('read')
 }
+
 </script>
 
 <template>
@@ -251,7 +453,16 @@ function restoreSelected() {
 
         <template #right>
           <div class="flex items-center gap-2">
-            <UButton color="neutral" variant="ghost" icon="i-lucide-refresh-cw"> Refresh </UButton>
+            <DashboardHeaderActions />
+            <UButton
+              color="neutral"
+              variant="ghost"
+              icon="i-lucide-refresh-cw"
+              :loading="isRefreshing"
+              @click="loadMessages"
+            >
+              Refresh
+            </UButton>
             <UButton color="neutral" variant="outline" icon="i-lucide-archive" disabled>
               Archive all read
             </UButton>
@@ -296,13 +507,17 @@ function restoreSelected() {
             <div class="flex items-center justify-between gap-3">
               <div>
                 <h2 class="text-sm font-semibold text-highlighted">Messages</h2>
-                <p class="text-xs text-muted">Mock mailbox for dashboard review</p>
+                <p class="text-xs text-muted">Messages from contact, email, and system channels</p>
               </div>
               <UBadge color="primary" variant="soft">{{ unreadCount }} unread</UBadge>
             </div>
           </template>
 
-          <div v-if="filteredMessages.length" class="divide-y divide-default">
+          <div v-if="isLoading" class="space-y-3 p-4">
+            <USkeleton v-for="item in 5" :key="item" class="h-20 w-full" />
+          </div>
+
+          <div v-else-if="filteredMessages.length" class="divide-y divide-default">
             <button
               v-for="message in filteredMessages"
               :key="message.id"
@@ -340,6 +555,9 @@ function restoreSelected() {
                     {{ message.preview }}
                   </p>
                   <div class="flex flex-wrap gap-2 pt-1">
+                    <UBadge color="neutral" variant="outline" size="sm">
+                      {{ getChannelLabel(message.channel) }}
+                    </UBadge>
                     <UBadge :color="getCategoryColor(message.category)" variant="soft" size="sm">
                       {{ getCategoryLabel(message.category) }}
                     </UBadge>
@@ -451,8 +669,22 @@ function restoreSelected() {
             </div>
 
             <p class="text-xs text-muted">
-              Received via {{ selectedMessage.source || 'hi@mohetios.dev' }}
+              Received via {{ selectedMessage.source }} · {{ getChannelLabel(selectedMessage.channel) }}
             </p>
+
+            <div
+              v-if="selectedMessage.company || selectedMessage.website"
+              class="grid gap-3 text-xs text-muted sm:grid-cols-2"
+            >
+              <p v-if="selectedMessage.company">
+                <span class="font-medium text-highlighted">Company:</span>
+                {{ selectedMessage.company }}
+              </p>
+              <p v-if="selectedMessage.website">
+                <span class="font-medium text-highlighted">Website:</span>
+                {{ selectedMessage.website }}
+              </p>
+            </div>
 
             <UCard
               v-if="['lead', 'job', 'freelance'].includes(selectedMessage.category)"

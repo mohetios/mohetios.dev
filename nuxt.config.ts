@@ -7,6 +7,7 @@ const htmlCacheHeaders = {
 const immutableAssetHeaders = {
   'Cache-Control': 'public, max-age=31536000, immutable'
 }
+const turnstileSiteKey = process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || ''
 
 const staticRoutes = [
   '/',
@@ -19,7 +20,9 @@ const staticRoutes = [
   '/en/projects',
   '/fa/projects',
   '/en/about',
-  '/fa/about'
+  '/fa/about',
+  '/en/contact',
+  '/fa/contact'
 ]
 
 function getContentRoutes() {
@@ -39,6 +42,7 @@ export default defineNuxtConfig({
     '@nuxtjs/sitemap',
     '@nuxtjs/robots',
     'nitro-cloudflare-dev',
+    '@nuxtjs/turnstile',
     'nuxt-graphql-client'
   ],
 
@@ -91,10 +95,16 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    jwtSecret: '',
-    authTokenTtlSeconds: '604800',
-    allowPublicRegister: 'false',
+    jwtSecret: process.env.JWT_SECRET || '',
+    authTokenTtlSeconds: process.env.AUTH_TOKEN_TTL_SECONDS || '604800',
+    allowPublicRegister: process.env.ALLOW_PUBLIC_REGISTER || 'false',
+    turnstile: {
+      secretKey: process.env.NUXT_TURNSTILE_SECRET_KEY || ''
+    },
     public: {
+      turnstile: {
+        siteKey: turnstileSiteKey
+      },
       'graphql-client': {
         clients: {
           default: {
@@ -121,6 +131,17 @@ export default defineNuxtConfig({
     '/en/tags/**': { prerender: true, headers: htmlCacheHeaders },
     '/fa/about': { prerender: true, headers: htmlCacheHeaders },
     '/en/about': { prerender: true, headers: htmlCacheHeaders },
+    '/fa/contact': { prerender: true, headers: htmlCacheHeaders },
+    '/en/contact': { prerender: true, headers: htmlCacheHeaders },
+    '/dashboard': { ssr: true, prerender: false },
+    '/dashboard/**': { ssr: true, prerender: false },
+    '/fa/dashboard': { ssr: true, prerender: false },
+    '/en/dashboard': { ssr: true, prerender: false },
+    '/fa/dashboard/**': { ssr: true, prerender: false },
+    '/en/dashboard/**': { ssr: true, prerender: false },
+    '/member/**': { ssr: true, prerender: false },
+    '/fa/member/**': { ssr: true, prerender: false },
+    '/en/member/**': { ssr: true, prerender: false },
     '/_nuxt/**': {
       headers: {
         ...immutableAssetHeaders,
@@ -184,22 +205,6 @@ export default defineNuxtConfig({
       concurrency: 1,
       crawlLinks: false,
       routes: [...getContentRoutes(), '/robots.txt', '/sitemap.xml']
-    }
-  },
-
-  vite: {
-    optimizeDeps: {
-      include: []
-    }
-  },
-
-  hooks: {
-    'vite:extendConfig'(config) {
-      const optimizeDeps = config.optimizeDeps as { include?: string[] } | undefined
-
-      if (optimizeDeps) {
-        optimizeDeps.include = []
-      }
     }
   },
 
@@ -268,5 +273,9 @@ export default defineNuxtConfig({
     minify: true,
     cacheMaxAgeSeconds: 3600,
     credits: false
+  },
+
+  turnstile: {
+    siteKey: turnstileSiteKey
   }
 })

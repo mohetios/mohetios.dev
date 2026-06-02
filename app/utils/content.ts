@@ -70,7 +70,9 @@ const staticLocalizedPaths = new Set([
   '/en/projects',
   '/fa/projects',
   '/en/about',
-  '/fa/about'
+  '/fa/about',
+  '/en/contact',
+  '/fa/contact'
 ])
 
 function byDateDesc<T extends { date?: string }>(items: T[]) {

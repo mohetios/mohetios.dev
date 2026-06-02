@@ -1,0 +1,17 @@
+fragment InboxMessageFields on InboxMessage {
+  id
+  channel
+  status
+  category
+  fromName
+  fromEmail
+  subject
+  preview
+  body
+  topic
+  company
+  website
+  source
+  createdAt
+  updatedAt
+}

@@ -17,6 +17,10 @@ useMohetSeo({
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
+
+        <template #right>
+          <DashboardHeaderActions />
+        </template>
       </UDashboardNavbar>
     </template>
 

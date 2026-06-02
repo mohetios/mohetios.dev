@@ -1,10 +1,6 @@
 import type { Permission } from '~~/shared/constants/permissions'
 
 export default defineNuxtRouteMiddleware(async (to) => {
-  if (import.meta.server) {
-    return
-  }
-
   const localePath = useLocalePath()
   const auth = useAuth()
   const pathWithoutLocale = to.path.replace(/^\/(en|fa)(?=\/|$)/, '') || '/'

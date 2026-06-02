@@ -1,0 +1,5 @@
+mutation UpdateInboxMessageStatus($id: ID!, $status: InboxStatus!) {
+  updateInboxMessageStatus(id: $id, status: $status) {
+    ...InboxMessageFields
+  }
+}
