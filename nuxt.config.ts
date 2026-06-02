@@ -2,7 +2,7 @@ import { getPrerenderContentRoutes } from './app/utils/content'
 
 const siteUrl = 'https://mohetios.dev'
 const htmlCacheHeaders = {
-  'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400'
+  'Cache-Control': 'public, max-age=0, must-revalidate'
 }
 const immutableAssetHeaders = {
   'Cache-Control': 'public, max-age=31536000, immutable'
@@ -142,12 +142,6 @@ export default defineNuxtConfig({
     '/member/**': { ssr: true, prerender: false },
     '/fa/member/**': { ssr: true, prerender: false },
     '/en/member/**': { ssr: true, prerender: false },
-    '/_nuxt/**': {
-      headers: {
-        ...immutableAssetHeaders,
-        'X-Robots-Tag': 'noindex'
-      }
-    },
     '/content/**': {
       headers: immutableAssetHeaders
     },
