@@ -16,10 +16,10 @@ export async function sendEmail(
   const result = await env.EMAIL.send({
     to: input.to,
     from: {
-      email: env.MAIL_FROM,
-      name: env.MAIL_FROM_NAME
+      email: env.NUXT_MAIL_FROM,
+      name: env.NUXT_MAIL_FROM_NAME
     },
-    replyTo: input.replyTo || env.MAIL_FROM,
+    replyTo: input.replyTo || env.NUXT_MAIL_FROM,
     subject: input.subject,
     text: input.text
   })

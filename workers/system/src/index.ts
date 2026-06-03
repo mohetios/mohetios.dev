@@ -16,9 +16,9 @@ type Env = {
     send(message: EmailMessage): Promise<unknown>
   }
 
-  NUXT_VAPID_PUBLIC_KEY: string
-  NUXT_VAPID_PRIVATE_KEY: string
-  NUXT_VAPID_SUBJECT: string
+  NUXT_VAPID_PUBLIC_KEY?: string
+  NUXT_VAPID_PRIVATE_KEY?: string
+  NUXT_VAPID_SUBJECT?: string
 
   NUXT_MAIL_FROM?: string
   NUXT_MAIL_FROM_NAME?: string
@@ -58,12 +58,30 @@ type InboxMessageRow = {
   subject: string
 }
 
+function readString(...values: Array<string | null | undefined>) {
+  for (const value of values) {
+    const normalized = value?.trim()
+
+    if (normalized) return normalized
+  }
+
+  return ''
+}
+
 function getMailFrom(env: Env) {
-  return env.NUXT_MAIL_FROM || 'hi@mohetios.dev'
+  return readString(env.NUXT_MAIL_FROM) || 'hi@mohetios.dev'
 }
 
 function getMailFromName(env: Env) {
-  return env.NUXT_MAIL_FROM_NAME || 'Mohetios.dev'
+  return readString(env.NUXT_MAIL_FROM_NAME) || 'Mohetios.dev'
+}
+
+function getVapidConfig(env: Env) {
+  return {
+    subject: readString(env.NUXT_VAPID_SUBJECT) || 'mailto:hi@mohetios.dev',
+    publicKey: readString(env.NUXT_VAPID_PUBLIC_KEY),
+    privateKey: readString(env.NUXT_VAPID_PRIVATE_KEY)
+  }
 }
 
 function isValidEmailAddress(value?: string | null) {
@@ -79,6 +97,12 @@ function isValidEmailAddress(value?: string | null) {
 }
 
 async function sendPush(env: Env, subscription: PushSubscriptionRow, payload: AdminPushPayload) {
+  const vapid = getVapidConfig(env)
+
+  if (!vapid.publicKey || !vapid.privateKey || !vapid.subject) {
+    throw new Error('VAPID configuration is missing')
+  }
+
   const request = await buildPushPayload(
     {
       data: JSON.stringify(payload),
@@ -95,9 +119,9 @@ async function sendPush(env: Env, subscription: PushSubscriptionRow, payload: Ad
       }
     },
     {
-      subject: env.NUXT_VAPID_SUBJECT,
-      publicKey: env.NUXT_VAPID_PUBLIC_KEY,
-      privateKey: env.NUXT_VAPID_PRIVATE_KEY
+      subject: vapid.subject,
+      publicKey: vapid.publicKey,
+      privateKey: vapid.privateKey
     }
   )
 

@@ -62,6 +62,16 @@
     "role": "Role",
     "backToSite": "Back to site"
   },
+  "push": {
+    "title": "Enable dashboard notifications",
+    "description": "New inbox alerts can reach this device.",
+    "enable": "Enable",
+    "later": "Later",
+    "enabled": "Dashboard notifications enabled",
+    "errors": {
+      "setup": "Push notifications could not be enabled"
+    }
+  },
   "profile": {
     "eyebrow": "Member area",
     "title": "Profile",

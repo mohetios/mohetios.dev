@@ -74,7 +74,7 @@ function normalizePbkdf2Iterations(iterations?: number) {
 }
 
 function getJwtSecret(env: CloudflareEnv) {
-  const secret = env.JWT_SECRET
+  const secret = env.NUXT_JWT_SECRET
 
   if (!secret && process.env.NODE_ENV === 'production') {
     throw createError({
@@ -170,7 +170,7 @@ export async function signAuthToken(
   env: CloudflareEnv
 ) {
   const now = Math.floor(Date.now() / 1000)
-  const ttlSeconds = Number(env.AUTH_TOKEN_TTL_SECONDS || defaultTtlSeconds)
+  const ttlSeconds = Number(env.NUXT_AUTH_TOKEN_TTL_SECONDS || defaultTtlSeconds)
   const expiresIn = Number.isFinite(ttlSeconds) && ttlSeconds > 0 ? ttlSeconds : defaultTtlSeconds
 
   const header = textToBase64Url(

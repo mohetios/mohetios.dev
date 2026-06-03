@@ -49,5 +49,7 @@ useSeoMeta({
       <USeparator />
       <SiteFooter />
     </template>
+
+    <AdminPushPermissionPrompt />
   </UApp>
 </template>

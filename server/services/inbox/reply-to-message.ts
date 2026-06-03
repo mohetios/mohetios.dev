@@ -32,7 +32,7 @@ export async function replyToMessage(
   const reply = {
     id: createId(),
     inboxMessageId: message.id,
-    fromEmail: env.MAIL_FROM,
+    fromEmail: env.NUXT_MAIL_FROM,
     toEmail: message.senderEmail,
     subject: message.subject.toLowerCase().startsWith('re:')
       ? message.subject

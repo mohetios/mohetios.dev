@@ -41,7 +41,7 @@ export async function register(_parent: unknown, args: RegisterArgs, context: Gr
   const [userCount] = await context.db.select({ value: count() }).from(users)
   const firstUser = (userCount?.value ?? 0) === 0
 
-  // if (!firstUser && context.env.ALLOW_PUBLIC_REGISTER !== 'true') {
+  // if (!firstUser && context.env.NUXT_ALLOW_PUBLIC_REGISTER !== 'true') {
   //   throw new GraphQLError('Registration is closed')
   // }
 

@@ -4,9 +4,9 @@ import type { AdminPushPayload } from '../../../shared/contracts/notifications'
 
 export async function sendWebPush(
   env: {
-    VAPID_PUBLIC_KEY: string
-    VAPID_PRIVATE_KEY: string
-    VAPID_SUBJECT: string
+    NUXT_VAPID_PUBLIC_KEY: string
+    NUXT_VAPID_PRIVATE_KEY: string
+    NUXT_VAPID_SUBJECT: string
   },
   subscription: {
     endpoint: string
@@ -15,7 +15,7 @@ export async function sendWebPush(
   },
   payload: AdminPushPayload
 ) {
-  if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY || !env.VAPID_SUBJECT) {
+  if (!env.NUXT_VAPID_PUBLIC_KEY || !env.NUXT_VAPID_PRIVATE_KEY || !env.NUXT_VAPID_SUBJECT) {
     throw new Error('VAPID configuration is missing')
   }
 
@@ -35,9 +35,9 @@ export async function sendWebPush(
       }
     },
     {
-      subject: env.VAPID_SUBJECT,
-      publicKey: env.VAPID_PUBLIC_KEY,
-      privateKey: env.VAPID_PRIVATE_KEY
+      subject: env.NUXT_VAPID_SUBJECT,
+      publicKey: env.NUXT_VAPID_PUBLIC_KEY,
+      privateKey: env.NUXT_VAPID_PRIVATE_KEY
     }
   )
 

@@ -205,14 +205,18 @@ export default defineNuxtConfig({
     }
   },
 
-  eslint: {
-    config: {
-      stylistic: {
-        commaDangle: 'never',
-        braceStyle: '1tbs'
+  ...(isDev
+    ? {
+        eslint: {
+          config: {
+            stylistic: {
+              commaDangle: 'never',
+              braceStyle: '1tbs'
+            }
+          }
+        }
       }
-    }
-  },
+    : {}),
 
   i18n: {
     langDir: 'locales',
