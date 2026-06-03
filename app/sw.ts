@@ -4,6 +4,30 @@ import type { AdminPushPayload } from '../shared/contracts/notifications'
 
 declare const self: ServiceWorkerGlobalScope
 
+type NotificationActionOption = {
+  action: string
+  title: string
+  icon?: string
+}
+
+type PersistentNotificationOptions = NotificationOptions & {
+  actions?: NotificationActionOption[]
+  requireInteraction?: boolean
+  renotify?: boolean
+  timestamp?: number
+}
+
+const notificationActions: NotificationActionOption[] = [
+  {
+    action: 'open',
+    title: 'Open inbox'
+  },
+  {
+    action: 'dismiss',
+    title: 'Dismiss'
+  }
+]
+
 function fallbackPayload(): AdminPushPayload {
   return {
     type: 'NEW_CONTACT_MESSAGE',
@@ -36,24 +60,33 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('push', (event) => {
   const payload = parsePayload(event.data)
   const url = payload.url || '/dashboard/inbox'
+  const options: PersistentNotificationOptions = {
+    body: payload.body || 'New notification',
+    icon: '/icons/android-chrome-192x192.png',
+    badge: '/icons/android-chrome-192x192.png',
+    actions: notificationActions,
+    requireInteraction: true,
+    renotify: true,
+    tag: payload.notificationId || payload.entityId || 'mohetios-notification',
+    timestamp: Date.now(),
+    data: {
+      url,
+      notificationId: payload.notificationId,
+      entityId: payload.entityId
+    }
+  }
 
   event.waitUntil(
-    self.registration.showNotification(payload.title || 'Mohetios.dev', {
-      body: payload.body || 'New notification',
-      icon: '/icons/android-chrome-192x192.png',
-      badge: '/icons/android-chrome-192x192.png',
-      tag: payload.notificationId || payload.entityId || 'mohetios-notification',
-      data: {
-        url,
-        notificationId: payload.notificationId,
-        entityId: payload.entityId
-      }
-    })
+    self.registration.showNotification(payload.title || 'Mohetios.dev', options)
   )
 })
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close()
+
+  if (event.action === 'dismiss') {
+    return
+  }
 
   const targetUrl = new URL(
     event.notification.data?.url || '/dashboard/inbox',
