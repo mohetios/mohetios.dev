@@ -41,6 +41,7 @@
     "graphql-request": "^7.4.0",
     "graphql-yoga": "^5.21.0",
     "jose": "^6.2.3",
+    "mimetext": "^3.0.28",
     "nuxt": "^4.4.6",
     "nuxt-charts": "^2.1.4",
     "nuxt-graphql-client": "^0.2.46",
