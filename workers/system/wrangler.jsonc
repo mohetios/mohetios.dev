@@ -35,5 +35,11 @@
     "MAIL_FROM": "hi@mohetios.dev",
     "MAIL_FROM_NAME": "Mohetios.dev",
     "VAPID_SUBJECT": "mailto:hi@mohetios.dev"
+  },
+  "observability": {
+    "logs": {
+      "enabled": false,
+      "invocation_logs": true
+    }
   }
 }

@@ -74,11 +74,22 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#0F1823', media: '(prefers-color-scheme: dark)' }
       ],
       link: [
+        { rel: 'manifest', href: '/manifest.webmanifest' },
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/icons/favicon-16x16.png' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/icons/favicon-32x32.png' },
-        { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/icons/android-chrome-192x192.png' },
-        { rel: 'icon', type: 'image/png', sizes: '512x512', href: '/icons/android-chrome-512x512.png' },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '192x192',
+          href: '/icons/android-chrome-192x192.png'
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '512x512',
+          href: '/icons/android-chrome-512x512.png'
+        },
         { rel: 'apple-touch-icon', href: '/icons/apple-touch-icon.png' }
       ]
     }
@@ -247,14 +258,14 @@ export default defineNuxtConfig({
 
   pwa: {
     strategies: 'injectManifest',
-    srcDir: './',
+    srcDir: '.',
     filename: 'sw.ts',
     registerType: 'autoUpdate',
+    injectRegister: 'script',
 
     manifest: {
       name: 'Mohetios.dev',
-      short_name: 'Mohetios',
-      description: 'A personal engineering lab for software, product thinking, and open-source experiments.',
+      short_name: 'Mohetios Control Center',
       display: 'standalone',
       start_url: '/dashboard',
       scope: '/',
@@ -275,7 +286,7 @@ export default defineNuxtConfig({
           src: '/icons/android-chrome-512x512.png',
           sizes: '512x512',
           type: 'image/png',
-          purpose: 'any maskable'
+          purpose: 'maskable'
         }
       ]
     },
@@ -286,10 +297,10 @@ export default defineNuxtConfig({
     },
 
     devOptions: {
-      enabled: false
+      enabled: true,
+      type: 'module'
     }
   },
-
   robots: {
     sitemap: ['/sitemap.xml'],
     cacheControl: 'max-age=14400, must-revalidate',

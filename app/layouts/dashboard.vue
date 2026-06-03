@@ -42,6 +42,18 @@ const searchGroups = computed(() => [
     }))
   }
 ])
+
+onMounted(() => {
+  console.log('[pwa debug]', {
+    hasServiceWorker: 'serviceWorker' in navigator,
+    displayModeStandalone: window.matchMedia('(display-mode: standalone)').matches,
+    manifest: document.querySelector('link[rel="manifest"]')?.getAttribute('href')
+  })
+
+  navigator.serviceWorker?.getRegistration().then((registration) => {
+    console.log('[pwa sw registration]', registration)
+  })
+})
 </script>
 
 <template>

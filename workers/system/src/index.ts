@@ -16,12 +16,12 @@ type Env = {
     send(message: EmailMessage): Promise<unknown>
   }
 
-  VAPID_PUBLIC_KEY: string
-  VAPID_PRIVATE_KEY: string
-  VAPID_SUBJECT: string
+  NUXT_VAPID_PUBLIC_KEY: string
+  NUXT_VAPID_PRIVATE_KEY: string
+  NUXT_VAPID_SUBJECT: string
 
-  MAIL_FROM?: string
-  MAIL_FROM_NAME?: string
+  NUXT_MAIL_FROM?: string
+  NUXT_MAIL_FROM_NAME?: string
 }
 
 type WorkerJob = AdminNotificationJob | EmailDeliveryJob
@@ -59,11 +59,23 @@ type InboxMessageRow = {
 }
 
 function getMailFrom(env: Env) {
-  return env.MAIL_FROM || 'hi@mohetios.dev'
+  return env.NUXT_MAIL_FROM || 'hi@mohetios.dev'
 }
 
 function getMailFromName(env: Env) {
-  return env.MAIL_FROM_NAME || 'Mohetios.dev'
+  return env.NUXT_MAIL_FROM_NAME || 'Mohetios.dev'
+}
+
+function isValidEmailAddress(value?: string | null) {
+  if (!value) return false
+
+  const email = value.trim()
+
+  if (!email) return false
+  if (email.startsWith('mailto:')) return false
+  if (email.includes('\n') || email.includes('\r')) return false
+
+  return /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email)
 }
 
 async function sendPush(env: Env, subscription: PushSubscriptionRow, payload: AdminPushPayload) {
@@ -83,9 +95,9 @@ async function sendPush(env: Env, subscription: PushSubscriptionRow, payload: Ad
       }
     },
     {
-      subject: env.VAPID_SUBJECT,
-      publicKey: env.VAPID_PUBLIC_KEY,
-      privateKey: env.VAPID_PRIVATE_KEY
+      subject: env.NUXT_VAPID_SUBJECT,
+      publicKey: env.NUXT_VAPID_PUBLIC_KEY,
+      privateKey: env.NUXT_VAPID_PRIVATE_KEY
     }
   )
 
@@ -93,17 +105,13 @@ async function sendPush(env: Env, subscription: PushSubscriptionRow, payload: Ad
 }
 
 async function disableSubscription(env: Env, subscriptionId: string) {
-  await env.DB.prepare(
-    `UPDATE push_subscriptions SET disabled_at = ? WHERE id = ?`
-  )
+  await env.DB.prepare(`UPDATE push_subscriptions SET disabled_at = ? WHERE id = ?`)
     .bind(Date.now(), subscriptionId)
     .run()
 }
 
 async function markSubscriptionUsed(env: Env, subscriptionId: string) {
-  await env.DB.prepare(
-    `UPDATE push_subscriptions SET last_used_at = ? WHERE id = ?`
-  )
+  await env.DB.prepare(`UPDATE push_subscriptions SET last_used_at = ? WHERE id = ?`)
     .bind(Date.now(), subscriptionId)
     .run()
 }
@@ -177,38 +185,43 @@ async function handleAdminNotification(job: AdminNotificationJob, env: Env) {
   )
 }
 
-async function sendEmail(env: Env, input: {
-  fromEmail: string
-  fromName: string
-  toEmail: string
-  subject: string
-  text: string
-  replyTo?: string | null
-}) {
+async function sendEmail(
+  env: Env,
+  input: {
+    fromEmail: string
+    fromName: string
+    toEmail: string
+    subject: string
+    text: string
+  }
+) {
+  const fromEmail = input.fromEmail.trim()
+  const toEmail = input.toEmail.trim()
+
+  if (!isValidEmailAddress(fromEmail)) {
+    throw new Error(`Invalid sender email: ${fromEmail}`)
+  }
+
+  if (!isValidEmailAddress(toEmail)) {
+    throw new Error(`Invalid recipient email: ${toEmail}`)
+  }
+
   const msg = createMimeMessage()
 
   msg.setSender({
-    name: input.fromName,
-    addr: input.fromEmail
+    name: input.fromName || 'Mohetios.dev',
+    addr: fromEmail
   })
 
-  msg.setRecipient(input.toEmail)
-  msg.setSubject(input.subject)
-
-  if (input.replyTo) {
-    msg.setHeader('Reply-To', input.replyTo)
-  }
+  msg.setRecipient(toEmail)
+  msg.setSubject(input.subject || 'No subject')
 
   msg.addMessage({
     contentType: 'text/plain',
     data: input.text
   })
 
-  const email = new EmailMessage(
-    input.fromEmail,
-    input.toEmail,
-    msg.asRaw()
-  )
+  const email = new EmailMessage(fromEmail, toEmail, msg.asRaw())
 
   await env.EMAIL.send(email)
 }
@@ -253,13 +266,21 @@ async function handleEmailDelivery(job: EmailDeliveryJob, env: Env) {
   }
 
   try {
+    await env.DB.prepare(
+      `UPDATE inbox_replies
+       SET status = 'QUEUED',
+           error = NULL
+       WHERE id = ?`
+    )
+      .bind(reply.id)
+      .run()
+
     await sendEmail(env, {
       fromEmail: getMailFrom(env),
       fromName: getMailFromName(env),
       toEmail: reply.to_email,
       subject: reply.subject,
-      text: reply.body_text,
-      replyTo: getMailFrom(env)
+      text: reply.body_text
     })
 
     const now = Date.now()
@@ -317,8 +338,17 @@ export default {
   async queue(batch: MessageBatch<WorkerJob>, env: Env) {
     await Promise.allSettled(
       batch.messages.map(async (message) => {
-        await handleJob(message.body, env)
-        message.ack()
+        try {
+          await handleJob(message.body, env)
+          message.ack()
+        } catch (error) {
+          console.error('Queue message failed', {
+            body: message.body,
+            error
+          })
+
+          message.retry()
+        }
       })
     )
   }

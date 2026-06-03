@@ -1,5 +1,3 @@
-// app/composables/usePwaInstallPrompt.ts
-
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>
   userChoice: Promise<{
@@ -9,16 +7,20 @@ type BeforeInstallPromptEvent = Event & {
 }
 
 export function usePwaInstallPrompt() {
-  const deferredPrompt = shallowRef<BeforeInstallPromptEvent | null>(null)
-  const isInstallable = ref(false)
-  const isInstalled = ref(false)
+  const deferredPrompt = useState<BeforeInstallPromptEvent | null>(
+    'pwa:deferred-install-prompt',
+    () => null
+  )
+
+  const isInstallable = useState('pwa:is-installable', () => false)
+  const isInstalled = useState('pwa:is-installed', () => false)
 
   const isStandalone = computed(() => {
     if (!import.meta.client) return false
 
     return (
       window.matchMedia('(display-mode: standalone)').matches ||
-      (window.navigator as any).standalone === true
+      (window.navigator as Navigator & { standalone?: boolean }).standalone === true
     )
   })
 
@@ -28,8 +30,16 @@ export function usePwaInstallPrompt() {
     return /iphone|ipad|ipod/i.test(window.navigator.userAgent)
   })
 
+  const canShowManualInstallGuide = computed(() => {
+    return !isInstalled.value && !isStandalone.value && isIOS.value
+  })
+
   const shouldShowInstallGuide = computed(() => {
-    return !isInstalled.value && !isStandalone.value && (isInstallable.value || isIOS.value)
+    return (
+      !isInstalled.value &&
+      !isStandalone.value &&
+      (isInstallable.value || canShowManualInstallGuide.value)
+    )
   })
 
   async function promptInstall() {
@@ -54,23 +64,6 @@ export function usePwaInstallPrompt() {
       outcome: choice.outcome
     }
   }
-
-  onMounted(() => {
-    isInstalled.value = isStandalone.value
-
-    window.addEventListener('beforeinstallprompt', (event) => {
-      event.preventDefault()
-
-      deferredPrompt.value = event as BeforeInstallPromptEvent
-      isInstallable.value = true
-    })
-
-    window.addEventListener('appinstalled', () => {
-      deferredPrompt.value = null
-      isInstallable.value = false
-      isInstalled.value = true
-    })
-  })
 
   return {
     isIOS,
