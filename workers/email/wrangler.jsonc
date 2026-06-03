@@ -1,0 +1,22 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "mohetios-email",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-05-28",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mohetios-dev-content",
+      "database_id": "3ad937ef-5dfd-4040-bb81-30358caabc92",
+      "migrations_dir": "../../drizzle/migrations"
+    }
+  ],
+  "queues": {
+    "producers": [
+      {
+        "binding": "ADMIN_NOTIFICATION_QUEUE",
+        "queue": "admin-notifications"
+      }
+    ]
+  }
+}

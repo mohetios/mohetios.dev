@@ -1,5 +1,5 @@
-query InboxMessages {
-  inboxMessages {
+query InboxMessage($id: ID!) {
+  inboxMessage(id: $id) {
     id
     source
     status
@@ -16,5 +16,16 @@ query InboxMessages {
     createdAt
     updatedAt
     lastActivityAt
+    replies {
+      id
+      fromEmail
+      toEmail
+      subject
+      bodyText
+      status
+      error
+      createdAt
+      sentAt
+    }
   }
 }

@@ -2,7 +2,10 @@ export const typeDefs = /* GraphQL */ `
   type Query {
     me: User
     memberProfile: User
-    inboxMessages: [InboxMessage!]!
+    inboxMessages(filter: InboxMessageFilterInput, pagination: PaginationInput): [InboxMessage!]!
+    inboxMessage(id: ID!): InboxMessage
+    adminNotifications: [AdminNotification!]!
+    pushSubscriptions: [PushSubscription!]!
   }
 
   type Mutation {
@@ -12,6 +15,7 @@ export const typeDefs = /* GraphQL */ `
     updateMyProfile(input: UpdateProfileInput!): User!
     createContactMessage(input: CreateContactMessageInput!): InboxMessage!
     updateInboxMessageStatus(id: ID!, status: InboxStatus!): InboxMessage!
+    replyToInboxMessage(input: ReplyToInboxMessageInput!): InboxReply!
   }
 
   type User {
@@ -55,42 +59,101 @@ export const typeDefs = /* GraphQL */ `
 
   type InboxMessage {
     id: ID!
-    channel: InboxChannel!
+    source: InboxSource!
     status: InboxStatus!
-    category: InboxCategory!
-    fromName: String!
-    fromEmail: String!
+    kind: InboxKind!
+    priority: InboxPriority!
+    senderName: String!
+    senderEmail: String!
+    senderCompany: String
+    senderWebsite: String
     subject: String!
     preview: String!
-    body: String!
-    topic: String
-    company: String
-    website: String
-    source: String
-    createdAt: String!
-    updatedAt: String!
+    bodyText: String!
+    bodyHtml: String
+    rawMessageId: String
+    inReplyTo: String
+    threadKey: String!
+    replies: [InboxReply!]!
+    createdAt: Float!
+    updatedAt: Float!
+    lastActivityAt: Float!
   }
 
-  enum InboxChannel {
+  type InboxReply {
+    id: ID!
+    inboxMessageId: ID!
+    fromEmail: String!
+    toEmail: String!
+    subject: String!
+    bodyText: String!
+    providerMessageId: String
+    status: InboxReplyStatus!
+    error: String
+    createdAt: Float!
+    sentAt: Float
+  }
+
+  type AdminNotification {
+    id: ID!
+    type: AdminNotificationType!
+    title: String!
+    body: String!
+    url: String!
+    entityType: String!
+    entityId: String!
+    readAt: Float
+    createdAt: Float!
+  }
+
+  type PushSubscription {
+    id: ID!
+    userId: ID!
+    endpoint: String!
+    userAgent: String
+    deviceLabel: String
+    createdAt: Float!
+    lastUsedAt: Float
+    disabledAt: Float
+  }
+
+  enum InboxSource {
     CONTACT_FORM
     EMAIL
-    SYSTEM
-    MANUAL
   }
 
   enum InboxStatus {
-    UNREAD
-    READ
+    NEW
+    OPEN
+    REPLIED
     ARCHIVED
     SPAM
   }
 
-  enum InboxCategory {
+  enum InboxKind {
     LEAD
-    JOB
-    FREELANCE
-    GENERAL
-    SYSTEM
+    COLLABORATION
+    PERSONAL
+    SUPPORT
+    OTHER
+    SPAM
+  }
+
+  enum InboxPriority {
+    LOW
+    NORMAL
+    HIGH
+  }
+
+  enum InboxReplyStatus {
+    DRAFT
+    SENT
+    FAILED
+  }
+
+  enum AdminNotificationType {
+    NEW_INBOUND_EMAIL
+    NEW_CONTACT_MESSAGE
   }
 
   input CreateContactMessageInput {
@@ -101,6 +164,22 @@ export const typeDefs = /* GraphQL */ `
     turnstileToken: String!
     website: String
     company: String
+  }
+
+  input InboxMessageFilterInput {
+    status: InboxStatus
+    kind: InboxKind
+    source: InboxSource
+  }
+
+  input PaginationInput {
+    limit: Int
+    offset: Int
+  }
+
+  input ReplyToInboxMessageInput {
+    inboxMessageId: ID!
+    bodyText: String!
   }
 `
 

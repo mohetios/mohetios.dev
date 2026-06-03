@@ -3,7 +3,7 @@ import { createError, defineEventHandler, sendWebResponse, toWebRequest, type H3
 
 import { Mutation } from '../mutations'
 import { getDb } from '../models/client'
-import { Query } from '../queries'
+import { fieldResolvers, Query } from '../queries'
 import { typeDefs } from '../schema'
 import { getBearerToken } from '../utils/auth'
 import { verifyAuthToken } from '../utils/crypto'
@@ -39,7 +39,8 @@ const schema = createSchema({
   typeDefs,
   resolvers: {
     Query,
-    Mutation
+    Mutation,
+    ...fieldResolvers
   }
 })
 

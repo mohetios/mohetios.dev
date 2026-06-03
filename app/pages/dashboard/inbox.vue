@@ -1,25 +1,23 @@
 <script setup lang="ts">
-type InboxCategory = 'lead' | 'job' | 'freelance' | 'general' | 'system'
-type InboxStatus = 'unread' | 'read' | 'archived' | 'spam'
-type InboxChannel = 'contact_form' | 'email' | 'system' | 'manual'
+type InboxKind = 'lead' | 'collaboration' | 'personal' | 'support' | 'other' | 'spam'
+type InboxStatus = 'new' | 'open' | 'replied' | 'archived' | 'spam'
+type InboxSource = 'contact_form' | 'email'
 type BadgeColor = 'primary' | 'info' | 'success' | 'neutral' | 'warning' | 'error'
 
 type InboxMessage = {
   id: string
-  channel: InboxChannel
-  fromName: string
-  fromEmail: string
+  source: InboxSource
+  senderName: string
+  senderEmail: string
   subject: string
   preview: string
-  body: string
-  category: InboxCategory
+  bodyText: string
+  kind: InboxKind
   status: InboxStatus
   time: string
-  source: string
-  topic?: string | null
-  company?: string | null
-  website?: string | null
-  createdAt: string
+  senderCompany?: string | null
+  senderWebsite?: string | null
+  createdAt: number
 }
 
 type GraphqlResponse<T> = {
@@ -30,20 +28,18 @@ type GraphqlResponse<T> = {
 type InboxMessagesQuery = {
   inboxMessages: Array<{
     id: string
-    channel: string
+    source: string
     status: string
-    category: string
-    fromName: string
-    fromEmail: string
+    kind: string
+    senderName: string
+    senderEmail: string
     subject: string
     preview: string
-    body: string
-    topic?: string | null
-    company?: string | null
-    website?: string | null
-    source?: string | null
-    createdAt: string
-    updatedAt: string
+    bodyText: string
+    senderCompany?: string | null
+    senderWebsite?: string | null
+    createdAt: number
+    updatedAt: number
   }>
 }
 
@@ -64,19 +60,31 @@ useMohetSeo({
 
 const filters = [
   { label: 'All', value: 'all' },
-  { label: 'Unread', value: 'unread' },
+  { label: 'New', value: 'new' },
   { label: 'Leads', value: 'lead' },
+  { label: 'Replied', value: 'replied' },
   { label: 'Archived', value: 'archived' },
   { label: 'Spam', value: 'spam' }
 ] as const
-const categoryOptions = ['All categories', 'Lead', 'Job', 'Freelance', 'General', 'System']
+const kindOptions = [
+  'All categories',
+  'Lead',
+  'Collaboration',
+  'Personal',
+  'Support',
+  'Other',
+  'Spam'
+]
 
 const activeFilter = ref<(typeof filters)[number]['value']>('all')
 const search = ref('')
-const categoryFilter = ref('All categories')
+const kindFilter = ref('All categories')
 const internalNote = ref('')
+const replyBody = ref('')
+const isSendingReply = ref(false)
 const isRefreshing = ref(false)
 const toast = useToast()
+const route = useRoute()
 
 const messages = ref<InboxMessage[]>([])
 const {
@@ -91,18 +99,16 @@ const {
       query InboxMessages {
         inboxMessages {
           id
-          channel
+          source
           status
-          category
-          fromName
-          fromEmail
+          kind
+          senderName
+          senderEmail
           subject
           preview
-          body
-          topic
-          company
-          website
-          source
+          bodyText
+          senderCompany
+          senderWebsite
           createdAt
           updatedAt
         }
@@ -120,21 +126,21 @@ const selectedMessageId = ref<string | undefined>()
 const selectedMessage = computed(
   () => messages.value.find((message) => message.id === selectedMessageId.value) || null
 )
-const unreadCount = computed(
-  () => messages.value.filter((message) => message.status === 'unread').length
+const newCount = computed(
+  () => messages.value.filter((message) => message.status === 'new').length
 )
 const filteredMessages = computed(() => {
   const query = search.value.trim().toLowerCase()
-  const selectedCategory = categoryFilter.value.toLowerCase()
+  const selectedCategory = kindFilter.value.toLowerCase()
 
   return messages.value.filter((message) => {
     const matchesFilter =
       activeFilter.value === 'all' ||
       message.status === activeFilter.value ||
-      message.category === activeFilter.value
+      message.kind === activeFilter.value
     const matchesCategory =
-      selectedCategory === 'all categories' || message.category === selectedCategory
-    const haystack = [message.fromName, message.fromEmail, message.subject, message.preview]
+      selectedCategory === 'all categories' || message.kind === selectedCategory
+    const haystack = [message.senderName, message.senderEmail, message.subject, message.preview]
       .join(' ')
       .toLowerCase()
 
@@ -148,7 +154,9 @@ watch(
     messages.value = currentMessages || []
 
     if (!messages.value.some((message) => message.id === selectedMessageId.value)) {
-      selectedMessageId.value = messages.value[0]?.id
+      const routeMessageId = typeof route.query.message === 'string' ? route.query.message : null
+      selectedMessageId.value =
+        messages.value.find((message) => message.id === routeMessageId)?.id || messages.value[0]?.id
     }
   },
   { immediate: true }
@@ -182,27 +190,29 @@ watch(inboxLoadError, (error) => {
   })
 })
 
-function getCategoryLabel(category: InboxCategory) {
-  return category.charAt(0).toUpperCase() + category.slice(1)
+function getCategoryLabel(kind: InboxKind) {
+  return kind.charAt(0).toUpperCase() + kind.slice(1)
 }
 
-function getCategoryColor(category: InboxCategory): BadgeColor {
+function getCategoryColor(kind: InboxKind): BadgeColor {
   return (
     {
       lead: 'primary',
-      job: 'info',
-      freelance: 'success',
-      general: 'neutral',
-      system: 'warning'
-    } satisfies Record<InboxCategory, BadgeColor>
-  )[category]
+      collaboration: 'success',
+      personal: 'info',
+      support: 'warning',
+      other: 'neutral',
+      spam: 'error'
+    } satisfies Record<InboxKind, BadgeColor>
+  )[kind]
 }
 
 function getStatusLabel(status: InboxStatus) {
   return (
     {
-      unread: 'Unread',
-      read: 'Read',
+      new: 'New',
+      open: 'Open',
+      replied: 'Replied',
       archived: 'Archived',
       spam: 'Spam'
     } satisfies Record<InboxStatus, string>
@@ -212,70 +222,65 @@ function getStatusLabel(status: InboxStatus) {
 function getStatusColor(status: InboxStatus): BadgeColor {
   return (
     {
-      unread: 'primary',
-      read: 'neutral',
+      new: 'primary',
+      open: 'neutral',
+      replied: 'success',
       archived: 'neutral',
       spam: 'error'
     } satisfies Record<InboxStatus, BadgeColor>
   )[status]
 }
 
-function getChannelLabel(channel: InboxChannel) {
+function getSourceLabel(source: InboxSource) {
   return (
     {
       contact_form: 'Contact form',
-      email: 'Email',
-      system: 'System',
-      manual: 'Manual'
-    } satisfies Record<InboxChannel, string>
-  )[channel]
+      email: 'Email'
+    } satisfies Record<InboxSource, string>
+  )[source]
 }
 
 function normalizeMessage(message: {
   id: string
-  channel: string
+  source: string
   status: string
-  category: string
-  fromName: string
-  fromEmail: string
+  kind: string
+  senderName: string
+  senderEmail: string
   subject: string
   preview: string
-  body: string
-  topic?: string | null
-  company?: string | null
-  website?: string | null
-  source?: string | null
-  createdAt: string
+  bodyText: string
+  senderCompany?: string | null
+  senderWebsite?: string | null
+  createdAt: number
 }) {
-  const channel = message.channel.toLowerCase() as InboxChannel
+  const source = message.source.toLowerCase() as InboxSource
 
   return {
     id: message.id,
-    channel,
-    fromName: message.fromName,
-    fromEmail: message.fromEmail,
+    source,
+    senderName: message.senderName,
+    senderEmail: message.senderEmail,
     subject: message.subject,
     preview: message.preview,
-    body: message.body,
-    category: message.category.toLowerCase() as InboxCategory,
+    bodyText: message.bodyText,
+    kind: message.kind.toLowerCase() as InboxKind,
     status: message.status.toLowerCase() as InboxStatus,
     time: formatMessageTime(message.createdAt),
-    source: message.source || getChannelLabel(channel),
-    topic: message.topic,
-    company: message.company,
-    website: message.website,
+    senderCompany: message.senderCompany,
+    senderWebsite: message.senderWebsite,
     createdAt: message.createdAt
   }
 }
 
-function formatMessageTime(value: string) {
+function formatMessageTime(value: number) {
   const date = new Date(value)
   const diffMs = Date.now() - date.getTime()
   const minute = 60 * 1000
   const hour = 60 * minute
   const day = 24 * hour
 
-  if (!Number.isFinite(date.getTime())) return value
+  if (!Number.isFinite(date.getTime())) return String(value)
   if (diffMs < minute) return 'just now'
   if (diffMs < hour) return `${Math.floor(diffMs / minute)}m ago`
   if (diffMs < day) return `${Math.floor(diffMs / hour)}h ago`
@@ -378,18 +383,16 @@ async function updateSelectedStatus(status: InboxStatus) {
         mutation UpdateInboxMessageStatus($id: ID!, $status: InboxStatus!) {
           updateInboxMessageStatus(id: $id, status: $status) {
             id
-            channel
+            source
             status
-            category
-            fromName
-            fromEmail
+            kind
+            senderName
+            senderEmail
             subject
             preview
-            body
-            topic
-            company
-            website
-            source
+            bodyText
+            senderCompany
+            senderWebsite
             createdAt
             updatedAt
           }
@@ -426,7 +429,7 @@ function markSelectedRead() {
     return
   }
 
-  updateSelectedStatus(selectedMessage.value.status === 'unread' ? 'read' : 'unread')
+  updateSelectedStatus(selectedMessage.value.status === 'new' ? 'open' : 'new')
 }
 
 function archiveSelected() {
@@ -438,7 +441,50 @@ function spamSelected() {
 }
 
 function restoreSelected() {
-  updateSelectedStatus('read')
+  updateSelectedStatus('open')
+}
+
+async function sendReply() {
+  if (!selectedMessage.value || !replyBody.value.trim()) {
+    return
+  }
+
+  isSendingReply.value = true
+
+  try {
+    await requestInboxGraphql(
+      `
+        mutation ReplyToInboxMessage($input: ReplyToInboxMessageInput!) {
+          replyToInboxMessage(input: $input) {
+            id
+            status
+            error
+          }
+        }
+      `,
+      {
+        input: {
+          inboxMessageId: selectedMessage.value.id,
+          bodyText: replyBody.value
+        }
+      }
+    )
+    replyBody.value = ''
+    await loadMessages()
+    toast.add({
+      color: 'success',
+      icon: 'i-lucide-send',
+      title: 'Reply sent'
+    })
+  } catch (error) {
+    toast.add({
+      color: 'error',
+      icon: 'i-lucide-circle-alert',
+      title: getInboxErrorMessage(error)
+    })
+  } finally {
+    isSendingReply.value = false
+  }
 }
 
 </script>
@@ -464,7 +510,7 @@ function restoreSelected() {
               Refresh
             </UButton>
             <UButton color="neutral" variant="outline" icon="i-lucide-archive" disabled>
-              Archive all read
+              Archive all open
             </UButton>
           </div>
         </template>
@@ -494,7 +540,7 @@ function restoreSelected() {
               placeholder="Search emails..."
               class="sm:w-64"
             />
-            <USelect v-model="categoryFilter" :items="categoryOptions" class="sm:w-40" />
+            <USelect v-model="kindFilter" :items="kindOptions" class="sm:w-40" />
           </div>
         </template>
       </UDashboardToolbar>
@@ -507,9 +553,9 @@ function restoreSelected() {
             <div class="flex items-center justify-between gap-3">
               <div>
                 <h2 class="text-sm font-semibold text-highlighted">Messages</h2>
-                <p class="text-xs text-muted">Messages from contact, email, and system channels</p>
+                <p class="text-xs text-muted">Messages from contact, email, and system sources</p>
               </div>
-              <UBadge color="primary" variant="soft">{{ unreadCount }} unread</UBadge>
+              <UBadge color="primary" variant="soft">{{ newCount }} new</UBadge>
             </div>
           </template>
 
@@ -533,21 +579,21 @@ function restoreSelected() {
               <div class="flex items-start gap-3">
                 <span
                   class="mt-2 size-2 rounded-full"
-                  :class="message.status === 'unread' ? 'bg-primary' : 'bg-transparent'"
+                  :class="message.status === 'new' ? 'bg-primary' : 'bg-transparent'"
                 />
                 <div class="min-w-0 flex-1 space-y-1">
                   <div class="flex items-start justify-between gap-3">
                     <p
                       class="truncate text-sm text-highlighted"
-                      :class="message.status === 'unread' ? 'font-semibold' : 'font-medium'"
+                      :class="message.status === 'new' ? 'font-semibold' : 'font-medium'"
                     >
-                      {{ message.fromName }}
+                      {{ message.senderName }}
                     </p>
                     <span class="shrink-0 text-xs text-muted">{{ message.time }}</span>
                   </div>
                   <p
                     class="truncate text-sm text-highlighted"
-                    :class="message.status === 'unread' ? 'font-semibold' : ''"
+                    :class="message.status === 'new' ? 'font-semibold' : ''"
                   >
                     {{ message.subject }}
                   </p>
@@ -556,10 +602,10 @@ function restoreSelected() {
                   </p>
                   <div class="flex flex-wrap gap-2 pt-1">
                     <UBadge color="neutral" variant="outline" size="sm">
-                      {{ getChannelLabel(message.channel) }}
+                      {{ getSourceLabel(message.source) }}
                     </UBadge>
-                    <UBadge :color="getCategoryColor(message.category)" variant="soft" size="sm">
-                      {{ getCategoryLabel(message.category) }}
+                    <UBadge :color="getCategoryColor(message.kind)" variant="soft" size="sm">
+                      {{ getCategoryLabel(message.kind) }}
                     </UBadge>
                     <UBadge :color="getStatusColor(message.status)" variant="subtle" size="sm">
                       {{ getStatusLabel(message.status) }}
@@ -586,12 +632,12 @@ function restoreSelected() {
             <div class="flex flex-col gap-4">
               <div class="flex items-start justify-between gap-4">
                 <div class="flex min-w-0 items-start gap-3">
-                  <UAvatar :alt="selectedMessage.fromName" size="lg" />
+                  <UAvatar :alt="selectedMessage.senderName" size="lg" />
                   <div class="min-w-0">
                     <p class="truncate text-sm font-semibold text-highlighted">
-                      {{ selectedMessage.fromName }}
+                      {{ selectedMessage.senderName }}
                     </p>
-                    <p class="truncate text-xs text-muted">{{ selectedMessage.fromEmail }}</p>
+                    <p class="truncate text-xs text-muted">{{ selectedMessage.senderEmail }}</p>
                     <h2 class="mt-3 text-lg font-semibold tracking-normal text-highlighted">
                       {{ selectedMessage.subject }}
                     </h2>
@@ -600,8 +646,8 @@ function restoreSelected() {
                 <div class="shrink-0 text-end">
                   <p class="text-xs text-muted">{{ selectedMessage.time }}</p>
                   <div class="mt-2 flex flex-wrap justify-end gap-2">
-                    <UBadge :color="getCategoryColor(selectedMessage.category)" variant="soft">
-                      {{ getCategoryLabel(selectedMessage.category) }}
+                    <UBadge :color="getCategoryColor(selectedMessage.kind)" variant="soft">
+                      {{ getCategoryLabel(selectedMessage.kind) }}
                     </UBadge>
                     <UBadge :color="getStatusColor(selectedMessage.status)" variant="subtle">
                       {{ getStatusLabel(selectedMessage.status) }}
@@ -618,7 +664,7 @@ function restoreSelected() {
                   size="sm"
                   @click="markSelectedRead"
                 >
-                  {{ selectedMessage.status === 'unread' ? 'Mark read' : 'Mark unread' }}
+                  {{ selectedMessage.status === 'new' ? 'Mark open' : 'Mark new' }}
                 </UButton>
                 <UButton color="primary" variant="soft" icon="i-lucide-user-plus" size="sm">
                   Create lead
@@ -665,29 +711,29 @@ function restoreSelected() {
 
           <div class="space-y-5">
             <div class="whitespace-pre-line text-sm leading-7 text-highlighted">
-              {{ selectedMessage.body }}
+              {{ selectedMessage.bodyText }}
             </div>
 
             <p class="text-xs text-muted">
-              Received via {{ selectedMessage.source }} · {{ getChannelLabel(selectedMessage.channel) }}
+              Received via {{ getSourceLabel(selectedMessage.source) }}
             </p>
 
             <div
-              v-if="selectedMessage.company || selectedMessage.website"
+              v-if="selectedMessage.senderCompany || selectedMessage.senderWebsite"
               class="grid gap-3 text-xs text-muted sm:grid-cols-2"
             >
-              <p v-if="selectedMessage.company">
+              <p v-if="selectedMessage.senderCompany">
                 <span class="font-medium text-highlighted">Company:</span>
-                {{ selectedMessage.company }}
+                {{ selectedMessage.senderCompany }}
               </p>
-              <p v-if="selectedMessage.website">
+              <p v-if="selectedMessage.senderWebsite">
                 <span class="font-medium text-highlighted">Website:</span>
-                {{ selectedMessage.website }}
+                {{ selectedMessage.senderWebsite }}
               </p>
             </div>
 
             <UCard
-              v-if="['lead', 'job', 'freelance'].includes(selectedMessage.category)"
+              v-if="['lead', 'collaboration'].includes(selectedMessage.kind)"
               variant="subtle"
             >
               <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -700,6 +746,26 @@ function restoreSelected() {
                 </UButton>
               </div>
             </UCard>
+
+            <USeparator />
+
+            <div class="space-y-3">
+              <h3 class="text-sm font-medium text-highlighted">Reply</h3>
+              <UTextarea
+                v-model="replyBody"
+                placeholder="Write a direct reply..."
+                :rows="6"
+              />
+              <UButton
+                color="primary"
+                icon="i-lucide-send"
+                :loading="isSendingReply"
+                :disabled="!replyBody.trim()"
+                @click="sendReply"
+              >
+                Send reply
+              </UButton>
+            </div>
 
             <USeparator />
 

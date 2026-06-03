@@ -1,14 +1,16 @@
-import { eq } from 'drizzle-orm'
 import { GraphQLError } from 'graphql'
 
-import { inboxMessages } from '../models/schema'
 import type { GraphQLContext } from '../routes/graph'
+import { createInboxMessage } from '../services/inbox/create-inbox-message'
+import { markMessageStatus } from '../services/inbox/mark-message-status'
+import { replyToMessage } from '../services/inbox/reply-to-message'
+import { createAdminNotification } from '../services/notifications/create-admin-notification'
 import { requirePermission } from '../utils/auth'
-import { createId } from '../utils/id'
+import type { AdminNotificationJob } from '../../shared/contracts/notifications'
 
 type ContactTopic = 'PROJECT' | 'CONSULTING' | 'COLLABORATION' | 'WRITING' | 'OTHER'
-type InboxStatus = 'UNREAD' | 'READ' | 'ARCHIVED' | 'SPAM'
-type InboxCategory = 'LEAD' | 'JOB' | 'FREELANCE' | 'GENERAL' | 'SYSTEM'
+type InboxStatus = 'NEW' | 'OPEN' | 'REPLIED' | 'ARCHIVED' | 'SPAM'
+type InboxKind = 'LEAD' | 'COLLABORATION' | 'PERSONAL' | 'SUPPORT' | 'OTHER' | 'SPAM'
 
 type CreateContactMessageArgs = {
   input: {
@@ -27,6 +29,13 @@ type UpdateInboxMessageStatusArgs = {
   status: InboxStatus
 }
 
+type ReplyToInboxMessageArgs = {
+  input: {
+    inboxMessageId: string
+    bodyText: string
+  }
+}
+
 const validTopics = new Set<ContactTopic>([
   'PROJECT',
   'CONSULTING',
@@ -35,7 +44,7 @@ const validTopics = new Set<ContactTopic>([
   'OTHER'
 ])
 
-const validStatuses = new Set<InboxStatus>(['UNREAD', 'READ', 'ARCHIVED', 'SPAM'])
+const validStatuses = new Set<InboxStatus>(['NEW', 'OPEN', 'REPLIED', 'ARCHIVED', 'SPAM'])
 
 function normalizeText(value: string, maxLength: number, label: string) {
   const normalized = value.trim()
@@ -85,11 +94,11 @@ function normalizeUrl(value: string | null | undefined) {
   return url
 }
 
-function getContactCategory(topic: string): InboxCategory {
+function getContactKind(topic: string): InboxKind {
   if (topic === 'PROJECT' || topic === 'CONSULTING') return 'LEAD'
-  if (topic === 'COLLABORATION' || topic === 'WRITING') return 'FREELANCE'
+  if (topic === 'COLLABORATION' || topic === 'WRITING') return 'COLLABORATION'
 
-  return 'GENERAL'
+  return 'OTHER'
 }
 
 function getContactSubject(topic: string, company: string | null) {
@@ -130,29 +139,32 @@ export const inboxMutations = {
       throw new GraphQLError('Topic is invalid')
     }
 
-    const now = new Date().toISOString()
-    const preview = body.length > 160 ? `${body.slice(0, 157).trimEnd()}...` : body
-    const message = {
-      id: createId(),
-      channel: 'CONTACT_FORM' as const,
-      status: 'UNREAD' as const,
-      category: getContactCategory(topic),
-      fromName: name,
-      fromEmail: email,
+    const message = await createInboxMessage(context.db, {
+      source: 'CONTACT_FORM',
+      kind: getContactKind(topic),
+      senderName: name,
+      senderEmail: email,
       subject: getContactSubject(topic, company),
-      preview,
-      body,
-      topic,
-      company,
-      website,
-      source: 'contact form',
-      createdAt: now,
-      updatedAt: now
-    }
+      bodyText: body,
+      senderCompany: company,
+      senderWebsite: website
+    })
+    const notification = await createAdminNotification(context.db, {
+      type: 'NEW_CONTACT_MESSAGE',
+      title: 'New contact message',
+      body: `New message from ${name}`,
+      url: `/dashboard/inbox/${message.id}`,
+      entityType: 'inboxMessage',
+      entityId: message.id
+    })
 
-    const [created] = await context.db.insert(inboxMessages).values(message).returning()
+    await context.env.ADMIN_NOTIFICATION_QUEUE?.send({
+      type: 'NEW_CONTACT_MESSAGE',
+      inboxMessageId: message.id,
+      notificationId: notification.id
+    } satisfies AdminNotificationJob)
 
-    return created
+    return message
   },
 
   updateInboxMessageStatus: async (
@@ -166,19 +178,31 @@ export const inboxMutations = {
       throw new GraphQLError('Status is invalid')
     }
 
-    const [message] = await context.db
-      .update(inboxMessages)
-      .set({
-        status: args.status,
-        updatedAt: new Date().toISOString()
-      })
-      .where(eq(inboxMessages.id, args.id))
-      .returning()
+    const message = await markMessageStatus(context.db, args.id, args.status)
 
     if (!message) {
       throw new GraphQLError('Message not found')
     }
 
     return message
+  },
+
+  replyToInboxMessage: async (
+    _parent: unknown,
+    args: ReplyToInboxMessageArgs,
+    context: GraphQLContext
+  ) => {
+    requirePermission(context, 'inbox:manage')
+
+    const bodyText = normalizeText(args.input.bodyText, 10000, 'Reply')
+
+    try {
+      return await replyToMessage(context.db, context.env, {
+        inboxMessageId: args.input.inboxMessageId,
+        bodyText
+      })
+    } catch (error) {
+      throw new GraphQLError(error instanceof Error ? error.message : 'Reply failed')
+    }
   }
 }

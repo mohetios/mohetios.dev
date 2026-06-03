@@ -4,6 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "velite dev & nuxt dev",
+    "dev:email": "wrangler dev --config workers/email/wrangler.jsonc --env-file .env",
+    "dev:system": "wrangler dev --config workers/system/wrangler.jsonc --env-file .env",
+    "dev:workers": "pnpm run dev:email & pnpm run dev:system",
     "build": "velite build && NODE_OPTIONS=--max-old-space-size=4096 nuxt build",
     "build:pages": "velite build && NODE_OPTIONS=--max-old-space-size=4096 nuxi build --preset=cloudflare_pages",
     "preview": "wrangler pages dev dist",
@@ -22,6 +25,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@block65/webcrypto-web-push": "^1.0.2",
     "@graphql-tools/schema": "^10.0.33",
     "@iconify-json/lucide": "^1.2.111",
     "@nuxt/image": "^2.0.0",
@@ -31,6 +35,7 @@
     "@nuxtjs/robots": "^5.7.1",
     "@nuxtjs/sitemap": "^7.6.0",
     "@nuxtjs/turnstile": "^1.1.3",
+    "@vite-pwa/nuxt": "^1.1.1",
     "drizzle-orm": "^0.45.2",
     "graphql": "^16.14.0",
     "graphql-request": "^7.4.0",
@@ -39,6 +44,7 @@
     "nuxt": "^4.4.6",
     "nuxt-charts": "^2.1.4",
     "nuxt-graphql-client": "^0.2.46",
+    "postal-mime": "^2.7.4",
     "tailwindcss": "^4.3.0",
     "zod": "^4.4.3"
   },

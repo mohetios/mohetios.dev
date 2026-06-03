@@ -1,5 +1,20 @@
 mutation UpdateInboxMessageStatus($id: ID!, $status: InboxStatus!) {
   updateInboxMessageStatus(id: $id, status: $status) {
-    ...InboxMessageFields
+    id
+    source
+    status
+    kind
+    priority
+    senderName
+    senderEmail
+    senderCompany
+    senderWebsite
+    subject
+    preview
+    bodyText
+    bodyHtml
+    createdAt
+    updatedAt
+    lastActivityAt
   }
 }

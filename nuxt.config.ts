@@ -43,7 +43,8 @@ export default defineNuxtConfig({
     '@nuxtjs/robots',
     'nitro-cloudflare-dev',
     '@nuxtjs/turnstile',
-    'nuxt-graphql-client'
+    'nuxt-graphql-client',
+    '@vite-pwa/nuxt'
   ],
 
   devtools: {
@@ -95,9 +96,14 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    jwtSecret: process.env.JWT_SECRET || '',
-    authTokenTtlSeconds: process.env.AUTH_TOKEN_TTL_SECONDS || '604800',
-    allowPublicRegister: process.env.ALLOW_PUBLIC_REGISTER || 'false',
+    jwtSecret: process.env.NUXT_JWT_SECRET || '',
+    authTokenTtlSeconds: process.env.NUXT_AUTH_TOKEN_TTL_SECONDS || '604800',
+    allowPublicRegister: process.env.NUXT_ALLOW_PUBLIC_REGISTER || 'false',
+    mailFrom: process.env.NUXT_MAIL_FROM || 'hi@mohetios.dev',
+    mailFromName: process.env.NUXT_MAIL_FROM_NAME || 'Mohetios.dev',
+    vapidPublicKey: process.env.NUXT_VAPID_PUBLIC_KEY || '',
+    vapidPrivateKey: process.env.NUXT_VAPID_PRIVATE_KEY || '',
+    vapidSubject: process.env.NUXT_VAPID_SUBJECT || 'mailto:hi@mohetios.dev',
     turnstile: {
       secretKey: process.env.NUXT_TURNSTILE_SECRET_KEY || ''
     },
@@ -253,6 +259,35 @@ export default defineNuxtConfig({
     }
   },
 
+  pwa: {
+    strategies: 'injectManifest',
+    srcDir: 'service-worker',
+    filename: 'sw.ts',
+    manifest: {
+      name: 'Mohetios.dev',
+      short_name: 'Mohetios',
+      display: 'standalone',
+      start_url: '/dashboard',
+      scope: '/',
+      icons: [
+        {
+          src: '/icons/icon-192.png',
+          sizes: '192x192',
+          type: 'image/png'
+        },
+        {
+          src: '/icons/icon-512.png',
+          sizes: '512x512',
+          type: 'image/png'
+        }
+      ]
+    },
+    injectManifest: {
+      globPatterns: ['**/*.{js,css,html,png,svg,ico,webp,woff,woff2}']
+    },
+    registerType: 'autoUpdate'
+  },
+
   robots: {
     sitemap: ['/sitemap.xml'],
     cacheControl: 'max-age=14400, must-revalidate',
@@ -271,5 +306,5 @@ export default defineNuxtConfig({
 
   turnstile: {
     siteKey: turnstileSiteKey
-  }
+  },
 })

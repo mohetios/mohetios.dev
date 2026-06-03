@@ -1,0 +1,31 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "mohetios-system",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-05-28",
+  "compatibility_flags": ["nodejs_compat"],
+  "secrets": {
+    "required": [
+      "NUXT_VAPID_PUBLIC_KEY",
+      "NUXT_VAPID_PRIVATE_KEY",
+      "NUXT_VAPID_SUBJECT"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mohetios-dev-content",
+      "database_id": "3ad937ef-5dfd-4040-bb81-30358caabc92",
+      "migrations_dir": "../../drizzle/migrations"
+    }
+  ],
+  "queues": {
+    "consumers": [
+      {
+        "queue": "admin-notifications",
+        "max_batch_size": 10,
+        "max_batch_timeout": 5
+      }
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "mohetios",
+  "name": "mohetios-dev",
   "compatibility_date": "2026-05-28",
   "compatibility_flags": ["nodejs_compat"],
   "pages_build_output_dir": "./dist",
@@ -14,5 +14,13 @@
       "database_id": "3ad937ef-5dfd-4040-bb81-30358caabc92",
       "migrations_dir": "drizzle/migrations"
     }
-  ]
+  ],
+  "queues": {
+    "producers": [
+      {
+        "binding": "ADMIN_NOTIFICATION_QUEUE",
+        "queue": "admin-notifications"
+      }
+    ]
+  }
 }
