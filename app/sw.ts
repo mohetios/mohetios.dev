@@ -1,112 +1,83 @@
-import { buildPushPayload } from '@block65/webcrypto-web-push'
-import type { D1Database, MessageBatch } from '@cloudflare/workers-types'
+/// <reference lib="webworker" />
 
-import type { AdminNotificationJob, AdminPushPayload } from '../shared/contracts/notifications'
+import type { AdminPushPayload } from '../shared/contracts/notifications'
 
-type Env = {
-  DB: D1Database
-  NUXT_VAPID_PUBLIC_KEY: string
-  NUXT_VAPID_PRIVATE_KEY: string
-  NUXT_VAPID_SUBJECT: string
-}
+declare const self: ServiceWorkerGlobalScope
 
-type NotificationRow = {
-  id: string
-  type: AdminNotificationJob['type']
-  title: string
-  body: string
-  url: string
-  entity_id: string
-}
-
-type PushSubscriptionRow = {
-  id: string
-  endpoint: string
-  p256dh: string
-  auth: string
-}
-
-async function sendPush(env: Env, subscription: PushSubscriptionRow, payload: AdminPushPayload) {
-  const request = await buildPushPayload(
-    {
-      data: JSON.stringify(payload),
-      options: {
-        ttl: 60
-      }
-    },
-    {
-      endpoint: subscription.endpoint,
-      expirationTime: null,
-      keys: {
-        p256dh: subscription.p256dh,
-        auth: subscription.auth
-      }
-    },
-    {
-      subject: env.NUXT_VAPID_SUBJECT,
-      publicKey: env.NUXT_VAPID_PUBLIC_KEY,
-      privateKey: env.NUXT_VAPID_PRIVATE_KEY
-    }
-  )
-
-  return fetch(subscription.endpoint, request as RequestInit)
-}
-
-async function handleNotification(job: AdminNotificationJob, env: Env) {
-  const notification = await env.DB.prepare(
-    `SELECT id, type, title, body, url, entity_id FROM admin_notifications WHERE id = ?`
-  )
-    .bind(job.notificationId)
-    .first<NotificationRow>()
-
-  if (!notification) {
-    return
+function fallbackPayload(): AdminPushPayload {
+  return {
+    type: 'NEW_CONTACT_MESSAGE',
+    title: 'Mohetios.dev',
+    body: 'New dashboard notification',
+    url: '/dashboard/inbox',
+    notificationId: '',
+    entityId: ''
   }
+}
 
-  const subscriptions = await env.DB.prepare(
-    `SELECT push_subscriptions.id, push_subscriptions.endpoint, push_subscriptions.p256dh, push_subscriptions.auth
-     FROM push_subscriptions
-     INNER JOIN users ON users.id = push_subscriptions.user_id
-     WHERE users.role = 'OWNER' AND push_subscriptions.disabled_at IS NULL`
-  ).all<PushSubscriptionRow>()
+function parsePayload(data: PushMessageData | null): AdminPushPayload {
+  if (!data) return fallbackPayload()
 
-  const payload: AdminPushPayload = {
-    type: notification.type,
-    title: notification.title,
-    body: notification.body,
-    url: notification.url || '/dashboard/inbox',
-    notificationId: notification.id,
-    entityId: notification.entity_id
+  try {
+    return data.json() as AdminPushPayload
+  } catch {
+    return fallbackPayload()
   }
+}
 
-  await Promise.all(
-    subscriptions.results.map(async (subscription) => {
-      try {
-        const response = await sendPush(env, subscription, payload)
+self.addEventListener('install', () => {
+  self.skipWaiting()
+})
 
-        if (response.status === 404 || response.status === 410) {
-          await env.DB.prepare(`UPDATE push_subscriptions SET disabled_at = ? WHERE id = ?`)
-            .bind(Date.now(), subscription.id)
-            .run()
-          return
-        }
+self.addEventListener('activate', (event) => {
+  event.waitUntil(self.clients.claim())
+})
 
-        if (response.ok) {
-          await env.DB.prepare(`UPDATE push_subscriptions SET last_used_at = ? WHERE id = ?`)
-            .bind(Date.now(), subscription.id)
-            .run()
-        }
-      } catch {
-        await env.DB.prepare(`UPDATE push_subscriptions SET disabled_at = ? WHERE id = ?`)
-          .bind(Date.now(), subscription.id)
-          .run()
+self.addEventListener('push', (event) => {
+  const payload = parsePayload(event.data)
+  const url = payload.url || '/dashboard/inbox'
+
+  event.waitUntil(
+    self.registration.showNotification(payload.title || 'Mohetios.dev', {
+      body: payload.body || 'New notification',
+      icon: '/icons/android-chrome-192x192.png',
+      badge: '/icons/android-chrome-192x192.png',
+      tag: payload.notificationId || payload.entityId || 'mohetios-notification',
+      data: {
+        url,
+        notificationId: payload.notificationId,
+        entityId: payload.entityId
       }
     })
   )
-}
+})
 
-export default {
-  async queue(batch: MessageBatch<AdminNotificationJob>, env: Env) {
-    await Promise.all(batch.messages.map((message) => handleNotification(message.body, env)))
-  }
-}
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close()
+
+  const targetUrl = new URL(
+    event.notification.data?.url || '/dashboard/inbox',
+    self.location.origin
+  ).href
+
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(async (clients) => {
+      const exactClient = clients.find((client) => client.url === targetUrl && 'focus' in client)
+
+      if (exactClient) {
+        return exactClient.focus()
+      }
+
+      const appClient = clients.find((client) => 'focus' in client)
+
+      if (appClient) {
+        await appClient.focus()
+        return appClient.navigate?.(targetUrl)
+      }
+
+      return self.clients.openWindow(targetUrl)
+    })
+  )
+})
+
+export {}
