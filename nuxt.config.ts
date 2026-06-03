@@ -261,7 +261,7 @@ export default defineNuxtConfig({
 
   pwa: {
     strategies: 'injectManifest',
-    srcDir: 'service-worker',
+    srcDir: './',
     filename: 'sw.ts',
     manifest: {
       name: 'Mohetios.dev',
