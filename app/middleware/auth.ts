@@ -1,38 +1,5 @@
+import { isAuthError } from '~/composables/useAuth'
 import type { Permission } from '~~/shared/constants/permissions'
-
-type AuthFetchError = {
-  status?: number
-  statusCode?: number
-  response?: {
-    status?: number
-  }
-  data?: {
-    status?: number
-    statusCode?: number
-  }
-  message?: string
-}
-
-function getErrorStatus(error: unknown) {
-  if (!error || typeof error !== 'object') return null
-
-  const currentError = error as AuthFetchError
-
-  return (
-    currentError.status ||
-    currentError.statusCode ||
-    currentError.response?.status ||
-    currentError.data?.status ||
-    currentError.data?.statusCode ||
-    null
-  )
-}
-
-function isAuthError(error: unknown) {
-  const status = getErrorStatus(error)
-
-  return status === 401 || status === 403
-}
 
 function stripLocale(path: string) {
   return path.replace(/^\/(en|fa)(?=\/|$)/, '') || '/'
@@ -67,9 +34,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return
   }
 
-  auth.restoreToken()
+  const token = auth.restoreToken()
 
-  if (!auth.token.value) {
+  if (!token) {
     if (needsAuth) {
       return navigateTo(localePath('/login'))
     }
@@ -102,11 +69,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
       if (needsAuth) {
         return navigateTo(localePath('/login'))
       }
+
+      return
     }
 
-    // Important:
-    // Do not clear session for temporary API/network/server errors.
-    // Keep the token so a page reload or transient fetchMe failure does not log the user out.
+    // Keep the cookie/token on temporary server, GraphQL, or network failures.
+    // The protected page may show its own error state, but the user is not logged out.
     return
   }
 })
