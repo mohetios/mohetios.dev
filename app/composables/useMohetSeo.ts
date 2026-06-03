@@ -38,11 +38,21 @@ function toIsoDate(value?: string | Date) {
   return new Date(value).toISOString()
 }
 
+function getLocaleCode(locale: string | { code: string }) {
+  return typeof locale === 'string' ? locale : locale.code
+}
+
+function getOgLocale(locale: string | { code: string; language?: string }) {
+  const value = typeof locale === 'string' ? locale : locale.language || locale.code
+
+  return value.replace('-', '_')
+}
+
 export function useMohetSeo(input: SeoInput) {
   const route = useRoute()
   const { locale, locales } = useI18n()
 
-  const canonicalPath = computed(() => normalizePath(toValue(input.path) || route.path))
+  const canonicalPath = computed(() => toPublicPath(normalizePath(toValue(input.path) || route.path)))
   const canonicalUrl = computed(() => absoluteUrl(canonicalPath.value))
   const title = computed(() => {
     const value = cleanTitle(toValue(input.title))
@@ -75,7 +85,7 @@ export function useMohetSeo(input: SeoInput) {
 
   useHead({
     link: computed(() => {
-      const localeCodes = locales.value.map((item) => (typeof item === 'string' ? item : item.code))
+      const localeCodes = locales.value.map((item) => getLocaleCode(item))
       const orderedLocaleCodes = [
         defaultLocale,
         ...localeCodes.filter((code) => code !== defaultLocale)
@@ -108,19 +118,19 @@ export function useMohetSeo(input: SeoInput) {
       return [{ rel: 'canonical', href: canonicalUrl.value }, ...alternates, ...defaultAlternate]
     }),
     meta: computed(() => {
-      const alternateLocale = locale.value === 'fa' ? 'en' : 'fa'
-      const alternatePath = getLocalizedRoutePath(canonicalPath.value, alternateLocale)
+      const currentLocale = locales.value.find((item) => getLocaleCode(item) === locale.value)
+      const alternateLocales = locales.value.filter((item) => {
+        const code = getLocaleCode(item)
+
+        return code !== locale.value && getLocalizedRoutePath(canonicalPath.value, code)
+      })
 
       return [
-        { property: 'og:locale', content: locale.value === 'fa' ? 'fa_IR' : 'en_US' },
-        ...(alternatePath
-          ? [
-              {
-                property: 'og:locale:alternate',
-                content: locale.value === 'fa' ? 'en_US' : 'fa_IR'
-              }
-            ]
-          : [])
+        { property: 'og:locale', content: getOgLocale(currentLocale || locale.value) },
+        ...alternateLocales.map((item) => ({
+          property: 'og:locale:alternate',
+          content: getOgLocale(item)
+        }))
       ]
     })
   })

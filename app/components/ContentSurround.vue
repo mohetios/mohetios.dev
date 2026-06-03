@@ -14,7 +14,7 @@ defineProps<{
   <div class="grid gap-3 sm:grid-cols-2">
     <UPageCard
       v-if="surround[0]"
-      :to="surround[0].path"
+      :to="toPublicPath(surround[0].path)"
       :title="surround[0].title"
       :description="surround[0].description"
       icon="i-lucide-arrow-left"
@@ -24,7 +24,7 @@ defineProps<{
 
     <UPageCard
       v-if="surround[1]"
-      :to="surround[1].path"
+      :to="toPublicPath(surround[1].path)"
       :title="surround[1].title"
       :description="surround[1].description"
       trailing-icon="i-lucide-arrow-right"

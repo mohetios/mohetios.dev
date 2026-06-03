@@ -1,14 +1,14 @@
 <script setup lang="ts">
-const { t, locale, locales } = useI18n()
+const { t, locale, locales, loadLocaleMessages } = useI18n()
 const localePath = useLocalePath()
-const switchLocalePath = useSwitchLocalePath()
 const auth = useAuth()
+const localeCookie = useCookie<typeof locale.value | null>('mohetios_locale', {
+  path: '/',
+  sameSite: 'lax'
+})
 
 const nextLocale = computed(() => {
   return locales.value.find((item) => item.code !== locale.value)
-})
-const nextLocalePath = computed(() => {
-  return nextLocale.value ? switchLocalePath(nextLocale.value.code) : ''
 })
 const accountLabel = computed(() => auth.user.value?.username || 'Dashboard user')
 const accountDescription = computed(() => auth.user.value?.role || t('dashboard.role'))
@@ -31,12 +31,12 @@ const accountMenuItems = computed(() => [
       icon: 'i-lucide-house',
       to: localePath('/')
     },
-    ...(nextLocale.value && nextLocalePath.value
+    ...(nextLocale.value
       ? [
           {
             label: nextLocale.value.code.toUpperCase(),
             icon: 'i-lucide-languages',
-            to: nextLocalePath.value
+            onSelect: () => switchDashboardLocale(nextLocale.value?.code as typeof locale.value)
           }
         ]
       : []),
@@ -51,6 +51,16 @@ const accountMenuItems = computed(() => [
 async function logout() {
   await auth.logout()
   await navigateTo(localePath('/login'))
+}
+
+async function switchDashboardLocale(code?: typeof locale.value) {
+  if (!code) {
+    return
+  }
+
+  await loadLocaleMessages(code)
+  localeCookie.value = code
+  locale.value = code
 }
 </script>
 

@@ -15,7 +15,7 @@ const otherProjects = computed(() =>
 useMohetSeo({
   title: () => t('content.projects.seoTitle'),
   description: () => t('pages.projectsDescription'),
-  path: () => `/${locale.value}/projects`
+  path: () => getLocalizedPublicPath('/projects', locale.value)
 })
 </script>
 

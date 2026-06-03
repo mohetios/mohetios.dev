@@ -82,7 +82,7 @@ useMohetSeo({
     locale.value === 'fa'
       ? `همه‌ی یادداشت‌های برچسب‌خورده با ${t('tags.titlePrefix')}${tagLabel.value} در Mohetios.dev.`
       : `All notes tagged with ${t('tags.titlePrefix')}${tagLabel.value} across Mohetios.dev.`,
-  path: () => `/${locale.value}/tags/${tagSlug.value}`
+  path: () => getLocalizedPublicPath(`/tags/${tagSlug.value}`, locale.value)
 })
 
 useSeoMeta({
@@ -140,7 +140,7 @@ useSeoMeta({
                 />
               </div>
               <h2 class="text-2xl font-semibold tracking-tight text-highlighted sm:text-3xl">
-                <NuxtLink :to="featuredItem.path" class="hover:underline">
+                <NuxtLink :to="toPublicPath(featuredItem.path)" class="hover:underline">
                   {{ featuredItem.title }}
                 </NuxtLink>
               </h2>
@@ -171,7 +171,7 @@ useSeoMeta({
                   <ContentMeta :date="cardDate(item)" :status="item.status" />
                 </div>
                 <h3 class="text-lg font-semibold tracking-tight text-highlighted">
-                  <NuxtLink :to="item.path" class="hover:underline">
+                  <NuxtLink :to="toPublicPath(item.path)" class="hover:underline">
                     {{ item.title }}
                   </NuxtLink>
                 </h3>

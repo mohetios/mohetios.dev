@@ -10,7 +10,7 @@ const busy = ref(false)
 const dismissed = useState('admin-push:prompt-dismissed', () => false)
 const setupAttempted = useState('admin-push:setup-attempted', () => false)
 
-const pathWithoutLocale = computed(() => route.path.replace(/^\/(en|fa)(?=\/|$)/, '') || '/')
+const pathWithoutLocale = computed(() => stripLocalePrefix(route.path))
 const isDashboardRoute = computed(
   () =>
     pathWithoutLocale.value === '/dashboard' || pathWithoutLocale.value.startsWith('/dashboard/')

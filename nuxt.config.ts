@@ -1,4 +1,9 @@
-import { getPrerenderContentRoutes } from './app/utils/content'
+import {
+  defaultLocale,
+  getLocalizedPublicPath,
+  getPrerenderContentRoutes,
+  supportedLocales
+} from './app/utils/content'
 
 const isDev = process.env.NODE_ENV !== 'production'
 const isProduction = process.env.NODE_ENV === 'production'
@@ -15,21 +20,28 @@ const immutableAssetHeaders = {
 
 const turnstileSiteKey = process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || ''
 
-const staticRoutes = [
-  '/',
-  '/en',
-  '/fa',
-  '/en/blog',
-  '/fa/blog',
-  '/en/lab',
-  '/fa/lab',
-  '/en/projects',
-  '/fa/projects',
-  '/en/about',
-  '/fa/about',
-  '/en/contact',
-  '/fa/contact'
-]
+const staticRouteSections = ['/', '/blog', '/lab', '/projects', '/about', '/contact']
+const contentRoutePatterns = ['/blog/**', '/lab/**', '/projects/**', '/tags/**']
+const memberRoutePatterns = ['/member/**']
+
+const staticRoutes = supportedLocales.flatMap((locale) =>
+  staticRouteSections.map((section) => getLocalizedPublicPath(section, locale))
+)
+
+const localizedHtmlRouteRules = Object.fromEntries(
+  [
+    ...staticRoutes,
+    ...supportedLocales.flatMap((locale) =>
+      contentRoutePatterns.map((pattern) => getLocalizedPublicPath(pattern, locale))
+    )
+  ].map((route) => [route, { prerender: true, headers: htmlCacheHeaders }])
+)
+
+const localizedSsrRouteRules = Object.fromEntries(
+  supportedLocales
+    .flatMap((locale) => memberRoutePatterns.map((pattern) => getLocalizedPublicPath(pattern, locale)))
+    .map((route) => [route, { ssr: true, prerender: false }])
+)
 
 function getContentRoutes() {
   const routes = new Set([...staticRoutes, ...getPrerenderContentRoutes()])
@@ -131,35 +143,12 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/': { prerender: true, headers: htmlCacheHeaders },
-
-    '/fa': { prerender: true, headers: htmlCacheHeaders },
-    '/en': { prerender: true, headers: htmlCacheHeaders },
-
-    '/fa/blog/**': { prerender: true, headers: htmlCacheHeaders },
-    '/en/blog/**': { prerender: true, headers: htmlCacheHeaders },
-    '/fa/lab/**': { prerender: true, headers: htmlCacheHeaders },
-    '/en/lab/**': { prerender: true, headers: htmlCacheHeaders },
-    '/fa/projects/**': { prerender: true, headers: htmlCacheHeaders },
-    '/en/projects/**': { prerender: true, headers: htmlCacheHeaders },
-    '/fa/tags/**': { prerender: true, headers: htmlCacheHeaders },
-    '/en/tags/**': { prerender: true, headers: htmlCacheHeaders },
-
-    '/fa/about': { prerender: true, headers: htmlCacheHeaders },
-    '/en/about': { prerender: true, headers: htmlCacheHeaders },
-    '/fa/contact': { prerender: true, headers: htmlCacheHeaders },
-    '/en/contact': { prerender: true, headers: htmlCacheHeaders },
+    ...localizedHtmlRouteRules,
 
     '/dashboard': { ssr: true, prerender: false },
     '/dashboard/**': { ssr: true, prerender: false },
-    '/fa/dashboard': { ssr: true, prerender: false },
-    '/en/dashboard': { ssr: true, prerender: false },
-    '/fa/dashboard/**': { ssr: true, prerender: false },
-    '/en/dashboard/**': { ssr: true, prerender: false },
 
-    '/member/**': { ssr: true, prerender: false },
-    '/fa/member/**': { ssr: true, prerender: false },
-    '/en/member/**': { ssr: true, prerender: false },
+    ...localizedSsrRouteRules,
 
     '/content/**': { headers: immutableAssetHeaders },
     '/icons/**': { headers: immutableAssetHeaders },
@@ -220,23 +209,19 @@ export default defineNuxtConfig({
 
   i18n: {
     langDir: 'locales',
-    defaultLocale: 'en',
-    strategy: 'prefix',
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: 'mohetios_locale',
-      redirectOn: 'root'
-    },
+    defaultLocale,
+    strategy: 'prefix_except_default',
+    detectBrowserLanguage: false,
     locales: [
       {
-        code: 'en',
+        code: supportedLocales[0],
         name: 'English',
         file: 'en.json',
         dir: 'ltr',
         language: 'en-US'
       },
       {
-        code: 'fa',
+        code: supportedLocales[1],
         name: 'فارسی',
         file: 'fa.json',
         dir: 'rtl',

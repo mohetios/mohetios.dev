@@ -60,20 +60,15 @@ const blog = blogJson as BlogPost[]
 const lab = labJson as LabNote[]
 const projects = projectsJson as Project[]
 const pages = pagesJson as Page[]
-const staticLocalizedPaths = new Set([
-  '/en',
-  '/fa',
-  '/en/blog',
-  '/fa/blog',
-  '/en/lab',
-  '/fa/lab',
-  '/en/projects',
-  '/fa/projects',
-  '/en/about',
-  '/fa/about',
-  '/en/contact',
-  '/fa/contact'
-])
+export const defaultLocale = 'en'
+export const supportedLocales = ['en', 'fa'] as const
+
+const publicSections = ['/', '/blog', '/lab', '/projects', '/about', '/contact']
+const staticPublicPaths = new Set(
+  supportedLocales.flatMap((locale) =>
+    publicSections.map((section) => getLocalizedPublicPath(section, locale))
+  )
+)
 
 function byDateDesc<T extends { date?: string }>(items: T[]) {
   return [...items].sort(
@@ -93,6 +88,55 @@ function normalizeRoutePath(path: string) {
   return `/${path.replace(/^\/+|\/+$/g, '')}`.toLowerCase()
 }
 
+export function stripLocalePrefix(path: string) {
+  const normalized = normalizeRoutePath(path)
+  const localePattern = supportedLocales.join('|')
+
+  return normalized.replace(new RegExp(`^\\/(${localePattern})(?=\\/|$)`), '') || '/'
+}
+
+export function getRouteLocale(path: string) {
+  const normalized = normalizeRoutePath(path)
+  const localePattern = supportedLocales.join('|')
+  const match = normalized.match(new RegExp(`^\\/(${localePattern})(?=\\/|$)`))
+
+  return match?.[1] || defaultLocale
+}
+
+export function toPublicPath(path: string) {
+  const normalized = normalizeRoutePath(path)
+
+  if (normalized === `/${defaultLocale}`) {
+    return '/'
+  }
+
+  if (normalized.startsWith(`/${defaultLocale}/`)) {
+    return normalized.slice(defaultLocale.length + 1) || '/'
+  }
+
+  return normalized
+}
+
+export function toContentPath(path: string, locale = getRouteLocale(path)) {
+  const normalized = normalizeRoutePath(path)
+
+  if (normalized.startsWith(`/${locale}/`) || normalized === `/${locale}`) {
+    return normalized
+  }
+
+  return normalizeRoutePath(`/${locale}${normalized === '/' ? '' : normalized}`)
+}
+
+export function getLocalizedPublicPath(path: string, locale: string) {
+  const suffix = stripLocalePrefix(toPublicPath(path))
+
+  if (locale === defaultLocale) {
+    return suffix
+  }
+
+  return normalizeRoutePath(`/${locale}${suffix === '/' ? '' : suffix}`)
+}
+
 function localizedContentPaths() {
   return new Set(
     [...visible(blog), ...visible(lab), ...visible(projects), ...visible(pages)].map((item) =>
@@ -102,9 +146,10 @@ function localizedContentPaths() {
 }
 
 export function routeExists(path: string) {
-  const normalized = normalizeRoutePath(path)
+  const publicPath = toPublicPath(path)
+  const contentPath = toContentPath(publicPath, getRouteLocale(publicPath))
 
-  return staticLocalizedPaths.has(normalized) || localizedContentPaths().has(normalized)
+  return staticPublicPaths.has(publicPath) || localizedContentPaths().has(contentPath)
 }
 
 export function getLocalizedRoutePath(
@@ -112,9 +157,8 @@ export function getLocalizedRoutePath(
   targetLocale: string,
   options: { fallbackToSection?: boolean } = {}
 ) {
-  const normalized = normalizeRoutePath(path)
-  const suffix = normalized.replace(/^\/(fa|en)(?=\/|$)/, '') || '/'
-  const localizedPath = normalizeRoutePath(`/${targetLocale}${suffix === '/' ? '' : suffix}`)
+  const suffix = stripLocalePrefix(toPublicPath(path))
+  const localizedPath = getLocalizedPublicPath(suffix, targetLocale)
 
   if (routeExists(localizedPath)) {
     return localizedPath
@@ -130,7 +174,7 @@ export function getLocalizedRoutePath(
     return `/${targetLocale}/${section}`
   }
 
-  return `/${targetLocale}`
+  return targetLocale === defaultLocale ? '/' : `/${targetLocale}`
 }
 
 export const normalizeTagSlug = (value: string) =>
@@ -230,24 +274,26 @@ export function getTaggedContent(locale: string) {
   ])
 }
 
-export function getTagRoutes(locales = ['en', 'fa']) {
+export function getTagRoutes(locales: readonly string[] = supportedLocales) {
   return locales.flatMap((locale) => {
     const tagSlugs = new Set(
       getTaggedContent(locale).flatMap((item) => item.tags.map((tag) => normalizeTagSlug(tag)))
     )
 
-    return [...tagSlugs].filter(Boolean).map((tagSlug) => `/${locale}/tags/${tagSlug}`)
+    return [...tagSlugs]
+      .filter(Boolean)
+      .map((tagSlug) => getLocalizedPublicPath(`/tags/${tagSlug}`, locale))
   })
 }
 
-export function getPrerenderContentRoutes(locales = ['en', 'fa']) {
+export function getPrerenderContentRoutes(locales: readonly string[] = supportedLocales) {
   return [
     ...locales.flatMap((locale) => [
       ...getBlogPosts(locale).map((post) => post.path),
       ...getLabNotes(locale).map((note) => note.path),
       ...getProjects(locale).map((project) => project.path)
-    ]),
-    ...visible(pages).map((page) => page.path),
+    ]).map((path) => toPublicPath(path)),
+    ...visible(pages).map((page) => toPublicPath(page.path)),
     ...getTagRoutes(locales)
   ]
 }

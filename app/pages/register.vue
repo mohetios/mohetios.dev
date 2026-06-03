@@ -35,7 +35,7 @@ async function onSubmit(event: FormSubmitEvent<AuthInput>) {
 
     const payload = await auth.register(event.data)
     console.log(payload)
-    await navigateTo(localePath(payload.user.role === 'OWNER' ? '/dashboard' : '/member/profile'))
+    await navigateTo(payload.user.role === 'OWNER' ? '/dashboard' : localePath('/member/profile'))
   } catch (error) {
     if (import.meta.dev) {
       console.error('[auth:register:submit-error]', error)

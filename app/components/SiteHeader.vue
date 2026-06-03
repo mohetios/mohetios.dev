@@ -48,7 +48,7 @@ const accountItems = computed(() => {
       items.push({
         label: t('nav.dashboard'),
         icon: 'i-lucide-layout-dashboard',
-        to: localePath('/dashboard')
+        to: '/dashboard'
       })
     }
 

@@ -34,7 +34,7 @@ async function onSubmit(event: FormSubmitEvent<AuthInput>) {
     }
 
     const payload = await auth.login(event.data)
-    await navigateTo(localePath(payload.user.role === 'OWNER' ? '/dashboard' : '/member/profile'))
+    await navigateTo(payload.user.role === 'OWNER' ? '/dashboard' : localePath('/member/profile'))
   } catch (error) {
     if (import.meta.dev) {
       console.error('[auth:login:submit-error]', error)

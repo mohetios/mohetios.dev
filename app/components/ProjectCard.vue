@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   title: string
   description?: string
   to: string
@@ -13,10 +13,12 @@ defineProps<{
   actionLabel: string
   hideMedia?: boolean
 }>()
+
+const publicTo = computed(() => toPublicPath(props.to))
 </script>
 
 <template>
-  <UPageCard :to="to" variant="subtle" class="h-full overflow-hidden">
+  <UPageCard :to="publicTo" variant="subtle" class="h-full overflow-hidden">
     <template v-if="!hideMedia" #header>
       <ContentCardMedia :title="title" :thumbnail="thumbnail" sizes="xs:100vw md:50vw lg:520px" />
     </template>
@@ -37,7 +39,7 @@ defineProps<{
         <ContentTagList :tags="tags" />
         <div class="flex flex-wrap items-center gap-2">
           <UButton
-            :to="to"
+            :to="publicTo"
             color="neutral"
             variant="subtle"
             size="sm"

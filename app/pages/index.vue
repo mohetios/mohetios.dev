@@ -10,7 +10,7 @@ const featuredPost = computed(() => posts.value?.find((post) => post.thumbnail) 
 useMohetSeo({
   title: () => t('site.name'),
   description: () => t('site.description'),
-  path: () => `/${locale.value}`
+  path: () => getLocalizedPublicPath('/', locale.value)
 })
 
 const workshopItems = computed(() => [
@@ -163,7 +163,7 @@ function formatDate(date?: string | Date) {
             </div>
 
             <h2 class="text-3xl font-semibold tracking-tight text-highlighted sm:text-4xl">
-              <NuxtLink :to="featuredPost.path" class="hover:underline">
+              <NuxtLink :to="toPublicPath(featuredPost.path)" class="hover:underline">
                 {{ featuredPost.title }}
               </NuxtLink>
             </h2>
@@ -185,7 +185,7 @@ function formatDate(date?: string | Date) {
             </div>
 
             <UButton
-              :to="featuredPost.path"
+              :to="toPublicPath(featuredPost.path)"
               color="neutral"
               variant="subtle"
               trailing-icon="i-lucide-arrow-right"
@@ -241,7 +241,7 @@ function formatDate(date?: string | Date) {
           :key="post.id"
           :title="post.title"
           :description="post.description"
-          :to="post.path"
+          :to="toPublicPath(post.path)"
           :date="post.date"
           :badge="t('badges.blog')"
           :tags="post.tags"
@@ -269,7 +269,7 @@ function formatDate(date?: string | Date) {
               :key="note.id"
               :title="note.title"
               :description="note.description"
-              :to="note.path"
+              :to="toPublicPath(note.path)"
               :date="note.date"
               :badge="t('badges.lab')"
               :tags="note.tags"
@@ -300,7 +300,7 @@ function formatDate(date?: string | Date) {
               :key="project.id"
               :title="project.title"
               :description="project.description"
-              :to="project.path"
+              :to="toPublicPath(project.path)"
               :date="project.date"
               :badge="project.status"
               :tags="project.tags"

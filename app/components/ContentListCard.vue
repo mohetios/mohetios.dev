@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   title: string
   description?: string
   to: string
@@ -11,10 +11,12 @@ defineProps<{
   thumbnail?: string
   compact?: boolean
 }>()
+
+const publicTo = computed(() => toPublicPath(props.to))
 </script>
 
 <template>
-  <UPageCard :to="to" variant="subtle" class="h-full">
+  <UPageCard :to="publicTo" variant="subtle" class="h-full">
     <template v-if="!compact" #header>
       <ContentCardMedia :title="title" :thumbnail="thumbnail" />
     </template>

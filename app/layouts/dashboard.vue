@@ -1,32 +1,31 @@
 <script setup lang="ts">
 const { t } = useI18n()
-const localePath = useLocalePath()
 
 const dashboardNavigation = computed(() => [
   {
     label: 'Overview',
     icon: 'i-lucide-layout-dashboard',
-    to: localePath('/dashboard')
+    to: '/dashboard'
   },
   {
     label: 'Leads',
     icon: 'i-lucide-users',
-    to: localePath('/dashboard/leads')
+    to: '/dashboard/leads'
   },
   {
     label: 'Inbox',
     icon: 'i-lucide-mail',
-    to: localePath('/dashboard/inbox')
+    to: '/dashboard/inbox'
   },
   {
     label: 'Comments',
     icon: 'i-lucide-message-square',
-    to: localePath('/dashboard/comments')
+    to: '/dashboard/comments'
   },
   {
     label: 'Analytics',
     icon: 'i-lucide-chart-column',
-    to: localePath('/dashboard/analytics')
+    to: '/dashboard/analytics'
   }
 ])
 
@@ -83,7 +82,7 @@ onMounted(() => {
     >
       <template #header="{ collapsed }">
         <NuxtLink
-          :to="localePath('/dashboard')"
+          to="/dashboard"
           class="flex min-w-0 items-center gap-2"
           :class="collapsed ? 'justify-center' : 'justify-start'"
           :aria-label="t('dashboard.title')"

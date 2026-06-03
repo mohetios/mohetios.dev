@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   title: string
   description?: string
   to: string
@@ -11,6 +11,8 @@ defineProps<{
   actionLabel: string
   placeholder: string
 }>()
+
+const publicTo = computed(() => toPublicPath(props.to))
 </script>
 
 <template>
@@ -41,7 +43,7 @@ defineProps<{
         {{ badge }}
       </UBadge>
       <h2 class="text-2xl font-semibold tracking-tight text-highlighted sm:text-3xl">
-        <NuxtLink :to="to" class="hover:underline">
+        <NuxtLink :to="publicTo" class="hover:underline">
           {{ title }}
         </NuxtLink>
       </h2>
@@ -53,7 +55,7 @@ defineProps<{
         <ContentTagList :tags="tags" />
       </div>
       <UButton
-        :to="to"
+        :to="publicTo"
         color="neutral"
         variant="subtle"
         trailing-icon="i-lucide-arrow-right"

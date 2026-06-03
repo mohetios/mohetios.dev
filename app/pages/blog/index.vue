@@ -11,7 +11,7 @@ const tags = computed(() =>
 useMohetSeo({
   title: () => t('content.blog.seoTitle'),
   description: () => t('pages.blogDescription'),
-  path: () => `/${locale.value}/blog`
+  path: () => getLocalizedPublicPath('/blog', locale.value)
 })
 </script>
 

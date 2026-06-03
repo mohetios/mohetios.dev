@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   title: string
   description: string
   to: string
@@ -12,10 +12,11 @@ defineProps<{
 
 const { locale } = useI18n()
 const localePath = useLocalePath()
+const publicTo = computed(() => toPublicPath(props.to))
 </script>
 
 <template>
-  <UPageCard :title="title" :description="description" :to="to" variant="subtle" class="h-full">
+  <UPageCard :title="title" :description="description" :to="publicTo" variant="subtle" class="h-full">
     <template v-if="!hideMedia" #header>
       <ContentCardMedia
         :title="title"

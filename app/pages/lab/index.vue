@@ -12,7 +12,7 @@ const activeNotes = computed(
 useMohetSeo({
   title: () => t('content.lab.seoTitle'),
   description: () => t('pages.labDescription'),
-  path: () => `/${locale.value}/lab`
+  path: () => getLocalizedPublicPath('/lab', locale.value)
 })
 </script>
 
@@ -58,7 +58,7 @@ useMohetSeo({
           :key="note.id"
           :title="note.title"
           :description="note.description"
-          :to="note.path"
+          :to="toPublicPath(note.path)"
           :date="note.date"
           :updated="note.updated"
           :badge="t('badges.lab')"

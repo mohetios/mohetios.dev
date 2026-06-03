@@ -1,15 +1,11 @@
 import { isAuthError } from '~/composables/useAuth'
 import type { Permission } from '~~/shared/constants/permissions'
 
-function stripLocale(path: string) {
-  return path.replace(/^\/(en|fa)(?=\/|$)/, '') || '/'
-}
-
 export default defineNuxtRouteMiddleware(async (to) => {
   const localePath = useLocalePath()
   const auth = useAuth()
 
-  const pathWithoutLocale = stripLocale(to.path)
+  const pathWithoutLocale = stripLocalePrefix(to.path)
 
   const isDashboardRoute =
     pathWithoutLocale === '/dashboard' || pathWithoutLocale.startsWith('/dashboard/')
@@ -48,7 +44,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const user = auth.user.value || (await auth.fetchMe())
 
     if (user && isAuthRoute) {
-      return navigateTo(localePath(user.role === 'OWNER' ? '/dashboard' : '/member/profile'))
+      return navigateTo(user.role === 'OWNER' ? '/dashboard' : localePath('/member/profile'))
     }
 
     if (!user && needsAuth) {
@@ -56,7 +52,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     }
 
     if (user && requiredPermission && !auth.can(requiredPermission)) {
-      return navigateTo(localePath(user.role === 'OWNER' ? '/dashboard' : '/member/profile'))
+      return navigateTo(user.role === 'OWNER' ? '/dashboard' : localePath('/member/profile'))
     }
   } catch (error) {
     if (import.meta.dev) {
