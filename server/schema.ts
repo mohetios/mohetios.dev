@@ -147,6 +147,7 @@ export const typeDefs = /* GraphQL */ `
 
   enum InboxReplyStatus {
     DRAFT
+    QUEUED
     SENT
     FAILED
   }

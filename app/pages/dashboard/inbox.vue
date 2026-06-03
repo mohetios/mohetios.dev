@@ -79,7 +79,6 @@ const kindOptions = [
 const activeFilter = ref<(typeof filters)[number]['value']>('all')
 const search = ref('')
 const kindFilter = ref('All categories')
-const internalNote = ref('')
 const replyBody = ref('')
 const isSendingReply = ref(false)
 const isRefreshing = ref(false)
@@ -126,9 +125,7 @@ const selectedMessageId = ref<string | undefined>()
 const selectedMessage = computed(
   () => messages.value.find((message) => message.id === selectedMessageId.value) || null
 )
-const newCount = computed(
-  () => messages.value.filter((message) => message.status === 'new').length
-)
+const newCount = computed(() => messages.value.filter((message) => message.status === 'new').length)
 const filteredMessages = computed(() => {
   const query = search.value.trim().toLowerCase()
   const selectedCategory = kindFilter.value.toLowerCase()
@@ -486,7 +483,6 @@ async function sendReply() {
     isSendingReply.value = false
   }
 }
-
 </script>
 
 <template>
@@ -732,10 +728,7 @@ async function sendReply() {
               </p>
             </div>
 
-            <UCard
-              v-if="['lead', 'collaboration'].includes(selectedMessage.kind)"
-              variant="subtle"
-            >
+            <UCard v-if="['lead', 'collaboration'].includes(selectedMessage.kind)" variant="subtle">
               <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p class="text-sm font-medium text-highlighted">Lead candidate</p>
@@ -755,6 +748,7 @@ async function sendReply() {
                 v-model="replyBody"
                 placeholder="Write a direct reply..."
                 :rows="6"
+                class="w-full"
               />
               <UButton
                 color="primary"
@@ -765,21 +759,6 @@ async function sendReply() {
               >
                 Send reply
               </UButton>
-            </div>
-
-            <USeparator />
-
-            <div class="space-y-3">
-              <div>
-                <h3 class="text-sm font-medium text-highlighted">Internal note</h3>
-                <p class="text-xs text-muted">Local UI only. Notes are not saved yet.</p>
-              </div>
-              <UTextarea
-                v-model="internalNote"
-                placeholder="Add context for future follow-up..."
-                :rows="4"
-              />
-              <UButton color="neutral" variant="outline" disabled>Save note</UButton>
             </div>
           </div>
         </UCard>

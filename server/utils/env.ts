@@ -6,6 +6,9 @@ import type { AdminNotificationJob } from '../../shared/contracts/notifications'
 
 export type ServerEnv = {
   DB: D1Database
+  EMAIL?: {
+    send(input: unknown): Promise<unknown>
+  }
   ADMIN_NOTIFICATION_QUEUE?: Queue<AdminNotificationJob>
   EMAIL_DELIVERY_QUEUE?: Queue<EmailDeliveryJob>
 
