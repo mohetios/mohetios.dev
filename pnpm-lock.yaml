@@ -108,9 +108,6 @@ importers:
       vue-tsc:
         specifier: ^3.3.3
         version: 3.3.3(typescript@6.0.3)
-      workbox-precaching:
-        specifier: ^7.4.1
-        version: 7.4.1
       wrangler:
         specifier: ^4.95.0
         version: 4.95.0(@cloudflare/workers-types@4.20260528.1)

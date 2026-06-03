@@ -4,8 +4,6 @@ import type { AppDb } from '../../models/client'
 import { inboxMessages, inboxReplies } from '../../models/schema'
 import type { ServerEnv } from '../../utils/env'
 import { createId } from '../../utils/id'
-import { sendEmail } from '../email/send-email'
-import { markMessageStatus } from './mark-message-status'
 
 export async function replyToMessage(
   db: AppDb,
@@ -25,61 +23,36 @@ export async function replyToMessage(
     throw new Error('Message not found')
   }
 
+  if (!env.EMAIL_DELIVERY_QUEUE) {
+    throw new Error('EMAIL_DELIVERY_QUEUE binding is not configured')
+  }
+
   const now = Date.now()
+
   const reply = {
     id: createId(),
     inboxMessageId: message.id,
     fromEmail: env.MAIL_FROM,
     toEmail: message.senderEmail,
-    subject: message.subject.toLowerCase().startsWith('re:') ? message.subject : `Re: ${message.subject}`,
+    subject: message.subject.toLowerCase().startsWith('re:')
+      ? message.subject
+      : `Re: ${message.subject}`,
     bodyText: input.bodyText,
-    status: 'DRAFT' as const,
+    status: 'QUEUED' as const,
     createdAt: now
   }
+
   const [created] = await db.insert(inboxReplies).values(reply).returning()
 
   if (!created) {
     throw new Error('Inbox reply could not be created')
   }
 
-  try {
-    const sent = await sendEmail(env, {
-      to: message.senderEmail,
-      subject: reply.subject,
-      text: input.bodyText,
-      replyTo: env.MAIL_FROM
-    })
-    const [updated] = await db
-      .update(inboxReplies)
-      .set({
-        status: 'SENT',
-        providerMessageId: sent.providerMessageId,
-        sentAt: Date.now()
-      })
-      .where(eq(inboxReplies.id, created.id))
-      .returning()
+  await env.EMAIL_DELIVERY_QUEUE.send({
+    type: 'SEND_INBOX_REPLY',
+    replyId: created.id,
+    inboxMessageId: message.id
+  })
 
-    if (!updated) {
-      throw new Error('Inbox reply could not be updated')
-    }
-
-    await markMessageStatus(db, message.id, 'REPLIED')
-
-    return updated
-  } catch (error) {
-    const [failed] = await db
-      .update(inboxReplies)
-      .set({
-        status: 'FAILED',
-        error: error instanceof Error ? error.message : 'Email send failed'
-      })
-      .where(eq(inboxReplies.id, created.id))
-      .returning()
-
-    if (!failed) {
-      throw new Error('Inbox reply failure could not be saved')
-    }
-
-    return failed
-  }
+  return created
 }

@@ -8,3 +8,9 @@ export type NormalizedEmail = {
   inReplyTo?: string | null
   threadKey: string
 }
+
+export type EmailDeliveryJob = {
+  type: 'SEND_INBOX_REPLY'
+  replyId: string
+  inboxMessageId: string
+}

@@ -106,5 +106,6 @@ const searchGroups = computed(() => [
     </UDashboardSidebar>
 
     <slot />
+    <PwaInstallPrompt />
   </UDashboardGroup>
 </template>

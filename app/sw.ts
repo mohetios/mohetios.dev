@@ -1,70 +1,112 @@
-/// <reference lib="webworker" />
+import { buildPushPayload } from '@block65/webcrypto-web-push'
+import type { D1Database, MessageBatch } from '@cloudflare/workers-types'
 
-import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching'
+import type { AdminNotificationJob, AdminPushPayload } from '../shared/contracts/notifications'
 
-import type { AdminPushPayload } from '../shared/contracts/notifications'
-
-declare const self: ServiceWorkerGlobalScope
-
-precacheAndRoute(self.__WB_MANIFEST)
-cleanupOutdatedCaches()
-
-function parsePayload(data: PushMessageData | null): AdminPushPayload {
-  if (!data) {
-    return fallbackPayload()
-  }
-
-  try {
-    return data.json() as AdminPushPayload
-  } catch {
-    return fallbackPayload()
-  }
+type Env = {
+  DB: D1Database
+  NUXT_VAPID_PUBLIC_KEY: string
+  NUXT_VAPID_PRIVATE_KEY: string
+  NUXT_VAPID_SUBJECT: string
 }
 
-function fallbackPayload(): AdminPushPayload {
-  return {
-    type: 'NEW_CONTACT_MESSAGE',
-    title: 'Mohetios.dev',
-    body: 'New dashboard notification',
-    url: '/dashboard/inbox',
-    notificationId: '',
-    entityId: ''
-  }
+type NotificationRow = {
+  id: string
+  type: AdminNotificationJob['type']
+  title: string
+  body: string
+  url: string
+  entity_id: string
 }
 
-self.addEventListener('push', (event) => {
-  const payload = parsePayload(event.data)
-  const url = payload.url || '/dashboard/inbox'
+type PushSubscriptionRow = {
+  id: string
+  endpoint: string
+  p256dh: string
+  auth: string
+}
 
-  event.waitUntil(
-    self.registration.showNotification(payload.title || 'Mohetios.dev', {
-      body: payload.body || 'New notification',
-      icon: '/icons/icon-192.png',
-      badge: '/icons/icon-192.png',
-      data: {
-        url,
-        notificationId: payload.notificationId,
-        entityId: payload.entityId
+async function sendPush(env: Env, subscription: PushSubscriptionRow, payload: AdminPushPayload) {
+  const request = await buildPushPayload(
+    {
+      data: JSON.stringify(payload),
+      options: {
+        ttl: 60
       }
-    })
+    },
+    {
+      endpoint: subscription.endpoint,
+      expirationTime: null,
+      keys: {
+        p256dh: subscription.p256dh,
+        auth: subscription.auth
+      }
+    },
+    {
+      subject: env.NUXT_VAPID_SUBJECT,
+      publicKey: env.NUXT_VAPID_PUBLIC_KEY,
+      privateKey: env.NUXT_VAPID_PRIVATE_KEY
+    }
   )
-})
 
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close()
+  return fetch(subscription.endpoint, request as RequestInit)
+}
 
-  const targetUrl = new URL(event.notification.data?.url || '/dashboard/inbox', self.location.origin)
-    .href
+async function handleNotification(job: AdminNotificationJob, env: Env) {
+  const notification = await env.DB.prepare(
+    `SELECT id, type, title, body, url, entity_id FROM admin_notifications WHERE id = ?`
+  )
+    .bind(job.notificationId)
+    .first<NotificationRow>()
 
-  event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(async (clients) => {
-      for (const client of clients) {
-        if ('focus' in client && client.url === targetUrl) {
-          return client.focus()
+  if (!notification) {
+    return
+  }
+
+  const subscriptions = await env.DB.prepare(
+    `SELECT push_subscriptions.id, push_subscriptions.endpoint, push_subscriptions.p256dh, push_subscriptions.auth
+     FROM push_subscriptions
+     INNER JOIN users ON users.id = push_subscriptions.user_id
+     WHERE users.role = 'OWNER' AND push_subscriptions.disabled_at IS NULL`
+  ).all<PushSubscriptionRow>()
+
+  const payload: AdminPushPayload = {
+    type: notification.type,
+    title: notification.title,
+    body: notification.body,
+    url: notification.url || '/dashboard/inbox',
+    notificationId: notification.id,
+    entityId: notification.entity_id
+  }
+
+  await Promise.all(
+    subscriptions.results.map(async (subscription) => {
+      try {
+        const response = await sendPush(env, subscription, payload)
+
+        if (response.status === 404 || response.status === 410) {
+          await env.DB.prepare(`UPDATE push_subscriptions SET disabled_at = ? WHERE id = ?`)
+            .bind(Date.now(), subscription.id)
+            .run()
+          return
         }
-      }
 
-      return self.clients.openWindow(targetUrl)
+        if (response.ok) {
+          await env.DB.prepare(`UPDATE push_subscriptions SET last_used_at = ? WHERE id = ?`)
+            .bind(Date.now(), subscription.id)
+            .run()
+        }
+      } catch {
+        await env.DB.prepare(`UPDATE push_subscriptions SET disabled_at = ? WHERE id = ?`)
+          .bind(Date.now(), subscription.id)
+          .run()
+      }
     })
   )
-})
+}
+
+export default {
+  async queue(batch: MessageBatch<AdminNotificationJob>, env: Env) {
+    await Promise.all(batch.messages.map((message) => handleNotification(message.body, env)))
+  }
+}

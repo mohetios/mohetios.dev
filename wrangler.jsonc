@@ -20,6 +20,10 @@
       {
         "binding": "ADMIN_NOTIFICATION_QUEUE",
         "queue": "admin-notifications"
+      },
+      {
+        "binding": "EMAIL_DELIVERY_QUEUE",
+        "queue": "email-delivery"
       }
     ]
   }
