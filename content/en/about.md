@@ -1,12 +1,12 @@
 ---
 title: About Me
 thumbnail: /content/physics.webp
-description: 'I’m Ali Zemani, a product-minded software engineer building practical systems across web, mobile, cloud, AI-assisted workflows, and product engineering.'
+description: I’m Mohetios, a product-minded software engineer building practical systems across web, mobile, cloud, AI-assisted workflows, and product engineering.
 ---
 
 ## About Me
 
-I’m Ali Zemani — a product-minded software engineer with around 15 years of practical experience building software across web, mobile, backend systems, dashboards, internal platforms, connected products, and cloud-based workflows.
+I’m Mohetios — a product-minded software engineer with around 15 years of practical experience building software across web, mobile, backend systems, dashboards, internal platforms, connected products, and cloud-based workflows.
 
 Most of my work sits between product thinking and engineering execution. I like working where an idea, business process, or technical capability needs to become something usable: a dashboard, a workflow, an internal platform, a mobile app, a financial system, a monitoring interface, or a cloud-connected product.
 
