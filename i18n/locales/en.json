@@ -130,6 +130,69 @@
         "title": "Quick links"
       }
     },
+    "analytics": {
+      "title": "Analytics",
+      "description": "Audience, content, search, and performance signals for Mohetios.",
+      "refresh": "Refresh",
+      "refreshSuccess": "Analytics refreshed.",
+      "refreshFailed": "Analytics could not be refreshed.",
+      "export": "Export",
+      "tabs": {
+        "overview": "Overview",
+        "content": "Content",
+        "search": "Search",
+        "referrers": "Referrers",
+        "performance": "Performance"
+      },
+      "ranges": {
+        "last7Days": "Last 7 days",
+        "last30Days": "Last 30 days",
+        "last90Days": "Last 90 days"
+      },
+      "sections": {
+        "audienceTrend": "Audience Trend",
+        "audienceTrendDescription": "Visitors across the selected date range.",
+        "pageViews": "Page views",
+        "topPages": "Top Pages",
+        "referrers": "Referrers",
+        "countries": "Countries",
+        "webVitals": "Web Vitals",
+        "topContent": "Top content",
+        "searchQueries": "Search queries",
+        "topReferrers": "Top Referrers",
+        "topCountries": "Top Countries",
+        "pageLoadTime": "Page Load Time",
+        "edgeSummary": "Cache / Edge summary",
+        "cloudflareIntegration": "Cloudflare integration"
+      },
+      "search": {
+        "placeholder": "Search pages...",
+        "clicks": "Clicks",
+        "impressions": "Impressions",
+        "ctr": "CTR",
+        "avgPosition": "Avg Position"
+      },
+      "table": {
+        "page": "Page",
+        "views": "Views",
+        "visitors": "Visitors",
+        "avgTime": "Avg Time",
+        "topSource": "Top Source",
+        "query": "Query",
+        "position": "Position"
+      },
+      "empty": {
+        "topPages": "No page analytics yet.",
+        "referrers": "No referrer data yet.",
+        "countries": "No country data yet.",
+        "searchQueries": "No search query data yet.",
+        "pageSearch": "No pages match your search."
+      },
+      "pending": {
+        "externalAnalytics": "External analytics provider is not connected yet.",
+        "cloudflare": "Connect Cloudflare Analytics later to show real requests, cache hit ratio, edge errors, and Worker activity."
+      }
+    },
     "overview": {
       "title": "Overview",
       "description": "A simple command center for your audience, content, inbox, and system.",

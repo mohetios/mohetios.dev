@@ -7,6 +7,7 @@ export const typeDefs = /* GraphQL */ `
     adminNotifications: [AdminNotification!]!
     pushSubscriptions: [PushSubscription!]!
     dashboardHome: DashboardHome!
+    analyticsDashboard(range: AnalyticsRange!): AnalyticsDashboard!
   }
 
   type Mutation {
@@ -267,6 +268,91 @@ export const typeDefs = /* GraphQL */ `
     systemHealth: [DashboardSystemHealthItem!]!
     recentActivity: [DashboardActivityItem!]!
     quickLinks: [DashboardQuickLink!]!
+  }
+
+  enum AnalyticsRange {
+    LAST_7_DAYS
+    LAST_30_DAYS
+    LAST_90_DAYS
+  }
+
+  type AnalyticsMetric {
+    key: String!
+    label: String!
+    value: String!
+    helper: String!
+    icon: String!
+    trend: String
+  }
+
+  type AnalyticsTrendPoint {
+    date: String!
+    visitors: Int!
+    pageViews: Int!
+    searchClicks: Int!
+  }
+
+  type AnalyticsTopPage {
+    title: String!
+    path: String!
+    views: Int!
+    visitors: Int!
+    avgTime: String!
+    source: String!
+  }
+
+  type AnalyticsReferrer {
+    source: String!
+    visits: Int!
+    share: Int!
+    trend: String!
+  }
+
+  type AnalyticsCountry {
+    code: String!
+    country: String!
+    visits: Int!
+    share: Int!
+  }
+
+  type AnalyticsSearchQuery {
+    query: String!
+    clicks: Int!
+    impressions: Int!
+    ctr: String!
+    position: String!
+    page: String!
+  }
+
+  type AnalyticsWebVital {
+    key: String!
+    label: String!
+    value: String!
+    status: String!
+    helper: String!
+  }
+
+  type AnalyticsEdgeSummary {
+    cacheHitRatio: String!
+    edgeRequests: String!
+    edgeErrors: String!
+    avgLoadTime: String!
+    loadTimeTrend: String!
+    progressValue: Int!
+  }
+
+  type AnalyticsDashboard {
+    metrics: [AnalyticsMetric!]!
+    trend: [AnalyticsTrendPoint!]!
+    topPages: [AnalyticsTopPage!]!
+    referrers: [AnalyticsReferrer!]!
+    countries: [AnalyticsCountry!]!
+    searchQueries: [AnalyticsSearchQuery!]!
+    webVitals: [AnalyticsWebVital!]!
+    edgeSummary: AnalyticsEdgeSummary!
+    dataSourceLabel: String!
+    dataSourceDescription: String!
+    isExternalProviderConnected: Boolean!
   }
 `
 

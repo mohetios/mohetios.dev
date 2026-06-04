@@ -126,6 +126,69 @@
         "title": "میانبرها"
       }
     },
+    "analytics": {
+      "title": "تحلیل‌ها",
+      "description": "سیگنال‌های مخاطب، محتوا، جستجو و عملکرد برای Mohetios.",
+      "refresh": "بازخوانی",
+      "refreshSuccess": "تحلیل‌ها به‌روزرسانی شد.",
+      "refreshFailed": "بازخوانی تحلیل‌ها ممکن نشد.",
+      "export": "خروجی",
+      "tabs": {
+        "overview": "نمای کلی",
+        "content": "محتوا",
+        "search": "جستجو",
+        "referrers": "ارجاع‌دهنده‌ها",
+        "performance": "عملکرد"
+      },
+      "ranges": {
+        "last7Days": "۷ روز گذشته",
+        "last30Days": "۳۰ روز گذشته",
+        "last90Days": "۹۰ روز گذشته"
+      },
+      "sections": {
+        "audienceTrend": "روند مخاطب",
+        "audienceTrendDescription": "بازدیدکنندگان در بازه انتخاب‌شده.",
+        "pageViews": "بازدید صفحه",
+        "topPages": "برترین صفحات",
+        "referrers": "ارجاع‌دهنده‌ها",
+        "countries": "کشورها",
+        "webVitals": "شاخص‌های وب",
+        "topContent": "برترین محتوا",
+        "searchQueries": "عبارات جستجو",
+        "topReferrers": "برترین ارجاع‌دهنده‌ها",
+        "topCountries": "برترین کشورها",
+        "pageLoadTime": "زمان بارگذاری صفحه",
+        "edgeSummary": "خلاصه کش / لبه",
+        "cloudflareIntegration": "یکپارچه‌سازی Cloudflare"
+      },
+      "search": {
+        "placeholder": "جستجوی صفحات...",
+        "clicks": "کلیک",
+        "impressions": "نمایش",
+        "ctr": "نرخ کلیک",
+        "avgPosition": "میانگین رتبه"
+      },
+      "table": {
+        "page": "صفحه",
+        "views": "بازدید",
+        "visitors": "بازدیدکننده",
+        "avgTime": "میانگین زمان",
+        "topSource": "منبع اصلی",
+        "query": "عبارت",
+        "position": "رتبه"
+      },
+      "empty": {
+        "topPages": "هنوز آمار صفحه‌ای ثبت نشده است.",
+        "referrers": "هنوز داده ارجاع‌دهنده‌ای نیست.",
+        "countries": "هنوز داده کشوری نیست.",
+        "searchQueries": "هنوز داده عبارت جستجویی نیست.",
+        "pageSearch": "صفحه‌ای با این جستجو پیدا نشد."
+      },
+      "pending": {
+        "externalAnalytics": "ارائه‌دهنده تحلیل خارجی هنوز متصل نشده است.",
+        "cloudflare": "بعداً Cloudflare Analytics را وصل کنید تا درخواست‌ها، نسبت برخورد کش، خطاهای لبه و فعالیت Worker نمایش داده شود."
+      }
+    },
     "overview": {
       "title": "نمای کلی",
       "description": "مرکز فرمان ساده برای مخاطب، محتوا، صندوق ورودی و سیستم.",
