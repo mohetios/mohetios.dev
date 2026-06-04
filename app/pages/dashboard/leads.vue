@@ -8,11 +8,7 @@ import type {
 } from '~/composables/useLeadWorkspace'
 import { useLeadWorkspace } from '~/composables/useLeadWorkspace'
 import type { BadgeColor } from '~/utils/inbox-thread'
-import {
-  dashboardCardUi,
-  inboxThreadPanelUi,
-  inboxWorkspacePanelUi
-} from '~/utils/dashboard-ui'
+import { dashboardCardUi } from '~/utils/dashboard-ui'
 
 definePageMeta({
   layout: 'dashboard',
@@ -397,232 +393,206 @@ watch(leadsLoadError, (error) => {
 </script>
 
 <template>
-  <div class="mx-auto flex min-h-0 w-full max-w-[1600px] flex-1 flex-col gap-6">
-    <section class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-      <div class="flex min-w-0 items-start gap-3">
-        <div>
-          <h1 class="text-3xl font-semibold tracking-tight text-highlighted">
-            {{ t('dashboard.leads.title') }}
-          </h1>
-          <p class="mt-1 text-sm text-muted">
-            {{ t('dashboard.leads.description') }}
-          </p>
-        </div>
-      </div>
+  <DashboardWorkspacePage
+    :title="t('dashboard.leads.title')"
+    :description="t('dashboard.leads.description')"
+  >
+    <template #actions>
+      <UButton
+        color="neutral"
+        variant="ghost"
+        icon="i-lucide-refresh-cw"
+        :loading="isRefreshing"
+        size="sm"
+        @click="loadLeads"
+      >
+        {{ t('dashboard.leads.refresh') }}
+      </UButton>
 
-      <div class="flex items-center gap-2">
-        <UButton
-          color="neutral"
-          variant="ghost"
-          icon="i-lucide-refresh-cw"
-          :loading="isRefreshing"
-          @click="loadLeads"
-        >
-          {{ t('dashboard.leads.refresh') }}
-        </UButton>
+      <UButton
+        color="primary"
+        variant="soft"
+        icon="i-lucide-plus"
+        size="sm"
+        disabled
+      >
+        {{ t('dashboard.leads.addManualLead') }}
+      </UButton>
+    </template>
 
-        <UButton
-          color="primary"
-          variant="soft"
-          icon="i-lucide-plus"
-          disabled
-        >
-          {{ t('dashboard.leads.addManualLead') }}
-        </UButton>
-      </div>
-    </section>
+    <template #summary>
+      <DashboardWorkspaceSummary :items="leadSummaryCards" :loading="isLoading" />
+    </template>
 
-    <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-      <template v-if="isLoading">
-        <USkeleton v-for="item in 4" :key="item" class="h-28 w-full rounded-2xl" />
-      </template>
+    <template #filters>
+      <DashboardWorkspaceFilterBar>
+        <template #filters>
+          <USelect
+            v-model="statusFilter"
+            :items="statusSelectItems"
+            value-key="value"
+            label-key="label"
+            icon="i-lucide-circle-dot"
+            size="sm"
+            class="w-full sm:w-40"
+          />
 
-      <template v-else>
-        <DashboardInboxSummaryCard
-          v-for="card in leadSummaryCards"
-          :key="card.key"
-          :label="card.label"
-          :value="card.value"
-          :icon="card.icon"
-          :helper="card.helper"
-        />
-      </template>
-    </section>
+          <USelect
+            v-model="typeFilter"
+            :items="typeSelectItems"
+            value-key="value"
+            label-key="label"
+            icon="i-lucide-tag"
+            size="sm"
+            class="w-full sm:w-40"
+          />
 
-    <section
-      class="flex flex-col gap-3 rounded-2xl border border-default bg-default p-3 lg:flex-row lg:items-center lg:justify-between"
-    >
-      <div class="grid grid-cols-1 gap-2 sm:grid-cols-4 lg:flex lg:items-center">
-        <USelect
-          v-model="statusFilter"
-          :items="statusSelectItems"
-          value-key="value"
-          label-key="label"
-          icon="i-lucide-circle-dot"
-          class="w-full lg:w-44"
-        />
+          <USelect
+            v-model="sourceFilter"
+            :items="sourceSelectItems"
+            value-key="value"
+            label-key="label"
+            icon="i-lucide-radio"
+            size="sm"
+            class="w-full sm:w-40"
+          />
 
-        <USelect
-          v-model="typeFilter"
-          :items="typeSelectItems"
-          value-key="value"
-          label-key="label"
-          icon="i-lucide-tag"
-          class="w-full lg:w-44"
-        />
-
-        <USelect
-          v-model="sourceFilter"
-          :items="sourceSelectItems"
-          value-key="value"
-          label-key="label"
-          icon="i-lucide-radio"
-          class="w-full lg:w-44"
-        />
-
-        <USelect
-          v-model="priorityFilter"
-          :items="prioritySelectItems"
-          value-key="value"
-          label-key="label"
-          icon="i-lucide-flame"
-          class="w-full lg:w-44"
-        />
-      </div>
-
-      <UInput
-        v-model="search"
-        icon="i-lucide-search"
-        :placeholder="t('dashboard.leads.searchPlaceholder')"
-        class="w-full lg:w-72"
-      />
-    </section>
-
-    <section
-      class="grid min-h-0 flex-1 gap-4 lg:h-[calc(100dvh-18rem)] lg:grid-cols-[440px_1fr] lg:items-stretch"
-    >
-      <UCard :ui="inboxThreadPanelUi">
-        <template #header>
-          <div>
-            <h2 class="text-sm font-semibold text-highlighted">
-              {{ t('dashboard.leads.board.title') }}
-            </h2>
-            <p class="text-xs text-muted">
-              {{ leads.length }} {{ t('dashboard.leads.board.of') }}
-              {{ leadWorkspace.summary.total }}
-              {{ t('dashboard.leads.board.opportunities') }}
-            </p>
-          </div>
+          <USelect
+            v-model="priorityFilter"
+            :items="prioritySelectItems"
+            value-key="value"
+            label-key="label"
+            icon="i-lucide-flame"
+            size="sm"
+            class="w-full sm:w-40"
+          />
         </template>
 
-        <div v-if="isLoading" class="space-y-3 p-4">
-          <USkeleton v-for="item in 5" :key="item" class="h-28 w-full" />
-        </div>
+        <template #search>
+          <UInput
+            v-model="search"
+            icon="i-lucide-search"
+            :placeholder="t('dashboard.leads.searchPlaceholder')"
+            size="sm"
+          />
+        </template>
+      </DashboardWorkspaceFilterBar>
+    </template>
 
-        <div v-else-if="leads.length" class="divide-y divide-default">
-          <button
-            v-for="lead in leads"
-            :key="lead.id"
-            type="button"
-            class="block w-full border-s-2 px-4 py-3 text-start transition hover:bg-muted/40"
-            :class="
-              selectedLead?.id === lead.id
-                ? 'border-primary bg-primary/5'
-                : 'border-transparent'
-            "
-            @click="selectLead(lead.id)"
-          >
-            <div class="flex items-start gap-3">
-              <div class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-muted/60">
-                <UIcon
-                  :name="getLeadSourceIcon(lead.source)"
-                  class="size-4"
-                  :class="getLeadSourceColor(lead.source)"
-                />
+    <DashboardWorkspaceListPanel
+      fill-height
+      flush-list
+      :title="t('dashboard.leads.board.title')"
+      :description="`${leads.length} ${t('dashboard.leads.board.of')} ${leadWorkspace.summary.total} ${t('dashboard.leads.board.opportunities')}`"
+      :loading="isLoading"
+      :empty="!leads.length"
+      :empty-title="t('dashboard.leads.empty.title')"
+      :empty-description="t('dashboard.leads.empty.description')"
+      empty-icon="i-lucide-users"
+    >
+      <div class="divide-y divide-default">
+        <button
+          v-for="lead in leads"
+          :key="lead.id"
+          type="button"
+          class="block w-full border-s-2 py-2.5 px-0 text-start transition hover:bg-muted/40"
+          :class="
+            selectedLead?.id === lead.id
+              ? 'border-primary bg-primary/5'
+              : 'border-transparent'
+          "
+          :aria-selected="selectedLead?.id === lead.id"
+          @click="selectLead(lead.id)"
+        >
+          <div class="flex items-start gap-3 px-2">
+            <div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted/60">
+              <UIcon
+                :name="getLeadSourceIcon(lead.source)"
+                class="size-4"
+                :class="getLeadSourceColor(lead.source)"
+              />
+            </div>
+
+            <div class="min-w-0 flex-1">
+              <div class="flex items-start justify-between gap-2">
+                <p class="truncate text-sm font-medium text-highlighted">
+                  {{ lead.title }}
+                </p>
+
+                <span class="shrink-0 text-[11px] text-muted">
+                  {{ formatDate(lead.lastContactedAt || lead.createdAt) }}
+                </span>
               </div>
 
-              <div class="min-w-0 flex-1 space-y-1">
-                <div class="flex items-start justify-between gap-3">
-                  <p class="truncate text-sm font-medium text-highlighted">
-                    {{ lead.title }}
-                  </p>
-                  <span class="shrink-0 text-xs text-muted">
-                    {{ formatDate(lead.lastContactedAt || lead.createdAt) }}
-                  </span>
-                </div>
+              <p class="mt-0.5 truncate text-xs text-muted">
+                {{ lead.name }} · {{ lead.company || lead.email }}
+              </p>
 
-                <p class="truncate text-xs text-muted">
-                  {{ lead.name }} · {{ lead.company || lead.email }}
-                </p>
+              <p class="mt-1 line-clamp-2 text-xs leading-5 text-muted">
+                {{ lead.summary }}
+              </p>
 
-                <p class="line-clamp-2 text-xs leading-5 text-muted">
-                  {{ lead.summary }}
-                </p>
+              <div class="mt-2 flex flex-wrap gap-1.5">
+                <UBadge :color="getLeadStatusColor(lead.status)" variant="subtle" size="xs">
+                  {{ formatLeadLabel(lead.status) }}
+                </UBadge>
 
-                <div class="flex flex-wrap gap-2 pt-1">
-                  <UBadge :color="getLeadStatusColor(lead.status)" variant="subtle" size="sm">
-                    {{ formatLeadLabel(lead.status) }}
-                  </UBadge>
+                <UBadge color="neutral" variant="soft" size="xs">
+                  {{ formatLeadLabel(lead.kind) }}
+                </UBadge>
 
-                  <UBadge color="neutral" variant="soft" size="sm">
-                    {{ formatLeadLabel(lead.kind) }}
-                  </UBadge>
-
-                  <UBadge color="neutral" variant="outline" size="sm">
-                    {{ formatLeadLabel(lead.source) }}
-                  </UBadge>
-
-                  <UBadge :color="getLeadPriorityColor(lead.priority)" variant="soft" size="sm">
-                    {{ formatLeadLabel(lead.priority) }}
-                  </UBadge>
-                </div>
+                <UBadge :color="getLeadPriorityColor(lead.priority)" variant="soft" size="xs">
+                  {{ formatLeadLabel(lead.priority) }}
+                </UBadge>
               </div>
             </div>
-          </button>
-        </div>
-
-        <div v-else class="p-8 text-center">
-          <div class="mx-auto mb-3 flex size-10 items-center justify-center rounded-full bg-muted">
-            <UIcon name="i-lucide-users" class="size-5 text-muted" />
           </div>
-          <h3 class="text-sm font-medium text-highlighted">
-            {{ t('dashboard.leads.empty.title') }}
-          </h3>
-          <p class="mt-1 text-sm text-muted">
-            {{ t('dashboard.leads.empty.description') }}
-          </p>
-        </div>
-      </UCard>
+        </button>
+      </div>
+    </DashboardWorkspaceListPanel>
 
-      <UCard v-if="selectedLead" :ui="inboxWorkspacePanelUi">
-        <template #header>
-          <div class="space-y-4">
+    <DashboardWorkspaceDetailPanel
+      :empty="!selectedLead"
+      empty-icon="i-lucide-users"
+      :empty-title="t('dashboard.leads.select.title')"
+      :empty-description="t('dashboard.leads.select.description')"
+    >
+      <template #header>
+        <div v-if="selectedLead" class="space-y-3">
+          <div class="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
             <div class="min-w-0">
-              <h2 class="text-lg font-semibold tracking-tight text-highlighted">
+              <h2 class="truncate text-base font-semibold tracking-tight text-highlighted">
                 {{ selectedLead.title }}
               </h2>
-              <p class="mt-1 text-sm text-muted">
+
+              <p class="mt-1 truncate text-sm text-muted">
                 {{ selectedLead.name }} · {{ selectedLead.email }}
               </p>
-              <p v-if="selectedLead.company" class="text-sm text-muted">
+
+              <p
+                v-if="selectedLead.company"
+                class="mt-0.5 truncate text-sm text-muted"
+              >
                 {{ selectedLead.company }}
               </p>
-              <div class="mt-2 flex flex-wrap gap-2">
-                <UBadge :color="getLeadStatusColor(selectedLead.status)" variant="subtle">
+
+              <div class="mt-2 flex flex-wrap gap-1.5">
+                <UBadge :color="getLeadStatusColor(selectedLead.status)" variant="subtle" size="sm">
                   {{ formatLeadLabel(selectedLead.status) }}
                 </UBadge>
-                <UBadge :color="getLeadPriorityColor(selectedLead.priority)" variant="soft">
+
+                <UBadge :color="getLeadPriorityColor(selectedLead.priority)" variant="soft" size="sm">
                   {{ formatLeadLabel(selectedLead.priority) }}
                 </UBadge>
               </div>
             </div>
 
-            <div class="flex flex-wrap gap-2">
+            <div class="flex shrink-0 flex-wrap gap-1.5">
               <UButton
                 color="primary"
                 variant="soft"
                 icon="i-lucide-inbox"
-                size="sm"
+                size="xs"
                 :to="`/dashboard/inbox?message=${selectedLead.relatedInboxMessageId}`"
               >
                 {{ t('dashboard.leads.actions.openInboxThread') }}
@@ -632,7 +602,7 @@ watch(leadsLoadError, (error) => {
                 color="success"
                 variant="outline"
                 icon="i-lucide-badge-check"
-                size="sm"
+                size="xs"
                 :loading="isMutating"
                 @click="markSelectedQualified"
               >
@@ -643,7 +613,7 @@ watch(leadsLoadError, (error) => {
                 color="warning"
                 variant="outline"
                 icon="i-lucide-clock"
-                size="sm"
+                size="xs"
                 :loading="isMutating"
                 @click="markSelectedWaiting"
               >
@@ -654,7 +624,7 @@ watch(leadsLoadError, (error) => {
                 color="error"
                 variant="outline"
                 icon="i-lucide-flame"
-                size="sm"
+                size="xs"
                 :loading="isMutating"
                 @click="markSelectedHighPriority"
               >
@@ -665,7 +635,7 @@ watch(leadsLoadError, (error) => {
                 color="neutral"
                 variant="ghost"
                 icon="i-lucide-archive"
-                size="sm"
+                size="xs"
                 :loading="isMutating"
                 @click="archiveSelectedLead"
               >
@@ -673,104 +643,90 @@ watch(leadsLoadError, (error) => {
               </UButton>
             </div>
           </div>
-        </template>
-
-        <div class="space-y-6">
-          <div class="rounded-2xl bg-muted/40 px-4 py-3">
-            <h3 class="text-xs font-semibold uppercase tracking-wide text-muted">
-              {{ t('dashboard.leads.sections.summary') }}
-            </h3>
-            <p class="mt-2 text-sm leading-6 text-highlighted">
-              {{ selectedLead.summary }}
-            </p>
-          </div>
-
-          <div class="grid gap-4 lg:grid-cols-2">
-            <UCard variant="outline" :ui="dashboardCardUi">
-              <template #header>
-                <h3 class="text-sm font-semibold text-highlighted">
-                  {{ t('dashboard.leads.sections.contact') }}
-                </h3>
-              </template>
-
-              <dl class="space-y-3 text-sm">
-                <div v-for="field in contactFields" :key="field.label">
-                  <dt class="text-muted">{{ field.label }}</dt>
-                  <dd class="mt-0.5 text-highlighted">
-                    {{ field.value || '—' }}
-                  </dd>
-                </div>
-              </dl>
-            </UCard>
-
-            <UCard variant="outline" :ui="dashboardCardUi">
-              <template #header>
-                <h3 class="text-sm font-semibold text-highlighted">
-                  {{ t('dashboard.leads.sections.opportunity') }}
-                </h3>
-              </template>
-
-              <dl class="space-y-3 text-sm">
-                <div v-for="field in opportunityFields" :key="field.label">
-                  <dt class="text-muted">{{ field.label }}</dt>
-                  <dd class="mt-0.5 text-highlighted">
-                    {{ field.value || '—' }}
-                  </dd>
-                </div>
-              </dl>
-            </UCard>
-          </div>
-
-          <div v-if="selectedLead.tags.length">
-            <h3 class="text-xs font-semibold uppercase tracking-wide text-muted">
-              {{ t('dashboard.leads.sections.tags') }}
-            </h3>
-            <div class="mt-2 flex flex-wrap gap-2">
-              <UBadge
-                v-for="tag in selectedLead.tags"
-                :key="tag"
-                color="neutral"
-                variant="soft"
-                size="sm"
-              >
-                {{ tag }}
-              </UBadge>
-            </div>
-          </div>
-
-          <UCard variant="outline" :ui="dashboardCardUi" class="border-dashed">
-            <div class="flex items-start gap-3">
-              <UIcon name="i-lucide-sticky-note" class="mt-0.5 size-4 text-muted" />
-              <div>
-                <h3 class="text-sm font-semibold text-highlighted">
-                  {{ t('dashboard.leads.notes.title') }}
-                </h3>
-                <p class="mt-1 text-sm text-muted">
-                  {{ t('dashboard.leads.notes.description') }}
-                </p>
-              </div>
-            </div>
-          </UCard>
         </div>
-      </UCard>
+      </template>
 
-      <UCard
-        v-else
-        :ui="dashboardCardUi"
-        class="flex min-h-[calc(100dvh-18rem)] items-center justify-center lg:h-full lg:min-h-0"
-      >
-        <div class="max-w-sm p-8 text-center">
-          <div class="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-muted">
-            <UIcon name="i-lucide-users" class="size-6 text-muted" />
-          </div>
-          <h2 class="text-base font-semibold text-highlighted">
-            {{ t('dashboard.leads.select.title') }}
-          </h2>
-          <p class="mt-2 text-sm text-muted">
-            {{ t('dashboard.leads.select.description') }}
+      <div v-if="selectedLead" class="space-y-5">
+        <div class="rounded-2xl bg-muted/40 px-4 py-3">
+          <h3 class="text-xs font-semibold uppercase tracking-wide text-muted">
+            {{ t('dashboard.leads.sections.summary') }}
+          </h3>
+
+          <p class="mt-2 text-sm leading-6 text-highlighted">
+            {{ selectedLead.summary }}
           </p>
         </div>
-      </UCard>
-    </section>
-  </div>
+
+        <div class="grid gap-3 xl:grid-cols-2">
+          <UCard variant="outline" :ui="dashboardCardUi">
+            <template #header>
+              <h3 class="text-sm font-semibold text-highlighted">
+                {{ t('dashboard.leads.sections.contact') }}
+              </h3>
+            </template>
+
+            <dl class="space-y-2 text-sm">
+              <div v-for="field in contactFields" :key="field.label">
+                <dt class="text-xs text-muted">{{ field.label }}</dt>
+                <dd class="mt-0.5 truncate text-highlighted">
+                  {{ field.value || '—' }}
+                </dd>
+              </div>
+            </dl>
+          </UCard>
+
+          <UCard variant="outline" :ui="dashboardCardUi">
+            <template #header>
+              <h3 class="text-sm font-semibold text-highlighted">
+                {{ t('dashboard.leads.sections.opportunity') }}
+              </h3>
+            </template>
+
+            <dl class="space-y-2 text-sm">
+              <div v-for="field in opportunityFields" :key="field.label">
+                <dt class="text-xs text-muted">{{ field.label }}</dt>
+                <dd class="mt-0.5 truncate text-highlighted">
+                  {{ field.value || '—' }}
+                </dd>
+              </div>
+            </dl>
+          </UCard>
+        </div>
+
+        <div v-if="selectedLead.tags.length">
+          <h3 class="text-xs font-semibold uppercase tracking-wide text-muted">
+            {{ t('dashboard.leads.sections.tags') }}
+          </h3>
+
+          <div class="mt-2 flex flex-wrap gap-1.5">
+            <UBadge
+              v-for="tag in selectedLead.tags"
+              :key="tag"
+              color="neutral"
+              variant="soft"
+              size="xs"
+            >
+              {{ tag }}
+            </UBadge>
+          </div>
+        </div>
+
+        <UCard variant="outline" :ui="dashboardCardUi" class="border-dashed">
+          <div class="flex items-start gap-3">
+            <UIcon name="i-lucide-sticky-note" class="mt-0.5 size-4 text-muted" />
+
+            <div>
+              <h3 class="text-sm font-semibold text-highlighted">
+                {{ t('dashboard.leads.notes.title') }}
+              </h3>
+
+              <p class="mt-1 text-sm text-muted">
+                {{ t('dashboard.leads.notes.description') }}
+              </p>
+            </div>
+          </div>
+        </UCard>
+      </div>
+    </DashboardWorkspaceDetailPanel>
+  </DashboardWorkspacePage>
 </template>
