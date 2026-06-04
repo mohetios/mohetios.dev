@@ -1,47 +1,22 @@
 <script setup lang="ts">
-import type { InboxMessage, InboxStatus, InboxThreadEvent } from '~/utils/inbox-thread'
+import {
+  useInboxWorkspace,
+  type InboxWorkspaceFilter,
+  type InboxWorkspaceStatus
+} from '~/composables/useInboxWorkspace'
+import { normalizeInboxDto, normalizeThreadEventDto } from '~/utils/inbox-normalize'
 import {
   getCategoryColor,
   getCategoryLabel,
   getSourceLabel,
   getStatusColor,
-  getStatusLabel,
-  getThreadEvents,
-  matchesActiveFilter,
-  normalizeInboxMessage
+  getStatusLabel
 } from '~/utils/inbox-thread'
 import {
   dashboardCardUi,
   inboxThreadPanelUi,
   inboxWorkspacePanelUi
 } from '~/utils/dashboard-ui'
-
-type GraphqlResponse<T> = {
-  data?: T
-  errors?: Array<{ message?: string }>
-}
-
-type InboxMessagesQuery = {
-  inboxMessages: Array<{
-    id: string
-    source: string
-    status: string
-    kind: string
-    senderName: string
-    senderEmail: string
-    subject: string
-    preview: string
-    bodyText: string
-    senderCompany?: string | null
-    senderWebsite?: string | null
-    createdAt: number
-    updatedAt: number
-  }>
-}
-
-type UpdateInboxMessageStatusMutation = {
-  updateInboxMessageStatus: InboxMessagesQuery['inboxMessages'][number]
-}
 
 definePageMeta({
   layout: 'dashboard',
@@ -56,160 +31,122 @@ useMohetSeo({
   description: () => t('dashboard.inbox.description')
 })
 
-const filters = computed(() => [
-  { label: t('dashboard.inbox.filters.all'), value: 'all' as const },
-  { label: t('dashboard.inbox.filters.needsReply'), value: 'needs_reply' as const },
-  { label: t('dashboard.inbox.filters.leads'), value: 'lead' as const },
-  { label: t('dashboard.inbox.filters.replied'), value: 'replied' as const },
-  { label: t('dashboard.inbox.filters.archived'), value: 'archived' as const },
-  { label: t('dashboard.inbox.filters.spam'), value: 'spam' as const }
-])
+const route = useRoute()
+const toast = useToast()
 
-const activeFilter = ref<(typeof filters.value)[number]['value']>('all')
+const activeFilter = ref<InboxWorkspaceFilter>('ALL')
 const search = ref('')
+const selectedMessageId = ref<string | undefined>(
+  typeof route.query.message === 'string' ? route.query.message : undefined
+)
+
+const {
+  data: inboxWorkspace,
+  pending: isLoading,
+  error: inboxLoadError,
+  refresh: refreshInbox,
+  updateStatus,
+  updateKind,
+  sendReply: sendInboxReply
+} = useInboxWorkspace({
+  filter: activeFilter,
+  search,
+  selectedMessageId
+})
+
 const replyBody = ref('')
-const noteBody = ref('')
 const composerMode = ref<'reply' | 'note'>('reply')
 const isSendingReply = ref(false)
 const isRefreshing = ref(false)
-const toast = useToast()
-const route = useRoute()
 
-const messages = ref<InboxMessage[]>([])
-const localThreadNotes = ref<Record<string, InboxThreadEvent[]>>({})
+const messages = computed(() => inboxWorkspace.value.messages.map(normalizeInboxDto))
 
-const {
-  data: loadedMessages,
-  pending: isLoading,
-  error: inboxLoadError,
-  refresh: refreshInboxMessages
-} = await useAsyncData<InboxMessage[]>(
-  'dashboard:inbox-messages',
-  async () => {
-    const result = await requestInboxGraphql<InboxMessagesQuery>(`
-      query InboxMessages {
-        inboxMessages {
-          id
-          source
-          status
-          kind
-          senderName
-          senderEmail
-          subject
-          preview
-          bodyText
-          senderCompany
-          senderWebsite
-          createdAt
-          updatedAt
-        }
-      }
-    `)
-
-    return result.inboxMessages.map(normalizeInboxMessage)
-  },
-  {
-    default: () => []
-  }
+const selectedMessage = computed(() =>
+  inboxWorkspace.value.selectedMessage
+    ? normalizeInboxDto(inboxWorkspace.value.selectedMessage)
+    : null
 )
 
-const selectedMessageId = ref<string | undefined>()
-const selectedMessage = computed(
-  () => messages.value.find((message) => message.id === selectedMessageId.value) || null
+const selectedThreadEvents = computed(() =>
+  inboxWorkspace.value.threadEvents.map(normalizeThreadEventDto)
 )
 
-const unreadCount = computed(() =>
-  messages.value.filter((message) => message.status === 'new').length
-)
-
-const needsReplyCount = computed(() =>
-  messages.value.filter((message) => ['new', 'open'].includes(message.status)).length
-)
-
-const leadCount = computed(() =>
-  messages.value.filter((message) => ['lead', 'collaboration'].includes(message.kind)).length
-)
-
-const archivedCount = computed(() =>
-  messages.value.filter((message) => message.status === 'archived').length
-)
+const filters = computed(() => [
+  { label: t('dashboard.inbox.filters.all'), value: 'ALL' as const },
+  { label: t('dashboard.inbox.filters.needsReply'), value: 'NEEDS_REPLY' as const },
+  { label: t('dashboard.inbox.filters.leads'), value: 'LEAD' as const },
+  { label: t('dashboard.inbox.filters.replied'), value: 'REPLIED' as const },
+  { label: t('dashboard.inbox.filters.archived'), value: 'ARCHIVED' as const },
+  { label: t('dashboard.inbox.filters.spam'), value: 'SPAM' as const }
+])
 
 const summaryCards = computed(() => [
   {
     key: 'unread',
     label: t('dashboard.inbox.summary.unread'),
-    value: unreadCount.value,
+    value: inboxWorkspace.value.summary.unread,
     icon: 'i-lucide-mail',
     helper: t('dashboard.inbox.summary.unreadHelper')
   },
   {
     key: 'needs_reply',
     label: t('dashboard.inbox.summary.needsReply'),
-    value: needsReplyCount.value,
+    value: inboxWorkspace.value.summary.needsReply,
     icon: 'i-lucide-reply',
     helper: t('dashboard.inbox.summary.needsReplyHelper')
   },
   {
     key: 'leads',
     label: t('dashboard.inbox.summary.leads'),
-    value: leadCount.value,
+    value: inboxWorkspace.value.summary.leads,
     icon: 'i-lucide-user-plus',
     helper: t('dashboard.inbox.summary.leadsHelper')
   },
   {
     key: 'archived',
     label: t('dashboard.inbox.summary.archived'),
-    value: archivedCount.value,
+    value: inboxWorkspace.value.summary.archived,
     icon: 'i-lucide-archive',
     helper: t('dashboard.inbox.summary.archivedHelper')
   }
 ])
 
-const filteredMessages = computed(() => {
-  const query = search.value.trim().toLowerCase()
-
-  return messages.value.filter((message) => {
-    const haystack = [message.senderName, message.senderEmail, message.subject, message.preview]
-      .join(' ')
-      .toLowerCase()
-
-    return (
-      matchesActiveFilter(message, activeFilter.value) && (!query || haystack.includes(query))
-    )
-  })
-})
-
-const selectedThreadEvents = computed(() => {
-  if (!selectedMessage.value) return []
-
-  return [
-    ...getThreadEvents(selectedMessage.value),
-    ...(localThreadNotes.value[selectedMessage.value.id] || [])
-  ].sort((a, b) => a.createdAt - b.createdAt)
-})
-
 watch(
-  loadedMessages,
-  (currentMessages) => {
-    messages.value = currentMessages || []
-
-    if (!messages.value.some((message) => message.id === selectedMessageId.value)) {
-      const routeMessageId = typeof route.query.message === 'string' ? route.query.message : null
-      selectedMessageId.value =
-        messages.value.find((message) => message.id === routeMessageId)?.id || messages.value[0]?.id
-    }
-  },
-  { immediate: true }
+  () => route.query.message,
+  (messageId) => {
+    selectedMessageId.value = typeof messageId === 'string' ? messageId : undefined
+  }
 )
 
 watch(
-  filteredMessages,
+  () => inboxWorkspace.value.messages,
   (currentMessages) => {
-    if (currentMessages.some((message) => message.id === selectedMessageId.value)) {
+    if (!currentMessages.length) {
+      if (route.query.message) {
+        return
+      }
+
+      selectedMessageId.value = undefined
       return
     }
 
-    selectedMessageId.value = currentMessages[0]?.id
+    const firstMessageId = currentMessages[0]?.id
+
+    if (!selectedMessageId.value && !route.query.message && firstMessageId) {
+      selectMessage(firstMessageId)
+      return
+    }
+
+    const exists = currentMessages.some((message) => message.id === selectedMessageId.value)
+
+    if (
+      !exists &&
+      !inboxWorkspace.value.selectedMessage &&
+      !route.query.message &&
+      firstMessageId
+    ) {
+      selectMessage(firstMessageId)
+    }
   },
   { immediate: true }
 )
@@ -251,45 +188,36 @@ function getInboxErrorMessage(error: unknown) {
   }
 
   if (message.includes('no such table: inbox_messages')) {
-    return 'Inbox database table is missing. Apply the latest migration.'
+    return 'Inbox database table is missing. Apply the inbox migration.'
+  }
+
+  if (message.includes('no such table: inbox_replies')) {
+    return 'Inbox replies table is missing. Apply the inbox replies migration.'
   }
 
   return message
 }
 
-async function requestInboxGraphql<T>(query: string, variables: Record<string, unknown> = {}) {
-  const auth = useAuth()
-  const token = auth.restoreToken()
+function selectMessage(id: string) {
+  selectedMessageId.value = id
 
-  const response = await $fetch<GraphqlResponse<T>>('/graph', {
-    method: 'POST',
-    headers: token
-      ? {
-          Authorization: `Bearer ${token}`
-        }
-      : undefined,
-    body: {
-      query,
-      variables
-    }
-  })
-
-  if (response.errors?.length) {
-    throw new Error(response.errors[0]?.message || 'GraphQL request failed')
-  }
-
-  if (!response.data) {
-    throw new Error('GraphQL request failed')
-  }
-
-  return response.data
+  navigateTo(
+    {
+      path: route.path,
+      query: {
+        ...route.query,
+        message: id
+      }
+    },
+    { replace: true }
+  )
 }
 
-async function loadMessages() {
+async function loadInbox() {
   isRefreshing.value = true
 
   try {
-    await refreshInboxMessages()
+    await refreshInbox()
 
     if (inboxLoadError.value) {
       throw inboxLoadError.value
@@ -309,55 +237,18 @@ async function loadMessages() {
   }
 }
 
-async function updateSelectedStatus(status: InboxStatus) {
-  const message = messages.value.find((item) => item.id === selectedMessageId.value)
-
-  if (!message) {
-    return
-  }
-
-  const previousStatus = message.status
-  message.status = status
+async function updateSelectedStatus(status: InboxWorkspaceStatus) {
+  if (!selectedMessage.value) return
 
   try {
-    const result = await requestInboxGraphql<UpdateInboxMessageStatusMutation>(
-      `
-        mutation UpdateInboxMessageStatus($id: ID!, $status: InboxStatus!) {
-          updateInboxMessageStatus(id: $id, status: $status) {
-            id
-            source
-            status
-            kind
-            senderName
-            senderEmail
-            subject
-            preview
-            bodyText
-            senderCompany
-            senderWebsite
-            createdAt
-            updatedAt
-          }
-        }
-      `,
-      {
-        id: message.id,
-        status: status.toUpperCase()
-      }
-    )
-    const updated = normalizeInboxMessage(result.updateInboxMessageStatus)
-    const index = messages.value.findIndex((item) => item.id === updated.id)
+    await updateStatus(selectedMessage.value.id, status)
 
-    if (index !== -1) {
-      messages.value[index] = updated
-    }
+    toast.add({
+      color: 'success',
+      icon: 'i-lucide-check',
+      title: t('dashboard.inbox.statusUpdated')
+    })
   } catch (error) {
-    message.status = previousStatus
-
-    if (import.meta.dev) {
-      console.error('[dashboard:inbox:status-error]', error)
-    }
-
     toast.add({
       color: 'error',
       icon: 'i-lucide-circle-alert',
@@ -367,37 +258,39 @@ async function updateSelectedStatus(status: InboxStatus) {
 }
 
 function archiveSelected() {
-  updateSelectedStatus('archived')
+  updateSelectedStatus('ARCHIVED')
 }
 
 function spamSelected() {
-  updateSelectedStatus('spam')
+  updateSelectedStatus('SPAM')
+}
+
+function markSelectedDone() {
+  updateSelectedStatus('REPLIED')
+}
+
+async function convertSelectedToLead() {
+  if (!selectedMessage.value) return
+
+  try {
+    await updateKind(selectedMessage.value.id, 'LEAD')
+
+    toast.add({
+      color: 'success',
+      icon: 'i-lucide-user-plus',
+      title: t('dashboard.inbox.workspace.convertedToLead')
+    })
+  } catch (error) {
+    toast.add({
+      color: 'error',
+      icon: 'i-lucide-circle-alert',
+      title: getInboxErrorMessage(error)
+    })
+  }
 }
 
 function focusReplyComposer() {
   composerMode.value = 'reply'
-}
-
-function addPrivateNote() {
-  if (!selectedMessage.value || !noteBody.value.trim()) return
-
-  const note: InboxThreadEvent = {
-    id: `${selectedMessage.value.id}:note:${Date.now()}`,
-    type: 'internal_note',
-    authorName: 'Mohetios',
-    bodyText: noteBody.value.trim(),
-    time: 'just now',
-    createdAt: Date.now(),
-    isPrivate: true,
-    deliveryStatus: 'not_applicable'
-  }
-
-  localThreadNotes.value[selectedMessage.value.id] = [
-    ...(localThreadNotes.value[selectedMessage.value.id] || []),
-    note
-  ]
-
-  noteBody.value = ''
 }
 
 async function sendReply() {
@@ -405,51 +298,20 @@ async function sendReply() {
     return
   }
 
-  const sentBody = replyBody.value.trim()
-  const messageId = selectedMessage.value.id
   isSendingReply.value = true
 
   try {
-    await requestInboxGraphql(
-      `
-        mutation ReplyToInboxMessage($input: ReplyToInboxMessageInput!) {
-          replyToInboxMessage(input: $input) {
-            id
-            status
-            error
-          }
-        }
-      `,
-      {
-        input: {
-          inboxMessageId: messageId,
-          bodyText: sentBody
-        }
-      }
-    )
-
-    const replyEvent: InboxThreadEvent = {
-      id: `${messageId}:reply:${Date.now()}`,
-      type: 'outbound_reply',
-      authorName: 'Mohetios',
-      bodyText: sentBody,
-      time: 'just now',
-      createdAt: Date.now(),
-      deliveryStatus: 'sent'
-    }
-
-    localThreadNotes.value[messageId] = [
-      ...(localThreadNotes.value[messageId] || []),
-      replyEvent
-    ]
+    const result = await sendInboxReply(selectedMessage.value.id, replyBody.value.trim())
 
     replyBody.value = ''
-    await loadMessages()
 
     toast.add({
-      color: 'success',
+      color: result.status === 'FAILED' ? 'error' : 'success',
       icon: 'i-lucide-send',
-      title: t('dashboard.inbox.errors.replySent')
+      title:
+        result.status === 'FAILED'
+          ? result.error || t('dashboard.inbox.errors.replyFailed')
+          : t('dashboard.inbox.errors.replyQueued')
     })
   } catch (error) {
     toast.add({
@@ -484,7 +346,7 @@ async function sendReply() {
         variant="ghost"
         icon="i-lucide-refresh-cw"
         :loading="isRefreshing"
-        @click="loadMessages"
+        @click="loadInbox"
       >
         {{ t('dashboard.inbox.refresh') }}
       </UButton>
@@ -544,13 +406,13 @@ async function sendReply() {
           <USkeleton v-for="item in 5" :key="item" class="h-24 w-full" />
         </div>
 
-        <div v-else-if="filteredMessages.length" class="divide-y divide-default">
+        <div v-else-if="messages.length" class="divide-y divide-default">
           <DashboardInboxThreadRow
-            v-for="message in filteredMessages"
+            v-for="message in messages"
             :key="message.id"
             :message="message"
             :selected="selectedMessageId === message.id"
-            @select="selectedMessageId = message.id"
+            @select="selectMessage(message.id)"
           />
         </div>
 
@@ -606,7 +468,7 @@ async function sendReply() {
                 variant="outline"
                 icon="i-lucide-check"
                 size="sm"
-                @click="updateSelectedStatus('replied')"
+                @click="markSelectedDone"
               >
                 {{ t('dashboard.inbox.workspace.markDone') }}
               </UButton>
@@ -633,7 +495,7 @@ async function sendReply() {
                 variant="ghost"
                 icon="i-lucide-user-plus"
                 size="sm"
-                disabled
+                @click="convertSelectedToLead"
               >
                 {{ t('dashboard.inbox.workspace.convertToLead') }}
               </UButton>
@@ -653,11 +515,14 @@ async function sendReply() {
           <DashboardInboxComposer
             v-model:composer-mode="composerMode"
             v-model:reply-body="replyBody"
-            v-model:note-body="noteBody"
             :is-sending-reply="isSendingReply"
+            disable-notes
             @send-reply="sendReply"
-            @add-private-note="addPrivateNote"
           />
+
+          <p class="text-xs text-muted">
+            {{ t('dashboard.inbox.workspace.notesDisabled') }}
+          </p>
 
           <div class="grid gap-4 lg:grid-cols-2">
             <DashboardInboxDetailsCard :message="selectedMessage" />

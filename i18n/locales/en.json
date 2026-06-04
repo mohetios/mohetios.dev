@@ -250,6 +250,7 @@
         "emptyTitle": "No threads found",
         "emptyDescription": "Try a different search or filter."
       },
+      "statusUpdated": "Inbox status updated.",
       "workspace": {
         "selectTitle": "Select a thread",
         "selectDescription": "Choose a conversation from the inbox to review, reply, or add a private note.",
@@ -258,7 +259,9 @@
         "markDone": "Mark Done",
         "archive": "Archive",
         "spam": "Spam",
-        "convertToLead": "Convert to Lead"
+        "convertToLead": "Convert to Lead",
+        "convertedToLead": "Message converted to lead.",
+        "notesDisabled": "Private notes need persistent storage and will be added later."
       },
       "composer": {
         "reply": "Reply",
@@ -286,8 +289,9 @@
         "website": "Website"
       },
       "errors": {
-        "loadFailed": "Inbox could not be loaded",
-        "replySent": "Reply sent"
+        "loadFailed": "Inbox could not be loaded.",
+        "replyQueued": "Reply queued for delivery.",
+        "replyFailed": "Reply could not be queued."
       }
     }
   },

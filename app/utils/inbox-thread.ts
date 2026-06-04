@@ -11,12 +11,16 @@ export type InboxMessage = {
   subject: string
   preview: string
   bodyText: string
+  bodyHtml?: string | null
   kind: InboxKind
   status: InboxStatus
+  priority?: 'low' | 'normal' | 'high'
   time: string
   senderCompany?: string | null
   senderWebsite?: string | null
   createdAt: number
+  updatedAt?: number
+  lastActivityAt?: number
 }
 
 export type InboxThreadStatus =
@@ -26,8 +30,6 @@ export type InboxThreadStatus =
   | 'replied'
   | 'archived'
   | 'spam'
-
-export type InboxThreadSource = 'contact_form' | 'email'
 
 export type InboxThreadEventType =
   | 'inbound'
@@ -52,36 +54,6 @@ export function getThreadStatus(message: InboxMessage): InboxThreadStatus {
   if (message.status === 'new') return 'needs_reply'
   if (message.status === 'open') return 'needs_reply'
   return message.status
-}
-
-export function getThreadEvents(message: InboxMessage): InboxThreadEvent[] {
-  const events: InboxThreadEvent[] = [
-    {
-      id: `${message.id}:inbound`,
-      type: 'inbound',
-      authorName: message.senderName,
-      authorEmail: message.senderEmail,
-      bodyText: message.bodyText,
-      time: message.time,
-      createdAt: message.createdAt,
-      deliveryStatus: 'not_applicable'
-    }
-  ]
-
-  if (['lead', 'collaboration'].includes(message.kind)) {
-    events.push({
-      id: `${message.id}:note:mock`,
-      type: 'internal_note',
-      authorName: 'Mohetios',
-      bodyText: 'Potential collaboration or lead. Review context before replying.',
-      time: 'Private note',
-      createdAt: message.createdAt + 1,
-      isPrivate: true,
-      deliveryStatus: 'not_applicable'
-    })
-  }
-
-  return events
 }
 
 export function getCategoryLabel(kind: InboxKind) {
@@ -165,54 +137,4 @@ export function formatMessageTime(value: number) {
   if (diffMs < day) return `${Math.floor(diffMs / hour)}h ago`
 
   return `${Math.floor(diffMs / day)}d ago`
-}
-
-export function normalizeInboxMessage(message: {
-  id: string
-  source: string
-  status: string
-  kind: string
-  senderName: string
-  senderEmail: string
-  subject: string
-  preview: string
-  bodyText: string
-  senderCompany?: string | null
-  senderWebsite?: string | null
-  createdAt: number
-}): InboxMessage {
-  const source = message.source.toLowerCase() as InboxSource
-
-  return {
-    id: message.id,
-    source,
-    senderName: message.senderName,
-    senderEmail: message.senderEmail,
-    subject: message.subject,
-    preview: message.preview,
-    bodyText: message.bodyText,
-    kind: message.kind.toLowerCase() as InboxKind,
-    status: message.status.toLowerCase() as InboxStatus,
-    time: formatMessageTime(message.createdAt),
-    senderCompany: message.senderCompany,
-    senderWebsite: message.senderWebsite,
-    createdAt: message.createdAt
-  }
-}
-
-export function matchesActiveFilter(
-  message: InboxMessage,
-  activeFilter: 'all' | 'needs_reply' | 'lead' | 'replied' | 'archived' | 'spam'
-) {
-  if (activeFilter === 'all') return true
-
-  if (activeFilter === 'needs_reply') {
-    return ['new', 'open'].includes(message.status)
-  }
-
-  if (activeFilter === 'lead') {
-    return ['lead', 'collaboration'].includes(message.kind)
-  }
-
-  return message.status === activeFilter || message.kind === activeFilter
 }

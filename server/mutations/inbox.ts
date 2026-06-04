@@ -2,8 +2,10 @@ import { GraphQLError } from 'graphql'
 
 import type { GraphQLContext } from '../routes/graph'
 import { createInboxMessage } from '../services/inbox/create-inbox-message'
+import { markMessageKind } from '../services/inbox/mark-message-kind'
 import { markMessageStatus } from '../services/inbox/mark-message-status'
 import { replyToMessage } from '../services/inbox/reply-to-message'
+import { normalizeInboxMessageRow } from '../utils/inbox-map'
 import { createAdminNotification } from '../services/notifications/create-admin-notification'
 import { requirePermission } from '../utils/auth'
 import type { AdminNotificationJob } from '../../shared/contracts/notifications'
@@ -25,8 +27,17 @@ type CreateContactMessageArgs = {
 }
 
 type UpdateInboxMessageStatusArgs = {
-  id: string
-  status: InboxStatus
+  input: {
+    id: string
+    status: InboxStatus
+  }
+}
+
+type UpdateInboxMessageKindArgs = {
+  input: {
+    id: string
+    kind: InboxKind
+  }
 }
 
 type ReplyToInboxMessageArgs = {
@@ -45,6 +56,14 @@ const validTopics = new Set<ContactTopic>([
 ])
 
 const validStatuses = new Set<InboxStatus>(['NEW', 'OPEN', 'REPLIED', 'ARCHIVED', 'SPAM'])
+const validKinds = new Set<InboxKind>([
+  'LEAD',
+  'COLLABORATION',
+  'PERSONAL',
+  'SUPPORT',
+  'OTHER',
+  'SPAM'
+])
 
 function normalizeText(value: string, maxLength: number, label: string) {
   const normalized = value.trim()
@@ -174,17 +193,37 @@ export const inboxMutations = {
   ) => {
     requirePermission(context, 'inbox:manage')
 
-    if (!validStatuses.has(args.status)) {
+    if (!validStatuses.has(args.input.status)) {
       throw new GraphQLError('Status is invalid')
     }
 
-    const message = await markMessageStatus(context.db, args.id, args.status)
+    const message = await markMessageStatus(context.db, args.input.id, args.input.status)
 
     if (!message) {
       throw new GraphQLError('Message not found')
     }
 
-    return message
+    return normalizeInboxMessageRow(message)
+  },
+
+  updateInboxMessageKind: async (
+    _parent: unknown,
+    args: UpdateInboxMessageKindArgs,
+    context: GraphQLContext
+  ) => {
+    requirePermission(context, 'inbox:manage')
+
+    if (!validKinds.has(args.input.kind)) {
+      throw new GraphQLError('Kind is invalid')
+    }
+
+    const message = await markMessageKind(context.db, args.input.id, args.input.kind)
+
+    if (!message) {
+      throw new GraphQLError('Message not found')
+    }
+
+    return normalizeInboxMessageRow(message)
   },
 
   replyToInboxMessage: async (
@@ -197,10 +236,16 @@ export const inboxMutations = {
     const bodyText = normalizeText(args.input.bodyText, 10000, 'Reply')
 
     try {
-      return await replyToMessage(context.db, context.env, {
+      const reply = await replyToMessage(context.db, context.env, {
         inboxMessageId: args.input.inboxMessageId,
         bodyText
       })
+
+      return {
+        id: reply.id,
+        status: reply.status,
+        error: reply.error
+      }
     } catch (error) {
       throw new GraphQLError(error instanceof Error ? error.message : 'Reply failed')
     }

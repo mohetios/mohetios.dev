@@ -54,5 +54,14 @@ export async function replyToMessage(
     inboxMessageId: message.id
   })
 
+  await db
+    .update(inboxMessages)
+    .set({
+      status: 'REPLIED',
+      updatedAt: now,
+      lastActivityAt: now
+    })
+    .where(eq(inboxMessages.id, message.id))
+
   return created
 }

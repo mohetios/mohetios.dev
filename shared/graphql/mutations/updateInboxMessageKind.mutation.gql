@@ -1,5 +1,5 @@
-query InboxMessages {
-  inboxMessages {
+mutation UpdateInboxMessageKind($input: UpdateInboxMessageKindInput!) {
+  updateInboxMessageKind(input: $input) {
     id
     source
     status

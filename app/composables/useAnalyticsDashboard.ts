@@ -1,8 +1,3 @@
-type GraphqlResponse<T> = {
-  data?: T
-  errors?: Array<{ message?: string }>
-}
-
 export type AnalyticsRange = 'LAST_7_DAYS' | 'LAST_30_DAYS' | 'LAST_90_DAYS'
 
 export type AnalyticsDashboard = {
@@ -73,43 +68,85 @@ export type AnalyticsDashboard = {
 
   dataSourceLabel: string
   dataSourceDescription: string
-  isExternalProviderConnected: boolean
 }
 
 type AnalyticsDashboardQuery = {
   analyticsDashboard: AnalyticsDashboard
 }
 
-async function requestAnalyticsGraphql<T>(
-  query: string,
-  variables: Record<string, unknown> = {}
-) {
-  const auth = useAuth()
-  const token = auth.restoreToken()
+const analyticsDashboardQuery = `
+  query AnalyticsDashboard($range: AnalyticsRange!) {
+    analyticsDashboard(range: $range) {
+      metrics {
+        key
+        label
+        value
+        helper
+        icon
+        trend
+      }
 
-  const response = await $fetch<GraphqlResponse<T>>('/graph', {
-    method: 'POST',
-    headers: token
-      ? {
-          Authorization: `Bearer ${token}`
-        }
-      : undefined,
-    body: {
-      query,
-      variables
+      trend {
+        date
+        visitors
+        pageViews
+        searchClicks
+      }
+
+      topPages {
+        title
+        path
+        views
+        visitors
+        avgTime
+        source
+      }
+
+      referrers {
+        source
+        visits
+        share
+        trend
+      }
+
+      countries {
+        code
+        country
+        visits
+        share
+      }
+
+      searchQueries {
+        query
+        clicks
+        impressions
+        ctr
+        position
+        page
+      }
+
+      webVitals {
+        key
+        label
+        value
+        status
+        helper
+      }
+
+      edgeSummary {
+        cacheHitRatio
+        edgeRequests
+        edgeErrors
+        avgLoadTime
+        loadTimeTrend
+        progressValue
+      }
+
+      dataSourceLabel
+      dataSourceDescription
     }
-  })
-
-  if (response.errors?.length) {
-    throw new Error(response.errors[0]?.message || 'GraphQL request failed')
   }
-
-  if (!response.data) {
-    throw new Error('GraphQL request failed')
-  }
-
-  return response.data
-}
+`
 
 function createDefaultAnalyticsDashboard(): AnalyticsDashboard {
   return {
@@ -129,8 +166,7 @@ function createDefaultAnalyticsDashboard(): AnalyticsDashboard {
       progressValue: 0
     },
     dataSourceLabel: 'Data source',
-    dataSourceDescription: '',
-    isExternalProviderConnected: false
+    dataSourceDescription: ''
   }
 }
 
@@ -138,84 +174,9 @@ export function useAnalyticsDashboard(range: Ref<AnalyticsRange>) {
   return useAsyncData<AnalyticsDashboard>(
     () => `dashboard:analytics:${range.value}`,
     async () => {
-      const result = await requestAnalyticsGraphql<AnalyticsDashboardQuery>(
-        `
-          query AnalyticsDashboard($range: AnalyticsRange!) {
-            analyticsDashboard(range: $range) {
-              metrics {
-                key
-                label
-                value
-                helper
-                icon
-                trend
-              }
-
-              trend {
-                date
-                visitors
-                pageViews
-                searchClicks
-              }
-
-              topPages {
-                title
-                path
-                views
-                visitors
-                avgTime
-                source
-              }
-
-              referrers {
-                source
-                visits
-                share
-                trend
-              }
-
-              countries {
-                code
-                country
-                visits
-                share
-              }
-
-              searchQueries {
-                query
-                clicks
-                impressions
-                ctr
-                position
-                page
-              }
-
-              webVitals {
-                key
-                label
-                value
-                status
-                helper
-              }
-
-              edgeSummary {
-                cacheHitRatio
-                edgeRequests
-                edgeErrors
-                avgLoadTime
-                loadTimeTrend
-                progressValue
-              }
-
-              dataSourceLabel
-              dataSourceDescription
-              isExternalProviderConnected
-            }
-          }
-        `,
-        {
-          range: range.value
-        }
+      const result = await fetchAuthenticatedGraphql<AnalyticsDashboardQuery>(
+        analyticsDashboardQuery,
+        { range: range.value }
       )
 
       return result.analyticsDashboard

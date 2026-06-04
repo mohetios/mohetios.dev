@@ -79,17 +79,11 @@ export async function analyticsDashboard(
 
   return {
     metrics: createEmptyMetrics(),
-
     trend: createEmptyTrend(days),
-
     topPages: [],
-
     referrers: [],
-
     countries: [],
-
     searchQueries: [],
-
     webVitals: [
       {
         key: 'LCP',
@@ -125,7 +119,6 @@ export async function analyticsDashboard(
 
     dataSourceLabel: 'Data source',
     dataSourceDescription:
-      'External analytics providers are not connected yet. This page is now backend-driven and ready for Cloudflare Analytics, Workers metrics, and Google Search Console integration.',
-    isExternalProviderConnected: false
+      'External analytics providers are not connected yet. This page is now backend-driven and ready for Cloudflare Analytics, Workers metrics, and Google Search Console integration.'
   }
 }

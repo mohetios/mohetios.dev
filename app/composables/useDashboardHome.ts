@@ -1,8 +1,3 @@
-type GraphqlResponse<T> = {
-  data?: T
-  errors?: Array<{ message?: string }>
-}
-
 export type DashboardHome = {
   summary: {
     inboxUnread: number
@@ -81,36 +76,83 @@ type DashboardHomeQuery = {
   dashboardHome: DashboardHome
 }
 
-async function requestDashboardGraphql<T>(
-  query: string,
-  variables: Record<string, unknown> = {}
-) {
-  const auth = useAuth()
-  const token = auth.restoreToken()
+const dashboardHomeQuery = `
+  query DashboardHome {
+    dashboardHome {
+      summary {
+        inboxUnread
+        needsReply
+        leads
+        visits
+        pageViews
+        searchClicks
+        avgLoadMs
+      }
 
-  const response = await $fetch<GraphqlResponse<T>>('/graph', {
-    method: 'POST',
-    headers: token
-      ? {
-          Authorization: `Bearer ${token}`
+      audienceTrend {
+        date
+        visitors
+        pageViews
+      }
+
+      inboxPreview {
+        id
+        source
+        status
+        kind
+        senderName
+        senderEmail
+        subject
+        preview
+        createdAt
+      }
+
+      contentPulse {
+        publishedCount
+        draftCount
+        latestItems {
+          id
+          title
+          slug
+          section
+          status
+          updatedAt
         }
-      : undefined,
-    body: {
-      query,
-      variables
+      }
+
+      readerSignals {
+        label
+        value
+        helper
+        icon
+      }
+
+      systemHealth {
+        key
+        label
+        status
+        helper
+      }
+
+      recentActivity {
+        id
+        type
+        title
+        description
+        createdAt
+        href
+      }
+
+      quickLinks {
+        key
+        label
+        description
+        icon
+        to
+      }
     }
-  })
-
-  if (response.errors?.length) {
-    throw new Error(response.errors[0]?.message || 'GraphQL request failed')
   }
-
-  if (!response.data) {
-    throw new Error('GraphQL request failed')
-  }
-
-  return response.data
-}
+`
 
 function createDefaultDashboardHome(): DashboardHome {
   return {
@@ -141,84 +183,7 @@ export function useDashboardHome() {
   return useAsyncData<DashboardHome>(
     'dashboard:home',
     async () => {
-      const result = await requestDashboardGraphql<DashboardHomeQuery>(`
-        query DashboardHome {
-          dashboardHome {
-            summary {
-              inboxUnread
-              needsReply
-              leads
-              visits
-              pageViews
-              searchClicks
-              avgLoadMs
-            }
-
-            audienceTrend {
-              date
-              visitors
-              pageViews
-            }
-
-            inboxPreview {
-              id
-              source
-              status
-              kind
-              senderName
-              senderEmail
-              subject
-              preview
-              createdAt
-            }
-
-            contentPulse {
-              publishedCount
-              draftCount
-              latestItems {
-                id
-                title
-                slug
-                section
-                status
-                updatedAt
-              }
-            }
-
-            readerSignals {
-              label
-              value
-              helper
-              icon
-            }
-
-            systemHealth {
-              key
-              label
-              status
-              helper
-            }
-
-            recentActivity {
-              id
-              type
-              title
-              description
-              createdAt
-              href
-            }
-
-            quickLinks {
-              key
-              label
-              description
-              icon
-              to
-            }
-          }
-        }
-      `)
-
+      const result = await fetchAuthenticatedGraphql<DashboardHomeQuery>(dashboardHomeQuery)
       return result.dashboardHome
     },
     {

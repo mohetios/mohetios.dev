@@ -1,5 +1,5 @@
-mutation UpdateInboxMessageStatus($id: ID!, $status: InboxStatus!) {
-  updateInboxMessageStatus(id: $id, status: $status) {
+mutation UpdateInboxMessageStatus($input: UpdateInboxMessageStatusInput!) {
+  updateInboxMessageStatus(input: $input) {
     id
     source
     status

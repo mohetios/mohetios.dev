@@ -1,0 +1,81 @@
+query InboxWorkspace($input: InboxWorkspaceInput) {
+  inboxWorkspace(input: $input) {
+    summary {
+      unread
+      needsReply
+      leads
+      archived
+      spam
+      total
+    }
+
+    messages {
+      id
+      source
+      status
+      kind
+      priority
+      senderName
+      senderEmail
+      senderCompany
+      senderWebsite
+      subject
+      preview
+      bodyText
+      bodyHtml
+      rawMessageId
+      inReplyTo
+      threadKey
+      createdAt
+      updatedAt
+      lastActivityAt
+    }
+
+    selectedMessage {
+      id
+      source
+      status
+      kind
+      priority
+      senderName
+      senderEmail
+      senderCompany
+      senderWebsite
+      subject
+      preview
+      bodyText
+      bodyHtml
+      rawMessageId
+      inReplyTo
+      threadKey
+      createdAt
+      updatedAt
+      lastActivityAt
+    }
+
+    replies {
+      id
+      inboxMessageId
+      fromEmail
+      toEmail
+      subject
+      bodyText
+      providerMessageId
+      status
+      error
+      createdAt
+      sentAt
+    }
+
+    threadEvents {
+      id
+      type
+      authorName
+      authorEmail
+      bodyText
+      createdAt
+      isPrivate
+      deliveryStatus
+    }
+  }
+}

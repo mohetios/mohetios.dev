@@ -1,10 +1,11 @@
 <script setup lang="ts">
 const composerMode = defineModel<'reply' | 'note'>('composerMode', { required: true })
 const replyBody = defineModel<string>('replyBody', { required: true })
-const noteBody = defineModel<string>('noteBody', { required: true })
+const noteBody = defineModel<string>('noteBody', { default: '' })
 
-defineProps<{
+const props = defineProps<{
   isSendingReply: boolean
+  disableNotes?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -13,6 +14,16 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+
+watch(
+  () => props.disableNotes,
+  (disabled) => {
+    if (disabled && composerMode.value === 'note') {
+      composerMode.value = 'reply'
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -27,6 +38,7 @@ const { t } = useI18n()
         {{ t('dashboard.inbox.composer.reply') }}
       </UButton>
       <UButton
+        v-if="!disableNotes"
         :color="composerMode === 'note' ? 'primary' : 'neutral'"
         :variant="composerMode === 'note' ? 'soft' : 'ghost'"
         size="sm"
@@ -63,7 +75,7 @@ const { t } = useI18n()
       </div>
     </template>
 
-    <template v-else>
+    <template v-else-if="!disableNotes">
       <UTextarea
         v-model="noteBody"
         :placeholder="t('dashboard.inbox.composer.notePlaceholder')"

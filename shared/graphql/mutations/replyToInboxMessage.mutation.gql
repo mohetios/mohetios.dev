@@ -3,7 +3,5 @@ mutation ReplyToInboxMessage($input: ReplyToInboxMessageInput!) {
     id
     status
     error
-    createdAt
-    sentAt
   }
 }

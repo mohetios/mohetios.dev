@@ -4,8 +4,7 @@ import type { AnalyticsRange } from '~/composables/useAnalyticsDashboard'
 
 definePageMeta({
   layout: 'dashboard',
-  middleware: ['auth'],
-  requiredPermission: 'dashboard:view'
+  middleware: ['auth']
 })
 
 const { t } = useI18n()

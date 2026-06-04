@@ -2,8 +2,7 @@ export const typeDefs = /* GraphQL */ `
   type Query {
     me: User
     memberProfile: User
-    inboxMessages(filter: InboxMessageFilterInput, pagination: PaginationInput): [InboxMessage!]!
-    inboxMessage(id: ID!): InboxMessage
+    inboxWorkspace(input: InboxWorkspaceInput): InboxWorkspace!
     adminNotifications: [AdminNotification!]!
     pushSubscriptions: [PushSubscription!]!
     dashboardHome: DashboardHome!
@@ -16,8 +15,9 @@ export const typeDefs = /* GraphQL */ `
     logout: Boolean!
     updateMyProfile(input: UpdateProfileInput!): User!
     createContactMessage(input: CreateContactMessageInput!): InboxMessage!
-    updateInboxMessageStatus(id: ID!, status: InboxStatus!): InboxMessage!
-    replyToInboxMessage(input: ReplyToInboxMessageInput!): InboxReply!
+    updateInboxMessageStatus(input: UpdateInboxMessageStatusInput!): InboxMessage!
+    updateInboxMessageKind(input: UpdateInboxMessageKindInput!): InboxMessage!
+    replyToInboxMessage(input: ReplyToInboxMessageInput!): ReplyToInboxMessageResult!
   }
 
   type User {
@@ -76,7 +76,6 @@ export const typeDefs = /* GraphQL */ `
     rawMessageId: String
     inReplyTo: String
     threadKey: String!
-    replies: [InboxReply!]!
     createdAt: Float!
     updatedAt: Float!
     lastActivityAt: Float!
@@ -154,6 +153,49 @@ export const typeDefs = /* GraphQL */ `
     FAILED
   }
 
+  enum InboxFilter {
+    ALL
+    NEEDS_REPLY
+    LEAD
+    REPLIED
+    ARCHIVED
+    SPAM
+  }
+
+  type InboxSummary {
+    unread: Int!
+    needsReply: Int!
+    leads: Int!
+    archived: Int!
+    spam: Int!
+    total: Int!
+  }
+
+  type InboxThreadEvent {
+    id: ID!
+    type: String!
+    authorName: String!
+    authorEmail: String
+    bodyText: String!
+    createdAt: Float!
+    isPrivate: Boolean!
+    deliveryStatus: String!
+  }
+
+  type InboxWorkspace {
+    summary: InboxSummary!
+    messages: [InboxMessage!]!
+    selectedMessage: InboxMessage
+    replies: [InboxReply!]!
+    threadEvents: [InboxThreadEvent!]!
+  }
+
+  type ReplyToInboxMessageResult {
+    id: ID!
+    status: InboxReplyStatus!
+    error: String
+  }
+
   enum AdminNotificationType {
     NEW_INBOUND_EMAIL
     NEW_CONTACT_MESSAGE
@@ -169,20 +211,27 @@ export const typeDefs = /* GraphQL */ `
     company: String
   }
 
-  input InboxMessageFilterInput {
-    status: InboxStatus
-    kind: InboxKind
-    source: InboxSource
-  }
-
-  input PaginationInput {
-    limit: Int
-    offset: Int
-  }
-
   input ReplyToInboxMessageInput {
     inboxMessageId: ID!
     bodyText: String!
+  }
+
+  input InboxWorkspaceInput {
+    filter: InboxFilter = ALL
+    search: String
+    selectedMessageId: ID
+    limit: Int = 50
+    offset: Int = 0
+  }
+
+  input UpdateInboxMessageStatusInput {
+    id: ID!
+    status: InboxStatus!
+  }
+
+  input UpdateInboxMessageKindInput {
+    id: ID!
+    kind: InboxKind!
   }
 
   type DashboardSummary {
@@ -352,7 +401,6 @@ export const typeDefs = /* GraphQL */ `
     edgeSummary: AnalyticsEdgeSummary!
     dataSourceLabel: String!
     dataSourceDescription: String!
-    isExternalProviderConnected: Boolean!
   }
 `
 
