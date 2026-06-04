@@ -15,5 +15,5 @@ node_modules/
 pnpm-lock.yaml
 
 # Generated migration metadata
-drizzle/migrations/meta/
+/migrations/meta/
 migrations/meta/

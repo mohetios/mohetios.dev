@@ -74,7 +74,7 @@ app/      -> frontend Vue app
 server/   -> Nitro backend / GraphQL / D1 / auth
 shared/   -> pure contracts shared by app and server
 content/  -> Velite content source
-drizzle/  -> Drizzle migrations
+/  -> Drizzle migrations
 public/   -> static assets
 ```
 
@@ -609,7 +609,7 @@ server/models/schema.ts
 Migrations live in:
 
 ```txt
-drizzle/migrations/
+/migrations/
 ```
 
 Do not run database push/migration commands unless the user asks or the task clearly requires it.

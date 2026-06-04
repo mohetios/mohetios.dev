@@ -129,7 +129,7 @@
     "**/.velite/**": true,
     "**/dist/**": true,
     "**/.wrangler/**": true,
-    "**/drizzle/migrations/meta/**": true,
+    "**//migrations/meta/**": true,
     "**/migrations/meta/**": true
   },
   "search.exclude": {
@@ -142,7 +142,7 @@
     "**/dist": true,
     "**/.wrangler": true,
     "**/pnpm-lock.yaml": true,
-    "**/drizzle/migrations/meta": true,
+    "**//migrations/meta": true,
     "**/migrations/meta": true
   },
 
