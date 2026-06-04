@@ -26,11 +26,11 @@ const navItems = computed<DashboardNavItem[]>(() => [
     icon: 'i-lucide-users',
     to: '/dashboard/leads'
   },
-  {
-    label: t('dashboard.nav.content'),
-    icon: 'i-lucide-file-text',
-    to: '/dashboard/content'
-  },
+  // {
+  //   label: t('dashboard.nav.content'),
+  //   icon: 'i-lucide-file-text',
+  //   to: '/dashboard/content'
+  // },
   {
     label: t('dashboard.nav.analytics'),
     icon: 'i-lucide-chart-column',

@@ -40,13 +40,13 @@ const rangeItems = computed(() => [
         </UButton>
       </UDropdownMenu>
 
-      <UButton
+      <!-- <UButton
         color="primary"
         icon="i-lucide-plus"
         to="/blog"
       >
         {{ t('dashboard.topbar.newPost') }}
-      </UButton>
+      </UButton> -->
 
       <UColorModeButton color="neutral" variant="ghost" />
     </template>
