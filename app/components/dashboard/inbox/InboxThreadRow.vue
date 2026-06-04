@@ -24,8 +24,8 @@ const emit = defineEmits<{
   <button
     type="button"
     class="block w-full border-s-2 px-4 py-3 text-start transition hover:bg-muted/40"
-    @click="emit('select')"
     :class="selected ? 'border-primary bg-primary/5' : 'border-transparent'"
+    @click="emit('select')"
   >
     <div class="flex items-start gap-3">
       <div

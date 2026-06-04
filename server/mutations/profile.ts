@@ -1,13 +1,17 @@
 import { eq } from 'drizzle-orm'
 import { GraphQLError } from 'graphql'
 
-import type { UpdateProfileInput } from '../../shared/types/auth'
 import { users } from '../models/schema'
 import type { GraphQLContext } from '../routes/graph'
 import { normalizeUserRole, requirePermission } from '../utils/auth'
 
 type UpdateProfileArgs = {
-  input: UpdateProfileInput
+  input: {
+    displayName?: string | null
+    bio?: string | null
+    website?: string | null
+    avatarUrl?: string | null
+  }
 }
 
 function normalizeText(value: string | null | undefined, maxLength: number, label: string) {

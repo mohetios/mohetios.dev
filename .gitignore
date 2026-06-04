@@ -19,6 +19,9 @@ logs
 .fleet
 .idea
 
+# Generated GraphQL SDL (synced from server/schema.ts for codegen)
+schema.graphql
+
 # Local env files
 .env
 .env.*

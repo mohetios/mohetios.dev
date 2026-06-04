@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
-import type { AuthInput } from '~~/shared/schemas/auth.schema'
+import type { LoginInput } from '#gql'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
@@ -22,24 +22,13 @@ useMohetSeo({
   description: () => t('auth.login.description')
 })
 
-async function onSubmit(event: FormSubmitEvent<AuthInput>) {
+async function onSubmit(event: FormSubmitEvent<LoginInput>) {
   loading.value = true
 
   try {
-    if (import.meta.dev) {
-      console.debug('[auth:login:submit]', {
-        username: event.data.username,
-        hasPassword: Boolean(event.data.password)
-      })
-    }
-
     const payload = await auth.login(event.data)
     await navigateTo(payload.user.role === 'OWNER' ? '/dashboard' : localePath('/member/profile'))
   } catch (error) {
-    if (import.meta.dev) {
-      console.error('[auth:login:submit-error]', error)
-    }
-
     toast.add({
       color: 'error',
       icon: 'i-lucide-circle-alert',
@@ -47,12 +36,6 @@ async function onSubmit(event: FormSubmitEvent<AuthInput>) {
     })
   } finally {
     loading.value = false
-  }
-}
-
-function onFormError(error: unknown) {
-  if (import.meta.dev) {
-    console.error('[auth:login:form-error]', error)
   }
 }
 </script>
@@ -73,7 +56,7 @@ function onFormError(error: unknown) {
         <p class="text-sm leading-6 text-muted">{{ t('auth.login.description') }}</p>
       </div>
 
-      <UForm :state="state" class="space-y-4" :on-submit="onSubmit" @error="onFormError">
+      <UForm :state="state" class="space-y-4" :on-submit="onSubmit">
         <UFormField name="username" :label="t('auth.fields.username')" required>
           <UInput
             v-model="state.username"

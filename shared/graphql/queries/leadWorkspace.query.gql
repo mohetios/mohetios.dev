@@ -1,0 +1,19 @@
+query LeadWorkspace($input: LeadWorkspaceInput) {
+  leadWorkspace(input: $input) {
+    summary {
+      total
+      new
+      qualified
+      highPriority
+      archived
+    }
+
+    leads {
+      ...LeadItemFields
+    }
+
+    selectedLead {
+      ...LeadItemFields
+    }
+  }
+}

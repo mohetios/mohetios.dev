@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import type {
-  Lead,
-  LeadPriority,
-  LeadSource,
-  LeadStatus,
-  LeadType
-} from '~/data/leads.mock'
-import { leads } from '~/data/leads.mock'
+  LeadItemDto,
+  LeadReviewPriorityFilter,
+  LeadReviewSourceFilter,
+  LeadReviewStatusFilter,
+  LeadReviewTypeFilter
+} from '~/composables/useLeadWorkspace'
+import { useLeadWorkspace } from '~/composables/useLeadWorkspace'
 import type { BadgeColor } from '~/utils/inbox-thread'
-import { dashboardCardUi, inboxThreadPanelUi, inboxWorkspacePanelUi } from '~/utils/dashboard-ui'
+import {
+  dashboardCardUi,
+  inboxThreadPanelUi,
+  inboxWorkspacePanelUi
+} from '~/utils/dashboard-ui'
 
 definePageMeta({
   layout: 'dashboard',
@@ -16,81 +20,108 @@ definePageMeta({
   requiredPermission: 'inbox:manage'
 })
 
-useMohetSeo({
-  title: 'Leads',
-  description:
-    'Review collaboration, freelance, and partnership opportunities from the Mohetios inbox.'
-})
+const { t } = useI18n()
+const route = useRoute()
+const toast = useToast()
 
-const leadsSource = ref<Lead[]>(leads)
+useMohetSeo({
+  title: () => t('dashboard.leads.title'),
+  description: () => t('dashboard.leads.description')
+})
 
 const search = ref('')
-const statusFilter = ref<'all' | LeadStatus>('all')
-const typeFilter = ref<'all' | LeadType>('all')
-const sourceFilter = ref<'all' | LeadSource>('all')
-const selectedLeadId = ref<string | undefined>(leads[0]?.id)
+const statusFilter = ref<LeadReviewStatusFilter>('ALL')
+const typeFilter = ref<LeadReviewTypeFilter>('ALL')
+const sourceFilter = ref<LeadReviewSourceFilter>('ALL')
+const priorityFilter = ref<LeadReviewPriorityFilter>('ALL')
+const selectedLeadId = ref<string | undefined>(
+  typeof route.query.lead === 'string' ? route.query.lead : undefined
+)
+const isRefreshing = ref(false)
+const isMutating = ref(false)
 
-const statusOptions: Array<'all' | LeadStatus> = [
-  'all',
-  'new',
-  'qualified',
-  'contacted',
-  'waiting',
-  'won',
-  'lost',
-  'archived'
-]
-
-const typeOptions: Array<'all' | LeadType> = [
-  'all',
-  'freelance',
-  'collaboration',
-  'partnership',
-  'speaking',
-  'support',
-  'other'
-]
-
-const sourceOptions: Array<'all' | LeadSource> = ['all', 'email', 'contact_form', 'manual']
-
-const leadSummaryCards = computed(() => {
-  const currentLeads = leadsSource.value
-
-  return [
-    {
-      key: 'total',
-      label: 'Total Leads',
-      value: currentLeads.length,
-      icon: 'i-lucide-users',
-      helper: 'All tracked opportunities'
-    },
-    {
-      key: 'new',
-      label: 'New',
-      value: currentLeads.filter((lead) => lead.status === 'new').length,
-      icon: 'i-lucide-sparkles',
-      helper: 'Not yet reviewed'
-    },
-    {
-      key: 'qualified',
-      label: 'Qualified',
-      value: currentLeads.filter((lead) => lead.status === 'qualified').length,
-      icon: 'i-lucide-badge-check',
-      helper: 'Worth pursuing'
-    },
-    {
-      key: 'high',
-      label: 'High Priority',
-      value: currentLeads.filter((lead) => lead.priority === 'high').length,
-      icon: 'i-lucide-flame',
-      helper: 'Needs attention soon'
-    }
-  ]
+const {
+  data: leadWorkspace,
+  pending: isLoading,
+  error: leadsLoadError,
+  refresh: refreshLeads,
+  updateLeadReview,
+  markLeadQualified,
+  archiveLead
+} = useLeadWorkspace({
+  status: statusFilter,
+  type: typeFilter,
+  source: sourceFilter,
+  priority: priorityFilter,
+  search,
+  selectedLeadId
 })
+
+const leads = computed(() => leadWorkspace.value.leads)
+const selectedLead = computed(() => leadWorkspace.value.selectedLead || null)
+
+const leadSummaryCards = computed(() => [
+  {
+    key: 'total',
+    label: t('dashboard.leads.summary.total'),
+    value: leadWorkspace.value.summary.total,
+    icon: 'i-lucide-users',
+    helper: t('dashboard.leads.summary.totalHelper')
+  },
+  {
+    key: 'new',
+    label: t('dashboard.leads.summary.new'),
+    value: leadWorkspace.value.summary.new,
+    icon: 'i-lucide-sparkles',
+    helper: t('dashboard.leads.summary.newHelper')
+  },
+  {
+    key: 'qualified',
+    label: t('dashboard.leads.summary.qualified'),
+    value: leadWorkspace.value.summary.qualified,
+    icon: 'i-lucide-badge-check',
+    helper: t('dashboard.leads.summary.qualifiedHelper')
+  },
+  {
+    key: 'high',
+    label: t('dashboard.leads.summary.highPriority'),
+    value: leadWorkspace.value.summary.highPriority,
+    icon: 'i-lucide-flame',
+    helper: t('dashboard.leads.summary.highPriorityHelper')
+  }
+])
+
+const statusOptions: LeadReviewStatusFilter[] = [
+  'ALL',
+  'NEW',
+  'OPEN',
+  'REPLIED',
+  'ARCHIVED',
+  'SPAM'
+]
+
+const typeOptions: LeadReviewTypeFilter[] = [
+  'ALL',
+  'LEAD',
+  'COLLABORATION',
+  'PERSONAL',
+  'SUPPORT',
+  'OTHER'
+]
+
+const sourceOptions: LeadReviewSourceFilter[] = ['ALL', 'EMAIL', 'CONTACT_FORM']
+const priorityOptions: LeadReviewPriorityFilter[] = ['ALL', 'LOW', 'NORMAL', 'HIGH']
+
+function formatLeadLabel(value: string) {
+  return value
+    .toLowerCase()
+    .replace('_', ' ')
+    .replace(/\b\w/g, (char) => char.toUpperCase())
+}
 
 function toSelectItems<T extends string>(values: readonly T[]) {
   return values.map((value) => ({
-    label: value === 'all' ? 'All' : formatLeadLabel(value),
+    label: value === 'ALL' ? t('dashboard.leads.filters.all') : formatLeadLabel(value),
     value
   }))
 }
@@ -98,96 +129,62 @@ function toSelectItems<T extends string>(values: readonly T[]) {
 const statusSelectItems = computed(() => toSelectItems(statusOptions))
 const typeSelectItems = computed(() => toSelectItems(typeOptions))
 const sourceSelectItems = computed(() => toSelectItems(sourceOptions))
+const prioritySelectItems = computed(() => toSelectItems(priorityOptions))
 
-const filteredLeads = computed(() => {
-  const query = search.value.trim().toLowerCase()
-
-  return leadsSource.value.filter((lead) => {
-    const haystack = [
-      lead.name,
-      lead.email,
-      lead.company,
-      lead.title,
-      lead.summary,
-      lead.tags.join(' ')
-    ]
-      .filter(Boolean)
-      .join(' ')
-      .toLowerCase()
-
-    const matchesSearch = !query || haystack.includes(query)
-    const matchesStatus = statusFilter.value === 'all' || lead.status === statusFilter.value
-    const matchesType = typeFilter.value === 'all' || lead.type === typeFilter.value
-    const matchesSource = sourceFilter.value === 'all' || lead.source === sourceFilter.value
-
-    return matchesSearch && matchesStatus && matchesType && matchesSource
-  })
-})
-
-const selectedLead = computed<Lead | null>(() => {
-  return (
-    filteredLeads.value.find((lead) => lead.id === selectedLeadId.value) ||
-    filteredLeads.value[0] ||
-    null
-  )
-})
-
-watch(
-  filteredLeads,
-  (currentLeads) => {
-    if (currentLeads.some((lead) => lead.id === selectedLeadId.value)) {
-      return
-    }
-
-    selectedLeadId.value = currentLeads[0]?.id
-  },
-  { immediate: true }
-)
-
-function selectLead(id: string) {
-  selectedLeadId.value = id
-}
-
-function getLeadStatusColor(status: LeadStatus): BadgeColor {
+function getLeadStatusColor(status: LeadItemDto['status']): BadgeColor {
   return {
-    new: 'primary',
-    qualified: 'success',
-    contacted: 'info',
-    waiting: 'warning',
-    won: 'success',
-    lost: 'error',
-    archived: 'neutral'
+    NEW: 'primary',
+    OPEN: 'success',
+    REPLIED: 'info',
+    ARCHIVED: 'neutral',
+    SPAM: 'error'
   }[status] as BadgeColor
 }
 
-function getLeadPriorityColor(priority: LeadPriority): BadgeColor {
+function getLeadPriorityColor(priority: LeadItemDto['priority']): BadgeColor {
   return {
-    low: 'neutral',
-    normal: 'info',
-    high: 'error'
+    LOW: 'neutral',
+    NORMAL: 'info',
+    HIGH: 'error'
   }[priority] as BadgeColor
 }
 
-function getLeadSourceIcon(source: LeadSource) {
+function getLeadSourceIcon(source: LeadItemDto['source']) {
   return {
-    email: 'i-lucide-mail',
-    contact_form: 'i-lucide-inbox',
-    manual: 'i-lucide-pencil'
+    EMAIL: 'i-lucide-mail',
+    CONTACT_FORM: 'i-lucide-inbox'
   }[source]
 }
 
-function getLeadSourceColor(source: LeadSource) {
+function getLeadSourceColor(source: LeadItemDto['source']) {
   return {
-    email: 'text-primary',
-    contact_form: 'text-emerald-600 dark:text-emerald-400',
-    manual: 'text-amber-600 dark:text-amber-400'
+    EMAIL: 'text-primary',
+    CONTACT_FORM: 'text-emerald-600 dark:text-emerald-400'
   }[source]
 }
 
-function formatLeadLabel(value: string) {
-  return value
-    .replace('_', ' ')
-    .replace(/\b\w/g, (char) => char.toUpperCase())
+function formatDate(value?: number | null) {
+  if (!value) return '—'
+
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: 'medium',
+    timeStyle: 'short'
+  }).format(new Date(value))
+}
+
+function selectLead(id: string) {
+  selectedLeadId.value = id
+
+  navigateTo(
+    {
+      path: route.path,
+      query: {
+        ...route.query,
+        lead: id
+      }
+    },
+    { replace: true }
+  )
 }
 
 const contactFields = computed(() => {
@@ -195,12 +192,11 @@ const contactFields = computed(() => {
   if (!lead) return []
 
   return [
-    { label: 'Name', value: lead.name },
-    { label: 'Email', value: lead.email },
-    { label: 'Company', value: lead.company },
-    { label: 'Website', value: lead.website },
-    { label: 'Location', value: lead.location },
-    { label: 'Source', value: formatLeadLabel(lead.source) }
+    { label: t('dashboard.leads.fields.name'), value: lead.name },
+    { label: t('dashboard.leads.fields.email'), value: lead.email },
+    { label: t('dashboard.leads.fields.company'), value: lead.company },
+    { label: t('dashboard.leads.fields.website'), value: lead.website },
+    { label: t('dashboard.leads.fields.source'), value: formatLeadLabel(lead.source) }
   ]
 })
 
@@ -209,13 +205,194 @@ const opportunityFields = computed(() => {
   if (!lead) return []
 
   return [
-    { label: 'Type', value: formatLeadLabel(lead.type) },
-    { label: 'Status', value: formatLeadLabel(lead.status) },
-    { label: 'Priority', value: formatLeadLabel(lead.priority) },
-    { label: 'Budget', value: lead.budget },
-    { label: 'Created', value: lead.createdAt },
-    { label: 'Last Contacted', value: lead.lastContactedAt }
+    { label: t('dashboard.leads.fields.type'), value: formatLeadLabel(lead.kind) },
+    { label: t('dashboard.leads.fields.status'), value: formatLeadLabel(lead.status) },
+    { label: t('dashboard.leads.fields.priority'), value: formatLeadLabel(lead.priority) },
+    { label: t('dashboard.leads.fields.created'), value: formatDate(lead.createdAt) },
+    { label: t('dashboard.leads.fields.lastActivity'), value: formatDate(lead.lastActivityAt) },
+    { label: t('dashboard.leads.fields.lastContacted'), value: formatDate(lead.lastContactedAt) }
   ]
+})
+
+async function loadLeads() {
+  isRefreshing.value = true
+
+  try {
+    await refreshLeads()
+  } catch (error) {
+    toast.add({
+      color: 'error',
+      icon: 'i-lucide-circle-alert',
+      title: getLeadErrorMessage(error)
+    })
+  } finally {
+    isRefreshing.value = false
+  }
+}
+
+function getLeadErrorMessage(error: unknown) {
+  if (!error || typeof error !== 'object') {
+    return t('dashboard.leads.errors.loadFailed')
+  }
+
+  const currentError = error as {
+    message?: string
+    statusMessage?: string
+    data?: {
+      message?: string
+      statusMessage?: string
+    }
+  }
+
+  const message =
+    currentError.data?.message ||
+    currentError.data?.statusMessage ||
+    currentError.statusMessage ||
+    currentError.message
+
+  if (!message) {
+    return t('dashboard.leads.errors.loadFailed')
+  }
+
+  if (message.includes('no such table: inbox_messages')) {
+    return 'Inbox database table is missing. Apply the inbox migration.'
+  }
+
+  return message
+}
+
+async function markSelectedQualified() {
+  if (!selectedLead.value) return
+
+  isMutating.value = true
+
+  try {
+    await markLeadQualified(selectedLead.value.id)
+
+    toast.add({
+      color: 'success',
+      icon: 'i-lucide-badge-check',
+      title: t('dashboard.leads.actions.markedQualified')
+    })
+  } catch (error) {
+    toast.add({
+      color: 'error',
+      icon: 'i-lucide-circle-alert',
+      title: getLeadErrorMessage(error)
+    })
+  } finally {
+    isMutating.value = false
+  }
+}
+
+async function markSelectedWaiting() {
+  if (!selectedLead.value) return
+
+  isMutating.value = true
+
+  try {
+    await updateLeadReview({
+      id: selectedLead.value.id,
+      status: 'OPEN'
+    })
+
+    toast.add({
+      color: 'success',
+      icon: 'i-lucide-clock',
+      title: t('dashboard.leads.actions.markedWaiting')
+    })
+  } catch (error) {
+    toast.add({
+      color: 'error',
+      icon: 'i-lucide-circle-alert',
+      title: getLeadErrorMessage(error)
+    })
+  } finally {
+    isMutating.value = false
+  }
+}
+
+async function archiveSelectedLead() {
+  if (!selectedLead.value) return
+
+  isMutating.value = true
+
+  try {
+    await archiveLead(selectedLead.value.id)
+
+    toast.add({
+      color: 'success',
+      icon: 'i-lucide-archive',
+      title: t('dashboard.leads.actions.archived')
+    })
+  } catch (error) {
+    toast.add({
+      color: 'error',
+      icon: 'i-lucide-circle-alert',
+      title: getLeadErrorMessage(error)
+    })
+  } finally {
+    isMutating.value = false
+  }
+}
+
+async function markSelectedHighPriority() {
+  if (!selectedLead.value) return
+
+  isMutating.value = true
+
+  try {
+    await updateLeadReview({
+      id: selectedLead.value.id,
+      priority: 'HIGH'
+    })
+
+    toast.add({
+      color: 'success',
+      icon: 'i-lucide-flame',
+      title: t('dashboard.leads.actions.markedHighPriority')
+    })
+  } catch (error) {
+    toast.add({
+      color: 'error',
+      icon: 'i-lucide-circle-alert',
+      title: getLeadErrorMessage(error)
+    })
+  } finally {
+    isMutating.value = false
+  }
+}
+
+watch(
+  () => route.query.lead,
+  (leadId) => {
+    selectedLeadId.value = typeof leadId === 'string' ? leadId : undefined
+  }
+)
+
+watch(
+  () => leadWorkspace.value.leads,
+  (currentLeads) => {
+    if (!currentLeads.length) {
+      selectedLeadId.value = undefined
+      return
+    }
+
+    if (!selectedLeadId.value && currentLeads[0]) {
+      selectLead(currentLeads[0].id)
+    }
+  },
+  { immediate: true }
+)
+
+watch(leadsLoadError, (error) => {
+  if (!error || import.meta.server) return
+
+  toast.add({
+    color: 'error',
+    icon: 'i-lucide-circle-alert',
+    title: getLeadErrorMessage(error)
+  })
 })
 </script>
 
@@ -225,39 +402,57 @@ const opportunityFields = computed(() => {
       <div class="flex min-w-0 items-start gap-3">
         <div>
           <h1 class="text-3xl font-semibold tracking-tight text-highlighted">
-            Leads
+            {{ t('dashboard.leads.title') }}
           </h1>
           <p class="mt-1 text-sm text-muted">
-            Review opportunities from email and contact-form conversations.
+            {{ t('dashboard.leads.description') }}
           </p>
         </div>
       </div>
 
       <div class="flex items-center gap-2">
-        <UButton color="neutral" variant="ghost" icon="i-lucide-refresh-cw" disabled>
-          Refresh
+        <UButton
+          color="neutral"
+          variant="ghost"
+          icon="i-lucide-refresh-cw"
+          :loading="isRefreshing"
+          @click="loadLeads"
+        >
+          {{ t('dashboard.leads.refresh') }}
         </UButton>
-        <UButton color="primary" variant="soft" icon="i-lucide-plus" disabled>
-          Add manual lead
+
+        <UButton
+          color="primary"
+          variant="soft"
+          icon="i-lucide-plus"
+          disabled
+        >
+          {{ t('dashboard.leads.addManualLead') }}
         </UButton>
       </div>
     </section>
 
     <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-      <DashboardInboxSummaryCard
-        v-for="card in leadSummaryCards"
-        :key="card.key"
-        :label="card.label"
-        :value="card.value"
-        :icon="card.icon"
-        :helper="card.helper"
-      />
+      <template v-if="isLoading">
+        <USkeleton v-for="item in 4" :key="item" class="h-28 w-full rounded-2xl" />
+      </template>
+
+      <template v-else>
+        <DashboardInboxSummaryCard
+          v-for="card in leadSummaryCards"
+          :key="card.key"
+          :label="card.label"
+          :value="card.value"
+          :icon="card.icon"
+          :helper="card.helper"
+        />
+      </template>
     </section>
 
     <section
       class="flex flex-col gap-3 rounded-2xl border border-default bg-default p-3 lg:flex-row lg:items-center lg:justify-between"
     >
-      <div class="grid grid-cols-1 gap-2 sm:grid-cols-3 lg:flex lg:items-center">
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-4 lg:flex lg:items-center">
         <USelect
           v-model="statusFilter"
           :items="statusSelectItems"
@@ -266,6 +461,7 @@ const opportunityFields = computed(() => {
           icon="i-lucide-circle-dot"
           class="w-full lg:w-44"
         />
+
         <USelect
           v-model="typeFilter"
           :items="typeSelectItems"
@@ -274,6 +470,7 @@ const opportunityFields = computed(() => {
           icon="i-lucide-tag"
           class="w-full lg:w-44"
         />
+
         <USelect
           v-model="sourceFilter"
           :items="sourceSelectItems"
@@ -282,12 +479,21 @@ const opportunityFields = computed(() => {
           icon="i-lucide-radio"
           class="w-full lg:w-44"
         />
+
+        <USelect
+          v-model="priorityFilter"
+          :items="prioritySelectItems"
+          value-key="value"
+          label-key="label"
+          icon="i-lucide-flame"
+          class="w-full lg:w-44"
+        />
       </div>
 
       <UInput
         v-model="search"
         icon="i-lucide-search"
-        placeholder="Search leads..."
+        :placeholder="t('dashboard.leads.searchPlaceholder')"
         class="w-full lg:w-72"
       />
     </section>
@@ -299,17 +505,23 @@ const opportunityFields = computed(() => {
         <template #header>
           <div>
             <h2 class="text-sm font-semibold text-highlighted">
-              Lead board
+              {{ t('dashboard.leads.board.title') }}
             </h2>
             <p class="text-xs text-muted">
-              {{ filteredLeads.length }} of {{ leadsSource.length }} opportunities
+              {{ leads.length }} {{ t('dashboard.leads.board.of') }}
+              {{ leadWorkspace.summary.total }}
+              {{ t('dashboard.leads.board.opportunities') }}
             </p>
           </div>
         </template>
 
-        <div v-if="filteredLeads.length" class="divide-y divide-default">
+        <div v-if="isLoading" class="space-y-3 p-4">
+          <USkeleton v-for="item in 5" :key="item" class="h-28 w-full" />
+        </div>
+
+        <div v-else-if="leads.length" class="divide-y divide-default">
           <button
-            v-for="lead in filteredLeads"
+            v-for="lead in leads"
             :key="lead.id"
             type="button"
             class="block w-full border-s-2 px-4 py-3 text-start transition hover:bg-muted/40"
@@ -321,9 +533,7 @@ const opportunityFields = computed(() => {
             @click="selectLead(lead.id)"
           >
             <div class="flex items-start gap-3">
-              <div
-                class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-muted/60"
-              >
+              <div class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-muted/60">
                 <UIcon
                   :name="getLeadSourceIcon(lead.source)"
                   class="size-4"
@@ -337,7 +547,7 @@ const opportunityFields = computed(() => {
                     {{ lead.title }}
                   </p>
                   <span class="shrink-0 text-xs text-muted">
-                    {{ lead.lastContactedAt || lead.createdAt }}
+                    {{ formatDate(lead.lastContactedAt || lead.createdAt) }}
                   </span>
                 </div>
 
@@ -353,12 +563,15 @@ const opportunityFields = computed(() => {
                   <UBadge :color="getLeadStatusColor(lead.status)" variant="subtle" size="sm">
                     {{ formatLeadLabel(lead.status) }}
                   </UBadge>
+
                   <UBadge color="neutral" variant="soft" size="sm">
-                    {{ formatLeadLabel(lead.type) }}
+                    {{ formatLeadLabel(lead.kind) }}
                   </UBadge>
+
                   <UBadge color="neutral" variant="outline" size="sm">
                     {{ formatLeadLabel(lead.source) }}
                   </UBadge>
+
                   <UBadge :color="getLeadPriorityColor(lead.priority)" variant="soft" size="sm">
                     {{ formatLeadLabel(lead.priority) }}
                   </UBadge>
@@ -373,10 +586,10 @@ const opportunityFields = computed(() => {
             <UIcon name="i-lucide-users" class="size-5 text-muted" />
           </div>
           <h3 class="text-sm font-medium text-highlighted">
-            No leads found
+            {{ t('dashboard.leads.empty.title') }}
           </h3>
           <p class="mt-1 text-sm text-muted">
-            Try a different search or filter.
+            {{ t('dashboard.leads.empty.description') }}
           </p>
         </div>
       </UCard>
@@ -391,38 +604,72 @@ const opportunityFields = computed(() => {
               <p class="mt-1 text-sm text-muted">
                 {{ selectedLead.name }} · {{ selectedLead.email }}
               </p>
-              <p v-if="selectedLead.company || selectedLead.location" class="text-sm text-muted">
-                {{ [selectedLead.company, selectedLead.location].filter(Boolean).join(' · ') }}
+              <p v-if="selectedLead.company" class="text-sm text-muted">
+                {{ selectedLead.company }}
               </p>
               <div class="mt-2 flex flex-wrap gap-2">
                 <UBadge :color="getLeadStatusColor(selectedLead.status)" variant="subtle">
                   {{ formatLeadLabel(selectedLead.status) }}
                 </UBadge>
                 <UBadge :color="getLeadPriorityColor(selectedLead.priority)" variant="soft">
-                  {{ formatLeadLabel(selectedLead.priority) }} priority
+                  {{ formatLeadLabel(selectedLead.priority) }}
                 </UBadge>
               </div>
             </div>
 
             <div class="flex flex-wrap gap-2">
               <UButton
-                v-if="selectedLead.relatedInboxThreadId"
                 color="primary"
                 variant="soft"
                 icon="i-lucide-inbox"
                 size="sm"
-                :to="`/dashboard/inbox?message=${selectedLead.relatedInboxThreadId}`"
+                :to="`/dashboard/inbox?message=${selectedLead.relatedInboxMessageId}`"
               >
-                Open Inbox Thread
+                {{ t('dashboard.leads.actions.openInboxThread') }}
               </UButton>
-              <UButton color="success" variant="outline" icon="i-lucide-badge-check" size="sm" disabled>
-                Mark Qualified
+
+              <UButton
+                color="success"
+                variant="outline"
+                icon="i-lucide-badge-check"
+                size="sm"
+                :loading="isMutating"
+                @click="markSelectedQualified"
+              >
+                {{ t('dashboard.leads.actions.markQualified') }}
               </UButton>
-              <UButton color="warning" variant="outline" icon="i-lucide-clock" size="sm" disabled>
-                Mark Waiting
+
+              <UButton
+                color="warning"
+                variant="outline"
+                icon="i-lucide-clock"
+                size="sm"
+                :loading="isMutating"
+                @click="markSelectedWaiting"
+              >
+                {{ t('dashboard.leads.actions.markWaiting') }}
               </UButton>
-              <UButton color="neutral" variant="ghost" icon="i-lucide-archive" size="sm" disabled>
-                Archive
+
+              <UButton
+                color="error"
+                variant="outline"
+                icon="i-lucide-flame"
+                size="sm"
+                :loading="isMutating"
+                @click="markSelectedHighPriority"
+              >
+                {{ t('dashboard.leads.actions.highPriority') }}
+              </UButton>
+
+              <UButton
+                color="neutral"
+                variant="ghost"
+                icon="i-lucide-archive"
+                size="sm"
+                :loading="isMutating"
+                @click="archiveSelectedLead"
+              >
+                {{ t('dashboard.leads.actions.archive') }}
               </UButton>
             </div>
           </div>
@@ -431,7 +678,7 @@ const opportunityFields = computed(() => {
         <div class="space-y-6">
           <div class="rounded-2xl bg-muted/40 px-4 py-3">
             <h3 class="text-xs font-semibold uppercase tracking-wide text-muted">
-              Summary
+              {{ t('dashboard.leads.sections.summary') }}
             </h3>
             <p class="mt-2 text-sm leading-6 text-highlighted">
               {{ selectedLead.summary }}
@@ -442,7 +689,7 @@ const opportunityFields = computed(() => {
             <UCard variant="outline" :ui="dashboardCardUi">
               <template #header>
                 <h3 class="text-sm font-semibold text-highlighted">
-                  Contact
+                  {{ t('dashboard.leads.sections.contact') }}
                 </h3>
               </template>
 
@@ -459,7 +706,7 @@ const opportunityFields = computed(() => {
             <UCard variant="outline" :ui="dashboardCardUi">
               <template #header>
                 <h3 class="text-sm font-semibold text-highlighted">
-                  Opportunity
+                  {{ t('dashboard.leads.sections.opportunity') }}
                 </h3>
               </template>
 
@@ -476,7 +723,7 @@ const opportunityFields = computed(() => {
 
           <div v-if="selectedLead.tags.length">
             <h3 class="text-xs font-semibold uppercase tracking-wide text-muted">
-              Tags
+              {{ t('dashboard.leads.sections.tags') }}
             </h3>
             <div class="mt-2 flex flex-wrap gap-2">
               <UBadge
@@ -491,20 +738,19 @@ const opportunityFields = computed(() => {
             </div>
           </div>
 
-          <div v-if="selectedLead.notes?.length">
-            <h3 class="text-xs font-semibold uppercase tracking-wide text-muted">
-              Notes
-            </h3>
-            <div class="mt-2 space-y-2">
-              <div
-                v-for="(note, index) in selectedLead.notes"
-                :key="index"
-                class="rounded-xl border border-dashed border-muted bg-muted/30 px-3 py-2 text-sm text-muted"
-              >
-                {{ note }}
+          <UCard variant="outline" :ui="dashboardCardUi" class="border-dashed">
+            <div class="flex items-start gap-3">
+              <UIcon name="i-lucide-sticky-note" class="mt-0.5 size-4 text-muted" />
+              <div>
+                <h3 class="text-sm font-semibold text-highlighted">
+                  {{ t('dashboard.leads.notes.title') }}
+                </h3>
+                <p class="mt-1 text-sm text-muted">
+                  {{ t('dashboard.leads.notes.description') }}
+                </p>
               </div>
             </div>
-          </div>
+          </UCard>
         </div>
       </UCard>
 
@@ -518,10 +764,10 @@ const opportunityFields = computed(() => {
             <UIcon name="i-lucide-users" class="size-6 text-muted" />
           </div>
           <h2 class="text-base font-semibold text-highlighted">
-            Select a lead
+            {{ t('dashboard.leads.select.title') }}
           </h2>
           <p class="mt-2 text-sm text-muted">
-            Choose a lead to review details and next action.
+            {{ t('dashboard.leads.select.description') }}
           </p>
         </div>
       </UCard>

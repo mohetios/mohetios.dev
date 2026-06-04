@@ -3,6 +3,7 @@ export const typeDefs = /* GraphQL */ `
     me: User
     memberProfile: User
     inboxWorkspace(input: InboxWorkspaceInput): InboxWorkspace!
+    leadWorkspace(input: LeadWorkspaceInput): LeadWorkspace!
     adminNotifications: [AdminNotification!]!
     pushSubscriptions: [PushSubscription!]!
     dashboardHome: DashboardHome!
@@ -18,6 +19,9 @@ export const typeDefs = /* GraphQL */ `
     updateInboxMessageStatus(input: UpdateInboxMessageStatusInput!): InboxMessage!
     updateInboxMessageKind(input: UpdateInboxMessageKindInput!): InboxMessage!
     replyToInboxMessage(input: ReplyToInboxMessageInput!): ReplyToInboxMessageResult!
+    updateLeadReview(input: UpdateLeadReviewInput!): LeadItem!
+    markLeadQualified(id: ID!): LeadItem!
+    archiveLead(id: ID!): LeadItem!
   }
 
   type User {
@@ -232,6 +236,93 @@ export const typeDefs = /* GraphQL */ `
   input UpdateInboxMessageKindInput {
     id: ID!
     kind: InboxKind!
+  }
+
+  enum LeadReviewStatusFilter {
+    ALL
+    NEW
+    OPEN
+    REPLIED
+    ARCHIVED
+    SPAM
+  }
+
+  enum LeadReviewTypeFilter {
+    ALL
+    LEAD
+    COLLABORATION
+    PERSONAL
+    SUPPORT
+    OTHER
+  }
+
+  enum LeadReviewSourceFilter {
+    ALL
+    EMAIL
+    CONTACT_FORM
+  }
+
+  enum LeadReviewPriorityFilter {
+    ALL
+    LOW
+    NORMAL
+    HIGH
+  }
+
+  type LeadSummary {
+    total: Int!
+    new: Int!
+    qualified: Int!
+    highPriority: Int!
+    archived: Int!
+  }
+
+  type LeadItem {
+    id: ID!
+    title: String!
+    summary: String!
+    source: InboxSource!
+    status: InboxStatus!
+    kind: InboxKind!
+    priority: InboxPriority!
+    name: String!
+    email: String!
+    company: String
+    website: String
+    subject: String!
+    bodyText: String!
+    relatedInboxMessageId: ID!
+    relatedInboxThreadId: ID!
+    threadKey: String!
+    createdAt: Float!
+    updatedAt: Float!
+    lastActivityAt: Float!
+    lastContactedAt: Float
+    tags: [String!]!
+  }
+
+  type LeadWorkspace {
+    summary: LeadSummary!
+    leads: [LeadItem!]!
+    selectedLead: LeadItem
+  }
+
+  input LeadWorkspaceInput {
+    status: LeadReviewStatusFilter = ALL
+    type: LeadReviewTypeFilter = ALL
+    source: LeadReviewSourceFilter = ALL
+    priority: LeadReviewPriorityFilter = ALL
+    search: String
+    selectedLeadId: ID
+    limit: Int = 50
+    offset: Int = 0
+  }
+
+  input UpdateLeadReviewInput {
+    id: ID!
+    status: InboxStatus
+    kind: InboxKind
+    priority: InboxPriority
   }
 
   type DashboardSummary {

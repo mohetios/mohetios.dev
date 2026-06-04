@@ -59,11 +59,6 @@ type TurnstileWidget = {
   reset: () => void
 }
 
-type GraphqlResponse<T> = {
-  data?: T
-  errors?: Array<{ message?: string }>
-}
-
 const state = reactive<ContactFormState>({
   name: '',
   email: '',
@@ -141,34 +136,21 @@ async function createContactMessage(input: {
   website?: string | null
   company?: string | null
 }) {
-  const response = await $fetch<GraphqlResponse<{ createContactMessage: { id: string } }>>(
-    '/graph',
-    {
-      method: 'POST',
-      body: {
-        query: `
-          mutation CreateContactMessage($input: CreateContactMessageInput!) {
-            createContactMessage(input: $input) {
-              id
-            }
-          }
-        `,
-        variables: {
-          input
-        }
-      }
-    }
-  )
+  try {
+    const data = await GqlCreateContactMessage({ input })
 
-  if (response.errors?.length) {
-    throw new Error(response.errors[0]?.message || 'Contact message request failed')
+    return data.createContactMessage
+  } catch (error) {
+    const gqlError =
+      error && typeof error === 'object'
+        ? (error as { response?: { errors?: Array<{ message?: string }> } }).response?.errors?.[0]
+        : undefined
+
+    throw new Error(
+      gqlError?.message ||
+        (error instanceof Error ? error.message : 'Contact message request failed')
+    )
   }
-
-  if (!response.data) {
-    throw new Error('Contact message request failed')
-  }
-
-  return response.data.createContactMessage
 }
 
 async function onSubmit() {

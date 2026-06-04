@@ -21,6 +21,7 @@ const immutableAssetHeaders = {
 const turnstileSiteKey = process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || ''
 
 const staticRouteSections = ['/', '/blog', '/lab', '/projects', '/about', '/contact']
+const authRouteSections = ['/login', '/register', '/reset-password']
 const contentRoutePatterns = ['/blog/**', '/lab/**', '/projects/**', '/tags/**']
 const memberRoutePatterns = ['/member/**']
 
@@ -43,6 +44,12 @@ const localizedSsrRouteRules = Object.fromEntries(
       memberRoutePatterns.map((pattern) => getLocalizedPublicPath(pattern, locale))
     )
     .map((route) => [route, { ssr: true, prerender: false }])
+)
+
+const localizedClientAuthRouteRules = Object.fromEntries(
+  supportedLocales
+    .flatMap((locale) => authRouteSections.map((section) => getLocalizedPublicPath(section, locale)))
+    .map((route) => [route, { ssr: false, prerender: false }])
 )
 
 function getContentRoutes() {
@@ -135,17 +142,40 @@ export default defineNuxtConfig({
       'graphql-client': {
         clients: {
           default: {
-            host: '/graph'
+            host: '/graph',
+            schema: '../schema.graphql',
+            token: {
+              type: 'Bearer',
+              name: 'Authorization'
+            },
+            tokenStorage: {
+              name: 'mohetios_auth_token',
+              mode: 'cookie',
+              cookieOptions: {
+                path: '/',
+                sameSite: 'lax',
+                secure: process.env.NODE_ENV === 'production',
+                maxAge: 60 * 60 * 24 * 7
+              }
+            },
+            proxyCookies: true
           }
         },
         documentPaths: ['../shared/graphql'],
-        codegen: false
+        codegen: {
+          silent: true,
+          useTypeImports: true,
+          enumsAsTypes: true,
+          onlyOperationTypes: true,
+          maybeValue: 'T | null'
+        }
       }
     }
   },
 
   routeRules: {
     ...localizedHtmlRouteRules,
+    ...localizedClientAuthRouteRules,
 
     '/dashboard': { ssr: true, prerender: false },
     '/dashboard/**': { ssr: true, prerender: false },

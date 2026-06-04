@@ -1,10 +1,11 @@
 import { GraphQLError } from 'graphql'
-import { getHeader, type H3Event } from 'h3'
+import { getCookie, getHeader, type H3Event } from 'h3'
 
 import { canRole, type Permission, type UserRole } from '../../shared/constants/permissions'
 import type { GraphQLContext } from '../routes/graph'
 
 const usernamePattern = /^[a-z0-9][a-z0-9._-]{2,31}$/i
+const tokenCookieKey = 'mohetios_auth_token'
 
 export function normalizeUsername(username: string) {
   return username.trim().toLowerCase()
@@ -27,11 +28,11 @@ export function validatePassword(password: string) {
 export function getBearerToken(event: H3Event) {
   const authorization = getHeader(event, 'authorization')
 
-  if (!authorization?.startsWith('Bearer ')) {
-    return null
+  if (authorization?.startsWith('Bearer ')) {
+    return authorization.slice('Bearer '.length).trim() || null
   }
 
-  return authorization.slice('Bearer '.length).trim() || null
+  return getCookie(event, tokenCookieKey)?.trim() || null
 }
 
 export function normalizeUserRole(role: unknown): Exclude<UserRole, 'GUEST'> {
@@ -42,7 +43,14 @@ export function normalizeUserRole(role: unknown): Exclude<UserRole, 'GUEST'> {
 
 export function requireAuth(context: GraphQLContext) {
   if (!context.userId) {
-    throw new GraphQLError('Authentication required')
+    throw new GraphQLError('Authentication required', {
+      extensions: {
+        code: 'UNAUTHENTICATED',
+        http: {
+          status: 401
+        }
+      }
+    })
   }
 
   const { userId } = context
@@ -57,7 +65,14 @@ export function requirePermission(
   const userId = requireAuth(context as GraphQLContext)
 
   if (!canRole(context.userRole, permission)) {
-    throw new GraphQLError('Permission denied')
+    throw new GraphQLError('Permission denied', {
+      extensions: {
+        code: 'FORBIDDEN',
+        http: {
+          status: 403
+        }
+      }
+    })
   }
 
   return userId

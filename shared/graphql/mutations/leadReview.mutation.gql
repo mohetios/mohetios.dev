@@ -1,0 +1,17 @@
+mutation UpdateLeadReview($input: UpdateLeadReviewInput!) {
+  updateLeadReview(input: $input) {
+    ...LeadItemFields
+  }
+}
+
+mutation MarkLeadQualified($id: ID!) {
+  markLeadQualified(id: $id) {
+    ...LeadItemFields
+  }
+}
+
+mutation ArchiveLead($id: ID!) {
+  archiveLead(id: $id) {
+    ...LeadItemFields
+  }
+}

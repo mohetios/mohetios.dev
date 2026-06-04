@@ -1,0 +1,71 @@
+query AnalyticsDashboard($range: AnalyticsRange!) {
+  analyticsDashboard(range: $range) {
+    metrics {
+      key
+      label
+      value
+      helper
+      icon
+      trend
+    }
+
+    trend {
+      date
+      visitors
+      pageViews
+      searchClicks
+    }
+
+    topPages {
+      title
+      path
+      views
+      visitors
+      avgTime
+      source
+    }
+
+    referrers {
+      source
+      visits
+      share
+      trend
+    }
+
+    countries {
+      code
+      country
+      visits
+      share
+    }
+
+    searchQueries {
+      query
+      clicks
+      impressions
+      ctr
+      position
+      page
+    }
+
+    webVitals {
+      key
+      label
+      value
+      status
+      helper
+    }
+
+    edgeSummary {
+      cacheHitRatio
+      edgeRequests
+      edgeErrors
+      avgLoadTime
+      loadTimeTrend
+      progressValue
+    }
+
+    dataSourceLabel
+    dataSourceDescription
+  }
+}

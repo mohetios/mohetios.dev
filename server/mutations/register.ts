@@ -10,7 +10,7 @@ import {
   validatePassword,
   validateUsername
 } from '../utils/auth'
-import { generateSalt, hashPassword, signAuthToken } from '../utils/crypto'
+import { generateSalt, getPasswordIterations, hashPassword, signAuthToken } from '../utils/crypto'
 import { createId } from '../utils/id'
 
 type RegisterArgs = {
@@ -49,28 +49,21 @@ export async function register(_parent: unknown, args: RegisterArgs, context: Gr
   const id = createId()
   const role: Exclude<UserRole, 'GUEST'> = firstUser ? 'OWNER' : 'MEMBER'
   const salt = generateSalt()
-  const iterations = 210000
+  const iterations = getPasswordIterations()
   const passwordHash = await hashPassword(password, salt, iterations)
+  const displayName = args.input.displayName?.trim() || null
+
   await context.db.insert(users).values({
     id,
     username,
     role,
+    displayName,
     passwordHash,
     passwordSalt: salt,
     passwordIterations: iterations,
     createdAt: now,
     updatedAt: now
   })
-
-  const displayName = args.input.displayName?.trim() || null
-
-  if (displayName) {
-    await context.db
-      .update(users)
-      .set({ displayName, updatedAt: now })
-      .where(eq(users.id, id))
-      .catch(() => undefined)
-  }
 
   const user = {
     id,

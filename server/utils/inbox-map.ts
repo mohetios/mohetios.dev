@@ -1,4 +1,4 @@
-import { inboxMessages, inboxReplies } from '../models/schema'
+import type { inboxMessages, inboxReplies } from '../models/schema'
 
 export function createInboxPreview(bodyText: string) {
   const clean = bodyText.replace(/\s+/g, ' ').trim()

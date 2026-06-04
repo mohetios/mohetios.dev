@@ -293,6 +293,76 @@
         "replyQueued": "Reply queued for delivery.",
         "replyFailed": "Reply could not be queued."
       }
+    },
+    "leads": {
+      "title": "Leads",
+      "description": "Review collaboration, freelance, and partnership opportunities from the Mohetios inbox.",
+      "refresh": "Refresh",
+      "addManualLead": "Add manual lead",
+      "searchPlaceholder": "Search leads...",
+      "summary": {
+        "total": "Total Leads",
+        "totalHelper": "Inbox opportunities marked as leads or collaborations",
+        "new": "New",
+        "newHelper": "Not yet reviewed",
+        "qualified": "Qualified",
+        "qualifiedHelper": "Marked as lead and ready to pursue",
+        "highPriority": "High Priority",
+        "highPriorityHelper": "Needs attention soon"
+      },
+      "filters": {
+        "all": "All"
+      },
+      "board": {
+        "title": "Lead board",
+        "of": "of",
+        "opportunities": "opportunities"
+      },
+      "fields": {
+        "name": "Name",
+        "email": "Email",
+        "company": "Company",
+        "website": "Website",
+        "source": "Source",
+        "type": "Type",
+        "status": "Status",
+        "priority": "Priority",
+        "created": "Created",
+        "lastActivity": "Last Activity",
+        "lastContacted": "Last Contacted"
+      },
+      "sections": {
+        "summary": "Summary",
+        "contact": "Contact",
+        "opportunity": "Opportunity",
+        "tags": "Tags"
+      },
+      "actions": {
+        "openInboxThread": "Open Inbox Thread",
+        "markQualified": "Mark Qualified",
+        "markedQualified": "Lead marked as qualified.",
+        "markWaiting": "Mark Waiting",
+        "markedWaiting": "Lead marked as waiting/open.",
+        "highPriority": "High Priority",
+        "markedHighPriority": "Lead marked as high priority.",
+        "archive": "Archive",
+        "archived": "Lead archived."
+      },
+      "empty": {
+        "title": "No leads found",
+        "description": "Try a different search or filter."
+      },
+      "select": {
+        "title": "Select a lead",
+        "description": "Choose a lead to review details and next action."
+      },
+      "notes": {
+        "title": "Notes are not enabled yet",
+        "description": "Persistent notes need a dedicated leads or notes table and will be added in a later CRM phase."
+      },
+      "errors": {
+        "loadFailed": "Leads could not be loaded."
+      }
     }
   },
   "push": {

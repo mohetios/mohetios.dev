@@ -1,0 +1,23 @@
+fragment LeadItemFields on LeadItem {
+  id
+  title
+  summary
+  source
+  status
+  kind
+  priority
+  name
+  email
+  company
+  website
+  subject
+  bodyText
+  relatedInboxMessageId
+  relatedInboxThreadId
+  threadKey
+  createdAt
+  updatedAt
+  lastActivityAt
+  lastContactedAt
+  tags
+}

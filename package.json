@@ -3,19 +3,20 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "concurrently -k -n velite,nuxt,email,system -c gray,cyan,green,magenta \"velite dev\" \"nuxt dev\" \"pnpm dev:email\" \"pnpm dev:system\"",
-    "dev:web": "concurrently -k -n velite,nuxt -c gray,cyan \"velite dev\" \"nuxt dev\"",
+    "dev": "pnpm gql:schema && concurrently -k -n velite,nuxt,email,system -c gray,cyan,green,magenta \"velite dev\" \"nuxt dev\" \"pnpm dev:email\" \"pnpm dev:system\"",
+    "dev:web": "pnpm gql:schema && concurrently -k -n velite,nuxt -c gray,cyan \"velite dev\" \"nuxt dev\"",
     "dev:workers": "concurrently -k -n email,system -c green,magenta \"pnpm dev:email\" \"pnpm dev:system\"",
     "dev:email": "wrangler dev --config workers/email/wrangler.jsonc --env-file .env",
     "dev:system": "wrangler dev --config workers/system/wrangler.jsonc --env-file .env",
-    "build": "velite build && NODE_OPTIONS=--max-old-space-size=4096 nuxt build --preset=cloudflare_pages",
+    "build": "velite build && pnpm gql:schema && NODE_OPTIONS=--max-old-space-size=4096 nuxt build --preset=cloudflare_pages",
+    "gql:schema": "node scripts/sync-graphql-schema.mjs",
     "preview": "wrangler pages dev dist",
     "deploy": "wrangler pages deploy dist",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
-    "typecheck": "velite build && nuxt typecheck && pnpm typecheck:workers",
+    "typecheck": "velite build && pnpm gql:schema && nuxt typecheck && pnpm typecheck:workers",
     "typecheck:workers": "tsc --noEmit -p workers/tsconfig.json",
     "check": "pnpm lint && pnpm typecheck",
     "clean": "rm -rf .nuxt .output .nitro .cache .velite dist .wrangler",
@@ -23,7 +24,7 @@
     "db:push": "wrangler d1 migrations apply DB --local",
     "db:studio": "drizzle-kit studio",
     "types:cloudflare": "wrangler types",
-    "postinstall": "velite build && nuxt prepare"
+    "postinstall": "velite build && pnpm gql:schema && nuxt prepare"
   },
   "dependencies": {
     "@block65/webcrypto-web-push": "^1.0.2",

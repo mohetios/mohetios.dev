@@ -26,17 +26,123 @@ function toTimestamp(value: unknown) {
   return Date.now()
 }
 
-function createEmptyAudienceTrend() {
-  return Array.from({ length: 7 }).map((_, index) => {
+const demoAudienceSeed = [
+  { visitors: 36, pageViews: 92 },
+  { visitors: 42, pageViews: 118 },
+  { visitors: 39, pageViews: 104 },
+  { visitors: 57, pageViews: 149 },
+  { visitors: 63, pageViews: 172 },
+  { visitors: 51, pageViews: 136 },
+  { visitors: 74, pageViews: 211 }
+] as const
+
+const demoInboxPreview = [
+  {
+    id: 'demo-lead-001',
+    source: 'contact_form',
+    status: 'new',
+    kind: 'lead',
+    senderName: 'Nadia Rahimi',
+    senderEmail: 'nadia@example.com',
+    subject: 'Edge dashboard consultation',
+    preview: 'Interested in a small Cloudflare/Nuxt review before launch.',
+    createdAtOffsetHours: 3
+  },
+  {
+    id: 'demo-collab-001',
+    source: 'email',
+    status: 'open',
+    kind: 'collaboration',
+    senderName: 'Arman Studio',
+    senderEmail: 'hello@arman.example',
+    subject: 'Technical writing collaboration',
+    preview: 'We are planning a short engineering notebook series and liked your system notes.',
+    createdAtOffsetHours: 18
+  },
+  {
+    id: 'demo-support-001',
+    source: 'contact_form',
+    status: 'replied',
+    kind: 'support',
+    senderName: 'Leila Omid',
+    senderEmail: 'leila@example.com',
+    subject: 'Question about the portfolio stack',
+    preview: 'Thanks for sharing the breakdown. One follow-up about D1 migrations.',
+    createdAtOffsetHours: 34
+  }
+] as const
+
+const demoContentItems = [
+  {
+    id: 'demo-content-edge-notes',
+    title: 'Edge notes: keeping GraphQL small',
+    slug: '/blog/edge-notes-graphql',
+    section: 'Blog',
+    status: 'published',
+    updatedAtOffsetHours: 9
+  },
+  {
+    id: 'demo-content-inbox-lab',
+    title: 'Inbox as a lightweight operating surface',
+    slug: '/lab/inbox-operating-surface',
+    section: 'Lab',
+    status: 'draft',
+    updatedAtOffsetHours: 27
+  },
+  {
+    id: 'demo-content-cloudflare-d1',
+    title: 'D1 patterns for tiny products',
+    slug: '/blog/d1-patterns-tiny-products',
+    section: 'Blog',
+    status: 'published',
+    updatedAtOffsetHours: 52
+  }
+] as const
+
+function createDemoAudienceTrend() {
+  return demoAudienceSeed.map((point, index) => {
     const date = new Date()
     date.setDate(date.getDate() - (6 - index))
 
     return {
       date: date.toISOString().slice(0, 10),
-      visitors: 0,
-      pageViews: 0
+      visitors: point.visitors,
+      pageViews: point.pageViews
     }
   })
+}
+
+function offsetTimestamp(hours: number) {
+  return Date.now() - hours * 60 * 60 * 1000
+}
+
+function createDemoInboxPreview() {
+  return demoInboxPreview.map((message) => ({
+    id: message.id,
+    source: message.source,
+    status: message.status,
+    kind: message.kind,
+    senderName: message.senderName,
+    senderEmail: message.senderEmail,
+    subject: message.subject,
+    preview: message.preview,
+    createdAt: offsetTimestamp(message.createdAtOffsetHours)
+  }))
+}
+
+function createDemoContentPulse() {
+  return {
+    publishedCount: 12,
+    draftCount: 4,
+    latestItems: demoContentItems.map((item) => ({
+      id: item.id,
+      title: item.title,
+      slug: item.slug,
+      section: item.section,
+      status: item.status,
+      updatedAt: offsetTimestamp(item.updatedAtOffsetHours)
+    }))
+  }
 }
 
 function buildPreview(bodyText: string) {
@@ -57,11 +163,7 @@ function normalizeInboxPreviewMessage(message: typeof inboxMessages.$inferSelect
   }
 }
 
-export async function dashboardHome(
-  _parent: unknown,
-  _args: unknown,
-  context: GraphQLContext
-) {
+export async function dashboardHome(_parent: unknown, _args: unknown, context: GraphQLContext) {
   requirePermission(context, 'dashboard:view')
 
   const { db } = context
@@ -85,28 +187,43 @@ export async function dashboardHome(
 
       db.select().from(inboxMessages).orderBy(desc(inboxMessages.createdAt)).limit(5),
 
-      db
-        .select()
-        .from(adminNotifications)
-        .orderBy(desc(adminNotifications.createdAt))
-        .limit(8)
+      db.select().from(adminNotifications).orderBy(desc(adminNotifications.createdAt)).limit(8)
     ])
 
-  const inboxUnread = Number(unreadRows[0]?.count || 0)
-  const needsReply = Number(needsReplyRows[0]?.count || 0)
-  const leads = Number(leadRows[0]?.count || 0)
+  const realInboxUnread = Number(unreadRows[0]?.count || 0)
+  const realNeedsReply = Number(needsReplyRows[0]?.count || 0)
+  const realLeads = Number(leadRows[0]?.count || 0)
 
-  const inboxPreview = inboxPreviewRows.map(normalizeInboxPreviewMessage)
+  const hasInboxData = inboxPreviewRows.length > 0
+  const inboxUnread = hasInboxData ? realInboxUnread : 2
+  const needsReply = hasInboxData ? realNeedsReply : 4
+  const leads = hasInboxData ? realLeads : 3
+  const audienceTrend = createDemoAudienceTrend()
+  const visits = audienceTrend.reduce((sum, point) => sum + point.visitors, 0)
+  const pageViews = audienceTrend.reduce((sum, point) => sum + point.pageViews, 0)
+
+  const inboxPreview = hasInboxData
+    ? inboxPreviewRows.map(normalizeInboxPreviewMessage)
+    : createDemoInboxPreview()
 
   const recentActivity = [
-    ...inboxPreviewRows.map((message) => ({
-      id: `inbox:${message.id}`,
-      type: 'inbox',
-      title: message.subject || 'New inbox message',
-      description: `${message.senderName || 'Someone'} sent a message`,
-      createdAt: toTimestamp(message.createdAt),
-      href: `/dashboard/inbox?message=${message.id}`
-    })),
+    ...(hasInboxData
+      ? inboxPreviewRows.map((message) => ({
+          id: `inbox:${message.id}`,
+          type: 'inbox',
+          title: message.subject || 'New inbox message',
+          description: `${message.senderName || 'Someone'} sent a message`,
+          createdAt: toTimestamp(message.createdAt),
+          href: `/dashboard/inbox?message=${message.id}`
+        }))
+      : inboxPreview.map((message) => ({
+          id: `inbox:${message.id}`,
+          type: 'inbox',
+          title: message.subject,
+          description: `${message.senderName} sent a message`,
+          createdAt: message.createdAt,
+          href: `/dashboard/inbox?message=${message.id}`
+        }))),
     ...notificationRows.map((notification) => ({
       id: `notification:${notification.id}`,
       type: notification.type || 'notification',
@@ -124,34 +241,36 @@ export async function dashboardHome(
       inboxUnread,
       needsReply,
       leads,
-      visits: 0,
-      pageViews: 0,
-      searchClicks: 0,
-      avgLoadMs: 0
+      visits,
+      pageViews,
+      searchClicks: 37,
+      avgLoadMs: 412
     },
 
-    audienceTrend: createEmptyAudienceTrend(),
+    audienceTrend,
 
     inboxPreview,
 
-    contentPulse: {
-      publishedCount: 0,
-      draftCount: 0,
-      latestItems: []
-    },
+    contentPulse: createDemoContentPulse(),
 
     readerSignals: [
       {
-        label: 'Inbox signal',
+        label: 'Inbox focus',
         value: String(needsReply),
         helper: 'Messages currently waiting for a reply',
         icon: 'i-lucide-inbox'
       },
       {
-        label: 'Lead signal',
+        label: 'Lead quality',
         value: String(leads),
         helper: 'Potential work or collaboration messages',
         icon: 'i-lucide-user-plus'
+      },
+      {
+        label: 'Search pull',
+        value: '37',
+        helper: 'Demo search clicks across current content',
+        icon: 'i-lucide-search'
       }
     ],
 
@@ -165,14 +284,14 @@ export async function dashboardHome(
       {
         key: 'analytics',
         label: 'Analytics',
-        status: 'pending',
-        helper: 'External analytics provider is not connected yet'
+        status: 'ok',
+        helper: 'Demo analytics are served by the GraphQL resolver'
       },
       {
         key: 'content',
         label: 'Content',
-        status: 'pending',
-        helper: 'Content metrics are not connected yet'
+        status: 'ok',
+        helper: 'Demo content pulse is available'
       }
     ],
 

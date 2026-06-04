@@ -1,5 +1,12 @@
-import { isAuthError } from '~/composables/useAuth'
 import type { Permission } from '~~/shared/constants/permissions'
+import { isAuthError } from '~/utils/graphql-error'
+
+function getLoginPath(toPath: string) {
+  const localeMatch = toPath.match(/^\/(en|fa)(?=\/|$)/)
+  const localePrefix = localeMatch?.[0] || ''
+
+  return `${localePrefix}/login`
+}
 
 export default defineNuxtRouteMiddleware(async (to) => {
   const localePath = useLocalePath()
@@ -34,7 +41,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   if (!token) {
     if (needsAuth) {
-      return navigateTo(localePath('/login'))
+      return navigateTo({
+        path: getLoginPath(to.path),
+        query: {
+          redirect: to.fullPath
+        }
+      })
     }
 
     return
@@ -48,22 +60,28 @@ export default defineNuxtRouteMiddleware(async (to) => {
     }
 
     if (!user && needsAuth) {
-      return navigateTo(localePath('/login'))
+      return navigateTo({
+        path: getLoginPath(to.path),
+        query: {
+          redirect: to.fullPath
+        }
+      })
     }
 
     if (user && requiredPermission && !auth.can(requiredPermission)) {
       return navigateTo(user.role === 'OWNER' ? '/dashboard' : localePath('/member/profile'))
     }
   } catch (error) {
-    if (import.meta.dev) {
-      console.error('[auth middleware]', error)
-    }
-
     if (isAuthError(error)) {
       auth.clearSession()
 
       if (needsAuth) {
-        return navigateTo(localePath('/login'))
+        return navigateTo({
+          path: getLoginPath(to.path),
+          query: {
+            redirect: to.fullPath
+          }
+        })
       }
 
       return

@@ -289,6 +289,76 @@
         "replyQueued": "پاسخ در صف ارسال قرار گرفت.",
         "replyFailed": "پاسخ در صف قرار نگرفت."
       }
+    },
+    "leads": {
+      "title": "سرنخ‌ها",
+      "description": "فرصت‌های همکاری، فریلنس و مشارکت را از صندوق ورودی Mohetios بررسی کنید.",
+      "refresh": "بازخوانی",
+      "addManualLead": "افزودن سرنخ دستی",
+      "searchPlaceholder": "جستجوی سرنخ‌ها...",
+      "summary": {
+        "total": "کل سرنخ‌ها",
+        "totalHelper": "فرصت‌های صندوق ورودی با نوع سرنخ یا همکاری",
+        "new": "جدید",
+        "newHelper": "هنوز بررسی نشده",
+        "qualified": "واجد شرایط",
+        "qualifiedHelper": "به‌عنوان سرنخ علامت‌گذاری و آماده پیگیری",
+        "highPriority": "اولویت بالا",
+        "highPriorityHelper": "به‌زودی نیاز به توجه دارد"
+      },
+      "filters": {
+        "all": "همه"
+      },
+      "board": {
+        "title": "تابلوی سرنخ",
+        "of": "از",
+        "opportunities": "فرصت"
+      },
+      "fields": {
+        "name": "نام",
+        "email": "ایمیل",
+        "company": "شرکت",
+        "website": "وب‌سایت",
+        "source": "منبع",
+        "type": "نوع",
+        "status": "وضعیت",
+        "priority": "اولویت",
+        "created": "ایجاد",
+        "lastActivity": "آخرین فعالیت",
+        "lastContacted": "آخرین تماس"
+      },
+      "sections": {
+        "summary": "خلاصه",
+        "contact": "تماس",
+        "opportunity": "فرصت",
+        "tags": "برچسب‌ها"
+      },
+      "actions": {
+        "openInboxThread": "باز کردن گفتگو در صندوق ورودی",
+        "markQualified": "علامت‌گذاری واجد شرایط",
+        "markedQualified": "سرنخ به‌عنوان واجد شرایط علامت‌گذاری شد.",
+        "markWaiting": "علامت‌گذاری در انتظار",
+        "markedWaiting": "سرنخ به‌عنوان در انتظار/باز علامت‌گذاری شد.",
+        "highPriority": "اولویت بالا",
+        "markedHighPriority": "سرنخ با اولویت بالا علامت‌گذاری شد.",
+        "archive": "بایگانی",
+        "archived": "سرنخ بایگانی شد."
+      },
+      "empty": {
+        "title": "سرنخی یافت نشد",
+        "description": "جستجو یا فیلتر دیگری امتحان کنید."
+      },
+      "select": {
+        "title": "یک سرنخ انتخاب کنید",
+        "description": "برای بررسی جزئیات و اقدام بعدی یک سرنخ انتخاب کنید."
+      },
+      "notes": {
+        "title": "یادداشت‌ها هنوز فعال نیستند",
+        "description": "یادداشت‌های پایدار به جدول سرنخ یا یادداشت نیاز دارند و در فاز CRM بعدی اضافه می‌شوند."
+      },
+      "errors": {
+        "loadFailed": "بارگذاری سرنخ‌ها ممکن نشد."
+      }
     }
   },
   "push": {
