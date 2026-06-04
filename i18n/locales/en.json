@@ -65,9 +65,12 @@
       "overview": "Overview",
       "inbox": "Inbox",
       "leads": "Leads",
+      "content": "Content",
+      "analytics": "Analytics",
+      "system": "System",
+      "settings": "Settings",
       "comments": "Comments",
-      "forms": "Forms",
-      "analytics": "Analytics"
+      "forms": "Forms"
     },
     "sidebar": {
       "accountName": "Mohetios",

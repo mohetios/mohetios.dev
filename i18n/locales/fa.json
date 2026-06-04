@@ -61,9 +61,12 @@
       "overview": "نمای کلی",
       "inbox": "صندوق ورودی",
       "leads": "سرنخ‌ها",
+      "content": "محتوا",
+      "analytics": "تحلیل‌ها",
+      "system": "سیستم",
+      "settings": "تنظیمات",
       "comments": "نظرات",
-      "forms": "فرم‌ها",
-      "analytics": "تحلیل‌ها"
+      "forms": "فرم‌ها"
     },
     "sidebar": {
       "accountName": "Mohetios",

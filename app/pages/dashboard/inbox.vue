@@ -526,7 +526,7 @@ async function sendReply() {
     </section>
 
     <section
-      class="grid min-h-0 flex-1 gap-4 lg:sticky lg:top-8 lg:h-[calc(100dvh-4rem)] lg:grid-cols-[420px_1fr] lg:items-stretch"
+      class="grid  flex-1 gap-4 lg:sticky lg:top-8 lg:h-[calc(100dvh-4rem)] lg:grid-cols-[420px_1fr] lg:items-stretch"
     >
       <UCard :ui="inboxThreadPanelUi">
         <template #header>
