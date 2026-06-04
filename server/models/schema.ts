@@ -62,7 +62,9 @@ export const inboxReplies = sqliteTable('inbox_replies', {
   subject: text('subject').notNull(),
   bodyText: text('body_text').notNull(),
   providerMessageId: text('provider_message_id'),
-  status: text('status', { enum: ['DRAFT', 'QUEUED', 'SENT', 'FAILED'] }).notNull().default('DRAFT'),
+  status: text('status', { enum: ['DRAFT', 'QUEUED', 'SENT', 'FAILED'] })
+    .notNull()
+    .default('DRAFT'),
   error: text('error'),
   createdAt: integer('created_at').notNull(),
   sentAt: integer('sent_at')

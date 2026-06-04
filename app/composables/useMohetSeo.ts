@@ -52,7 +52,9 @@ export function useMohetSeo(input: SeoInput) {
   const route = useRoute()
   const { locale, locales } = useI18n()
 
-  const canonicalPath = computed(() => toPublicPath(normalizePath(toValue(input.path) || route.path)))
+  const canonicalPath = computed(() =>
+    toPublicPath(normalizePath(toValue(input.path) || route.path))
+  )
   const canonicalUrl = computed(() => absoluteUrl(canonicalPath.value))
   const title = computed(() => {
     const value = cleanTitle(toValue(input.title))

@@ -38,7 +38,11 @@ export async function createInboxMessage(
       bodyHtml: input.bodyHtml || null,
       rawMessageId: input.rawMessageId || null,
       inReplyTo: input.inReplyTo || null,
-      threadKey: createThreadKey(input.senderEmail, input.subject, input.inReplyTo || input.rawMessageId),
+      threadKey: createThreadKey(
+        input.senderEmail,
+        input.subject,
+        input.inReplyTo || input.rawMessageId
+      ),
       createdAt: now,
       updatedAt: now,
       lastActivityAt: now

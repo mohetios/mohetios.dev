@@ -10,9 +10,9 @@ allowBuilds:
   vue-demi: false
   workerd: true
 minimumReleaseAgeExclude:
-  - '@cloudflare/workers-types@4.20260528.1'
-  - '@eslint/plugin-kit@0.7.2'
-  - '@iconify-json/lucide@1.2.111'
-  - '@vue/language-core@3.3.3'
-  - eslint@10.4.1
-  - vue-tsc@3.3.3
+  - '@cloudflare/workers-types'
+  - '@eslint/plugin-kit'
+  - '@iconify-json/lucide'
+  - '@vue/language-core'
+  - eslint
+  - vue-tsc

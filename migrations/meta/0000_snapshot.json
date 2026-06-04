@@ -304,12 +304,8 @@
           "name": "inbox_replies_inbox_message_id_inbox_messages_id_fk",
           "tableFrom": "inbox_replies",
           "tableTo": "inbox_messages",
-          "columnsFrom": [
-            "inbox_message_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["inbox_message_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -395,9 +391,7 @@
       "indexes": {
         "push_subscriptions_endpoint_idx": {
           "name": "push_subscriptions_endpoint_idx",
-          "columns": [
-            "endpoint"
-          ],
+          "columns": ["endpoint"],
           "isUnique": true
         }
       },
@@ -406,12 +400,8 @@
           "name": "push_subscriptions_user_id_users_id_fk",
           "tableFrom": "push_subscriptions",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -513,9 +503,7 @@
       "indexes": {
         "users_username_unique": {
           "name": "users_username_unique",
-          "columns": [
-            "username"
-          ],
+          "columns": ["username"],
           "isUnique": true
         }
       },

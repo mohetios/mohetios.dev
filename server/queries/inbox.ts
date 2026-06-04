@@ -1,6 +1,11 @@
 import { and, desc, eq, isNull } from 'drizzle-orm'
 
-import { adminNotifications, inboxMessages, inboxReplies, pushSubscriptions } from '../models/schema'
+import {
+  adminNotifications,
+  inboxMessages,
+  inboxReplies,
+  pushSubscriptions
+} from '../models/schema'
 import type { GraphQLContext } from '../routes/graph'
 import { requirePermission } from '../utils/auth'
 import type {

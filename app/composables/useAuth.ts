@@ -98,7 +98,11 @@ export function isAuthError(error: unknown) {
   return false
 }
 
-function createAuthRequestError(message: string, statusCode?: number | null, gqlCode?: string): AuthRequestError {
+function createAuthRequestError(
+  message: string,
+  statusCode?: number | null,
+  gqlCode?: string
+): AuthRequestError {
   const error = new Error(message) as AuthRequestError
 
   if (statusCode) {
@@ -119,9 +123,7 @@ function getGraphqlErrorMessage(error: unknown) {
 
   const currentError = error as FetchLikeError
 
-  const responseError =
-    currentError.response?._data?.errors?.[0] ||
-    currentError.data?.errors?.[0]
+  const responseError = currentError.response?._data?.errors?.[0] || currentError.data?.errors?.[0]
 
   return (
     responseError?.message ||
@@ -176,8 +178,8 @@ async function requestGraphql<T>(
     const statusCode = getErrorStatus(error)
     const responseError =
       error && typeof error === 'object'
-        ? ((error as FetchLikeError).response?._data?.errors?.[0] ||
-            (error as FetchLikeError).data?.errors?.[0])
+        ? (error as FetchLikeError).response?._data?.errors?.[0] ||
+          (error as FetchLikeError).data?.errors?.[0]
         : undefined
 
     throw createAuthRequestError(

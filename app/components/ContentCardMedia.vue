@@ -8,6 +8,7 @@ withDefaults(
     loading?: 'lazy' | 'eager'
   }>(),
   {
+    thumbnail: undefined,
     sizes: 'xs:100vw sm:50vw lg:33vw',
     imageClass: 'aspect-video w-full rounded-lg object-cover',
     loading: 'lazy'

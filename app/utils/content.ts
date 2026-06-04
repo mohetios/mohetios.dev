@@ -288,11 +288,13 @@ export function getTagRoutes(locales: readonly string[] = supportedLocales) {
 
 export function getPrerenderContentRoutes(locales: readonly string[] = supportedLocales) {
   return [
-    ...locales.flatMap((locale) => [
-      ...getBlogPosts(locale).map((post) => post.path),
-      ...getLabNotes(locale).map((note) => note.path),
-      ...getProjects(locale).map((project) => project.path)
-    ]).map((path) => toPublicPath(path)),
+    ...locales
+      .flatMap((locale) => [
+        ...getBlogPosts(locale).map((post) => post.path),
+        ...getLabNotes(locale).map((note) => note.path),
+        ...getProjects(locale).map((project) => project.path)
+      ])
+      .map((path) => toPublicPath(path)),
     ...visible(pages).map((page) => toPublicPath(page.path)),
     ...getTagRoutes(locales)
   ]

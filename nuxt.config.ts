@@ -39,7 +39,9 @@ const localizedHtmlRouteRules = Object.fromEntries(
 
 const localizedSsrRouteRules = Object.fromEntries(
   supportedLocales
-    .flatMap((locale) => memberRoutePatterns.map((pattern) => getLocalizedPublicPath(pattern, locale)))
+    .flatMap((locale) =>
+      memberRoutePatterns.map((pattern) => getLocalizedPublicPath(pattern, locale))
+    )
     .map((route) => [route, { ssr: true, prerender: false }])
 )
 
@@ -193,19 +195,6 @@ export default defineNuxtConfig({
       routes: prerenderRoutes
     }
   },
-
-  ...(isDev
-    ? {
-        eslint: {
-          config: {
-            stylistic: {
-              commaDangle: 'never',
-              braceStyle: '1tbs'
-            }
-          }
-        }
-      }
-    : {}),
 
   i18n: {
     langDir: 'locales',

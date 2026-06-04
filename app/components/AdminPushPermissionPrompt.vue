@@ -144,12 +144,7 @@ watch(
             {{ t('push.later') }}
           </UButton>
 
-          <UButton
-            size="sm"
-            icon="i-lucide-bell"
-            :loading="busy"
-            @click="enableNotifications"
-          >
+          <UButton size="sm" icon="i-lucide-bell" :loading="busy" @click="enableNotifications">
             {{ t('push.enable') }}
           </UButton>
         </div>

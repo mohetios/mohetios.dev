@@ -16,7 +16,13 @@ const publicTo = computed(() => toPublicPath(props.to))
 </script>
 
 <template>
-  <UPageCard :title="title" :description="description" :to="publicTo" variant="subtle" class="h-full">
+  <UPageCard
+    :title="title"
+    :description="description"
+    :to="publicTo"
+    variant="subtle"
+    class="h-full"
+  >
     <template v-if="!hideMedia" #header>
       <ContentCardMedia
         :title="title"

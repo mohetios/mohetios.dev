@@ -76,9 +76,7 @@ self.addEventListener('push', (event) => {
     }
   }
 
-  event.waitUntil(
-    self.registration.showNotification(payload.title || 'Mohetios.dev', options)
-  )
+  event.waitUntil(self.registration.showNotification(payload.title || 'Mohetios.dev', options))
 })
 
 self.addEventListener('notificationclick', (event) => {

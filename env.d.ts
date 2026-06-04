@@ -6,9 +6,6 @@ declare global {
   interface CloudflareEnv {
     DB: D1Database
     ADMIN_NOTIFICATION_QUEUE?: Queue
-    EMAIL?: {
-      send(message: unknown): Promise<unknown>
-    }
     NUXT_JWT_SECRET?: string
     NUXT_AUTH_TOKEN_TTL_SECONDS?: string
     NUXT_ALLOW_PUBLIC_REGISTER?: string

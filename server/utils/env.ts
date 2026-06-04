@@ -6,9 +6,6 @@ import type { AdminNotificationJob } from '../../shared/contracts/notifications'
 
 export type ServerEnv = {
   DB: D1Database
-  EMAIL?: {
-    send(input: unknown): Promise<unknown>
-  }
   ADMIN_NOTIFICATION_QUEUE?: Queue<AdminNotificationJob>
   EMAIL_DELIVERY_QUEUE?: Queue<EmailDeliveryJob>
 
@@ -26,7 +23,6 @@ export type ServerEnv = {
 
 type CloudflareRuntimeEnv = {
   DB?: D1Database
-  EMAIL?: ServerEnv['EMAIL']
   ADMIN_NOTIFICATION_QUEUE?: Queue<AdminNotificationJob>
   EMAIL_DELIVERY_QUEUE?: Queue<EmailDeliveryJob>
 
@@ -70,9 +66,7 @@ export function getServerEnv(event: H3Event): ServerEnv {
   const cloudflareEvent = event as CloudflareEvent
 
   const cloudflareEnv =
-    cloudflareEvent.req?.runtime?.cloudflare?.env ||
-    cloudflareEvent.context.cloudflare?.env ||
-    {}
+    cloudflareEvent.req?.runtime?.cloudflare?.env || cloudflareEvent.context.cloudflare?.env || {}
 
   const DB = cloudflareEnv.DB as D1Database | undefined
 
@@ -93,23 +87,17 @@ export function getServerEnv(event: H3Event): ServerEnv {
       | Queue<AdminNotificationJob>
       | undefined,
 
-    EMAIL_DELIVERY_QUEUE: cloudflareEnv.EMAIL_DELIVERY_QUEUE as
-      | Queue<EmailDeliveryJob>
-      | undefined,
+    EMAIL_DELIVERY_QUEUE: cloudflareEnv.EMAIL_DELIVERY_QUEUE as Queue<EmailDeliveryJob> | undefined,
 
     NUXT_JWT_SECRET,
 
     NUXT_AUTH_TOKEN_TTL_SECONDS:
-      readString(
-        runtimeConfig.authTokenTtlSeconds,
-        cloudflareEnv.NUXT_AUTH_TOKEN_TTL_SECONDS
-      ) || '604800',
+      readString(runtimeConfig.authTokenTtlSeconds, cloudflareEnv.NUXT_AUTH_TOKEN_TTL_SECONDS) ||
+      '604800',
 
     NUXT_ALLOW_PUBLIC_REGISTER:
-      readString(
-        runtimeConfig.allowPublicRegister,
-        cloudflareEnv.NUXT_ALLOW_PUBLIC_REGISTER
-      ) || 'false',
+      readString(runtimeConfig.allowPublicRegister, cloudflareEnv.NUXT_ALLOW_PUBLIC_REGISTER) ||
+      'false',
 
     NUXT_MAIL_FROM:
       readString(runtimeConfig.mailFrom, cloudflareEnv.NUXT_MAIL_FROM) || 'hi@mohetios.dev',

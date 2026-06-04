@@ -2,4 +2,6 @@
 import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import withNuxt from './.nuxt/eslint.config.mjs'
 
-export default withNuxt(eslintConfigPrettier)
+// ESLint handles code quality; Prettier owns formatting.
+// Keep `eslintConfigPrettier` last so it disables any rules that conflict with Prettier.
+export default withNuxt().append(eslintConfigPrettier)

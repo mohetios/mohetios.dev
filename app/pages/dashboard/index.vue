@@ -266,7 +266,9 @@ const inbox = [
                   <div class="flex flex-1 items-end gap-1">
                     <div
                       class="w-full rounded-t-sm bg-primary/70"
-                      :style="{ height: `${Math.max((item.visits / maxAudienceVisits) * 100, 4)}%` }"
+                      :style="{
+                        height: `${Math.max((item.visits / maxAudienceVisits) * 100, 4)}%`
+                      }"
                     />
                     <div
                       class="w-full rounded-t-sm bg-info/70"
@@ -302,11 +304,7 @@ const inbox = [
 
             <div class="space-y-5">
               <div class="grid gap-2">
-                <div
-                  v-for="source in leadSources"
-                  :key="source.key"
-                  class="space-y-2"
-                >
+                <div v-for="source in leadSources" :key="source.key" class="space-y-2">
                   <div class="flex items-center justify-between gap-3 text-sm">
                     <div class="flex min-w-0 items-center gap-2">
                       <span
