@@ -1,0 +1,19 @@
+# Build outputs and caches — skip AI indexing
+.nuxt/
+.output/
+.nitro/
+.cache/
+.velite/
+dist/
+.wrangler/
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Large lockfile
+pnpm-lock.yaml
+
+# Generated migration metadata
+drizzle/migrations/meta/
+migrations/meta/

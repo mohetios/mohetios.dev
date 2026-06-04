@@ -1,3 +1,29 @@
 {
-  "recommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode", "Vue.volar"]
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "Vue.volar",
+    "bradlc.vscode-tailwindcss",
+    "GraphQL.vscode-graphql-syntax",
+    "EditorConfig.EditorConfig"
+  ],
+  "unwantedExtensions": [
+    "octref.vetur",
+    "rvest.vs-code-prettier-eslint",
+    "Vue.vscode-typescript-vue-plugin",
+    "hookyqr.beautify",
+    "dbaeumer.jshint",
+    "ms-vscode.vscode-typescript-next",
+    "nuxtr.nuxtr-vscode",
+    "nuxtr.nuxt-vscode-extentions",
+    "wemlion.wemlion-nuxt-helper",
+    "praburangki.nuxt-snippets",
+    "devsense.phptools-vscode",
+    "devsense.intelli-php-vscode",
+    "devsense.composer-php-vscode",
+    "devsense.profiler-php-vscode",
+    "expo.vscode-expo-tools",
+    "vscjava.vscode-gradle",
+    "wordpresstoolbox.wordpress-toolbox"
+  ]
 }

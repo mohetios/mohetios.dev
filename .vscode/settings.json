@@ -1,6 +1,13 @@
 {
+  // ── Project identity ──────────────────────────────────────────────
   "eslint.useFlatConfig": true,
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "vue"],
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "eslint.run": "onType",
+  "eslint.lintTask.enable": true,
+
+  // ── Formatting (Prettier owns format; ESLint owns fix-on-save) ──
+  "editor.formatOnSave": false,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
@@ -22,5 +29,124 @@
   },
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "[graphql]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // ── Editor (lightweight defaults for low-power machines) ────────
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.minimap.enabled": false,
+  "editor.smoothScrolling": false,
+  "editor.cursorSmoothCaretAnimation": "off",
+  "editor.renderWhitespace": "selection",
+  "editor.occurrencesHighlight": "off",
+  "editor.selectionHighlight": false,
+  "editor.codeLens": false,
+  "editor.hover.delay": 400,
+  "editor.quickSuggestionsDelay": 150,
+  "editor.suggest.preview": false,
+  "editor.linkedEditing": true,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": false,
+  "editor.stickyScroll.enabled": false,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.eol": "\n",
+
+  // ── Workbench ───────────────────────────────────────────────────
+  "workbench.editor.enablePreview": true,
+  "workbench.editor.limit.enabled": true,
+  "workbench.editor.limit.value": 8,
+  "workbench.list.smoothScrolling": false,
+  "workbench.tree.indent": 16,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.vue": "${capture}.ts, ${capture}.*.ts",
+    "*.ts": "${capture}.test.ts, ${capture}.spec.ts",
+    "package.json": "pnpm-lock.yaml, pnpm-workspace.yaml, .npmrc, .nvmrc",
+    "nuxt.config.ts": "velite.config.ts, drizzle.config.ts, eslint.config.mjs",
+    "tsconfig.json": "tsconfig.*.json, env.d.ts"
+  },
+
+  // ── Git (less background work) ────────────────────────────────────
+  "git.autofetch": false,
+  "git.enableSmartCommit": true,
+  "gitlens.enabled": false,
+
+  // ── TypeScript / Vue language services ────────────────────────────
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.tsserver.maxTsServerMemory": 2048,
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "typescript.preferences.preferTypeOnlyAutoImports": true,
+  "typescript.preferences.includePackageJsonAutoImports": "off",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.suggest.autoImports": true,
+  "typescript.surveys.enabled": false,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "vue.server.hybridMode": true,
+  "vue.inlayHints.missingProps": false,
+  "vue.inlayHints.inlineHandlerLeading": false,
+  "vue.inlayHints.optionsWrapper": false,
+  "vue.updateImportsOnFileMove.enabled": true,
+  "volar.autoCompleteRefs": false,
+  "nuxt.isNuxtApp": true,
+  "nuxt-intellisense.showWelcomeMessage": false,
+
+  // ── Tailwind 4 (CSS-first config) ─────────────────────────────────
+  "tailwindCSS.emmetCompletions": false,
+  "tailwindCSS.experimental.configFile": "app/assets/css/main.css",
+  "tailwindCSS.includeLanguages": {
+    "vue": "html",
+    "vue-html": "html"
+  },
+  "css.validate": false,
+  "scss.validate": false,
+  "less.validate": false,
+
+  // ── Hide generated / heavy paths from the tree ────────────────────
+  "files.exclude": {
+    "**/.nuxt": true,
+    "**/.output": true,
+    "**/.nitro": true,
+    "**/.cache": true,
+    "**/.velite": true,
+    "**/.wrangler": true
+  },
+
+  // ── Reduce file-watcher and search load ───────────────────────────
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/.pnpm-store/**": true,
+    "**/.nuxt/**": true,
+    "**/.output/**": true,
+    "**/.nitro/**": true,
+    "**/.cache/**": true,
+    "**/.velite/**": true,
+    "**/dist/**": true,
+    "**/.wrangler/**": true,
+    "**/drizzle/migrations/meta/**": true,
+    "**/migrations/meta/**": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.nuxt": true,
+    "**/.output": true,
+    "**/.nitro": true,
+    "**/.cache": true,
+    "**/.velite": true,
+    "**/dist": true,
+    "**/.wrangler": true,
+    "**/pnpm-lock.yaml": true,
+    "**/drizzle/migrations/meta": true,
+    "**/migrations/meta": true
+  },
+
+  // ── Terminal / tasks ──────────────────────────────────────────────
+  "terminal.integrated.defaultProfile.linux": "zsh",
+  "npm.packageManager": "pnpm"
 }

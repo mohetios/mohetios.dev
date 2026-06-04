@@ -1,0 +1,108 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "dev:web",
+      "type": "shell",
+      "command": "pnpm dev:web",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": false
+      }
+    },
+    {
+      "label": "dev:workers",
+      "type": "shell",
+      "command": "pnpm dev:workers",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "lint",
+      "type": "shell",
+      "command": "pnpm lint",
+      "problemMatcher": [
+        "$eslint-stylish"
+      ],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "lint:fix",
+      "type": "shell",
+      "command": "pnpm lint:fix",
+      "problemMatcher": [
+        "$eslint-stylish"
+      ],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "typecheck",
+      "type": "shell",
+      "command": "pnpm typecheck",
+      "problemMatcher": [
+        "$tsc"
+      ],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "check",
+      "type": "shell",
+      "command": "pnpm check",
+      "dependsOn": [
+        "lint",
+        "typecheck"
+      ],
+      "dependsOrder": "sequence",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "format",
+      "type": "shell",
+      "command": "pnpm format",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "clean",
+      "type": "shell",
+      "command": "pnpm clean",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      }
+    },
+    {
+      "type": "npm",
+      "script": "dev",
+      "problemMatcher": [],
+      "label": "npm: dev",
+      "detail": "concurrently -k -n velite,nuxt,email,system -c gray,cyan,green,magenta \"velite dev\" \"nuxt dev\" \"pnpm dev:email\" \"pnpm dev:system\""
+    }
+  ]
+}
