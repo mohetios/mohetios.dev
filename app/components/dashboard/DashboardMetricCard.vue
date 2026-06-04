@@ -11,7 +11,7 @@ defineProps<{
   <UCard variant="outline" :ui="dashboardCardUi">
     <div class="flex items-start gap-4">
       <div
-        class="flex size-11 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400"
+        class="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary"
       >
         <UIcon :name="metric.icon" class="size-5" />
       </div>
@@ -30,7 +30,7 @@ defineProps<{
             v-if="metric.trend"
             class="font-medium"
             :class="{
-              'text-blue-600 dark:text-blue-400': metric.trendDirection === 'up',
+              'text-primary': metric.trendDirection === 'up',
               'text-red-600 dark:text-red-400': metric.trendDirection === 'down',
               'text-muted': metric.trendDirection === 'neutral'
             }"

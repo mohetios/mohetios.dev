@@ -13,7 +13,7 @@ defineProps<{
   <UCard variant="outline" :ui="dashboardCardUi">
     <div class="flex items-start gap-4">
       <div
-        class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400"
+        class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"
       >
         <UIcon :name="icon" class="size-5" />
       </div>

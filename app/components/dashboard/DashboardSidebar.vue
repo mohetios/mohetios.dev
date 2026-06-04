@@ -86,7 +86,7 @@ function isActive(path: string) {
         >
           <span
             v-if="collapsed"
-            class="flex size-9 items-center justify-center rounded-xl bg-blue-500/10 text-base font-semibold text-blue-700 dark:text-blue-300"
+            class="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-base font-semibold text-primary"
           >
             M
           </span>
@@ -94,13 +94,6 @@ function isActive(path: string) {
             Mohetios
           </span>
         </NuxtLink>
-
-        <UDashboardSidebarCollapse
-          v-if="!collapsed"
-          color="neutral"
-          variant="ghost"
-          size="sm"
-        />
       </div>
     </template>
 
@@ -113,7 +106,7 @@ function isActive(path: string) {
           class="group relative flex min-h-10 items-center rounded-xl px-3 py-2 text-sm transition"
           :class="[
             isActive(item.to)
-              ? 'bg-blue-500/10 text-blue-700 dark:text-blue-300'
+              ? 'bg-primary/10 text-primary'
               : 'text-muted hover:bg-neutral-100 hover:text-highlighted dark:hover:bg-neutral-900',
             collapsed ? 'justify-center px-2' : 'justify-between'
           ]"
@@ -142,7 +135,7 @@ function isActive(path: string) {
 
           <span
             v-if="item.badge && collapsed"
-            class="absolute right-2 top-2 size-2 rounded-full bg-blue-500"
+            class="absolute right-2 top-2 size-2 rounded-full bg-primary"
             aria-hidden="true"
           />
         </NuxtLink>

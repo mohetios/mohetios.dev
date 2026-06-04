@@ -13,7 +13,7 @@ const rangeItems = computed(() => [
 <template>
   <UDashboardNavbar class="border-b border-default bg-default/90 backdrop-blur">
     <template #left>
-      <UDashboardSidebarCollapse class="shrink-0 lg:hidden" />
+      <UDashboardSidebarCollapse class="shrink-0" />
 
       <UInput
         icon="i-lucide-search"

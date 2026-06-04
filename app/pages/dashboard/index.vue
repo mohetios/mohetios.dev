@@ -51,7 +51,7 @@ const audienceAreaPoints = computed(() => {
 })
 
 const activityIconClass: Record<string, string> = {
-  primary: 'text-blue-600 dark:text-blue-400',
+  primary: 'text-primary',
   success: 'text-emerald-600 dark:text-emerald-400',
   warning: 'text-amber-600 dark:text-amber-400',
   error: 'text-red-600 dark:text-red-400',
@@ -60,7 +60,7 @@ const activityIconClass: Record<string, string> = {
 </script>
 
 <template>
-  <div class="mx-auto max-w-7xl space-y-6">
+  <div class="mx-auto w-full max-w-[1600px] space-y-6">
     <section class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <h1 class="text-3xl font-semibold tracking-tight text-highlighted">
@@ -109,7 +109,7 @@ const activityIconClass: Record<string, string> = {
                 </p>
                 <span
                   v-if="audienceSummary.trend"
-                  class="text-sm font-medium text-blue-600 dark:text-blue-400"
+                  class="text-sm font-medium text-primary"
                 >
                   <span v-if="audienceSummary.trendDirection === 'up'">↑</span>
                   <span v-else-if="audienceSummary.trendDirection === 'down'">↓</span>
@@ -153,13 +153,13 @@ const activityIconClass: Record<string, string> = {
 
             <polygon
               :points="audienceAreaPoints"
-              class="fill-blue-500/10 dark:fill-blue-400/10"
+              class="fill-current text-primary/10"
             />
 
             <polyline
               :points="audiencePolyline"
               fill="none"
-              class="stroke-blue-600 dark:stroke-blue-400"
+              class="stroke-current text-primary"
               stroke-width="1.3"
               stroke-linecap="round"
               stroke-linejoin="round"

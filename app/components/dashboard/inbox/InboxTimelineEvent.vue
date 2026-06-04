@@ -19,7 +19,7 @@ const eventUi = computed(() => {
       }
     case 'outbound_reply':
       return {
-        root: 'rounded-xl border border-blue-200/80 bg-blue-50/60 p-4 dark:border-blue-900/50 dark:bg-blue-950/25',
+        root: 'rounded-xl border border-primary/30 bg-primary/5 p-4',
         badge: props.event.deliveryStatus === 'sent'
           ? { label: 'Sent', color: 'success' as const }
           : undefined

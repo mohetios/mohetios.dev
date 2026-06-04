@@ -178,7 +178,7 @@ function getLeadSourceIcon(source: LeadSource) {
 
 function getLeadSourceColor(source: LeadSource) {
   return {
-    email: 'text-blue-600 dark:text-blue-400',
+    email: 'text-primary',
     contact_form: 'text-emerald-600 dark:text-emerald-400',
     manual: 'text-amber-600 dark:text-amber-400'
   }[source]
@@ -223,8 +223,6 @@ const opportunityFields = computed(() => {
   <div class="mx-auto flex min-h-0 w-full max-w-[1600px] flex-1 flex-col gap-6">
     <section class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div class="flex min-w-0 items-start gap-3">
-        <UDashboardSidebarCollapse class="shrink-0 lg:hidden" />
-
         <div>
           <h1 class="text-3xl font-semibold tracking-tight text-highlighted">
             Leads

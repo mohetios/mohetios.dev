@@ -42,7 +42,7 @@ const serviceStatusColor = {
           <p class="mt-1 text-sm font-semibold text-highlighted">
             {{ metric.value }}
           </p>
-          <p class="mt-0.5 text-xs text-blue-600 dark:text-blue-400">
+          <p class="mt-0.5 text-xs text-primary">
             ↑ {{ metric.trend }}
           </p>
         </div>

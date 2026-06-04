@@ -18,12 +18,13 @@ const { user, accountMenuItems } = useDashboardAccountMenu()
         label: collapsed ? undefined : user.name,
         trailingIcon: collapsed ? undefined : 'i-lucide-chevrons-up-down'
       }"
+      :avatar="{ ...user.avatar, size: 'lg' }"
       color="neutral"
       variant="ghost"
       block
       :square="collapsed"
       class="data-[state=open]:bg-elevated"
-      :ui="{ trailingIcon: 'text-dimmed' }"
+      :ui="{ trailingIcon: 'text-dimmed', leadingAvatarSize: 'lg' }"
     />
   </UDropdownMenu>
 </template>
