@@ -56,7 +56,54 @@
     "description": "یک بخش احرازشده‌ی کمینه برای ابزارهای آینده‌ی انتشار و عملیات.",
     "emptyName": "نام ثبت نشده",
     "role": "نقش",
-    "backToSite": "بازگشت به سایت"
+    "backToSite": "بازگشت به سایت",
+    "nav": {
+      "overview": "نمای کلی",
+      "inbox": "صندوق ورودی",
+      "leads": "سرنخ‌ها",
+      "comments": "نظرات",
+      "forms": "فرم‌ها",
+      "analytics": "تحلیل‌ها"
+    },
+    "sidebar": {
+      "accountName": "Mohetios",
+      "accountRole": "ناشر"
+    },
+    "topbar": {
+      "search": "جستجو...",
+      "range24h": "۲۴ ساعت گذشته",
+      "range7d": "۷ روز گذشته",
+      "range30d": "۳۰ روز گذشته",
+      "newPost": "نوشته جدید"
+    },
+    "overview": {
+      "title": "نمای کلی",
+      "description": "مرکز فرمان ساده برای مخاطب، محتوا، صندوق ورودی و سیستم.",
+      "audience": "مخاطب",
+      "audienceHelper": "کل بازدیدکنندگان در ۷ روز گذشته",
+      "visitors": "بازدیدکنندگان",
+      "inboxPreview": "پیش‌نمایش صندوق ورودی",
+      "contentPulse": "نبض محتوا",
+      "readerSignals": "سیگنال‌های خواننده",
+      "referrers": "ارجاع‌دهنده‌ها",
+      "countries": "کشورها",
+      "tags": "برچسب‌ها",
+      "systemHealth": "سلامت سیستم",
+      "recentActivity": "فعالیت اخیر",
+      "quickNote": "یادداشت سریع",
+      "quickNotePlaceholder": "یک یادداشت کوتاه بنویسید...",
+      "addQuickNote": "افزودن یادداشت سریع",
+      "audienceChartLabel": "روند بازدیدکنندگان مخاطب در ۷ روز گذشته",
+      "openInbox": "باز کردن صندوق ورودی",
+      "viewAll": "مشاهده همه",
+      "viewDetails": "جزئیات",
+      "views": "بازدید",
+      "contentStatus": {
+        "published": "منتشر شده",
+        "draft": "پیش‌نویس",
+        "scheduled": "زمان‌بندی شده"
+      }
+    }
   },
   "push": {
     "title": "فعال‌سازی اعلان‌های داشبورد",

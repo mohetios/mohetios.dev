@@ -1,4 +1,16 @@
 <script setup lang="ts">
+import {
+  audienceData,
+  audienceSummary,
+  contentPulseItems,
+  dashboardMetrics,
+  inboxPreviewItems,
+  readerSignals,
+  recentActivityItems,
+  systemHealth
+} from '~/data/dashboard.mock'
+import { dashboardCardUi } from '~/utils/dashboard-ui'
+
 definePageMeta({
   layout: 'dashboard',
   middleware: ['auth']
@@ -7,427 +19,246 @@ definePageMeta({
 const { t } = useI18n()
 
 useMohetSeo({
-  title: () => t('dashboard.title'),
-  description: () => t('dashboard.description')
+  title: () => t('dashboard.overview.title'),
+  description: () => t('dashboard.overview.description')
 })
 
-const dateRange = ref('Last 30 days')
+const safeAudienceData = computed(() => audienceData.length ? audienceData : [{ label: '', value: 0 }])
 
-const stats = [
-  {
-    label: 'New Leads',
-    value: '24',
-    delta: '+18%',
-    icon: 'i-lucide-users',
-    tone: 'success',
-    helper: 'From hire and contact forms'
-  },
-  {
-    label: 'Unread Emails',
-    value: '8',
-    delta: '+7%',
-    icon: 'i-lucide-mail',
-    tone: 'primary',
-    helper: 'Messages awaiting review'
-  },
-  {
-    label: 'Pending Comments',
-    value: '5',
-    delta: '-12%',
-    icon: 'i-lucide-message-square',
-    tone: 'warning',
-    helper: 'Moderation queue is lighter'
-  },
-  {
-    label: 'Form Submissions',
-    value: '31',
-    delta: '+24%',
-    icon: 'i-lucide-file-text',
-    tone: 'success',
-    helper: 'Across public site forms'
-  }
-] as const
+const maxAudienceValue = computed(() => {
+  const max = Math.max(...safeAudienceData.value.map((item) => item.value))
+  return max > 0 ? max : 1
+})
 
-const audienceData = [
-  { visits: 420, leads: 4 },
-  { visits: 610, leads: 6 },
-  { visits: 540, leads: 5 },
-  { visits: 760, leads: 9 },
-  { visits: 690, leads: 7 },
-  { visits: 880, leads: 12 },
-  { visits: 820, leads: 10 },
-  { visits: 970, leads: 14 },
-  { visits: 930, leads: 11 },
-  { visits: 1100, leads: 16 }
-]
+function getPointStyle(value: number, index: number) {
+  const total = safeAudienceData.value.length
+  const x = total <= 1 ? 0 : (index / (total - 1)) * 100
+  const y = 100 - (value / maxAudienceValue.value) * 80
 
-const audienceLabels = [
-  'May 1',
-  'May 4',
-  'May 7',
-  'May 10',
-  'May 13',
-  'May 16',
-  'May 19',
-  'May 22',
-  'May 25',
-  'May 28'
-]
-
-const audienceCategories = {
-  visits: {
-    name: 'Visits',
-    color: '#486a56'
-  },
-  leads: {
-    name: 'Leads',
-    color: '#1e4265'
-  }
+  return `${x},${y}`
 }
 
-const leadSources = [
-  { key: 'hire', name: 'Hire Form', value: 46, color: '#486a56' },
-  { key: 'contact', name: 'Contact', value: 28, color: '#1e4265' },
-  { key: 'email', name: 'Email', value: 16, color: '#c6a15b' },
-  { key: 'referral', name: 'Referral', value: 10, color: '#93b09a' }
-]
+const audiencePolyline = computed(() =>
+  safeAudienceData.value.map((item, index) => getPointStyle(item.value, index)).join(' ')
+)
 
-const maxAudienceVisits = Math.max(...audienceData.map((item) => item.visits))
-const maxLeadCount = Math.max(...audienceData.map((item) => item.leads))
-const totalLeadSources = leadSources.reduce((total, source) => total + source.value, 0)
+const audienceAreaPoints = computed(() => {
+  const points = safeAudienceData.value
+    .map((item, index) => getPointStyle(item.value, index))
+    .join(' ')
 
-const topPages = [
-  { page: '/hire', value: 52 },
-  { page: '/about', value: 31 },
-  { page: '/projects/safarnak', value: 24 },
-  { page: '/writing/product-engineering-notes', value: 15 },
-  { page: '/contact', value: 9 }
-]
+  return `0,100 ${points} 100,100`
+})
 
-const recentLeads = [
-  {
-    name: 'Sarah Chen',
-    source: 'Hire form',
-    status: 'New',
-    time: '1h ago'
-  },
-  {
-    name: 'Daniel Mendes',
-    source: 'Contact form',
-    status: 'Reviewing',
-    time: '3h ago'
-  },
-  {
-    name: 'Aisha Patel',
-    source: 'Email',
-    status: 'Replied',
-    time: '6h ago'
-  }
-]
-
-const pendingComments = [
-  {
-    author: 'Alex R.',
-    page: '/writing/edge-caching',
-    text: 'Great breakdown of edge caching.',
-    time: '2h ago'
-  },
-  {
-    author: 'Mina J.',
-    page: '/projects/safarnak',
-    text: 'Could you share more about the stack?',
-    time: '5h ago'
-  },
-  {
-    author: 'David K.',
-    page: '/about',
-    text: 'Love the simplicity here.',
-    time: '1d ago'
-  }
-]
-
-const inbox = [
-  {
-    sender: 'Sarah Chen',
-    subject: 'Potential project inquiry',
-    time: '1h ago'
-  },
-  {
-    sender: 'hello@studio.dev',
-    subject: 'Collaboration proposal',
-    time: '4h ago'
-  },
-  {
-    sender: 'notifications@mohetios.dev',
-    subject: 'New lead via hire form',
-    time: '6h ago'
-  }
-]
+const activityIconClass: Record<string, string> = {
+  primary: 'text-blue-600 dark:text-blue-400',
+  success: 'text-emerald-600 dark:text-emerald-400',
+  warning: 'text-amber-600 dark:text-amber-400',
+  error: 'text-red-600 dark:text-red-400',
+  neutral: 'text-muted'
+}
 </script>
 
 <template>
-  <UDashboardPanel id="dashboard-overview">
-    <template #header>
-      <UDashboardNavbar title="Overview" icon="i-lucide-layout-dashboard">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
+  <div class="mx-auto max-w-7xl space-y-6">
+    <section class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <h1 class="text-3xl font-semibold tracking-tight text-highlighted">
+          {{ t('dashboard.overview.title') }}
+        </h1>
+        <p class="mt-1 text-sm text-muted">
+          {{ t('dashboard.overview.description') }}
+        </p>
+      </div>
 
-        <template #right>
-          <div class="flex items-center gap-2">
-            <DashboardHeaderActions />
-            <USelect
-              v-model="dateRange"
-              :items="['Today', 'Last 7 days', 'Last 30 days', 'Last 90 days']"
-              class="w-40"
-            />
-          </div>
-        </template>
-      </UDashboardNavbar>
+      <div class="flex items-center gap-2">
+        <UButton
+          color="neutral"
+          variant="outline"
+          icon="i-lucide-inbox"
+          to="/dashboard/inbox"
+        >
+          {{ t('dashboard.overview.openInbox') }}
+        </UButton>
+      </div>
+    </section>
 
-      <UDashboardToolbar>
-        <template #left>
-          <div class="flex items-center gap-2">
-            <UButton color="primary" variant="soft" size="sm">Overview</UButton>
-            <UButton color="neutral" variant="ghost" size="sm">Signals</UButton>
-            <UButton color="neutral" variant="ghost" size="sm">Leads</UButton>
-          </div>
-        </template>
+    <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <DashboardMetricCard
+        v-for="metric in dashboardMetrics"
+        :key="metric.key"
+        :metric="metric"
+      />
+    </section>
 
-        <template #right>
-          <UButton color="neutral" variant="ghost" icon="i-lucide-refresh-cw" size="sm">
-            Refresh
-          </UButton>
-          <UButton color="neutral" variant="outline" icon="i-lucide-download" size="sm" disabled>
-            Export
-          </UButton>
-        </template>
-      </UDashboardToolbar>
-    </template>
-
-    <template #body>
-      <div class="space-y-6 p-4 sm:p-6 lg:p-8">
-        <UCard>
-          <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-            <div class="max-w-2xl space-y-2">
-              <h2 class="text-xl font-semibold tracking-normal text-highlighted">
-                Mohetios control room
+    <section class="grid gap-4 xl:grid-cols-5">
+      <UCard
+        variant="outline"
+        :ui="dashboardCardUi"
+        class="flex flex-col xl:col-span-3"
+      >
+        <template #header>
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h2 class="text-base font-semibold text-highlighted">
+                {{ t('dashboard.overview.audience') }}
               </h2>
-              <p class="text-sm leading-6 text-muted">
-                A small panel for leads, inbox, comments, forms, and useful site signals.
+              <div class="mt-3 flex items-center gap-2">
+                <p class="text-2xl font-semibold text-highlighted">
+                  {{ audienceSummary.value }}
+                </p>
+                <span
+                  v-if="audienceSummary.trend"
+                  class="text-sm font-medium text-blue-600 dark:text-blue-400"
+                >
+                  <span v-if="audienceSummary.trendDirection === 'up'">↑</span>
+                  <span v-else-if="audienceSummary.trendDirection === 'down'">↓</span>
+                  {{ audienceSummary.trend }}
+                </span>
+              </div>
+              <p class="mt-1 text-sm text-muted">
+                {{ t(audienceSummary.helperKey) }}
               </p>
             </div>
 
-            <div class="flex flex-wrap gap-2">
-              <UBadge color="primary" variant="soft">Private</UBadge>
-              <UBadge color="neutral" variant="subtle">Mock data</UBadge>
+            <UButton
+              color="neutral"
+              variant="outline"
+              trailing-icon="i-lucide-chevron-down"
+              class="shrink-0"
+            >
+              {{ t('dashboard.overview.visitors') }}
+            </UButton>
+          </div>
+        </template>
+
+        <div class="h-64 min-h-48">
+          <svg
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            class="h-full w-full"
+            role="img"
+            :aria-label="t('dashboard.overview.audienceChartLabel')"
+          >
+            <line
+              v-for="y in [20, 40, 60, 80]"
+              :key="y"
+              x1="0"
+              :y1="y"
+              x2="100"
+              :y2="y"
+              class="stroke-neutral-200 dark:stroke-neutral-700"
+              stroke-width="0.4"
+            />
+
+            <polygon
+              :points="audienceAreaPoints"
+              class="fill-blue-500/10 dark:fill-blue-400/10"
+            />
+
+            <polyline
+              :points="audiencePolyline"
+              fill="none"
+              class="stroke-blue-600 dark:stroke-blue-400"
+              stroke-width="1.3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+
+        <div class="mt-3 grid grid-cols-7 gap-1 text-xs text-muted">
+          <span v-for="item in safeAudienceData" :key="item.label" class="truncate">
+            {{ item.label }}
+          </span>
+        </div>
+      </UCard>
+
+      <DashboardInboxPreviewCard class="xl:col-span-2" :items="inboxPreviewItems" />
+    </section>
+
+    <section class="grid items-stretch gap-4 lg:grid-cols-2 xl:grid-cols-3">
+      <DashboardContentPulseCard :items="contentPulseItems" />
+      <DashboardReaderSignalsCard :signals="readerSignals" />
+      <DashboardSystemHealthCard :health="systemHealth" />
+    </section>
+
+    <section class="grid gap-4 lg:grid-cols-3">
+      <UCard
+        variant="outline"
+        :ui="dashboardCardUi"
+        class="lg:col-span-2"
+      >
+        <template #header>
+          <h2 class="text-base font-semibold text-highlighted">
+            {{ t('dashboard.overview.recentActivity') }}
+          </h2>
+        </template>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <div
+            v-for="item in recentActivityItems"
+            :key="item.id"
+            class="flex items-start gap-3"
+          >
+            <div class="flex size-9 items-center justify-center rounded-full bg-muted/60">
+              <UIcon
+                :name="item.icon"
+                class="size-5"
+                :class="activityIconClass[item.color] || activityIconClass.neutral"
+              />
+            </div>
+
+            <div class="min-w-0">
+              <p class="text-sm font-medium text-highlighted">
+                {{ item.title }}
+              </p>
+              <p class="mt-1 text-xs text-muted">
+                {{ item.time }}
+              </p>
             </div>
           </div>
-        </UCard>
+        </div>
+      </UCard>
 
-        <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <UCard v-for="stat in stats" :key="stat.label" :ui="{ body: 'p-5' }">
-            <div class="flex items-start justify-between gap-4">
-              <div class="min-w-0">
-                <p class="text-sm text-muted">{{ stat.label }}</p>
-                <div class="mt-3 flex items-end gap-2">
-                  <p class="text-3xl font-semibold tracking-normal">{{ stat.value }}</p>
-                  <UBadge :color="stat.tone" variant="soft">{{ stat.delta }}</UBadge>
-                </div>
-                <p class="mt-3 text-xs leading-5 text-muted">{{ stat.helper }}</p>
-              </div>
+      <UCard
+        variant="outline"
+        :ui="{
+          ...dashboardCardUi,
+          footer: 'border-t border-default px-4 py-3 sm:px-5'
+        }"
+      >
+        <template #header>
+          <div class="flex items-center justify-between">
+            <h2 class="text-base font-semibold text-highlighted">
+              {{ t('dashboard.overview.quickNote') }}
+            </h2>
+            <UButton
+              icon="i-lucide-pencil"
+              color="neutral"
+              variant="ghost"
+              size="xs"
+            />
+          </div>
+        </template>
 
-              <div class="rounded-lg bg-primary/10 p-3 text-primary">
-                <UIcon :name="stat.icon" class="size-5" />
-              </div>
-            </div>
-          </UCard>
-        </section>
+        <div
+          class="min-h-24 rounded-xl border border-dashed border-muted px-3 py-3 text-sm text-muted"
+        >
+          {{ t('dashboard.overview.quickNotePlaceholder') }}
+        </div>
 
-        <section class="grid gap-4 lg:grid-cols-[1.5fr_1fr]">
-          <UCard>
-            <template #header>
-              <div class="flex items-start justify-between gap-4">
-                <div>
-                  <h2 class="font-semibold">Audience & Leads</h2>
-                  <p class="mt-1 text-sm text-muted">Visits and lead conversions over time.</p>
-                </div>
-                <UBadge color="neutral" variant="outline">{{ dateRange }}</UBadge>
-              </div>
-            </template>
-
-            <div class="space-y-4">
-              <div class="grid min-h-72 items-end gap-3 sm:grid-cols-10">
-                <div
-                  v-for="(item, index) in audienceData"
-                  :key="audienceLabels[index]"
-                  class="flex min-h-64 flex-col justify-end gap-2"
-                >
-                  <div class="flex flex-1 items-end gap-1">
-                    <div
-                      class="w-full rounded-t-sm bg-primary/70"
-                      :style="{
-                        height: `${Math.max((item.visits / maxAudienceVisits) * 100, 4)}%`
-                      }"
-                    />
-                    <div
-                      class="w-full rounded-t-sm bg-info/70"
-                      :style="{ height: `${Math.max((item.leads / maxLeadCount) * 100, 4)}%` }"
-                    />
-                  </div>
-                  <p class="truncate text-center text-[0.7rem] text-muted">
-                    {{ audienceLabels[index] }}
-                  </p>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-3 text-xs text-muted">
-                <span class="inline-flex items-center gap-2">
-                  <span class="size-2 rounded-full bg-primary/70" />
-                  {{ audienceCategories.visits.name }}
-                </span>
-                <span class="inline-flex items-center gap-2">
-                  <span class="size-2 rounded-full bg-info/70" />
-                  {{ audienceCategories.leads.name }}
-                </span>
-              </div>
-            </div>
-          </UCard>
-
-          <UCard>
-            <template #header>
-              <div>
-                <h2 class="font-semibold">Lead Sources</h2>
-                <p class="mt-1 text-sm text-muted">Unique leads by source.</p>
-              </div>
-            </template>
-
-            <div class="space-y-5">
-              <div class="grid gap-2">
-                <div v-for="source in leadSources" :key="source.key" class="space-y-2">
-                  <div class="flex items-center justify-between gap-3 text-sm">
-                    <div class="flex min-w-0 items-center gap-2">
-                      <span
-                        class="size-2 shrink-0 rounded-full"
-                        :style="{ backgroundColor: source.color }"
-                      />
-                      <span class="truncate text-muted">{{ source.name }}</span>
-                    </div>
-                    <UBadge color="neutral" variant="subtle">{{ source.value }}</UBadge>
-                  </div>
-
-                  <UProgress
-                    :model-value="source.value"
-                    :max="totalLeadSources"
-                    color="primary"
-                    size="sm"
-                  />
-                </div>
-              </div>
-            </div>
-          </UCard>
-        </section>
-
-        <section class="grid gap-4 xl:grid-cols-4">
-          <UCard>
-            <template #header>
-              <h2 class="font-semibold">Top Lead Pages</h2>
-            </template>
-
-            <div class="space-y-4">
-              <div v-for="item in topPages" :key="item.page" class="space-y-1">
-                <div class="flex items-center justify-between gap-4 text-sm">
-                  <span class="truncate text-muted">{{ item.page }}</span>
-                  <span class="font-medium">{{ item.value }}</span>
-                </div>
-
-                <UProgress :model-value="item.value" :max="60" color="primary" size="sm" />
-              </div>
-            </div>
-          </UCard>
-
-          <UCard>
-            <template #header>
-              <h2 class="font-semibold">Recent Leads</h2>
-            </template>
-
-            <div class="divide-y divide-default">
-              <div
-                v-for="lead in recentLeads"
-                :key="lead.name"
-                class="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
-              >
-                <div class="min-w-0">
-                  <p class="truncate text-sm font-medium">{{ lead.name }}</p>
-                  <p class="truncate text-xs text-muted">{{ lead.source }}</p>
-                </div>
-
-                <div class="flex shrink-0 items-center gap-2">
-                  <UBadge color="primary" variant="soft">{{ lead.status }}</UBadge>
-                  <span class="text-xs text-muted">{{ lead.time }}</span>
-                </div>
-              </div>
-            </div>
-          </UCard>
-
-          <UCard>
-            <template #header>
-              <h2 class="font-semibold">Pending Comments</h2>
-            </template>
-
-            <div class="space-y-4">
-              <div
-                v-for="comment in pendingComments"
-                :key="comment.author"
-                class="space-y-2 border-b border-default pb-4 last:border-0 last:pb-0"
-              >
-                <div class="flex items-start justify-between gap-3">
-                  <div class="min-w-0">
-                    <p class="truncate text-sm font-medium">{{ comment.author }}</p>
-                    <p class="truncate text-xs text-muted">{{ comment.page }}</p>
-                  </div>
-
-                  <span class="shrink-0 text-xs text-muted">{{ comment.time }}</span>
-                </div>
-
-                <p class="line-clamp-2 text-sm text-muted">{{ comment.text }}</p>
-
-                <div class="flex gap-2">
-                  <UButton size="xs" color="primary" variant="soft">Approve</UButton>
-                  <UButton size="xs" color="neutral" variant="outline">Review</UButton>
-                </div>
-              </div>
-            </div>
-          </UCard>
-
-          <UCard>
-            <template #header>
-              <h2 class="font-semibold">Inbox Snapshot</h2>
-            </template>
-
-            <div class="divide-y divide-default">
-              <div
-                v-for="message in inbox"
-                :key="message.subject"
-                class="flex items-start gap-3 py-3 first:pt-0 last:pb-0"
-              >
-                <div class="mt-1 rounded-lg bg-muted p-2">
-                  <UIcon name="i-lucide-mail" class="size-4 text-muted" />
-                </div>
-
-                <div class="min-w-0 flex-1">
-                  <div class="flex items-center justify-between gap-3">
-                    <p class="truncate text-sm font-medium">{{ message.sender }}</p>
-                    <span class="shrink-0 text-xs text-muted">{{ message.time }}</span>
-                  </div>
-
-                  <p class="mt-1 truncate text-sm text-muted">{{ message.subject }}</p>
-                </div>
-              </div>
-            </div>
-          </UCard>
-        </section>
-      </div>
-    </template>
-  </UDashboardPanel>
+        <template #footer>
+          <UButton
+            color="neutral"
+            variant="ghost"
+            size="sm"
+            icon="i-lucide-plus"
+          >
+            {{ t('dashboard.overview.addQuickNote') }}
+          </UButton>
+        </template>
+      </UCard>
+    </section>
+  </div>
 </template>

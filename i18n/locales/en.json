@@ -60,7 +60,54 @@
     "description": "A minimal authenticated area for future publishing and operations tools.",
     "emptyName": "No name set",
     "role": "Role",
-    "backToSite": "Back to site"
+    "backToSite": "Back to site",
+    "nav": {
+      "overview": "Overview",
+      "inbox": "Inbox",
+      "leads": "Leads",
+      "comments": "Comments",
+      "forms": "Forms",
+      "analytics": "Analytics"
+    },
+    "sidebar": {
+      "accountName": "Mohetios",
+      "accountRole": "Publisher"
+    },
+    "topbar": {
+      "search": "Search...",
+      "range24h": "Last 24 Hours",
+      "range7d": "Last 7 Days",
+      "range30d": "Last 30 Days",
+      "newPost": "New Post"
+    },
+    "overview": {
+      "title": "Overview",
+      "description": "A simple command center for your audience, content, inbox, and system.",
+      "audience": "Audience",
+      "audienceHelper": "Total visitors in the last 7 days",
+      "visitors": "Visitors",
+      "inboxPreview": "Inbox Preview",
+      "contentPulse": "Content Pulse",
+      "readerSignals": "Reader Signals",
+      "referrers": "Referrers",
+      "countries": "Countries",
+      "tags": "Tags",
+      "systemHealth": "System Health",
+      "recentActivity": "Recent Activity",
+      "quickNote": "Quick Note",
+      "quickNotePlaceholder": "Jot down a quick note...",
+      "addQuickNote": "Add quick note",
+      "audienceChartLabel": "Audience visitors trend for the last 7 days",
+      "openInbox": "Open Inbox",
+      "viewAll": "View all",
+      "viewDetails": "Details",
+      "views": "views",
+      "contentStatus": {
+        "published": "Published",
+        "draft": "Draft",
+        "scheduled": "Scheduled"
+      }
+    }
   },
   "push": {
     "title": "Enable dashboard notifications",
