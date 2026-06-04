@@ -103,6 +103,75 @@
         "draft": "پیش‌نویس",
         "scheduled": "زمان‌بندی شده"
       }
+    },
+    "inbox": {
+      "title": "صندوق ورودی",
+      "description": "سیگنال‌ها، پاسخ‌ها و یادداشت‌های خصوصی در یک فضای کاری.",
+      "refresh": "بازخوانی",
+      "summary": {
+        "unread": "خوانده‌نشده",
+        "unreadHelper": "گفتگوهای جدید باز نشده",
+        "needsReply": "نیاز به پاسخ",
+        "needsReplyHelper": "گفتگوهای باز یا جدید",
+        "leads": "سرنخ‌ها",
+        "leadsHelper": "گفتگوهای سرنخ و همکاری",
+        "archived": "بایگانی",
+        "archivedHelper": "گفتگوهای بسته‌شده"
+      },
+      "filters": {
+        "all": "همه",
+        "needsReply": "نیاز به پاسخ",
+        "leads": "سرنخ‌ها",
+        "replied": "پاسخ‌داده",
+        "archived": "بایگانی",
+        "spam": "هرزنامه"
+      },
+      "threads": {
+        "title": "گفتگوها",
+        "description": "ایمیل و پیام‌های فرم تماس در یکجا.",
+        "search": "جستجوی گفتگوها...",
+        "emptyTitle": "گفتگویی یافت نشد",
+        "emptyDescription": "فیلتر یا جستجو را تغییر دهید."
+      },
+      "workspace": {
+        "selectTitle": "یک گفتگو انتخاب کنید",
+        "selectDescription": "برای بررسی، پاسخ یا یادداشت خصوصی یک گفتگو را از صندوق ورودی انتخاب کنید.",
+        "reply": "پاسخ",
+        "aiDraft": "پیش‌نویس هوش مصنوعی",
+        "markDone": "علامت انجام‌شده",
+        "archive": "بایگانی",
+        "spam": "هرزنامه",
+        "convertToLead": "تبدیل به سرنخ"
+      },
+      "composer": {
+        "reply": "پاسخ",
+        "note": "یادداشت",
+        "replyPlaceholder": "پاسخ مستقیم بنویسید...",
+        "notePlaceholder": "یادداشت خصوصی برای تیم...",
+        "sendReply": "ارسال پاسخ",
+        "saveDraft": "ذخیره پیش‌نویس",
+        "generateAiDraft": "تولید پیش‌نویس هوش مصنوعی",
+        "addPrivateNote": "افزودن یادداشت خصوصی"
+      },
+      "details": {
+        "title": "جزئیات",
+        "source": "منبع",
+        "kind": "دسته",
+        "status": "وضعیت",
+        "received": "دریافت",
+        "messageId": "شناسه پیام"
+      },
+      "contact": {
+        "title": "تماس",
+        "name": "نام",
+        "email": "ایمیل",
+        "company": "شرکت",
+        "website": "وب‌سایت"
+      },
+      "errors": {
+        "loadFailed": "بارگذاری صندوق ورودی ناموفق بود",
+        "replySent": "پاسخ ارسال شد"
+      }
     }
   },
   "push": {

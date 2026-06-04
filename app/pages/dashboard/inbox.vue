@@ -1,24 +1,20 @@
 <script setup lang="ts">
-type InboxKind = 'lead' | 'collaboration' | 'personal' | 'support' | 'other' | 'spam'
-type InboxStatus = 'new' | 'open' | 'replied' | 'archived' | 'spam'
-type InboxSource = 'contact_form' | 'email'
-type BadgeColor = 'primary' | 'info' | 'success' | 'neutral' | 'warning' | 'error'
-
-type InboxMessage = {
-  id: string
-  source: InboxSource
-  senderName: string
-  senderEmail: string
-  subject: string
-  preview: string
-  bodyText: string
-  kind: InboxKind
-  status: InboxStatus
-  time: string
-  senderCompany?: string | null
-  senderWebsite?: string | null
-  createdAt: number
-}
+import type { InboxMessage, InboxStatus, InboxThreadEvent } from '~/utils/inbox-thread'
+import {
+  getCategoryColor,
+  getCategoryLabel,
+  getSourceLabel,
+  getStatusColor,
+  getStatusLabel,
+  getThreadEvents,
+  matchesActiveFilter,
+  normalizeInboxMessage
+} from '~/utils/inbox-thread'
+import {
+  dashboardCardUi,
+  inboxThreadPanelUi,
+  inboxWorkspacePanelUi
+} from '~/utils/dashboard-ui'
 
 type GraphqlResponse<T> = {
   data?: T
@@ -53,39 +49,35 @@ definePageMeta({
   requiredPermission: 'inbox:manage'
 })
 
+const { t } = useI18n()
+
 useMohetSeo({
-  title: 'Inbox',
-  description: 'Private dashboard mailbox for reviewing messages and lead candidates.'
+  title: () => t('dashboard.inbox.title'),
+  description: () => t('dashboard.inbox.description')
 })
 
-const filters = [
-  { label: 'All', value: 'all' },
-  { label: 'New', value: 'new' },
-  { label: 'Leads', value: 'lead' },
-  { label: 'Replied', value: 'replied' },
-  { label: 'Archived', value: 'archived' },
-  { label: 'Spam', value: 'spam' }
-] as const
-const kindOptions = [
-  'All categories',
-  'Lead',
-  'Collaboration',
-  'Personal',
-  'Support',
-  'Other',
-  'Spam'
-]
+const filters = computed(() => [
+  { label: t('dashboard.inbox.filters.all'), value: 'all' as const },
+  { label: t('dashboard.inbox.filters.needsReply'), value: 'needs_reply' as const },
+  { label: t('dashboard.inbox.filters.leads'), value: 'lead' as const },
+  { label: t('dashboard.inbox.filters.replied'), value: 'replied' as const },
+  { label: t('dashboard.inbox.filters.archived'), value: 'archived' as const },
+  { label: t('dashboard.inbox.filters.spam'), value: 'spam' as const }
+])
 
-const activeFilter = ref<(typeof filters)[number]['value']>('all')
+const activeFilter = ref<(typeof filters.value)[number]['value']>('all')
 const search = ref('')
-const kindFilter = ref('All categories')
 const replyBody = ref('')
+const noteBody = ref('')
+const composerMode = ref<'reply' | 'note'>('reply')
 const isSendingReply = ref(false)
 const isRefreshing = ref(false)
 const toast = useToast()
 const route = useRoute()
 
 const messages = ref<InboxMessage[]>([])
+const localThreadNotes = ref<Record<string, InboxThreadEvent[]>>({})
+
 const {
   data: loadedMessages,
   pending: isLoading,
@@ -114,7 +106,7 @@ const {
       }
     `)
 
-    return result.inboxMessages.map(normalizeMessage)
+    return result.inboxMessages.map(normalizeInboxMessage)
   },
   {
     default: () => []
@@ -125,24 +117,75 @@ const selectedMessageId = ref<string | undefined>()
 const selectedMessage = computed(
   () => messages.value.find((message) => message.id === selectedMessageId.value) || null
 )
-const newCount = computed(() => messages.value.filter((message) => message.status === 'new').length)
+
+const unreadCount = computed(() =>
+  messages.value.filter((message) => message.status === 'new').length
+)
+
+const needsReplyCount = computed(() =>
+  messages.value.filter((message) => ['new', 'open'].includes(message.status)).length
+)
+
+const leadCount = computed(() =>
+  messages.value.filter((message) => ['lead', 'collaboration'].includes(message.kind)).length
+)
+
+const archivedCount = computed(() =>
+  messages.value.filter((message) => message.status === 'archived').length
+)
+
+const summaryCards = computed(() => [
+  {
+    key: 'unread',
+    label: t('dashboard.inbox.summary.unread'),
+    value: unreadCount.value,
+    icon: 'i-lucide-mail',
+    helper: t('dashboard.inbox.summary.unreadHelper')
+  },
+  {
+    key: 'needs_reply',
+    label: t('dashboard.inbox.summary.needsReply'),
+    value: needsReplyCount.value,
+    icon: 'i-lucide-reply',
+    helper: t('dashboard.inbox.summary.needsReplyHelper')
+  },
+  {
+    key: 'leads',
+    label: t('dashboard.inbox.summary.leads'),
+    value: leadCount.value,
+    icon: 'i-lucide-user-plus',
+    helper: t('dashboard.inbox.summary.leadsHelper')
+  },
+  {
+    key: 'archived',
+    label: t('dashboard.inbox.summary.archived'),
+    value: archivedCount.value,
+    icon: 'i-lucide-archive',
+    helper: t('dashboard.inbox.summary.archivedHelper')
+  }
+])
+
 const filteredMessages = computed(() => {
   const query = search.value.trim().toLowerCase()
-  const selectedCategory = kindFilter.value.toLowerCase()
 
   return messages.value.filter((message) => {
-    const matchesFilter =
-      activeFilter.value === 'all' ||
-      message.status === activeFilter.value ||
-      message.kind === activeFilter.value
-    const matchesCategory =
-      selectedCategory === 'all categories' || message.kind === selectedCategory
     const haystack = [message.senderName, message.senderEmail, message.subject, message.preview]
       .join(' ')
       .toLowerCase()
 
-    return matchesFilter && matchesCategory && (!query || haystack.includes(query))
+    return (
+      matchesActiveFilter(message, activeFilter.value) && (!query || haystack.includes(query))
+    )
   })
+})
+
+const selectedThreadEvents = computed(() => {
+  if (!selectedMessage.value) return []
+
+  return [
+    ...getThreadEvents(selectedMessage.value),
+    ...(localThreadNotes.value[selectedMessage.value.id] || [])
+  ].sort((a, b) => a.createdAt - b.createdAt)
 })
 
 watch(
@@ -187,107 +230,9 @@ watch(inboxLoadError, (error) => {
   })
 })
 
-function getCategoryLabel(kind: InboxKind) {
-  return kind.charAt(0).toUpperCase() + kind.slice(1)
-}
-
-function getCategoryColor(kind: InboxKind): BadgeColor {
-  return (
-    {
-      lead: 'primary',
-      collaboration: 'success',
-      personal: 'info',
-      support: 'warning',
-      other: 'neutral',
-      spam: 'error'
-    } satisfies Record<InboxKind, BadgeColor>
-  )[kind]
-}
-
-function getStatusLabel(status: InboxStatus) {
-  return (
-    {
-      new: 'New',
-      open: 'Open',
-      replied: 'Replied',
-      archived: 'Archived',
-      spam: 'Spam'
-    } satisfies Record<InboxStatus, string>
-  )[status]
-}
-
-function getStatusColor(status: InboxStatus): BadgeColor {
-  return (
-    {
-      new: 'primary',
-      open: 'neutral',
-      replied: 'success',
-      archived: 'neutral',
-      spam: 'error'
-    } satisfies Record<InboxStatus, BadgeColor>
-  )[status]
-}
-
-function getSourceLabel(source: InboxSource) {
-  return (
-    {
-      contact_form: 'Contact form',
-      email: 'Email'
-    } satisfies Record<InboxSource, string>
-  )[source]
-}
-
-function normalizeMessage(message: {
-  id: string
-  source: string
-  status: string
-  kind: string
-  senderName: string
-  senderEmail: string
-  subject: string
-  preview: string
-  bodyText: string
-  senderCompany?: string | null
-  senderWebsite?: string | null
-  createdAt: number
-}) {
-  const source = message.source.toLowerCase() as InboxSource
-
-  return {
-    id: message.id,
-    source,
-    senderName: message.senderName,
-    senderEmail: message.senderEmail,
-    subject: message.subject,
-    preview: message.preview,
-    bodyText: message.bodyText,
-    kind: message.kind.toLowerCase() as InboxKind,
-    status: message.status.toLowerCase() as InboxStatus,
-    time: formatMessageTime(message.createdAt),
-    senderCompany: message.senderCompany,
-    senderWebsite: message.senderWebsite,
-    createdAt: message.createdAt
-  }
-}
-
-function formatMessageTime(value: number) {
-  const date = new Date(value)
-  const diffMs = Date.now() - date.getTime()
-  const minute = 60 * 1000
-  const hour = 60 * minute
-  const day = 24 * hour
-
-  if (!Number.isFinite(date.getTime())) return String(value)
-  if (diffMs < minute) return 'just now'
-  if (diffMs < hour) return `${Math.floor(diffMs / minute)}m ago`
-  if (diffMs < day) return `${Math.floor(diffMs / hour)}h ago`
-
-  return `${Math.floor(diffMs / day)}d ago`
-}
-
 function getInboxErrorMessage(error: unknown) {
   if (!error || typeof error !== 'object') {
-    return 'Inbox could not be loaded'
+    return t('dashboard.inbox.errors.loadFailed')
   }
 
   const currentError = error as {
@@ -302,7 +247,7 @@ function getInboxErrorMessage(error: unknown) {
     currentError.message
 
   if (!message) {
-    return 'Inbox could not be loaded'
+    return t('dashboard.inbox.errors.loadFailed')
   }
 
   if (message.includes('no such table: inbox_messages')) {
@@ -400,7 +345,7 @@ async function updateSelectedStatus(status: InboxStatus) {
         status: status.toUpperCase()
       }
     )
-    const updated = normalizeMessage(result.updateInboxMessageStatus)
+    const updated = normalizeInboxMessage(result.updateInboxMessageStatus)
     const index = messages.value.findIndex((item) => item.id === updated.id)
 
     if (index !== -1) {
@@ -421,14 +366,6 @@ async function updateSelectedStatus(status: InboxStatus) {
   }
 }
 
-function markSelectedRead() {
-  if (!selectedMessage.value) {
-    return
-  }
-
-  updateSelectedStatus(selectedMessage.value.status === 'new' ? 'open' : 'new')
-}
-
 function archiveSelected() {
   updateSelectedStatus('archived')
 }
@@ -437,8 +374,30 @@ function spamSelected() {
   updateSelectedStatus('spam')
 }
 
-function restoreSelected() {
-  updateSelectedStatus('open')
+function focusReplyComposer() {
+  composerMode.value = 'reply'
+}
+
+function addPrivateNote() {
+  if (!selectedMessage.value || !noteBody.value.trim()) return
+
+  const note: InboxThreadEvent = {
+    id: `${selectedMessage.value.id}:note:${Date.now()}`,
+    type: 'internal_note',
+    authorName: 'Mohetios',
+    bodyText: noteBody.value.trim(),
+    time: 'just now',
+    createdAt: Date.now(),
+    isPrivate: true,
+    deliveryStatus: 'not_applicable'
+  }
+
+  localThreadNotes.value[selectedMessage.value.id] = [
+    ...(localThreadNotes.value[selectedMessage.value.id] || []),
+    note
+  ]
+
+  noteBody.value = ''
 }
 
 async function sendReply() {
@@ -446,6 +405,8 @@ async function sendReply() {
     return
   }
 
+  const sentBody = replyBody.value.trim()
+  const messageId = selectedMessage.value.id
   isSendingReply.value = true
 
   try {
@@ -461,17 +422,34 @@ async function sendReply() {
       `,
       {
         input: {
-          inboxMessageId: selectedMessage.value.id,
-          bodyText: replyBody.value
+          inboxMessageId: messageId,
+          bodyText: sentBody
         }
       }
     )
+
+    const replyEvent: InboxThreadEvent = {
+      id: `${messageId}:reply:${Date.now()}`,
+      type: 'outbound_reply',
+      authorName: 'Mohetios',
+      bodyText: sentBody,
+      time: 'just now',
+      createdAt: Date.now(),
+      deliveryStatus: 'sent'
+    }
+
+    localThreadNotes.value[messageId] = [
+      ...(localThreadNotes.value[messageId] || []),
+      replyEvent
+    ]
+
     replyBody.value = ''
     await loadMessages()
+
     toast.add({
       color: 'success',
       icon: 'i-lucide-send',
-      title: 'Reply sent'
+      title: t('dashboard.inbox.errors.replySent')
     })
   } catch (error) {
     toast.add({
@@ -486,297 +464,225 @@ async function sendReply() {
 </script>
 
 <template>
-  <UDashboardPanel id="dashboard-inbox">
-    <template #header>
-      <UDashboardNavbar title="Inbox" icon="i-lucide-mail">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
+  <div class="mx-auto flex min-h-0 w-full max-w-[1600px] flex-1 flex-col gap-6">
+    <section class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div class="flex min-w-0 items-start gap-3">
+        <UDashboardSidebarCollapse class="shrink-0 lg:hidden" />
 
-        <template #right>
-          <div class="flex items-center gap-2">
-            <DashboardHeaderActions />
-            <UButton
-              color="neutral"
-              variant="ghost"
-              icon="i-lucide-refresh-cw"
-              :loading="isRefreshing"
-              @click="loadMessages"
-            >
-              Refresh
-            </UButton>
-            <UButton color="neutral" variant="outline" icon="i-lucide-archive" disabled>
-              Archive all open
-            </UButton>
-          </div>
-        </template>
-      </UDashboardNavbar>
+        <div>
+          <h1 class="text-3xl font-semibold tracking-tight text-highlighted">
+            {{ t('dashboard.inbox.title') }}
+          </h1>
+          <p class="mt-1 text-sm text-muted">
+            {{ t('dashboard.inbox.description') }}
+          </p>
+        </div>
+      </div>
 
-      <UDashboardToolbar>
-        <template #left>
-          <div class="flex flex-wrap items-center gap-2">
-            <UButton
-              v-for="filter in filters"
-              :key="filter.value"
-              :color="activeFilter === filter.value ? 'primary' : 'neutral'"
-              :variant="activeFilter === filter.value ? 'soft' : 'ghost'"
-              size="sm"
-              @click="activeFilter = filter.value"
-            >
-              {{ filter.label }}
-            </UButton>
-          </div>
-        </template>
+      <UButton
+        color="neutral"
+        variant="ghost"
+        icon="i-lucide-refresh-cw"
+        :loading="isRefreshing"
+        @click="loadMessages"
+      >
+        {{ t('dashboard.inbox.refresh') }}
+      </UButton>
+    </section>
 
-        <template #right>
-          <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <UInput
-              v-model="search"
-              icon="i-lucide-search"
-              placeholder="Search emails..."
-              class="sm:w-64"
-            />
-            <USelect v-model="kindFilter" :items="kindOptions" class="sm:w-40" />
-          </div>
-        </template>
-      </UDashboardToolbar>
-    </template>
+    <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <DashboardInboxSummaryCard
+        v-for="card in summaryCards"
+        :key="card.key"
+        :label="card.label"
+        :value="card.value"
+        :icon="card.icon"
+        :helper="card.helper"
+      />
+    </section>
 
-    <template #body>
-      <div class="grid gap-4 p-4 lg:grid-cols-[420px_1fr]">
-        <UCard :ui="{ body: 'p-0' }">
-          <template #header>
-            <div class="flex items-center justify-between gap-3">
-              <div>
-                <h2 class="text-sm font-semibold text-highlighted">Messages</h2>
-                <p class="text-xs text-muted">Messages from contact, email, and system sources</p>
-              </div>
-              <UBadge color="primary" variant="soft">{{ newCount }} new</UBadge>
-            </div>
-          </template>
+    <section
+      class="flex flex-col gap-3 rounded-2xl border border-default bg-default p-3 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <div class="flex flex-wrap items-center gap-2">
+        <UButton
+          v-for="filter in filters"
+          :key="filter.value"
+          :color="activeFilter === filter.value ? 'primary' : 'neutral'"
+          :variant="activeFilter === filter.value ? 'soft' : 'ghost'"
+          size="sm"
+          @click="activeFilter = filter.value"
+        >
+          {{ filter.label }}
+        </UButton>
+      </div>
 
-          <div v-if="isLoading" class="space-y-3 p-4">
-            <USkeleton v-for="item in 5" :key="item" class="h-20 w-full" />
-          </div>
+      <UInput
+        v-model="search"
+        icon="i-lucide-search"
+        :placeholder="t('dashboard.inbox.threads.search')"
+        class="w-full sm:w-72"
+      />
+    </section>
 
-          <div v-else-if="filteredMessages.length" class="divide-y divide-default">
-            <button
-              v-for="message in filteredMessages"
-              :key="message.id"
-              type="button"
-              class="block w-full border-s-2 px-4 py-3 text-start transition hover:bg-muted/40"
-              :class="
-                selectedMessageId === message.id
-                  ? 'border-primary bg-primary/5'
-                  : 'border-transparent'
-              "
-              @click="selectedMessageId = message.id"
-            >
-              <div class="flex items-start gap-3">
-                <span
-                  class="mt-2 size-2 rounded-full"
-                  :class="message.status === 'new' ? 'bg-primary' : 'bg-transparent'"
-                />
-                <div class="min-w-0 flex-1 space-y-1">
-                  <div class="flex items-start justify-between gap-3">
-                    <p
-                      class="truncate text-sm text-highlighted"
-                      :class="message.status === 'new' ? 'font-semibold' : 'font-medium'"
-                    >
-                      {{ message.senderName }}
-                    </p>
-                    <span class="shrink-0 text-xs text-muted">{{ message.time }}</span>
-                  </div>
-                  <p
-                    class="truncate text-sm text-highlighted"
-                    :class="message.status === 'new' ? 'font-semibold' : ''"
-                  >
-                    {{ message.subject }}
-                  </p>
-                  <p class="line-clamp-2 text-xs leading-5 text-muted">
-                    {{ message.preview }}
-                  </p>
-                  <div class="flex flex-wrap gap-2 pt-1">
-                    <UBadge color="neutral" variant="outline" size="sm">
-                      {{ getSourceLabel(message.source) }}
-                    </UBadge>
-                    <UBadge :color="getCategoryColor(message.kind)" variant="soft" size="sm">
-                      {{ getCategoryLabel(message.kind) }}
-                    </UBadge>
-                    <UBadge :color="getStatusColor(message.status)" variant="subtle" size="sm">
-                      {{ getStatusLabel(message.status) }}
-                    </UBadge>
-                  </div>
-                </div>
-              </div>
-            </button>
-          </div>
-
-          <div v-else class="p-8 text-center">
-            <div
-              class="mx-auto mb-3 flex size-10 items-center justify-center rounded-full bg-muted"
-            >
-              <UIcon name="i-lucide-mail-x" class="size-5 text-muted" />
-            </div>
-            <h3 class="text-sm font-medium text-highlighted">No messages found</h3>
-            <p class="mt-1 text-sm text-muted">Try a different search or filter.</p>
-          </div>
-        </UCard>
-
-        <UCard v-if="selectedMessage">
-          <template #header>
-            <div class="flex flex-col gap-4">
-              <div class="flex items-start justify-between gap-4">
-                <div class="flex min-w-0 items-start gap-3">
-                  <UAvatar :alt="selectedMessage.senderName" size="lg" />
-                  <div class="min-w-0">
-                    <p class="truncate text-sm font-semibold text-highlighted">
-                      {{ selectedMessage.senderName }}
-                    </p>
-                    <p class="truncate text-xs text-muted">{{ selectedMessage.senderEmail }}</p>
-                    <h2 class="mt-3 text-lg font-semibold tracking-normal text-highlighted">
-                      {{ selectedMessage.subject }}
-                    </h2>
-                  </div>
-                </div>
-                <div class="shrink-0 text-end">
-                  <p class="text-xs text-muted">{{ selectedMessage.time }}</p>
-                  <div class="mt-2 flex flex-wrap justify-end gap-2">
-                    <UBadge :color="getCategoryColor(selectedMessage.kind)" variant="soft">
-                      {{ getCategoryLabel(selectedMessage.kind) }}
-                    </UBadge>
-                    <UBadge :color="getStatusColor(selectedMessage.status)" variant="subtle">
-                      {{ getStatusLabel(selectedMessage.status) }}
-                    </UBadge>
-                  </div>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-2">
-                <UButton
-                  color="neutral"
-                  variant="outline"
-                  icon="i-lucide-mail-check"
-                  size="sm"
-                  @click="markSelectedRead"
-                >
-                  {{ selectedMessage.status === 'new' ? 'Mark open' : 'Mark new' }}
-                </UButton>
-                <UButton color="primary" variant="soft" icon="i-lucide-user-plus" size="sm">
-                  Create lead
-                </UButton>
-                <UButton
-                  color="neutral"
-                  variant="ghost"
-                  icon="i-lucide-archive"
-                  size="sm"
-                  @click="archiveSelected"
-                >
-                  Archive
-                </UButton>
-                <UButton
-                  color="error"
-                  variant="ghost"
-                  icon="i-lucide-octagon-alert"
-                  size="sm"
-                  @click="spamSelected"
-                >
-                  Spam
-                </UButton>
-                <UDropdownMenu
-                  :items="[
-                    [
-                      {
-                        label: 'Restore',
-                        icon: 'i-lucide-rotate-ccw',
-                        onSelect: restoreSelected
-                      }
-                    ]
-                  ]"
-                >
-                  <UButton
-                    color="neutral"
-                    variant="ghost"
-                    icon="i-lucide-more-horizontal"
-                    size="sm"
-                  />
-                </UDropdownMenu>
-              </div>
-            </div>
-          </template>
-
-          <div class="space-y-5">
-            <div class="whitespace-pre-line text-sm leading-7 text-highlighted">
-              {{ selectedMessage.bodyText }}
-            </div>
-
+    <section
+      class="grid min-h-0 flex-1 gap-4 lg:sticky lg:top-8 lg:h-[calc(100dvh-4rem)] lg:grid-cols-[420px_1fr] lg:items-stretch"
+    >
+      <UCard :ui="inboxThreadPanelUi">
+        <template #header>
+          <div>
+            <h2 class="text-sm font-semibold text-highlighted">
+              {{ t('dashboard.inbox.threads.title') }}
+            </h2>
             <p class="text-xs text-muted">
-              Received via {{ getSourceLabel(selectedMessage.source) }}
+              {{ t('dashboard.inbox.threads.description') }}
             </p>
+          </div>
+        </template>
 
-            <div
-              v-if="selectedMessage.senderCompany || selectedMessage.senderWebsite"
-              class="grid gap-3 text-xs text-muted sm:grid-cols-2"
-            >
-              <p v-if="selectedMessage.senderCompany">
-                <span class="font-medium text-highlighted">Company:</span>
-                {{ selectedMessage.senderCompany }}
+        <div v-if="isLoading" class="space-y-3 p-4">
+          <USkeleton v-for="item in 5" :key="item" class="h-24 w-full" />
+        </div>
+
+        <div v-else-if="filteredMessages.length" class="divide-y divide-default">
+          <DashboardInboxThreadRow
+            v-for="message in filteredMessages"
+            :key="message.id"
+            :message="message"
+            :selected="selectedMessageId === message.id"
+            @select="selectedMessageId = message.id"
+          />
+        </div>
+
+        <div v-else class="p-8 text-center">
+          <div class="mx-auto mb-3 flex size-10 items-center justify-center rounded-full bg-muted">
+            <UIcon name="i-lucide-inbox" class="size-5 text-muted" />
+          </div>
+          <h3 class="text-sm font-medium text-highlighted">
+            {{ t('dashboard.inbox.threads.emptyTitle') }}
+          </h3>
+          <p class="mt-1 text-sm text-muted">
+            {{ t('dashboard.inbox.threads.emptyDescription') }}
+          </p>
+        </div>
+      </UCard>
+
+      <UCard v-if="selectedMessage" :ui="inboxWorkspacePanelUi">
+        <template #header>
+          <div class="space-y-4">
+            <div class="min-w-0">
+              <h2 class="text-lg font-semibold tracking-tight text-highlighted">
+                {{ selectedMessage.subject }}
+              </h2>
+              <p class="mt-1 text-sm text-muted">
+                {{ selectedMessage.senderName }} · {{ selectedMessage.senderEmail }} ·
+                {{ getSourceLabel(selectedMessage.source) }}
               </p>
-              <p v-if="selectedMessage.senderWebsite">
-                <span class="font-medium text-highlighted">Website:</span>
-                {{ selectedMessage.senderWebsite }}
-              </p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <UBadge :color="getCategoryColor(selectedMessage.kind)" variant="soft">
+                  {{ getCategoryLabel(selectedMessage.kind) }}
+                </UBadge>
+                <UBadge :color="getStatusColor(selectedMessage.status)" variant="subtle">
+                  {{ getStatusLabel(selectedMessage.status) }}
+                </UBadge>
+              </div>
             </div>
 
-            <UCard v-if="['lead', 'collaboration'].includes(selectedMessage.kind)" variant="subtle">
-              <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p class="text-sm font-medium text-highlighted">Lead candidate</p>
-                  <p class="text-sm text-muted">This message may become a lead.</p>
-                </div>
-                <UButton color="primary" variant="soft" icon="i-lucide-user-plus">
-                  Create lead
-                </UButton>
-              </div>
-            </UCard>
-
-            <USeparator />
-
-            <div class="space-y-3">
-              <h3 class="text-sm font-medium text-highlighted">Reply</h3>
-              <UTextarea
-                v-model="replyBody"
-                placeholder="Write a direct reply..."
-                :rows="6"
-                class="w-full"
-              />
+            <div class="flex flex-wrap gap-2">
               <UButton
                 color="primary"
-                icon="i-lucide-send"
-                :loading="isSendingReply"
-                :disabled="!replyBody.trim()"
-                @click="sendReply"
+                variant="soft"
+                icon="i-lucide-reply"
+                size="sm"
+                @click="focusReplyComposer"
               >
-                Send reply
+                {{ t('dashboard.inbox.workspace.reply') }}
+              </UButton>
+              <UButton color="neutral" variant="outline" icon="i-lucide-sparkles" size="sm" disabled>
+                {{ t('dashboard.inbox.workspace.aiDraft') }}
+              </UButton>
+              <UButton
+                color="success"
+                variant="outline"
+                icon="i-lucide-check"
+                size="sm"
+                @click="updateSelectedStatus('replied')"
+              >
+                {{ t('dashboard.inbox.workspace.markDone') }}
+              </UButton>
+              <UButton
+                color="neutral"
+                variant="ghost"
+                icon="i-lucide-archive"
+                size="sm"
+                @click="archiveSelected"
+              >
+                {{ t('dashboard.inbox.workspace.archive') }}
+              </UButton>
+              <UButton
+                color="error"
+                variant="ghost"
+                icon="i-lucide-octagon-alert"
+                size="sm"
+                @click="spamSelected"
+              >
+                {{ t('dashboard.inbox.workspace.spam') }}
+              </UButton>
+              <UButton
+                color="neutral"
+                variant="ghost"
+                icon="i-lucide-user-plus"
+                size="sm"
+                disabled
+              >
+                {{ t('dashboard.inbox.workspace.convertToLead') }}
               </UButton>
             </div>
           </div>
-        </UCard>
+        </template>
 
-        <UCard v-else>
-          <div class="flex min-h-[420px] items-center justify-center text-center">
-            <div class="max-w-sm">
-              <div
-                class="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-muted"
-              >
-                <UIcon name="i-lucide-mail-open" class="size-6 text-muted" />
-              </div>
-              <h2 class="text-base font-semibold text-highlighted">Select a message</h2>
-              <p class="mt-2 text-sm text-muted">Choose a message from the inbox to review it.</p>
-            </div>
+        <div class="space-y-6">
+          <div class="space-y-4">
+            <DashboardInboxTimelineEvent
+              v-for="event in selectedThreadEvents"
+              :key="event.id"
+              :event="event"
+            />
           </div>
-        </UCard>
-      </div>
-    </template>
-  </UDashboardPanel>
+
+          <DashboardInboxComposer
+            v-model:composer-mode="composerMode"
+            v-model:reply-body="replyBody"
+            v-model:note-body="noteBody"
+            :is-sending-reply="isSendingReply"
+            @send-reply="sendReply"
+            @add-private-note="addPrivateNote"
+          />
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <DashboardInboxDetailsCard :message="selectedMessage" />
+            <DashboardInboxContactCard :message="selectedMessage" />
+          </div>
+        </div>
+      </UCard>
+
+      <UCard
+        v-else
+        :ui="dashboardCardUi"
+        class="flex min-h-[calc(100dvh-18rem)] items-center justify-center lg:h-full lg:min-h-0"
+      >
+        <div class="max-w-sm p-8 text-center">
+          <div class="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-muted">
+            <UIcon name="i-lucide-messages-square" class="size-6 text-muted" />
+          </div>
+          <h2 class="text-base font-semibold text-highlighted">
+            {{ t('dashboard.inbox.workspace.selectTitle') }}
+          </h2>
+          <p class="mt-2 text-sm text-muted">
+            {{ t('dashboard.inbox.workspace.selectDescription') }}
+          </p>
+        </div>
+      </UCard>
+    </section>
+  </div>
 </template>

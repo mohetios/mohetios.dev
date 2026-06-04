@@ -107,6 +107,75 @@
         "draft": "Draft",
         "scheduled": "Scheduled"
       }
+    },
+    "inbox": {
+      "title": "Inbox",
+      "description": "Unified signals, replies, and private notes in one workspace.",
+      "refresh": "Refresh",
+      "summary": {
+        "unread": "Unread",
+        "unreadHelper": "New threads not opened yet",
+        "needsReply": "Needs Reply",
+        "needsReplyHelper": "Open or new conversations",
+        "leads": "Leads",
+        "leadsHelper": "Lead and collaboration threads",
+        "archived": "Archived",
+        "archivedHelper": "Closed conversations"
+      },
+      "filters": {
+        "all": "All",
+        "needsReply": "Needs Reply",
+        "leads": "Leads",
+        "replied": "Replied",
+        "archived": "Archived",
+        "spam": "Spam"
+      },
+      "threads": {
+        "title": "Threads",
+        "description": "Email and contact-form conversations in one place.",
+        "search": "Search threads...",
+        "emptyTitle": "No threads found",
+        "emptyDescription": "Try a different search or filter."
+      },
+      "workspace": {
+        "selectTitle": "Select a thread",
+        "selectDescription": "Choose a conversation from the inbox to review, reply, or add a private note.",
+        "reply": "Reply",
+        "aiDraft": "AI Draft",
+        "markDone": "Mark Done",
+        "archive": "Archive",
+        "spam": "Spam",
+        "convertToLead": "Convert to Lead"
+      },
+      "composer": {
+        "reply": "Reply",
+        "note": "Note",
+        "replyPlaceholder": "Write a direct reply...",
+        "notePlaceholder": "Add a private note for your team...",
+        "sendReply": "Send Reply",
+        "saveDraft": "Save Draft",
+        "generateAiDraft": "Generate AI Draft",
+        "addPrivateNote": "Add Private Note"
+      },
+      "details": {
+        "title": "Details",
+        "source": "Source",
+        "kind": "Kind",
+        "status": "Status",
+        "received": "Received",
+        "messageId": "Message ID"
+      },
+      "contact": {
+        "title": "Contact",
+        "name": "Name",
+        "email": "Email",
+        "company": "Company",
+        "website": "Website"
+      },
+      "errors": {
+        "loadFailed": "Inbox could not be loaded",
+        "replySent": "Reply sent"
+      }
     }
   },
   "push": {
