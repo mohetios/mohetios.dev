@@ -36,16 +36,16 @@ const navItems = computed<DashboardNavItem[]>(() => [
     icon: 'i-lucide-chart-column',
     to: '/dashboard/analytics'
   },
-  {
-    label: t('dashboard.nav.system'),
-    icon: 'i-lucide-server',
-    to: '/dashboard/system'
-  },
-  {
-    label: t('dashboard.nav.settings'),
-    icon: 'i-lucide-settings',
-    to: '/dashboard/settings'
-  }
+  // {
+  //   label: t('dashboard.nav.system'),
+  //   icon: 'i-lucide-server',
+  //   to: '/dashboard/system'
+  // },
+  // {
+  //   label: t('dashboard.nav.settings'),
+  //   icon: 'i-lucide-settings',
+  //   to: '/dashboard/settings'
+  // }
 ])
 
 function stripLocale(path: string) {
