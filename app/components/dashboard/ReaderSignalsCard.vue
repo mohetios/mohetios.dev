@@ -1,21 +1,12 @@
 <script setup lang="ts">
-import type { ReaderSignal } from '~/data/dashboard.mock'
+import type { DashboardHome } from '~/composables/useDashboardHome'
 
 defineProps<{
-  signals: {
-    referrers: ReaderSignal[]
-    countries: ReaderSignal[]
-    tags: ReaderSignal[]
-  }
+  signals: DashboardHome['readerSignals']
+  loading?: boolean
 }>()
 
 const { t } = useI18n()
-
-const sections = computed(() => [
-  { key: 'referrers', title: t('dashboard.overview.referrers'), itemsKey: 'referrers' as const },
-  { key: 'countries', title: t('dashboard.overview.countries'), itemsKey: 'countries' as const },
-  { key: 'tags', title: t('dashboard.overview.tags'), itemsKey: 'tags' as const }
-])
 </script>
 
 <template>
@@ -23,26 +14,40 @@ const sections = computed(() => [
     :title="t('dashboard.overview.readerSignals')"
     class="h-full"
   >
-    <div class="space-y-5">
-      <div
-        v-for="section in sections"
-        :key="section.key"
-      >
-        <p class="mb-2 text-xs font-medium uppercase tracking-wide text-muted">
-          {{ section.title }}
-        </p>
-
-        <ul class="space-y-2">
-          <li
-            v-for="item in signals[section.itemsKey]"
-            :key="item.label"
-            class="flex items-center justify-between gap-2 text-sm"
-          >
-            <span class="truncate text-muted">{{ item.label }}</span>
-            <span class="shrink-0 font-medium text-highlighted">{{ item.value }}</span>
-          </li>
-        </ul>
-      </div>
+    <div v-if="loading" class="space-y-3">
+      <USkeleton v-for="index in 3" :key="index" class="h-14 w-full" />
     </div>
+
+    <p v-else-if="!signals.length" class="text-sm text-muted">
+      {{ t('dashboard.home.readerSignals.empty') }}
+    </p>
+
+    <ul v-else class="space-y-3">
+      <li
+        v-for="signal in signals"
+        :key="signal.label"
+        class="rounded-xl border border-default bg-muted/20 p-3"
+      >
+        <div class="flex items-start gap-3">
+          <div class="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <UIcon :name="signal.icon" class="size-4" />
+          </div>
+
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center justify-between gap-2">
+              <p class="text-sm font-medium text-highlighted">
+                {{ signal.label }}
+              </p>
+              <p class="text-lg font-semibold text-highlighted">
+                {{ signal.value }}
+              </p>
+            </div>
+            <p class="mt-1 text-xs text-muted">
+              {{ signal.helper }}
+            </p>
+          </div>
+        </div>
+      </li>
+    </ul>
   </DashboardSectionCard>
 </template>

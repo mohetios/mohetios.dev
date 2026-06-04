@@ -1,14 +1,5 @@
 <script setup lang="ts">
-import {
-  audienceData,
-  audienceSummary,
-  contentPulseItems,
-  dashboardMetrics,
-  inboxPreviewItems,
-  readerSignals,
-  recentActivityItems,
-  systemHealth
-} from '~/data/dashboard.mock'
+import type { DashboardSummaryCard } from '~/components/dashboard/DashboardMetricCard.vue'
 import { dashboardCardUi } from '~/utils/dashboard-ui'
 
 definePageMeta({
@@ -16,14 +7,78 @@ definePageMeta({
   middleware: ['auth']
 })
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
+const toast = useToast()
+
+const {
+  data: dashboardHome,
+  pending: isLoading,
+  error,
+  refresh
+} = await useDashboardHome()
 
 useMohetSeo({
-  title: () => t('dashboard.overview.title'),
-  description: () => t('dashboard.overview.description')
+  title: () => t('dashboard.home.title'),
+  description: () => t('dashboard.home.description')
 })
 
-const safeAudienceData = computed(() => audienceData.length ? audienceData : [{ label: '', value: 0 }])
+const summaryCards = computed<DashboardSummaryCard[]>(() => {
+  const summary = dashboardHome.value.summary
+
+  return [
+    {
+      key: 'inboxUnread',
+      label: t('dashboard.home.summary.inboxUnread'),
+      value: summary.inboxUnread,
+      icon: 'i-lucide-mail',
+      helper: t('dashboard.home.summary.inboxUnreadHelper'),
+      to: '/dashboard/inbox'
+    },
+    {
+      key: 'needsReply',
+      label: t('dashboard.home.summary.needsReply'),
+      value: summary.needsReply,
+      icon: 'i-lucide-reply',
+      helper: t('dashboard.home.summary.needsReplyHelper'),
+      to: '/dashboard/inbox'
+    },
+    {
+      key: 'leads',
+      label: t('dashboard.home.summary.leads'),
+      value: summary.leads,
+      icon: 'i-lucide-user-plus',
+      helper: t('dashboard.home.summary.leadsHelper'),
+      to: '/dashboard/leads'
+    },
+    {
+      key: 'pageViews',
+      label: t('dashboard.home.summary.pageViews'),
+      value: summary.pageViews,
+      icon: 'i-lucide-chart-line',
+      helper: t('dashboard.home.summary.pageViewsHelper'),
+      to: '/dashboard/analytics'
+    }
+  ]
+})
+
+const audienceChartData = computed(() =>
+  dashboardHome.value.audienceTrend.map((point) => ({
+    label: point.date.slice(5),
+    value: point.visitors
+  }))
+)
+
+const safeAudienceData = computed(() =>
+  audienceChartData.value.length ? audienceChartData.value : [{ label: '', value: 0 }]
+)
+
+const audienceTrendIsEmpty = computed(() =>
+  dashboardHome.value.audienceTrend.every((point) => point.visitors === 0 && point.pageViews === 0)
+)
+
+const totalVisitors = computed(() =>
+  dashboardHome.value.audienceTrend.reduce((sum, point) => sum + point.visitors, 0)
+)
 
 const maxAudienceValue = computed(() => {
   const max = Math.max(...safeAudienceData.value.map((item) => item.value))
@@ -50,13 +105,69 @@ const audienceAreaPoints = computed(() => {
   return `0,100 ${points} 100,100`
 })
 
-const activityIconClass: Record<string, string> = {
-  primary: 'text-primary',
-  success: 'text-emerald-600 dark:text-emerald-400',
-  warning: 'text-amber-600 dark:text-amber-400',
-  error: 'text-red-600 dark:text-red-400',
-  neutral: 'text-muted'
+const activityIconByType: Record<string, string> = {
+  inbox: 'i-lucide-mail',
+  notification: 'i-lucide-bell',
+  'new_inbound_email': 'i-lucide-mail',
+  'new_contact_message': 'i-lucide-inbox'
 }
+
+const activityIconClass: Record<string, string> = {
+  inbox: 'text-primary',
+  notification: 'text-muted',
+  'new_inbound_email': 'text-primary',
+  'new_contact_message': 'text-primary'
+}
+
+const timeFormatter = computed(
+  () =>
+    new Intl.DateTimeFormat(locale.value === 'fa' ? 'fa-IR' : 'en-US', {
+      dateStyle: 'medium',
+      timeStyle: 'short'
+    })
+)
+
+function formatActivityTime(timestamp: number) {
+  return timeFormatter.value.format(new Date(timestamp))
+}
+
+const isRefreshing = ref(false)
+
+async function refreshDashboard() {
+  isRefreshing.value = true
+
+  try {
+    await refresh()
+
+    toast.add({
+      color: 'success',
+      icon: 'i-lucide-refresh-cw',
+      title: t('dashboard.home.refreshSuccess')
+    })
+  } catch (currentError) {
+    toast.add({
+      color: 'error',
+      icon: 'i-lucide-circle-alert',
+      title:
+        currentError instanceof Error
+          ? currentError.message
+          : t('dashboard.home.refreshFailed')
+    })
+  } finally {
+    isRefreshing.value = false
+  }
+}
+
+watch(error, (currentError) => {
+  if (!currentError || import.meta.server) return
+
+  toast.add({
+    color: 'error',
+    icon: 'i-lucide-circle-alert',
+    title:
+      currentError instanceof Error ? currentError.message : t('dashboard.home.refreshFailed')
+  })
+})
 </script>
 
 <template>
@@ -64,14 +175,23 @@ const activityIconClass: Record<string, string> = {
     <section class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <h1 class="text-3xl font-semibold tracking-tight text-highlighted">
-          {{ t('dashboard.overview.title') }}
+          {{ t('dashboard.home.title') }}
         </h1>
         <p class="mt-1 text-sm text-muted">
-          {{ t('dashboard.overview.description') }}
+          {{ t('dashboard.home.description') }}
         </p>
       </div>
 
       <div class="flex items-center gap-2">
+        <UButton
+          color="neutral"
+          variant="outline"
+          icon="i-lucide-refresh-cw"
+          :loading="isRefreshing || isLoading"
+          @click="refreshDashboard"
+        >
+          {{ t('dashboard.home.refresh') }}
+        </UButton>
         <UButton
           color="neutral"
           variant="outline"
@@ -84,8 +204,14 @@ const activityIconClass: Record<string, string> = {
     </section>
 
     <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <template v-if="isLoading">
+        <UCard v-for="index in 4" :key="index" variant="outline" :ui="dashboardCardUi">
+          <USkeleton class="h-20 w-full" />
+        </UCard>
+      </template>
       <DashboardMetricCard
-        v-for="metric in dashboardMetrics"
+        v-for="metric in summaryCards"
+        v-else
         :key="metric.key"
         :metric="metric"
       />
@@ -105,19 +231,17 @@ const activityIconClass: Record<string, string> = {
               </h2>
               <div class="mt-3 flex items-center gap-2">
                 <p class="text-2xl font-semibold text-highlighted">
-                  {{ audienceSummary.value }}
+                  {{ totalVisitors }}
                 </p>
-                <span
-                  v-if="audienceSummary.trend"
-                  class="text-sm font-medium text-primary"
-                >
-                  <span v-if="audienceSummary.trendDirection === 'up'">↑</span>
-                  <span v-else-if="audienceSummary.trendDirection === 'down'">↓</span>
-                  {{ audienceSummary.trend }}
-                </span>
               </div>
               <p class="mt-1 text-sm text-muted">
-                {{ t(audienceSummary.helperKey) }}
+                {{ t('dashboard.overview.audienceHelper') }}
+              </p>
+              <p
+                v-if="audienceTrendIsEmpty"
+                class="mt-2 text-xs text-muted"
+              >
+                {{ t('dashboard.home.audience.pending') }}
               </p>
             </div>
 
@@ -126,13 +250,18 @@ const activityIconClass: Record<string, string> = {
               variant="outline"
               trailing-icon="i-lucide-chevron-down"
               class="shrink-0"
+              to="/dashboard/analytics"
             >
               {{ t('dashboard.overview.visitors') }}
             </UButton>
           </div>
         </template>
 
-        <div class="h-64 min-h-48">
+        <div v-if="isLoading" class="h-64 min-h-48">
+          <USkeleton class="h-full w-full" />
+        </div>
+
+        <div v-else class="h-64 min-h-48">
           <svg
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
@@ -174,13 +303,26 @@ const activityIconClass: Record<string, string> = {
         </div>
       </UCard>
 
-      <DashboardInboxPreviewCard class="xl:col-span-2" :items="inboxPreviewItems" />
+      <DashboardInboxPreviewCard
+        class="xl:col-span-2"
+        :items="dashboardHome.inboxPreview"
+        :loading="isLoading"
+      />
     </section>
 
     <section class="grid items-stretch gap-4 lg:grid-cols-2 xl:grid-cols-3">
-      <DashboardContentPulseCard :items="contentPulseItems" />
-      <DashboardReaderSignalsCard :signals="readerSignals" />
-      <DashboardSystemHealthCard :health="systemHealth" />
+      <DashboardContentPulseCard
+        :content-pulse="dashboardHome.contentPulse"
+        :loading="isLoading"
+      />
+      <DashboardReaderSignalsCard
+        :signals="dashboardHome.readerSignals"
+        :loading="isLoading"
+      />
+      <DashboardSystemHealthCard
+        :items="dashboardHome.systemHealth"
+        :loading="isLoading"
+      />
     </section>
 
     <section class="grid gap-4 lg:grid-cols-3">
@@ -195,29 +337,41 @@ const activityIconClass: Record<string, string> = {
           </h2>
         </template>
 
-        <div class="grid gap-4 md:grid-cols-2">
-          <div
-            v-for="item in recentActivityItems"
-            :key="item.id"
-            class="flex items-start gap-3"
+        <div v-if="isLoading" class="grid gap-4 md:grid-cols-2">
+          <USkeleton v-for="index in 4" :key="index" class="h-14 w-full" />
+        </div>
+
+        <p v-else-if="!dashboardHome.recentActivity.length" class="text-sm text-muted">
+          {{ t('dashboard.home.recentActivity.empty') }}
+        </p>
+
+        <div v-else class="grid gap-4 md:grid-cols-2">
+          <NuxtLink
+            v-for="activity in dashboardHome.recentActivity"
+            :key="activity.id"
+            :to="activity.href || '/dashboard'"
+            class="flex items-start gap-3 rounded-lg transition-colors hover:bg-muted/30"
           >
             <div class="flex size-9 items-center justify-center rounded-full bg-muted/60">
               <UIcon
-                :name="item.icon"
+                :name="activityIconByType[activity.type] || 'i-lucide-activity'"
                 class="size-5"
-                :class="activityIconClass[item.color] || activityIconClass.neutral"
+                :class="activityIconClass[activity.type] || 'text-muted'"
               />
             </div>
 
             <div class="min-w-0">
               <p class="text-sm font-medium text-highlighted">
-                {{ item.title }}
+                {{ activity.title }}
+              </p>
+              <p class="mt-0.5 line-clamp-2 text-xs text-muted">
+                {{ activity.description }}
               </p>
               <p class="mt-1 text-xs text-muted">
-                {{ item.time }}
+                {{ formatActivityTime(activity.createdAt) }}
               </p>
             </div>
-          </div>
+          </NuxtLink>
         </div>
       </UCard>
 
@@ -229,35 +383,31 @@ const activityIconClass: Record<string, string> = {
         }"
       >
         <template #header>
-          <div class="flex items-center justify-between">
-            <h2 class="text-base font-semibold text-highlighted">
-              {{ t('dashboard.overview.quickNote') }}
-            </h2>
-            <UButton
-              icon="i-lucide-pencil"
-              color="neutral"
-              variant="ghost"
-              size="xs"
-            />
-          </div>
+          <h2 class="text-base font-semibold text-highlighted">
+            {{ t('dashboard.home.quickLinks.title') }}
+          </h2>
         </template>
 
-        <div
-          class="min-h-24 rounded-xl border border-dashed border-muted px-3 py-3 text-sm text-muted"
-        >
-          {{ t('dashboard.overview.quickNotePlaceholder') }}
+        <div v-if="isLoading" class="space-y-3">
+          <USkeleton v-for="index in 4" :key="index" class="h-10 w-full" />
         </div>
 
-        <template #footer>
-          <UButton
-            color="neutral"
-            variant="ghost"
-            size="sm"
-            icon="i-lucide-plus"
-          >
-            {{ t('dashboard.overview.addQuickNote') }}
-          </UButton>
-        </template>
+        <ul v-else class="space-y-2">
+          <li v-for="link in dashboardHome.quickLinks" :key="link.key">
+            <UButton
+              :to="link.to"
+              :icon="link.icon"
+              color="neutral"
+              variant="ghost"
+              class="w-full justify-start"
+            >
+              <span class="min-w-0 text-start">
+                <span class="block text-sm font-medium">{{ link.label }}</span>
+                <span class="block text-xs text-muted">{{ link.description }}</span>
+              </span>
+            </UButton>
+          </li>
+        </ul>
       </UCard>
     </section>
   </div>

@@ -79,6 +79,53 @@
       "range30d": "۳۰ روز گذشته",
       "newPost": "نوشته جدید"
     },
+    "home": {
+      "title": "میز مدیریت",
+      "description": "نمای فشرده از صندوق ورودی، سرنخ‌ها، محتوا، مخاطب و سلامت سیستم.",
+      "refresh": "بازخوانی",
+      "refreshSuccess": "داشبورد به‌روزرسانی شد.",
+      "refreshFailed": "بازخوانی داشبورد ممکن نشد.",
+      "summary": {
+        "inboxUnread": "خوانده‌نشده",
+        "inboxUnreadHelper": "پیام‌هایی که هنوز بررسی نشده‌اند",
+        "needsReply": "نیاز به پاسخ",
+        "needsReplyHelper": "گفتگوهای باز در انتظار اقدام",
+        "leads": "سرنخ‌ها",
+        "leadsHelper": "پیام‌های همکاری یا کار احتمالی",
+        "pageViews": "بازدید صفحه",
+        "pageViewsHelper": "تحلیل خارجی بعداً متصل می‌شود"
+      },
+      "audience": {
+        "pending": "ارائه‌دهنده تحلیل هنوز متصل نشده است"
+      },
+      "inboxPreview": {
+        "empty": "هنوز پیامی در صندوق ورودی نیست.",
+        "sourceContactForm": "فرم تماس",
+        "sourceEmail": "ایمیل",
+        "needsReply": "نیاز به پاسخ",
+        "replied": "پاسخ داده شده",
+        "lead": "سرنخ"
+      },
+      "contentPulse": {
+        "published": "منتشر شده",
+        "drafts": "پیش‌نویس",
+        "empty": "آمار محتوا پس از اتصال نمایش داده می‌شود."
+      },
+      "readerSignals": {
+        "empty": "هنوز سیگنال خواننده‌ای نیست."
+      },
+      "systemHealth": {
+        "ok": "سالم",
+        "pending": "در انتظار",
+        "error": "مشکل"
+      },
+      "recentActivity": {
+        "empty": "فعالیت اخیری ثبت نشده است."
+      },
+      "quickLinks": {
+        "title": "میانبرها"
+      }
+    },
     "overview": {
       "title": "نمای کلی",
       "description": "مرکز فرمان ساده برای مخاطب، محتوا، صندوق ورودی و سیستم.",

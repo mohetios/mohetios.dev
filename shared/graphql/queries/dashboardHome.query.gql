@@ -1,0 +1,75 @@
+query DashboardHome {
+  dashboardHome {
+    summary {
+      inboxUnread
+      needsReply
+      leads
+      visits
+      pageViews
+      searchClicks
+      avgLoadMs
+    }
+
+    audienceTrend {
+      date
+      visitors
+      pageViews
+    }
+
+    inboxPreview {
+      id
+      source
+      status
+      kind
+      senderName
+      senderEmail
+      subject
+      preview
+      createdAt
+    }
+
+    contentPulse {
+      publishedCount
+      draftCount
+      latestItems {
+        id
+        title
+        slug
+        section
+        status
+        updatedAt
+      }
+    }
+
+    readerSignals {
+      label
+      value
+      helper
+      icon
+    }
+
+    systemHealth {
+      key
+      label
+      status
+      helper
+    }
+
+    recentActivity {
+      id
+      type
+      title
+      description
+      createdAt
+      href
+    }
+
+    quickLinks {
+      key
+      label
+      description
+      icon
+      to
+    }
+  }
+}

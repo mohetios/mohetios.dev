@@ -83,6 +83,53 @@
       "range30d": "Last 30 Days",
       "newPost": "New Post"
     },
+    "home": {
+      "title": "Owner Console",
+      "description": "A compact overview of inbox, leads, content, audience, and system health.",
+      "refresh": "Refresh",
+      "refreshSuccess": "Dashboard refreshed.",
+      "refreshFailed": "Dashboard could not be refreshed.",
+      "summary": {
+        "inboxUnread": "Unread",
+        "inboxUnreadHelper": "Messages not reviewed yet",
+        "needsReply": "Needs reply",
+        "needsReplyHelper": "Open conversations waiting for action",
+        "leads": "Leads",
+        "leadsHelper": "Potential work or collaboration messages",
+        "pageViews": "Page views",
+        "pageViewsHelper": "External analytics will be connected later"
+      },
+      "audience": {
+        "pending": "Analytics provider not connected yet"
+      },
+      "inboxPreview": {
+        "empty": "No inbox messages yet.",
+        "sourceContactForm": "Contact form",
+        "sourceEmail": "Email",
+        "needsReply": "Needs reply",
+        "replied": "Replied",
+        "lead": "Lead"
+      },
+      "contentPulse": {
+        "published": "Published",
+        "drafts": "Drafts",
+        "empty": "Content metrics will appear when connected."
+      },
+      "readerSignals": {
+        "empty": "No reader signals yet."
+      },
+      "systemHealth": {
+        "ok": "OK",
+        "pending": "Pending",
+        "error": "Issue"
+      },
+      "recentActivity": {
+        "empty": "No recent activity yet."
+      },
+      "quickLinks": {
+        "title": "Quick links"
+      }
+    },
     "overview": {
       "title": "Overview",
       "description": "A simple command center for your audience, content, inbox, and system.",

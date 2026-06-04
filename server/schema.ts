@@ -6,6 +6,7 @@ export const typeDefs = /* GraphQL */ `
     inboxMessage(id: ID!): InboxMessage
     adminNotifications: [AdminNotification!]!
     pushSubscriptions: [PushSubscription!]!
+    dashboardHome: DashboardHome!
   }
 
   type Mutation {
@@ -181,6 +182,91 @@ export const typeDefs = /* GraphQL */ `
   input ReplyToInboxMessageInput {
     inboxMessageId: ID!
     bodyText: String!
+  }
+
+  type DashboardSummary {
+    inboxUnread: Int!
+    needsReply: Int!
+    leads: Int!
+    visits: Int!
+    pageViews: Int!
+    searchClicks: Int!
+    avgLoadMs: Int!
+  }
+
+  type DashboardAudiencePoint {
+    date: String!
+    visitors: Int!
+    pageViews: Int!
+  }
+
+  type DashboardInboxPreviewItem {
+    id: ID!
+    source: String!
+    status: String!
+    kind: String!
+    senderName: String!
+    senderEmail: String!
+    subject: String!
+    preview: String!
+    createdAt: Float!
+  }
+
+  type DashboardContentItem {
+    id: ID!
+    title: String!
+    slug: String!
+    section: String!
+    status: String!
+    updatedAt: Float!
+  }
+
+  type DashboardContentPulse {
+    publishedCount: Int!
+    draftCount: Int!
+    latestItems: [DashboardContentItem!]!
+  }
+
+  type DashboardReaderSignal {
+    label: String!
+    value: String!
+    helper: String!
+    icon: String!
+  }
+
+  type DashboardSystemHealthItem {
+    key: String!
+    label: String!
+    status: String!
+    helper: String!
+  }
+
+  type DashboardActivityItem {
+    id: ID!
+    type: String!
+    title: String!
+    description: String!
+    createdAt: Float!
+    href: String
+  }
+
+  type DashboardQuickLink {
+    key: String!
+    label: String!
+    description: String!
+    icon: String!
+    to: String!
+  }
+
+  type DashboardHome {
+    summary: DashboardSummary!
+    audienceTrend: [DashboardAudiencePoint!]!
+    inboxPreview: [DashboardInboxPreviewItem!]!
+    contentPulse: DashboardContentPulse!
+    readerSignals: [DashboardReaderSignal!]!
+    systemHealth: [DashboardSystemHealthItem!]!
+    recentActivity: [DashboardActivityItem!]!
+    quickLinks: [DashboardQuickLink!]!
   }
 `
 
