@@ -1,39 +1,59 @@
 # AGENTS.md
 
-## Working Agreement
+## Prime Directive
 
-- Make small, focused changes.
-- Inspect existing patterns before editing.
-- Prefer simple code over architecture ceremony.
-- Preserve user work. Do not remove unrelated files.
-- Use `rg` / `rg --files` for search.
-- Do not run long-running commands unless explicitly requested.
-- Do not run deploy commands unless explicitly requested.
-- Do not introduce new frameworks or large abstractions without a clear need.
-- Keep the project enjoyable to modify.
+Mohetios.dev runs on Cloudflare/Nitro. Server code must be small, edge-safe, low-CPU, and predictable.
 
-## Default Checks
+When changing backend, GraphQL, auth, inbox, queues, D1, or workers code, optimize for:
 
-Use targeted checks when practical:
+- low CPU per request
+- few D1/KV/R2/HTTP subrequests
+- small memory footprint
+- simple control flow
+- explicit permissions and validation
+- minimal files changed
+- no accidental architecture growth
 
-- `pnpm lint`
-- `pnpm typecheck`
-- focused file inspection
+Do not generate heavy abstractions, repository layers, generic service frameworks, or framework-inside-framework patterns.
 
-Do not run these unless the user asks or the change requires them:
+## Agent Operating Mode
 
-- `pnpm dev`
-- `pnpm build`
-- deployment commands
-- destructive database commands
+Before editing:
 
-If a command is expensive, risky, or environment-dependent, explain the reason before running it.
+1. Inspect existing files and local patterns with `rg` / `rg --files`.
+2. Identify the smallest safe change set.
+3. Prefer editing existing files over creating new ones.
+4. Preserve user work and unrelated files.
+5. Do not invent APIs, aliases, folder paths, env names, generated functions, or GraphQL operations. Inspect first.
 
-## Project Identity
+While editing:
+
+- Make focused changes.
+- Keep server paths hot and lean.
+- Avoid broad rewrites unless explicitly requested.
+- Do not add dependencies without approval.
+- Do not run deploy, migration, destructive DB, long-running dev, or build commands unless explicitly requested.
+
+After editing, report:
+
+- files changed
+- files created
+- commands run
+- checks passed/failed
+- assumptions
+- follow-up needed
+
+Keep reports short and practical.
+
+## Current Project Identity
 
 Mohetios.dev is a personal engineering notebook, portfolio, lab, and lightweight freelance operations surface.
 
-The site should feel:
+Brand line:
+
+> Mohetios.dev — Where ideas unfold into systems.
+
+The product should feel:
 
 - minimal
 - editorial
@@ -44,10 +64,6 @@ The site should feel:
 - not over-designed
 - not over-architected
 
-Brand line:
-
-> Mohetios.dev — Where ideas unfold into systems.
-
 ## Current Stack
 
 - Nuxt 4
@@ -55,43 +71,37 @@ Brand line:
 - Tailwind CSS
 - Velite for typed/build-time content
 - Cloudflare Pages / Nitro
+- Cloudflare Workers for separate background/email workers
 - Cloudflare D1
+- Cloudflare Queues
 - Drizzle ORM
-- GraphQL Yoga
-- nuxt-graphql-client
-- JWT-based basic dashboard auth
-- `@nuxtjs/i18n` (English + Persian, RTL)
+- GraphQL Yoga at `/graph`
+- `nuxt-graphql-client`
+- JWT dashboard auth
+- `@nuxtjs/i18n` with English + Persian / RTL
 - PWA via `@vite-pwa/nuxt`
 
-Important: do not use Nuxt Content APIs. Nuxt Content has been removed from this project. Do not use `queryCollection`, `ContentRenderer`, or Nuxt Content composables.
+Important: Nuxt Content has been removed. Do not use Nuxt Content APIs such as `queryCollection`, `ContentRenderer`, or Nuxt Content composables.
 
 ## Main Folder Model
 
-Use the Nuxt 4 structure:
+Use the compact Nuxt 4 structure:
 
 ```txt
-app/      -> frontend Vue app
-server/   -> Nitro backend / GraphQL / D1 / auth
-shared/   -> pure contracts shared by app and server
-content/  -> Velite content source
-/  -> Drizzle migrations
-public/   -> static assets
+app/       -> Vue app, pages, layouts, components, composables, middleware
+server/    -> Nitro backend, GraphQL, D1, auth, compact domain services
+shared/    -> pure contracts shared by app and server
+content/   -> Velite markdown source
+workers/   -> separate Cloudflare workers such as email/system workers
+migrations/ -> Drizzle/D1 migrations
+public/    -> static assets
 ```
+
+Do not create alternative roots unless the project already uses them.
 
 ## App Folder Rules
 
 Application UI lives in `app/`.
-
-Expected shape:
-
-```txt
-app/
-├── components/
-├── composables/
-├── layouts/
-├── middleware/
-└── pages/
-```
 
 Use `app/` for:
 
@@ -104,13 +114,19 @@ Use `app/` for:
 - content UI
 - Nuxt UI components
 
-Do not put server-only logic in `app/`.
+Never put server-only logic in `app/`:
 
-No D1 access, Drizzle client, JWT secret handling, password hashing, Cloudflare bindings, or GraphQL resolver logic should live in `app/`.
+- no D1 access
+- no Drizzle client
+- no JWT secret handling
+- no password hashing
+- no Cloudflare binding access
+- no GraphQL resolver logic
+- no queue producer/consumer implementation except calling existing GraphQL/API surfaces
 
 ## Server Folder Rules
 
-The server is GraphQL-first and intentionally compact.
+The backend is GraphQL-first and intentionally compact.
 
 Expected shape:
 
@@ -119,49 +135,29 @@ server/
 ├── routes/
 │   └── graph.ts
 ├── api/
-│   └── push/
 ├── schema.ts
 ├── queries/
-│   ├── index.ts
-│   ├── me.ts
-│   ├── inbox.ts
-│   └── profile.ts
 ├── mutations/
-│   ├── index.ts
-│   ├── login.ts
-│   ├── register.ts
-│   ├── logout.ts
-│   ├── inbox.ts
-│   └── profile.ts
 ├── services/
-│   ├── inbox/
-│   ├── email/
-│   ├── push/
-│   └── notifications/
 ├── models/
 │   ├── schema.ts
 │   └── client.ts
 └── utils/
-    ├── auth.ts
-    ├── crypto.ts
-    ├── env.ts
-    ├── id.ts
-    └── push-auth.ts
 ```
 
 Use:
 
-- `server/routes/graph.ts` for the `/graph` endpoint and GraphQL Yoga setup.
+- `server/routes/graph.ts` for `/graph` and GraphQL Yoga setup.
 - `server/schema.ts` for GraphQL SDL.
-- `server/queries/*.ts` for Query resolvers (and optional field resolvers).
+- `server/queries/*.ts` for Query resolvers.
 - `server/mutations/*.ts` for Mutation resolvers.
 - `server/models/schema.ts` for Drizzle table definitions.
 - `server/models/client.ts` for D1/Drizzle client creation.
 - `server/utils/*.ts` for compact server helpers.
-- `server/services/{domain}/*.ts` for extracted domain logic (see Resolver Style).
-- `server/api/**/*.ts` for non-GraphQL REST endpoints when the browser or a worker needs a plain HTTP route.
+- `server/services/{domain}/*.ts` only when resolver logic is reused, complex, or business-critical.
+- `server/api/**/*.ts` only when a plain HTTP endpoint is genuinely needed.
 
-Do not create these unless explicitly needed:
+Do not create by default:
 
 ```txt
 server/api/graphql.post.ts
@@ -171,173 +167,40 @@ server/typeDefs/
 server/repositories/
 server/actions/
 server/guards/
-server/crypto/
 server/cloudflare/
 ```
 
-Do not create `*.repository.ts` files or generic service layers.
+No repository layer. No generic CRUD wrappers. Keep the backend flat.
 
-Keep the backend flat.
-
-## GraphQL Route
+## GraphQL Rules
 
 Use `/graph`, not `/api/graphql`.
 
-The single route file is:
+Feature path:
 
 ```txt
-server/routes/graph.ts
+1. Update server/schema.ts
+2. Add or update server/queries/{feature}.ts or server/mutations/{feature}.ts
+3. Register resolver in server/queries/index.ts or server/mutations/index.ts
+4. Add operation in shared/graphql/queries or shared/graphql/mutations
+5. Use generated Gql*() functions in app code when practical
 ```
 
-This file may contain:
+Resolver style:
 
-- GraphQL Yoga creation
-- schema creation
-- context creation
-- GET/POST method handling
-- production GraphiQL blocking
-- resolver connection
+- Resolver files may directly use Drizzle tables.
+- Keep resolvers simple and direct.
+- Extract to `server/services/{domain}` only when logic repeats 3+ times, exceeds roughly 250–300 lines, or needs focused testing.
+- Avoid N+1 resolver patterns.
+- Select only columns needed by the UI/API.
+- Add pagination or explicit limits to list queries.
+- Keep GraphQL payloads small and shaped for the current screen.
 
-Do not split GraphQL setup into `gql.ts`, `context.ts`, `schema.ts`, and `resolvers.ts` unless the file becomes genuinely hard to maintain.
+Do not split schema/resolver infrastructure into many tiny framework files unless maintenance has clearly become painful.
 
-## GraphQL Schema
+## GraphQL Client Rules
 
-Use one schema file:
-
-```txt
-server/schema.ts
-```
-
-Keep all GraphQL SDL there.
-
-Only split the schema later if:
-
-- it exceeds roughly 300–400 lines
-- merge conflicts become common
-- feature domains become hard to scan
-
-For now, one schema file is preferred.
-
-## Resolver Style
-
-Resolvers should be simple and direct.
-
-Default pattern:
-
-```txt
-resolver file = resolver + DB logic
-```
-
-For example:
-
-```txt
-server/queries/inbox.ts
-server/mutations/inbox.ts
-```
-
-These files may directly import Drizzle tables from:
-
-```txt
-server/models/schema.ts
-```
-
-When logic grows, extract to `server/services/{domain}/*.ts`:
-
-```txt
-server/mutations/inbox.ts          -> thin orchestration + validation
-server/services/inbox/create-inbox-message.ts
-server/services/inbox/reply-to-message.ts
-server/services/inbox/mark-message-status.ts
-```
-
-Services take `db` (and typed inputs) and return results. They are **not** repositories — no `*.repository.ts`, no generic CRUD wrappers.
-
-Extract to a service when:
-
-- the resolver file exceeds roughly 250–300 lines
-- the same DB logic is repeated 3+ times
-- testing becomes hard
-- the feature becomes business-critical
-
-Do not extract prematurely for simple one-off queries.
-
-## REST Routes
-
-GraphQL is the primary API. Use `server/api/` only when a plain HTTP route is genuinely needed.
-
-Current example:
-
-```txt
-server/api/push/public-key.get.ts
-server/api/push/subscribe.post.ts
-server/api/push/unsubscribe.post.ts
-server/api/push/test.post.ts
-```
-
-Do not add REST routes for features that belong on `/graph`.
-
-## Models
-
-Use `server/models/` only for database foundation:
-
-```txt
-server/models/
-├── schema.ts
-└── client.ts
-```
-
-`schema.ts` contains Drizzle table definitions.
-
-`client.ts` creates the D1/Drizzle client from Cloudflare/Nitro runtime bindings.
-
-Do not create `users.repository.ts`, `inbox.repository.ts`, or similar files by default.
-
-## Shared Folder Rules
-
-Use `shared/` only for pure contracts used by both app and server.
-
-Expected shape:
-
-```txt
-shared/
-├── graphql/
-│   ├── fragments/
-│   ├── queries/
-│   └── mutations/
-├── contracts/
-├── types/
-├── constants/
-└── schemas/
-```
-
-Allowed in `shared/`:
-
-- `.gql` / `.graphql` operation documents
-- pure domain contracts in `shared/contracts/` (e.g. inbox, email, push, notifications)
-- pure TypeScript types
-- pure constants
-- pure validation schemas
-- pure formatting or normalization helpers
-
-Forbidden in `shared/`:
-
-- Vue imports
-- Nuxt composables
-- Nitro / H3 imports
-- Drizzle client
-- D1 bindings
-- JWT secret logic
-- password hashing
-- Cloudflare runtime access
-- server resolver code
-
-## GraphQL Client Generation
-
-Use `nuxt-graphql-client`.
-
-GraphQL operations must live in `.gql` / `.graphql` files.
-
-Preferred location:
+GraphQL operations live in `.gql` / `.graphql` files under:
 
 ```txt
 shared/graphql/
@@ -346,14 +209,7 @@ shared/graphql/
 └── mutations/
 ```
 
-Configuration lives in `nuxt.config.ts`:
-
-```txt
-public.graphql-client.clients.default.host = '/graph'
-public.graphql-client.documentPaths = ['../shared/graphql']
-```
-
-Generated functions should be used in new app code:
+Prefer generated functions:
 
 ```ts
 const result = await GqlMe()
@@ -363,119 +219,273 @@ const result = await GqlRegister({ input })
 
 Use `useGqlToken(token)` after login/register and when restoring an auth session.
 
-Prefer generated `Gql*()` functions over manual `$fetch('/graph')` calls.
+Avoid new manual `$fetch('/graph')` wrappers unless modifying an existing file that already uses that local pattern. For substantial new UI, add shared GraphQL documents and use generated `Gql*()` functions.
 
-Some existing code (`useAuth`, parts of the dashboard inbox UI) still uses inline `$fetch('/graph')` with hand-written documents. When extending those files, match the local pattern; when adding substantial new UI, use generated `Gql*()` and migrate nearby code if practical.
+## Cloudflare Worker Performance Rules
 
-## Auth Pattern
+Treat every server request as an edge hot path.
 
-Auth is basic and dashboard-focused.
+Prefer:
 
-Current scope:
+- fewer imports in server entry paths
+- simple functions over classes
+- direct validation and direct DB access
+- bounded loops
+- SQL filtering/aggregation instead of JavaScript post-processing
+- pagination over full-table reads
+- streaming or small payloads over buffering
+- immutable module-level constants only
+- async I/O over CPU-heavy transformations
+
+Avoid:
+
+- CPU-heavy loops in request handlers
+- unbounded JSON parsing or serialization
+- loading large datasets then filtering in JavaScript
+- full-text fuzzy search in Worker code
+- recursive tree walking in request paths
+- large regex over untrusted input
+- `JSON.parse(JSON.stringify(...))` cloning
+- module-level mutable request state
+- Node-only libraries when a Web API or small helper is enough
+- large server dependencies for trivial utilities
+- expensive markdown/content processing at request time when Velite/build-time data can be used
+
+When a task is not required for the response:
+
+- use the existing queue/system-worker pattern for durable background work
+- use `waitUntil` only where the current runtime utility already supports it
+- use Queues for email delivery, notifications, indexing, and slow side effects
+- use Workflows only for genuinely long multi-step jobs
+- use Durable Objects only for stateful coordination, realtime, WebSockets, or strong per-entity serialization
+
+Never hide required work in an untracked floating promise.
+
+## Request Scope and Global State
+
+Cloudflare isolates can be reused across requests.
+
+Allowed at module scope:
+
+- constants
+- pure config maps
+- compiled regex constants with safe patterns
+- immutable helper data
+- lazy immutable caches that do not contain user/request data
+
+Forbidden at module scope:
+
+- current user
+- request object
+- auth token
+- per-request DB result
+- locale from current request
+- mutable arrays/maps storing request data
+- any request-scoped state that can leak between users
+
+Pass request state through function arguments, resolver context, or local variables.
+
+## Promise Rules
+
+Every promise must be one of:
+
+- `await`ed
+- `return`ed
+- intentionally passed to an approved `waitUntil`/queue mechanism
+
+No floating promises.
+
+Use `await` when the response depends on the result. Use queue/waitUntil only for side effects that can safely complete after the response.
+
+## D1 / Drizzle Rules
+
+D1 is the source of truth for relational app data.
+
+Prefer:
+
+- Drizzle queries that select only required columns
+- `where`, `limit`, `offset`/cursor pagination, and `orderBy` in SQL
+- SQL aggregates for counts and dashboard summaries
+- indexed filter/sort columns
+- single-purpose queries over generic data loaders
+- D1 `batch()` or project-approved transaction patterns for atomic multi-step direct-D1 work
+
+Avoid:
+
+- loading all rows then filtering in JS
+- list queries without limits
+- N+1 query loops
+- broad `select *` for dashboard cards
+- per-row follow-up queries when a join or batched query is possible
+- schema changes without migration notes
+- assuming classic SQLite transaction behavior without checking current D1/Drizzle support
+
+If changing schema, report:
+
+- table changes
+- indexes added/removed
+- migration file created
+- command needed to apply migration
+- data risk
+
+Do not run migration/push/studio commands unless explicitly requested.
+
+## KV / Cache Rules
+
+D1 remains the source of truth. KV is only for read-optimized, eventually consistent snapshots or cache.
+
+Use KV for:
+
+- public read-heavy snapshots
+- dashboard summary cache when exact real-time data is not required
+- lightweight computed counters
+- external integration response cache
+- content metadata cache if build-time data is not enough
+
+Do not use KV for:
+
+- auth/session truth
+- permissions
+- inbox message truth
+- financial/client records
+- data that requires immediate consistency
+
+Cache keys must be explicit and versioned, for example:
+
+```txt
+dashboard:home:v1:{ownerId}:{locale}
+content:index:v1:{locale}
+public:stats:v1
+```
+
+Every cached value needs:
+
+- source of truth
+- TTL or invalidation strategy
+- safe fallback when cache misses or stale data appears
+
+## Runtime Env Rules
+
+For deployed Nitro/Cloudflare server code:
+
+- read Cloudflare bindings from the request/event runtime using the existing project utility pattern
+- read app secrets/config with `useRuntimeConfig(event)` where the project does that
+- do not rely on plain `process.env` in deployed server runtime code
+- do not hand-write Cloudflare binding types when generated types exist
+- never expose secrets in public runtime config
+
+Separate Workers do not automatically inherit Cloudflare Pages vars/secrets. Configure worker-specific env/secrets where needed.
+
+## Auth and Security Rules
+
+Auth is dashboard-focused:
 
 - username + password
-- no email requirement
-- password hashing
 - JWT token
-- role-based permissions
+- roles: `OWNER`, `MEMBER`, `GUEST`
 - first registered user becomes `OWNER`
-- later users become `MEMBER`
-- later registration may be restricted via env (see `server/mutations/register.ts`)
-- protected routes use auth middleware
+- later users become `MEMBER` if public registration is allowed
+- permissions live in `shared/constants/permissions.ts`
 
-Roles and permissions live in `shared/constants/permissions.ts`:
+Server-side checks are required for protected data and mutations. Client-side checks are only UI affordances.
 
-- `OWNER` — full dashboard access
-- `MEMBER` — member area + limited permissions
-- `GUEST` — unauthenticated
+Never:
 
-Check permissions server-side with `requirePermission(context, 'permission:name')` and client-side with `auth.can('permission:name')`.
+- log passwords
+- log JWTs
+- leak password hashes or salts
+- return secrets to GraphQL clients
+- trust role/permission data sent from the browser
+- expose raw internal errors for login/auth failures
 
-Use:
+Use existing auth helpers such as `requirePermission(context, 'permission:name')` when present.
 
-```txt
-app/composables/useAuth.ts
-app/middleware/auth.ts
-app/pages/login.vue
-app/pages/register.vue
-app/pages/reset-password.vue
-app/pages/member/profile.vue
-```
+Password hashing must stay Cloudflare-compatible. Do not increase PBKDF2 iterations beyond the known Worker-safe project limit without testing in the target runtime.
 
-Server-side auth belongs in:
+Use Web Crypto APIs or existing crypto helpers for secure random IDs/tokens. Never use `Math.random()` for security-sensitive values.
 
-```txt
-server/mutations/login.ts
-server/mutations/register.ts
-server/mutations/logout.ts
-server/queries/me.ts
-server/utils/auth.ts
-server/utils/crypto.ts
-```
+## Validation and Input Rules
 
-Route behavior:
+Validate at the boundary:
 
-- `OWNER` users land on `/dashboard` after login
-- `MEMBER` users land on `/member/profile`
-- dashboard routes use `layout: 'dashboard'`, `middleware: ['auth']`, and optional `requiredPermission` in page meta
+- GraphQL mutation input
+- REST endpoint body
+- query params
+- route params
+- public contact form input
+- email/webhook payloads
 
-Do not leak password hashes, salts, or tokens.
+Prefer small explicit validators or existing schemas. Do not create a new validation framework.
 
-Do not log passwords or JWT tokens.
+All list inputs need bounds:
 
-Login errors should be generic.
+- page size max
+- string length max
+- array length max
+- allowed enum values
+- safe date range if applicable
 
-## Dashboard Pattern
+Return practical user-safe errors. Keep detailed internal errors out of public responses.
 
-Dashboard UI lives under:
+## Inbox / Contact / Email System Rules
 
-```txt
-app/pages/dashboard/
-app/components/dashboard/
-app/layouts/dashboard.vue
-```
+Current architecture:
 
-Dashboard pages should use the dashboard layout and auth middleware.
+- Website contact form writes to D1 through Nuxt/Yoga GraphQL.
+- Incoming email is parsed by `workers/email` and written to D1.
+- Dashboard inbox reads messages from D1.
+- Replies are queued from Nuxt/Yoga; Nuxt does not send email directly.
+- `workers/system` consumes queues for email delivery and admin notifications.
+- PWA/Web Push notifications are handled through the system worker path.
 
-Expected dashboard pages:
+Do not bypass this flow by adding direct SMTP/email sending inside Nuxt server resolvers.
 
-```txt
-app/pages/dashboard/
-├── index.vue
-├── inbox.vue
-├── inbox/
-│   └── [id].vue
-├── leads.vue
-├── comments.vue
-├── forms.vue
-└── analytics.vue
-```
+Inbox UI should behave like a unified thread workspace:
 
-Use Nuxt UI dashboard primitives where useful.
+- left thread/message list
+- right detail/timeline workspace
+- inbound message events
+- outbound reply events when backed by data
+- private note / AI draft can stay UI-local until backend supports them
 
-Keep the dashboard small:
+## Dashboard Rules
+
+Dashboard is an Owner Console, not a heavy admin panel.
+
+Current target sidebar:
 
 - Overview
-- Leads
 - Inbox
-- Comments
-- Forms
+- Leads
+- Content
 - Analytics
-
-Do not add:
-
-- Automations
 - System
 - Settings
-- CMS/admin content manager
 
-Dashboard content management is not needed because content is Jamstack/Velite-based.
+Comments and Forms are not MVP sidebar items unless explicitly reopened.
 
-## Content
+Dashboard rules:
+
+- pages use dashboard layout and auth middleware
+- dashboard data should come from GraphQL when implemented
+- mock data is acceptable only for UI-first pages not yet connected
+- do not add WebSockets, GraphQL subscriptions, Durable Objects, CRM/Kanban, or realtime unless explicitly requested
+- keep UI minimal, readable, and Nuxt UI-compatible
+- keep visible UI text localizable where practical
+
+For dashboard summary APIs:
+
+- prefer one compact GraphQL query for the page
+- compute counts and small trends with SQL aggregates
+- avoid fetching entire inbox/leads/content tables for cards
+- add limits to preview lists
+- consider KV snapshot cache only after the D1-backed GraphQL flow works
+
+## Content Rules
 
 Content is managed by Velite, not Nuxt Content.
 
-Source markdown lives under locale folders:
+Markdown source lives under locale folders:
 
 ```txt
 content/
@@ -493,146 +503,113 @@ content/
     └── contact.md
 ```
 
-Build output is written to `.velite/*.json` and consumed in the app via `app/utils/content.ts`.
-
 Inspect `velite.config.ts` before changing content schemas or collection patterns.
 
-Do not use Nuxt Content APIs.
+Do not do expensive markdown parsing at request time if Velite/build-time output can serve the page.
 
-## Internationalization
+## Internationalization Rules
 
-If the project uses `@nuxtjs/i18n`, preserve the existing locale strategy.
+Preserve existing locale strategy.
 
-General rules:
-
-- Keep visible UI labels localized if the existing screen is localized.
+- Keep visible UI labels localized when the surrounding page is localized.
 - Preserve Persian RTL support.
 - Use logical CSS properties where practical.
-- Do not hardcode English text inside reusable components if existing patterns use locale files.
+- Do not hardcode English text in reusable components if the project uses locale keys nearby.
+- Follow existing locale file structure instead of inventing a new i18n system.
 
-If the current page is not localized yet, follow nearby project patterns rather than inventing a new i18n structure.
-
-## Styling
+## Styling Rules
 
 Use Nuxt UI and Tailwind CSS.
 
-Visual direction:
+Prefer:
 
-- calm
-- minimal
-- editorial
-- technical
+- calm spacing
+- minimal cards
+- subtle borders
+- readable typography
+- restrained icons
 - warm light theme
 - green primary accent
-- clean spacing
-- subtle borders
-- no generic SaaS clutter
+- editorial/technical feel
 
 Avoid:
 
 - heavy enterprise dashboard UI
-- unnecessary gradients
 - noisy charts
+- unnecessary gradients
 - too many badges
 - overusing icons
 - complex layout abstractions
+- generic SaaS hero sections
 
-## Feature Development Path
+## Shared Folder Rules
 
-For a query feature:
+Use `shared/` only for pure contracts used by app and server.
 
-```txt
-1. Add GraphQL fields/types to server/schema.ts
-2. Add resolver file in server/queries/{feature}.ts
-3. Register it in server/queries/index.ts
-4. Add shared GraphQL document in shared/graphql/queries/{feature}.query.gql
-5. Use generated Gql{Feature}() function in app page/component
-```
+Allowed:
 
-For a mutation feature:
+- GraphQL operation documents
+- pure TypeScript types
+- pure constants
+- pure validation schemas
+- pure contracts
+- pure formatting/normalization helpers without Nuxt/Vue/server imports
 
-```txt
-1. Add mutation/type changes to server/schema.ts
-2. Add resolver file in server/mutations/{feature}.ts
-3. Register it in server/mutations/index.ts
-4. Add shared GraphQL document in shared/graphql/mutations/{feature}.mutation.gql
-5. Use generated Gql{Feature}() function in app page/component
-```
+Forbidden:
 
-If persistence is needed:
+- Vue imports
+- Nuxt composables
+- Nitro/H3 imports
+- Drizzle client
+- D1 bindings
+- JWT secret logic
+- password hashing
+- Cloudflare runtime access
+- server resolver code
 
-```txt
-1. Add table to server/models/schema.ts
-2. Generate Drizzle migration
-3. Use the table directly inside the resolver file (or a service if logic is reused/complex)
-```
+## TypeScript Rules
 
-Do not add repository layers. Add a service only when the resolver has clearly outgrown the compact pattern.
+Prefer strict, boring TypeScript.
 
-## Example Feature Touch Points
+- Use explicit input/output types on server helpers.
+- Avoid `any`; use `unknown` then narrow.
+- Keep DTO mapping small and local.
+- Avoid clever conditional type machinery unless it already exists.
+- Do not introduce global type hacks.
+- Keep generated GraphQL types as source for client operation results where practical.
 
-For an inbox feature, touch only what is needed:
+## Dependencies Rules
 
-```txt
-server/schema.ts
-server/models/schema.ts
-server/queries/inbox.ts
-server/mutations/inbox.ts
-server/services/inbox/create-inbox-message.ts
-server/services/inbox/reply-to-message.ts
-server/services/inbox/mark-message-status.ts
-server/queries/index.ts
-server/mutations/index.ts
-shared/contracts/inbox.ts
-shared/graphql/queries/inbox.query.gql
-shared/graphql/queries/inboxMessage.query.gql
-shared/graphql/mutations/createContactMessage.mutation.gql
-shared/graphql/mutations/replyToInboxMessage.mutation.gql
-shared/graphql/mutations/updateInboxMessageStatus.mutation.gql
-app/pages/dashboard/inbox.vue
-app/pages/dashboard/inbox/[id].vue
-app/components/dashboard/
-```
+Do not add production dependencies unless explicitly approved.
 
-Avoid creating extra layers or files not tied to the feature.
+Before proposing a dependency, check:
 
-## Database
+- Can this be done with Web APIs?
+- Can this be done with a 10-line helper?
+- Is the library Worker-compatible?
+- Does it pull Node-only transitive dependencies?
+- Does it increase server bundle size for a hot route?
+- Is it needed at runtime, or only at build time?
 
-Use Drizzle ORM with Cloudflare D1.
-
-Drizzle config should point to:
-
-```txt
-server/models/schema.ts
-```
-
-Migrations live in:
-
-```txt
-/migrations/
-```
-
-Do not run database push/migration commands unless the user asks or the task clearly requires it.
-
-If changing database schema, report:
-
-- table changes
-- migration file created
-- command needed to apply migration
-- any data risk
+Prefer small native/Web API solutions for server hot paths.
 
 ## Commands
 
-Preferred inspection commands:
+Preferred inspection:
 
 ```bash
 rg "pattern"
 rg --files
+```
+
+Targeted checks when useful:
+
+```bash
 pnpm lint
 pnpm typecheck
 ```
 
-Only run when appropriate:
+Only run when explicitly requested or clearly required:
 
 ```bash
 pnpm build
@@ -640,55 +617,74 @@ pnpm dev
 pnpm db:generate
 pnpm db:push
 pnpm db:studio
+wrangler deploy
+wrangler pages deploy
 ```
 
-Never run deployment commands unless explicitly requested.
+Never run destructive database commands or deployment commands without explicit confirmation.
 
 ## Git Safety
 
-Before editing, inspect relevant files.
+- Inspect before editing.
+- Preserve unrelated changes.
+- Do not remove files unless directly required.
+- Do not rewrite large files for style-only reasons.
+- If unexpected workspace changes exist, do not overwrite them.
+- If not in a git repository, make smaller edits and report that safety is reduced.
 
-Do not remove unrelated files.
+## Cursor / Codex Behavior Rules
 
-Do not rewrite large areas unless the task requires it.
+This file is the project source of truth for coding-agent behavior.
 
-If there are unexpected changes in the workspace, preserve them.
+For Codex:
 
-If the workspace is not a git repository, be extra careful and make minimal edits.
+- keep this file near the repository root
+- avoid bloating it beyond useful project-specific instructions
+- use nested `AGENTS.md` or `AGENTS.override.md` only for genuinely different subtrees such as separate workers
 
-## Implementation Style
+For Cursor:
 
-Prefer:
+- prefer this root `AGENTS.md` as shared guidance
+- if Cursor rules are added, make them short bridges to this file or narrow path-scoped rules
+- do not duplicate the full project guide across many `.mdc` files
 
-- direct code
-- clear naming
-- small files
-- local logic
-- generated GraphQL functions
-- Nuxt UI components
-- simple Drizzle queries in resolvers
-- thin services when resolver logic is reused or complex
+When working as an agent:
 
-Avoid:
+- follow project patterns over generic framework advice
+- do not create files just because a template suggests them
+- do not add docs unless requested
+- do not add tests unless the project already has a clear test pattern or the task asks for them
+- do not “improve” unrelated code
+- do not replace working compact code with enterprise architecture
 
-- abstractions too early
-- extra folders
-- duplicate state systems
-- manual GraphQL request wrappers in new code when generated functions exist
-- repository layers or generic service frameworks
-- hidden magic
-- large “framework inside framework” patterns
+## Server Code Review Checklist
 
-## Completion Report
+Before finalizing a server/backend change, verify:
 
-After code edits, report:
+- Does this run on Cloudflare/Nitro without Node-only runtime assumptions?
+- Are env and bindings read through the existing project pattern?
+- Are all promises awaited, returned, queued, or passed to approved waitUntil?
+- Is request-scoped state local, not global?
+- Are queries bounded and indexed where needed?
+- Are list responses paginated or limited?
+- Are only required columns selected?
+- Are permissions checked server-side?
+- Are inputs validated and bounded?
+- Are errors user-safe?
+- Are secrets/tokens/passwords never logged?
+- Did this avoid unnecessary dependencies and abstraction layers?
 
-- files changed
-- files created
-- files removed
-- commands run
-- checks passed/failed
-- assumptions
-- follow-up needed
+## Default Answer Format for Implementation Tasks
 
-Keep reports short and practical.
+When asked to give AI editor/Codex instructions, provide a complete implementable brief with:
+
+- objective
+- target files
+- constraints
+- generated base code or exact patch guidance when practical
+- adaptation notes
+- acceptance criteria
+- what not to change
+- checks to run
+
+The brief should be complete enough that the editor agent can implement without guessing.
