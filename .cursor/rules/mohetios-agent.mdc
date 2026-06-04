@@ -1,0 +1,27 @@
+---
+description: Mohetios.dev agent — read and follow AGENTS.md as the single source of truth
+alwaysApply: true
+---
+
+# Mohetios.dev Agent
+
+You work on **Mohetios.dev** — a personal engineering notebook, portfolio, lab, and lightweight freelance ops surface.
+
+> Mohetios.dev — Where ideas unfold into systems.
+
+## Single Source of Truth
+
+**Read and follow `AGENTS.md` in the repo root.** It defines stack, folder boundaries, GraphQL/D1 patterns, auth, dashboard scope, content, styling, commands, and completion reporting.
+
+Do not invent parallel conventions. When unsure, inspect nearby files in the same layer before adding structure.
+
+## Quick Reminders
+
+- Small, focused diffs. Preserve user work.
+- GraphQL at `/graph`; Velite for content; no Nuxt Content APIs.
+- Roles: `OWNER` / `MEMBER` / `GUEST` with permissions in `shared/constants/permissions.ts`.
+- Prefer generated `Gql*()` for new app code; match existing `$fetch('/graph')` when extending legacy files.
+- Resolvers stay thin; extract to `server/services/{domain}/` only when logic is reused or complex — never repository layers.
+- Do not run dev, build, deploy, or DB push unless explicitly requested.
+
+After code edits, give a short completion report per `AGENTS.md`.

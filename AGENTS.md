@@ -60,6 +60,8 @@ Brand line:
 - GraphQL Yoga
 - nuxt-graphql-client
 - JWT-based basic dashboard auth
+- `@nuxtjs/i18n` (English + Persian, RTL)
+- PWA via `@vite-pwa/nuxt`
 
 Important: do not use Nuxt Content APIs. Nuxt Content has been removed from this project. Do not use `queryCollection`, `ContentRenderer`, or Nuxt Content composables.
 
@@ -116,15 +118,26 @@ Expected shape:
 server/
 ├── routes/
 │   └── graph.ts
+├── api/
+│   └── push/
 ├── schema.ts
 ├── queries/
 │   ├── index.ts
-│   └── me.ts
+│   ├── me.ts
+│   ├── inbox.ts
+│   └── profile.ts
 ├── mutations/
 │   ├── index.ts
 │   ├── login.ts
 │   ├── register.ts
-│   └── logout.ts
+│   ├── logout.ts
+│   ├── inbox.ts
+│   └── profile.ts
+├── services/
+│   ├── inbox/
+│   ├── email/
+│   ├── push/
+│   └── notifications/
 ├── models/
 │   ├── schema.ts
 │   └── client.ts
@@ -132,18 +145,21 @@ server/
     ├── auth.ts
     ├── crypto.ts
     ├── env.ts
-    └── id.ts
+    ├── id.ts
+    └── push-auth.ts
 ```
 
 Use:
 
 - `server/routes/graph.ts` for the `/graph` endpoint and GraphQL Yoga setup.
 - `server/schema.ts` for GraphQL SDL.
-- `server/queries/*.ts` for Query resolvers.
+- `server/queries/*.ts` for Query resolvers (and optional field resolvers).
 - `server/mutations/*.ts` for Mutation resolvers.
 - `server/models/schema.ts` for Drizzle table definitions.
 - `server/models/client.ts` for D1/Drizzle client creation.
 - `server/utils/*.ts` for compact server helpers.
+- `server/services/{domain}/*.ts` for extracted domain logic (see Resolver Style).
+- `server/api/**/*.ts` for non-GraphQL REST endpoints when the browser or a worker needs a plain HTTP route.
 
 Do not create these unless explicitly needed:
 
@@ -153,12 +169,13 @@ server/api/graphql.get.ts
 server/graphql/
 server/typeDefs/
 server/repositories/
-server/services/
 server/actions/
 server/guards/
 server/crypto/
 server/cloudflare/
 ```
+
+Do not create `*.repository.ts` files or generic service layers.
 
 Keep the backend flat.
 
@@ -205,7 +222,7 @@ For now, one schema file is preferred.
 
 Resolvers should be simple and direct.
 
-Allowed pattern:
+Default pattern:
 
 ```txt
 resolver file = resolver + DB logic
@@ -224,14 +241,40 @@ These files may directly import Drizzle tables from:
 server/models/schema.ts
 ```
 
-Do not create repository/service/action layers by default.
+When logic grows, extract to `server/services/{domain}/*.ts`:
 
-Only split DB logic out when:
+```txt
+server/mutations/inbox.ts          -> thin orchestration + validation
+server/services/inbox/create-inbox-message.ts
+server/services/inbox/reply-to-message.ts
+server/services/inbox/mark-message-status.ts
+```
+
+Services take `db` (and typed inputs) and return results. They are **not** repositories — no `*.repository.ts`, no generic CRUD wrappers.
+
+Extract to a service when:
 
 - the resolver file exceeds roughly 250–300 lines
 - the same DB logic is repeated 3+ times
 - testing becomes hard
 - the feature becomes business-critical
+
+Do not extract prematurely for simple one-off queries.
+
+## REST Routes
+
+GraphQL is the primary API. Use `server/api/` only when a plain HTTP route is genuinely needed.
+
+Current example:
+
+```txt
+server/api/push/public-key.get.ts
+server/api/push/subscribe.post.ts
+server/api/push/unsubscribe.post.ts
+server/api/push/test.post.ts
+```
+
+Do not add REST routes for features that belong on `/graph`.
 
 ## Models
 
@@ -261,6 +304,7 @@ shared/
 │   ├── fragments/
 │   ├── queries/
 │   └── mutations/
+├── contracts/
 ├── types/
 ├── constants/
 └── schemas/
@@ -269,6 +313,7 @@ shared/
 Allowed in `shared/`:
 
 - `.gql` / `.graphql` operation documents
+- pure domain contracts in `shared/contracts/` (e.g. inbox, email, push, notifications)
 - pure TypeScript types
 - pure constants
 - pure validation schemas
@@ -301,7 +346,14 @@ shared/graphql/
 └── mutations/
 ```
 
-Generated functions should be used in app code:
+Configuration lives in `nuxt.config.ts`:
+
+```txt
+public.graphql-client.clients.default.host = '/graph'
+public.graphql-client.documentPaths = ['../shared/graphql']
+```
+
+Generated functions should be used in new app code:
 
 ```ts
 const result = await GqlMe()
@@ -311,7 +363,9 @@ const result = await GqlRegister({ input })
 
 Use `useGqlToken(token)` after login/register and when restoring an auth session.
 
-Do not write manual `$fetch('/graph')` calls if generated GraphQL functions are available.
+Prefer generated `Gql*()` functions over manual `$fetch('/graph')` calls.
+
+Some existing code (`useAuth`, parts of the dashboard inbox UI) still uses inline `$fetch('/graph')` with hand-written documents. When extending those files, match the local pattern; when adding substantial new UI, use generated `Gql*()` and migrate nearby code if practical.
 
 ## Auth Pattern
 
@@ -323,9 +377,19 @@ Current scope:
 - no email requirement
 - password hashing
 - JWT token
-- first registered user becomes `ADMIN`
-- later registration is blocked unless explicitly enabled
-- dashboard is protected by middleware
+- role-based permissions
+- first registered user becomes `OWNER`
+- later users become `MEMBER`
+- later registration may be restricted via env (see `server/mutations/register.ts`)
+- protected routes use auth middleware
+
+Roles and permissions live in `shared/constants/permissions.ts`:
+
+- `OWNER` — full dashboard access
+- `MEMBER` — member area + limited permissions
+- `GUEST` — unauthenticated
+
+Check permissions server-side with `requirePermission(context, 'permission:name')` and client-side with `auth.can('permission:name')`.
 
 Use:
 
@@ -334,6 +398,8 @@ app/composables/useAuth.ts
 app/middleware/auth.ts
 app/pages/login.vue
 app/pages/register.vue
+app/pages/reset-password.vue
+app/pages/member/profile.vue
 ```
 
 Server-side auth belongs in:
@@ -346,6 +412,12 @@ server/queries/me.ts
 server/utils/auth.ts
 server/utils/crypto.ts
 ```
+
+Route behavior:
+
+- `OWNER` users land on `/dashboard` after login
+- `MEMBER` users land on `/member/profile`
+- dashboard routes use `layout: 'dashboard'`, `middleware: ['auth']`, and optional `requiredPermission` in page meta
 
 Do not leak password hashes, salts, or tokens.
 
@@ -371,6 +443,8 @@ Expected dashboard pages:
 app/pages/dashboard/
 ├── index.vue
 ├── inbox.vue
+├── inbox/
+│   └── [id].vue
 ├── leads.vue
 ├── comments.vue
 ├── forms.vue
@@ -401,21 +475,29 @@ Dashboard content management is not needed because content is Jamstack/Velite-ba
 
 Content is managed by Velite, not Nuxt Content.
 
-Expected content areas:
+Source markdown lives under locale folders:
 
 ```txt
 content/
-├── writing/
-├── lab/
-├── projects/
-└── pages/
+├── en/
+│   ├── blog/
+│   ├── lab/
+│   ├── projects/
+│   ├── about.md
+│   └── contact.md
+└── fa/
+    ├── blog/
+    ├── lab/
+    ├── projects/
+    ├── about.md
+    └── contact.md
 ```
 
-Do not assume localized content paths unless the repo confirms them.
+Build output is written to `.velite/*.json` and consumed in the app via `app/utils/content.ts`.
+
+Inspect `velite.config.ts` before changing content schemas or collection patterns.
 
 Do not use Nuxt Content APIs.
-
-When editing content systems, inspect Velite configuration first.
 
 ## Internationalization
 
@@ -482,10 +564,10 @@ If persistence is needed:
 ```txt
 1. Add table to server/models/schema.ts
 2. Generate Drizzle migration
-3. Use the table directly inside the resolver file
+3. Use the table directly inside the resolver file (or a service if logic is reused/complex)
 ```
 
-Do not add repository/service/action layers unless the code has clearly outgrown the compact pattern.
+Do not add repository layers. Add a service only when the resolver has clearly outgrown the compact pattern.
 
 ## Example Feature Touch Points
 
@@ -496,17 +578,23 @@ server/schema.ts
 server/models/schema.ts
 server/queries/inbox.ts
 server/mutations/inbox.ts
+server/services/inbox/create-inbox-message.ts
+server/services/inbox/reply-to-message.ts
+server/services/inbox/mark-message-status.ts
 server/queries/index.ts
 server/mutations/index.ts
-shared/graphql/fragments/inboxMessage.fragment.gql
+shared/contracts/inbox.ts
 shared/graphql/queries/inbox.query.gql
-shared/graphql/mutations/inbox.mutation.gql
+shared/graphql/queries/inboxMessage.query.gql
+shared/graphql/mutations/createContactMessage.mutation.gql
+shared/graphql/mutations/replyToInboxMessage.mutation.gql
+shared/graphql/mutations/updateInboxMessageStatus.mutation.gql
 app/pages/dashboard/inbox.vue
-app/components/dashboard/InboxMessageList.vue
-app/components/dashboard/InboxMessageDetail.vue
+app/pages/dashboard/inbox/[id].vue
+app/components/dashboard/
 ```
 
-Avoid creating extra layers.
+Avoid creating extra layers or files not tied to the feature.
 
 ## Database
 
@@ -579,13 +667,15 @@ Prefer:
 - generated GraphQL functions
 - Nuxt UI components
 - simple Drizzle queries in resolvers
+- thin services when resolver logic is reused or complex
 
 Avoid:
 
 - abstractions too early
 - extra folders
 - duplicate state systems
-- manual GraphQL request wrappers when generated functions exist
+- manual GraphQL request wrappers in new code when generated functions exist
+- repository layers or generic service frameworks
 - hidden magic
 - large “framework inside framework” patterns
 
