@@ -1,3 +1,8 @@
+export type AdminNotificationType =
+  | 'NEW_INBOUND_EMAIL'
+  | 'NEW_CONTACT_MESSAGE'
+  | 'UNREAD_INBOX_REMINDER'
+
 export type AdminNotificationJob =
   | {
       type: 'NEW_INBOUND_EMAIL'
@@ -11,7 +16,7 @@ export type AdminNotificationJob =
     }
 
 export type AdminPushPayload = {
-  type: AdminNotificationJob['type']
+  type: AdminNotificationType
   title: string
   body: string
   url: string

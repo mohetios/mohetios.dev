@@ -256,6 +256,7 @@
         "selectDescription": "Choose a conversation from the inbox to review, reply, or add a private note.",
         "reply": "Reply",
         "aiDraft": "AI Draft",
+        "markRead": "Mark Read",
         "markDone": "Mark Done",
         "archive": "Archive",
         "spam": "Spam",

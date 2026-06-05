@@ -130,6 +130,16 @@ function getContactSubject(topic: string, company: string | null) {
   return company ? `${label} inquiry from ${company}` : `${label} inquiry`
 }
 
+function createNotificationPreview(value: string, maxLength = 140) {
+  const preview = value.replace(/\s+/g, ' ').trim()
+
+  if (preview.length <= maxLength) {
+    return preview
+  }
+
+  return `${preview.slice(0, maxLength - 1).trim()}...`
+}
+
 async function verifyContactTurnstile(token: string, context: GraphQLContext) {
   const normalizedToken = normalizeText(token, 2048, 'Verification token')
   const result = await verifyTurnstileToken(normalizedToken, context.event)
@@ -171,17 +181,21 @@ export const inboxMutations = {
     const notification = await createAdminNotification(context.db, {
       type: 'NEW_CONTACT_MESSAGE',
       title: 'New contact message',
-      body: `New message from ${name}`,
-      url: `/dashboard/inbox/${message.id}`,
+      body: `${name}: ${createNotificationPreview(body)}`,
+      url: `/dashboard/inbox?message=${message.id}`,
       entityType: 'inboxMessage',
       entityId: message.id
     })
 
-    await context.env.ADMIN_NOTIFICATION_QUEUE?.send({
-      type: 'NEW_CONTACT_MESSAGE',
-      inboxMessageId: message.id,
-      notificationId: notification.id
-    } satisfies AdminNotificationJob)
+    if (context.env.ADMIN_NOTIFICATION_QUEUE) {
+      await context.env.ADMIN_NOTIFICATION_QUEUE.send({
+        type: 'NEW_CONTACT_MESSAGE',
+        inboxMessageId: message.id,
+        notificationId: notification.id
+      } satisfies AdminNotificationJob)
+    } else {
+      console.warn('ADMIN_NOTIFICATION_QUEUE binding is missing')
+    }
 
     return message
   },

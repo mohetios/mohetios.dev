@@ -1,7 +1,12 @@
 import { buildPushPayload } from '@block65/webcrypto-web-push'
 import { EmailMessage } from 'cloudflare:email'
 import { createMimeMessage } from 'mimetext'
-import type { D1Database, MessageBatch } from '@cloudflare/workers-types'
+import type {
+  D1Database,
+  ExecutionContext,
+  MessageBatch,
+  ScheduledController
+} from '@cloudflare/workers-types'
 
 import type { EmailDeliveryJob } from '../../../shared/contracts/email'
 import type {
@@ -56,6 +61,13 @@ type InboxMessageRow = {
   id: string
   sender_email: string
   subject: string
+}
+
+type UnreadInboxReminderRow = {
+  id: string
+  sender_name: string
+  subject: string
+  unread_count: number
 }
 
 function readString(...values: Array<string | null | undefined>) {
@@ -140,20 +152,7 @@ async function markSubscriptionUsed(env: Env, subscriptionId: string) {
     .run()
 }
 
-async function handleAdminNotification(job: AdminNotificationJob, env: Env) {
-  const notification = await env.DB.prepare(
-    `SELECT id, type, title, body, url, entity_id
-     FROM admin_notifications
-     WHERE id = ?`
-  )
-    .bind(job.notificationId)
-    .first<NotificationRow>()
-
-  if (!notification) {
-    console.warn('Notification not found', job)
-    return
-  }
-
+async function getOwnerPushSubscriptions(env: Env) {
   const subscriptions = await env.DB.prepare(
     `SELECT push_subscriptions.id,
             push_subscriptions.endpoint,
@@ -165,22 +164,14 @@ async function handleAdminNotification(job: AdminNotificationJob, env: Env) {
        AND push_subscriptions.disabled_at IS NULL`
   ).all<PushSubscriptionRow>()
 
-  const payload: AdminPushPayload = {
-    type: notification.type,
-    title: notification.title,
-    body: notification.body,
-    url: notification.url || '/dashboard/inbox',
-    notificationId: notification.id,
-    entityId: notification.entity_id
-  }
+  return subscriptions.results
+}
 
-  console.log('Sending admin push notification', {
-    notificationId: notification.id,
-    subscriptions: subscriptions.results.length
-  })
+async function sendPushToOwnerSubscriptions(env: Env, payload: AdminPushPayload) {
+  const subscriptions = await getOwnerPushSubscriptions(env)
 
   await Promise.allSettled(
-    subscriptions.results.map(async (subscription) => {
+    subscriptions.map(async (subscription) => {
       try {
         const response = await sendPush(env, subscription, payload)
 
@@ -207,6 +198,77 @@ async function handleAdminNotification(job: AdminNotificationJob, env: Env) {
       }
     })
   )
+
+  return subscriptions.length
+}
+
+async function handleAdminNotification(job: AdminNotificationJob, env: Env) {
+  const notification = await env.DB.prepare(
+    `SELECT id, type, title, body, url, entity_id
+     FROM admin_notifications
+     WHERE id = ?`
+  )
+    .bind(job.notificationId)
+    .first<NotificationRow>()
+
+  if (!notification) {
+    console.warn('Notification not found', job)
+    return
+  }
+
+  const payload: AdminPushPayload = {
+    type: notification.type,
+    title: notification.title,
+    body: notification.body,
+    url: notification.url || '/dashboard/inbox',
+    notificationId: notification.id,
+    entityId: notification.entity_id
+  }
+
+  const subscriptionCount = await sendPushToOwnerSubscriptions(env, payload)
+
+  console.log('Sent admin push notification', {
+    notificationId: notification.id,
+    subscriptions: subscriptionCount
+  })
+}
+
+async function sendUnreadInboxReminder(env: Env) {
+  const reminder = await env.DB.prepare(
+    `SELECT id,
+            sender_name,
+            subject,
+            (SELECT count(*) FROM inbox_messages WHERE status = 'NEW') AS unread_count
+     FROM inbox_messages
+     WHERE status = 'NEW'
+     ORDER BY created_at DESC
+     LIMIT 1`
+  ).first<UnreadInboxReminderRow>()
+
+  if (!reminder || reminder.unread_count < 1) {
+    return
+  }
+
+  const count = Number(reminder.unread_count)
+  const messageWord = count === 1 ? 'message' : 'messages'
+  const payload: AdminPushPayload = {
+    type: 'UNREAD_INBOX_REMINDER',
+    title: `You have ${count} unread ${messageWord}`,
+    body:
+      count === 1
+        ? `${reminder.sender_name}: ${reminder.subject}`
+        : 'Open the dashboard inbox to review them.',
+    url: `/dashboard/inbox?message=${reminder.id}`,
+    notificationId: 'unread-inbox-reminder',
+    entityId: reminder.id
+  }
+
+  const subscriptionCount = await sendPushToOwnerSubscriptions(env, payload)
+
+  console.log('Sent unread inbox reminder', {
+    unread: count,
+    subscriptions: subscriptionCount
+  })
 }
 
 async function sendEmail(
@@ -359,6 +421,10 @@ async function handleJob(job: WorkerJob, env: Env) {
 }
 
 export default {
+  async scheduled(_controller: ScheduledController, env: Env, _ctx: ExecutionContext) {
+    await sendUnreadInboxReminder(env)
+  },
+
   async queue(batch: MessageBatch<WorkerJob>, env: Env) {
     await Promise.allSettled(
       batch.messages.map(async (message) => {

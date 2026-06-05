@@ -8,6 +8,7 @@ type NotificationActionOption = {
   action: string
   title: string
   icon?: string
+  type?: 'button'
 }
 
 type PersistentNotificationOptions = NotificationOptions & {
@@ -15,18 +16,50 @@ type PersistentNotificationOptions = NotificationOptions & {
   requireInteraction?: boolean
   renotify?: boolean
   timestamp?: number
+  vibrate?: number[]
+}
+
+type NotificationConstructorWithMaxActions = typeof Notification & {
+  maxActions?: number
 }
 
 const notificationActions: NotificationActionOption[] = [
   {
-    action: 'open',
-    title: 'Open inbox'
+    action: 'view',
+    title: 'View',
+    type: 'button'
   },
   {
-    action: 'dismiss',
-    title: 'Dismiss'
+    action: 'read',
+    title: 'Read',
+    type: 'button'
+  },
+  {
+    action: 'spam',
+    title: 'Spam',
+    type: 'button'
   }
 ]
+
+const viewNotificationAction: NotificationActionOption = {
+  action: 'view',
+  title: 'View',
+  type: 'button'
+}
+
+function getNotificationActions(payload: AdminPushPayload) {
+  const actions =
+    payload.entityId && payload.entityId !== 'test'
+      ? notificationActions
+      : [viewNotificationAction]
+  const notificationApi = Notification as NotificationConstructorWithMaxActions
+  const maxActions =
+    typeof notificationApi.maxActions === 'number' && notificationApi.maxActions >= 0
+      ? notificationApi.maxActions
+      : actions.length
+
+  return actions.slice(0, maxActions)
+}
 
 function fallbackPayload(): AdminPushPayload {
   return {
@@ -49,6 +82,90 @@ function parsePayload(data: PushMessageData | null): AdminPushPayload {
   }
 }
 
+function getNotificationData(notification: Notification) {
+  const data = notification.data as
+    | {
+        url?: string
+        notificationId?: string
+        entityId?: string
+      }
+    | undefined
+
+  return {
+    url: data?.url || '/dashboard/inbox',
+    notificationId: data?.notificationId || '',
+    entityId: data?.entityId || ''
+  }
+}
+
+async function broadcastDashboardMessage(message: {
+  type: 'inbox-action'
+  action: 'read' | 'spam'
+  entityId: string
+}) {
+  const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+
+  clients.forEach((client) => {
+    client.postMessage(message)
+  })
+}
+
+async function updateInboxMessageFromNotification(
+  action: 'read' | 'spam',
+  messageId: string,
+  fallbackUrl: string
+) {
+  if (!messageId) {
+    throw new Error('Inbox message id is missing')
+  }
+
+  try {
+    const response = await fetch('/api/push/inbox-action', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: messageId,
+        action
+      })
+    })
+
+    if (!response.ok) {
+      throw new Error(`Inbox push action failed with status ${response.status}`)
+    }
+
+    await broadcastDashboardMessage({
+      type: 'inbox-action',
+      action,
+      entityId: messageId
+    })
+  } catch (error) {
+    console.warn('[push:inbox-action-failed]', error)
+    await openNotificationTarget(fallbackUrl)
+  }
+}
+
+async function openNotificationTarget(url: string) {
+  const targetUrl = new URL(url || '/dashboard/inbox', self.location.origin).href
+  const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+  const exactClient = clients.find((client) => client.url === targetUrl && 'focus' in client)
+
+  if (exactClient) {
+    return exactClient.focus()
+  }
+
+  const appClient = clients.find((client) => 'focus' in client)
+
+  if (appClient) {
+    await appClient.focus()
+    return appClient.navigate?.(targetUrl)
+  }
+
+  return self.clients.openWindow(targetUrl)
+}
+
 self.addEventListener('install', () => {
   self.skipWaiting()
 })
@@ -64,11 +181,12 @@ self.addEventListener('push', (event) => {
     body: payload.body || 'New notification',
     icon: '/icons/android-chrome-192x192.png',
     badge: '/icons/android-chrome-192x192.png',
-    actions: notificationActions,
+    actions: getNotificationActions(payload),
     requireInteraction: true,
     renotify: true,
     tag: payload.notificationId || payload.entityId || 'mohetios-notification',
     timestamp: Date.now(),
+    vibrate: [80, 40, 80],
     data: {
       url,
       notificationId: payload.notificationId,
@@ -82,33 +200,15 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close()
 
-  if (event.action === 'dismiss') {
+  const action = event.action || 'view'
+  const data = getNotificationData(event.notification)
+
+  if (action === 'read' || action === 'spam') {
+    event.waitUntil(updateInboxMessageFromNotification(action, data.entityId, data.url))
     return
   }
 
-  const targetUrl = new URL(
-    event.notification.data?.url || '/dashboard/inbox',
-    self.location.origin
-  ).href
-
-  event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(async (clients) => {
-      const exactClient = clients.find((client) => client.url === targetUrl && 'focus' in client)
-
-      if (exactClient) {
-        return exactClient.focus()
-      }
-
-      const appClient = clients.find((client) => 'focus' in client)
-
-      if (appClient) {
-        await appClient.focus()
-        return appClient.navigate?.(targetUrl)
-      }
-
-      return self.clients.openWindow(targetUrl)
-    })
-  )
+  event.waitUntil(openNotificationTarget(data.url))
 })
 
 export {}

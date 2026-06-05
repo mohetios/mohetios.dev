@@ -6,3 +6,5 @@ export type PushSubscriptionInput = {
     auth: string
   }
 }
+
+export type PushInboxAction = 'read' | 'spam'

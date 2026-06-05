@@ -43,6 +43,16 @@ function normalizeThreadSubject(subject: string) {
     .toLowerCase()
 }
 
+function createNotificationPreview(value: string, maxLength = 140) {
+  const preview = value.replace(/\s+/g, ' ').trim()
+
+  if (preview.length <= maxLength) {
+    return preview
+  }
+
+  return `${preview.slice(0, maxLength - 1).trim()}...`
+}
+
 function createThreadKey(senderEmail: string, subject: string, messageId?: string | null) {
   if (messageId) return `message:${messageId}`
 
@@ -158,9 +168,9 @@ async function saveInboundEmail(message: ForwardableEmailMessage, env: Env) {
     .bind(
       notificationId,
       'NEW_INBOUND_EMAIL',
-      'New inbound email',
       `New email from ${parsed.senderName}`,
-      `/dashboard/inbox/${inboxMessageId}`,
+      `${parsed.subject}: ${createNotificationPreview(parsed.bodyText)}`,
+      `/dashboard/inbox?message=${inboxMessageId}`,
       'inboxMessage',
       inboxMessageId,
       now

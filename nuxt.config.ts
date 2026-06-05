@@ -272,13 +272,18 @@ export default defineNuxtConfig({
     injectRegister: 'script',
 
     manifest: {
-      name: 'Mohetios.dev',
-      short_name: 'Mohetios Control Center',
+      id: '/dashboard',
+      name: 'Mohetios.dev Dashboard',
+      short_name: 'Mohetios',
+      description: 'Owner console for Mohetios.dev inbox, leads, analytics, and system signals.',
       display: 'standalone',
+      display_override: ['window-controls-overlay', 'standalone'],
       start_url: '/dashboard',
       scope: '/',
       theme_color: '#FCFBF8',
       background_color: '#FCFBF8',
+      categories: ['productivity', 'business'],
+      orientation: 'portrait-primary',
       icons: [
         {
           src: '/icons/android-chrome-192x192.png',
@@ -295,6 +300,34 @@ export default defineNuxtConfig({
           sizes: '512x512',
           type: 'image/png',
           purpose: 'maskable'
+        }
+      ],
+      shortcuts: [
+        {
+          name: 'Inbox',
+          short_name: 'Inbox',
+          description: 'Open the dashboard inbox.',
+          url: '/dashboard/inbox',
+          icons: [
+            {
+              src: '/icons/android-chrome-192x192.png',
+              sizes: '192x192',
+              type: 'image/png'
+            }
+          ]
+        },
+        {
+          name: 'Leads',
+          short_name: 'Leads',
+          description: 'Review dashboard leads.',
+          url: '/dashboard/leads',
+          icons: [
+            {
+              src: '/icons/android-chrome-192x192.png',
+              sizes: '192x192',
+              type: 'image/png'
+            }
+          ]
         }
       ]
     },

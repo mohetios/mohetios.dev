@@ -54,6 +54,13 @@ const composerMode = ref<'reply' | 'note'>('reply')
 const isSendingReply = ref(false)
 const isRefreshing = ref(false)
 
+type InboxPushActionMessage = {
+  type: 'inbox-action'
+  action: 'read' | 'spam'
+  entityId: string
+}
+let handleServiceWorkerMessage: ((event: MessageEvent) => void) | null = null
+
 const messages = computed(() => inboxWorkspace.value.messages.map(normalizeInboxDto))
 
 const selectedMessage = computed(() =>
@@ -253,15 +260,19 @@ async function updateSelectedStatus(status: InboxWorkspaceStatus) {
 }
 
 function archiveSelected() {
-  updateSelectedStatus('ARCHIVED')
+  return updateSelectedStatus('ARCHIVED')
 }
 
 function spamSelected() {
-  updateSelectedStatus('SPAM')
+  return updateSelectedStatus('SPAM')
 }
 
 function markSelectedDone() {
-  updateSelectedStatus('REPLIED')
+  return updateSelectedStatus('REPLIED')
+}
+
+function markSelectedRead() {
+  return updateSelectedStatus('OPEN')
 }
 
 async function convertSelectedToLead() {
@@ -318,6 +329,49 @@ async function sendReply() {
     isSendingReply.value = false
   }
 }
+
+function isInboxPushActionMessage(value: unknown): value is InboxPushActionMessage {
+  if (!value || typeof value !== 'object') {
+    return false
+  }
+
+  const message = value as Partial<InboxPushActionMessage>
+
+  return (
+    message.type === 'inbox-action' &&
+    typeof message.entityId === 'string' &&
+    (message.action === 'read' || message.action === 'spam')
+  )
+}
+
+onMounted(() => {
+  if (!('serviceWorker' in navigator)) {
+    return
+  }
+
+  handleServiceWorkerMessage = (event: MessageEvent) => {
+    if (!isInboxPushActionMessage(event.data)) {
+      return
+    }
+
+    refreshInbox().catch((error) => {
+      if (import.meta.dev) {
+        console.error('[dashboard:inbox:push-refresh-failed]', error)
+      }
+    })
+  }
+
+  navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage)
+})
+
+onBeforeUnmount(() => {
+  if (!handleServiceWorkerMessage || !('serviceWorker' in navigator)) {
+    return
+  }
+
+  navigator.serviceWorker.removeEventListener('message', handleServiceWorkerMessage)
+  handleServiceWorkerMessage = null
+})
 </script>
 
 <template>
@@ -437,6 +491,17 @@ async function sendReply() {
                 disabled
               >
                 {{ t('dashboard.inbox.workspace.aiDraft') }}
+              </UButton>
+
+              <UButton
+                v-if="selectedMessage.status === 'new'"
+                color="neutral"
+                variant="outline"
+                icon="i-lucide-mail-open"
+                size="xs"
+                @click="markSelectedRead"
+              >
+                {{ t('dashboard.inbox.workspace.markRead') }}
               </UButton>
 
               <UButton

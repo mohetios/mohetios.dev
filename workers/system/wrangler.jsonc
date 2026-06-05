@@ -26,6 +26,9 @@
       }
     ]
   },
+  "triggers": {
+    "crons": ["*/10 * * * *"]
+  },
   "send_email": [
     {
       "name": "EMAIL"
