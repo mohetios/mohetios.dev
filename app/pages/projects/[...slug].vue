@@ -12,6 +12,8 @@ if (!project.value || project.value.draft) {
 
 const visibleProjects = computed(() => getProjects(locale.value))
 const surround = computed(() => getSurround(visibleProjects.value, path.value))
+const tocLinks = computed(() => project.value?.tocData || [])
+const showToc = computed(() => tocLinks.value.length > 2)
 const relatedProjects = computed(() => {
   const currentTags = new Set(project.value?.tags || [])
 
@@ -23,35 +25,6 @@ const relatedProjects = computed(() => {
     .filter((item) => item.path !== path.value && item.tags?.some((tag) => currentTags.has(tag)))
     .slice(0, 2)
 })
-const metaItems = computed(() =>
-  [
-    { label: t('content.meta.status'), value: project.value?.status },
-    { label: t('content.meta.started'), value: project.value?.date },
-    { label: t('content.meta.updated'), value: project.value?.updated },
-    { label: t('content.meta.repository'), value: project.value?.repo, to: project.value?.repo },
-    { label: t('content.meta.website'), value: project.value?.website, to: project.value?.website }
-  ].filter((item) => item.value)
-)
-
-function formatDate(date?: string | Date) {
-  if (!date) {
-    return ''
-  }
-
-  return new Date(date).toLocaleDateString(locale.value, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  })
-}
-
-function formatMetaValue(label: string, value: unknown) {
-  if (label === t('content.meta.started') || label === t('content.meta.updated')) {
-    return formatDate(value as string | Date)
-  }
-
-  return String(value)
-}
 
 useMohetSeo({
   title: () => `${project.value?.title} · ${t('nav.projects')} · Mohetios.dev`,
@@ -66,93 +39,38 @@ useMohetSeo({
 
 <template>
   <UPage v-if="project">
+    <ContentArticleJsonLd
+      kind="project"
+      :title="project.title"
+      :description="project.description"
+      :path="project.path"
+      :image="project.thumbnail"
+      :date="project.date"
+      :updated="project.updated"
+    />
+
     <ContentHero
       :title="project.title"
       :description="project.description"
       :thumbnail="project.thumbnail"
+    />
+
+    <ContentViewShell
+      kind="project"
+      :content="project.content"
+      :toc-links="tocLinks"
+      :show-toc="showToc"
+      :surround="surround"
+      :back-to="localePath('/projects')"
+      :back-label="t('content.actions.backToProjects')"
       :date="project.date"
       :updated="project.updated"
       :status="project.status"
       :tags="project.tags"
-    />
-
-    <UPageBody>
-      <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_16rem]">
-        <article class="min-w-0">
-          <ContentHtml :html="project.content" class="prose-mohetios mx-auto max-w-3xl" />
-        </article>
-
-        <aside class="lg:order-last">
-          <div class="sticky top-24 space-y-5">
-            <UCard variant="subtle">
-              <div class="space-y-5">
-                <div v-for="item in metaItems" :key="item.label">
-                  <p class="text-xs font-medium uppercase tracking-widest text-muted">
-                    {{ item.label }}
-                  </p>
-                  <UButton
-                    v-if="item.to"
-                    :to="String(item.to)"
-                    color="neutral"
-                    variant="link"
-                    trailing-icon="i-lucide-external-link"
-                    target="_blank"
-                    class="mt-1 p-0"
-                  >
-                    {{ item.label }}
-                  </UButton>
-                  <p v-else class="mt-2 text-sm font-medium text-highlighted">
-                    {{ formatMetaValue(item.label, item.value) }}
-                  </p>
-                </div>
-
-                <div v-if="project.tags?.length">
-                  <p class="text-xs font-medium uppercase tracking-widest text-muted">
-                    {{ t('content.meta.stack') }}
-                  </p>
-                  <ContentTagList class="mt-2" :tags="project.tags" />
-                </div>
-              </div>
-            </UCard>
-
-            <div class="flex flex-wrap gap-2">
-              <UButton
-                v-if="project.repo"
-                :to="project.repo"
-                color="neutral"
-                variant="subtle"
-                icon="i-lucide-github"
-                target="_blank"
-              >
-                {{ t('content.meta.repository') }}
-              </UButton>
-              <UButton
-                v-if="project.website"
-                :to="project.website"
-                color="neutral"
-                variant="subtle"
-                icon="i-lucide-external-link"
-                target="_blank"
-              >
-                {{ t('content.meta.website') }}
-              </UButton>
-            </div>
-          </div>
-        </aside>
-      </div>
-
-      <div class="mx-auto mt-12 max-w-6xl space-y-8">
-        <UButton
-          :to="localePath('/projects')"
-          color="neutral"
-          variant="ghost"
-          icon="i-lucide-arrow-left"
-        >
-          {{ t('content.actions.backToProjects') }}
-        </UButton>
-
-        <ContentSurround v-if="surround.length" :surround="surround" />
-
+      :project-repo="project.repo"
+      :project-website="project.website"
+    >
+      <template #related>
         <section v-if="relatedProjects.length" class="border-t border-default pt-8">
           <h2 class="mb-4 text-xl font-semibold tracking-tight text-highlighted">
             {{ t('content.related') }}
@@ -176,7 +94,7 @@ useMohetSeo({
             />
           </div>
         </section>
-      </div>
-    </UPageBody>
+      </template>
+    </ContentViewShell>
   </UPage>
 </template>

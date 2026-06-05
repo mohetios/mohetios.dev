@@ -39,41 +39,36 @@ useMohetSeo({
 
 <template>
   <UPage v-if="post">
+    <ContentArticleJsonLd
+      kind="blog"
+      :title="post.title"
+      :description="post.description"
+      :path="post.path"
+      :image="post.thumbnail"
+      :date="post.date"
+      :updated="post.updated"
+    />
+
     <ContentHero
       :title="post.title"
       :description="post.description"
       :thumbnail="post.thumbnail"
+    />
+
+    <ContentViewShell
+      kind="blog"
+      :content="post.content"
+      :toc-links="tocLinks"
+      :show-toc="showToc"
+      :surround="surround"
+      :back-to="localePath('/blog')"
+      :back-label="t('content.actions.backToBlog')"
       :date="post.date"
       :updated="post.updated"
       :status="t('badges.blog')"
       :tags="post.tags"
-    />
-
-    <UPageBody>
-      <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_16rem]">
-        <article class="min-w-0">
-          <ContentHtml :html="post.content" class="prose-mohetios mx-auto max-w-3xl" />
-        </article>
-
-        <aside v-if="showToc" class="hidden lg:block">
-          <div class="sticky top-24">
-            <ContentToc :title="t('content.toc')" :links="tocLinks" highlight />
-          </div>
-        </aside>
-      </div>
-
-      <div class="mx-auto mt-12 max-w-6xl space-y-8">
-        <UButton
-          :to="localePath('/blog')"
-          color="neutral"
-          variant="ghost"
-          icon="i-lucide-arrow-left"
-        >
-          {{ t('content.actions.backToBlog') }}
-        </UButton>
-
-        <ContentSurround v-if="surround.length" :surround="surround" />
-
+    >
+      <template #related>
         <section v-if="relatedPosts.length" class="border-t border-default pt-8">
           <h2 class="mb-4 text-xl font-semibold tracking-tight text-highlighted">
             {{ t('content.related') }}
@@ -93,7 +88,7 @@ useMohetSeo({
             />
           </div>
         </section>
-      </div>
-    </UPageBody>
+      </template>
+    </ContentViewShell>
   </UPage>
 </template>

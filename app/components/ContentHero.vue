@@ -1,45 +1,90 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   title: string
   description?: string
   thumbnail?: string
-  date?: string | Date
-  updated?: string | Date
-  status?: string
-  tags?: string[]
   imageSizes?: string
 }>()
+
+const heroRef = ref<HTMLElement | null>(null)
+const hasImage = computed(() => Boolean(props.thumbnail))
+const reduceMotion = ref(false)
+
+let frame = 0
+
+function updateHeroMotion() {
+  const hero = heroRef.value
+
+  if (!hero || !hasImage.value) {
+    return
+  }
+
+  const height = hero.offsetHeight || window.innerHeight
+  const scroll = Math.max(window.scrollY, 0)
+  const progress = Math.min(scroll / height, 1)
+  const parallax = reduceMotion.value ? 0 : scroll * 0.38
+  const opacity = 1 - progress * 0.92
+
+  hero.style.setProperty('--content-hero-parallax', `${parallax}px`)
+  hero.style.setProperty('--content-hero-opacity', String(Math.max(opacity, 0)))
+}
+
+function onScroll() {
+  if (frame) {
+    return
+  }
+
+  frame = window.requestAnimationFrame(() => {
+    frame = 0
+    updateHeroMotion()
+  })
+}
+
+onMounted(() => {
+  reduceMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  updateHeroMotion()
+  window.addEventListener('scroll', onScroll, { passive: true })
+  window.addEventListener('resize', onScroll, { passive: true })
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', onScroll)
+  window.removeEventListener('resize', onScroll)
+
+  if (frame) {
+    window.cancelAnimationFrame(frame)
+  }
+})
 </script>
 
 <template>
-  <header class="content-hero mx-auto max-w-5xl pt-8 sm:pt-10 lg:pt-12">
-    <div class="mx-auto max-w-3xl text-center">
-      <ContentMeta
-        class="justify-center text-sm"
-        :date="date"
-        :updated="updated"
-        :status="status"
-      />
+  <header
+    ref="heroRef"
+    class="content-hero"
+    :class="hasImage ? 'content-hero--immersive' : 'content-hero--compact'"
+  >
+    <div v-if="hasImage" class="content-hero__backdrop" aria-hidden="true">
+      <div class="content-hero__image-wrap">
+        <NuxtImg
+          :src="thumbnail"
+          :alt="title"
+          class="content-hero__image"
+          :sizes="imageSizes || '100vw'"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
+      <div class="content-hero__scrim" />
+    </div>
 
-      <h1 class="mt-5 text-4xl font-semibold leading-tight text-highlighted sm:text-5xl">
+    <div class="content-hero__content">
+      <h1 class="content-hero__title">
         {{ title }}
       </h1>
 
-      <p v-if="description" class="mt-5 text-base leading-8 text-muted sm:text-lg">
+      <p v-if="description" class="content-hero__description">
         {{ description }}
       </p>
-
-      <ContentTagList v-if="tags?.length" class="mt-6 justify-center" :tags="tags" />
     </div>
-
-    <NuxtImg
-      v-if="thumbnail"
-      :src="thumbnail"
-      :alt="title"
-      class="mt-10 h-auto w-full rounded-2xl object-contain ring ring-default"
-      :sizes="imageSizes || 'xs:100vw lg:960px'"
-      loading="eager"
-      fetchpriority="high"
-    />
   </header>
 </template>

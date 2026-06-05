@@ -467,9 +467,45 @@
       "tags": "Tags",
       "stack": "Stack",
       "started": "Started",
+      "published": "Published",
       "updated": "Updated",
       "repository": "Repository",
-      "website": "Website"
+      "website": "Website",
+      "readingTime": "Reading time",
+      "readingTimeValue": "{count} min read"
+    },
+    "code": {
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyFailed": "Failed"
+    },
+    "subscribe": {
+      "blog": {
+        "title": "Follow the notebook",
+        "description": "Occasional notes on product engineering, systems, and building in public.",
+        "placeholder": "Email address",
+        "comingSoon": "Newsletter system is coming soon."
+      },
+      "lab": {
+        "title": "Follow lab notes",
+        "description": "Short updates from experiments, prototypes, and technical research.",
+        "placeholder": "Email address",
+        "comingSoon": "Newsletter system is coming soon."
+      },
+      "project": {
+        "title": "Interested in this work?",
+        "description": "Reach out if you want to discuss the project, collaboration, or implementation details.",
+        "action": "Contact me"
+      }
+    },
+    "share": {
+      "title": "Share",
+      "copyLink": "Copy link",
+      "copied": "Link copied",
+      "native": "Share"
+    },
+    "mobileToc": {
+      "title": "On this page"
     },
     "blog": {
       "seoTitle": "Writing · Mohetios.dev",

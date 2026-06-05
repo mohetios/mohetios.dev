@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { locale, t } = useI18n()
+const { locale } = useI18n()
 const path = computed(() => `/${locale.value}/about`)
 const legacyPath = computed(() => `/${locale.value}/pages/about`)
 const page = computed(() => getPage(path.value) || getPage(legacyPath.value))
@@ -22,8 +22,6 @@ useMohetSeo({
       :title="page.title"
       :description="page.description"
       :thumbnail="page.thumbnail"
-      :updated="page.updated"
-      :status="t('nav.about')"
     />
 
     <UPageBody>

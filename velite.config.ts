@@ -1,3 +1,11 @@
+import rehypeShiki from '@shikijs/rehype'
+import {
+  transformerNotationDiff,
+  transformerNotationErrorLevel,
+  transformerNotationFocus,
+  transformerNotationHighlight,
+  transformerNotationWordHighlight
+} from '@shikijs/transformers'
 import { defineCollection, defineConfig, s } from 'velite'
 
 const date = s.union([s.string(), s.date()]).transform((value) => new Date(value).toISOString())
@@ -99,5 +107,23 @@ const pages = defineCollection({
 })
 
 export default defineConfig({
-  collections: { blog, lab, projects, pages }
+  collections: { blog, lab, projects, pages },
+  markdown: {
+    rehypePlugins: [
+      [
+        // Velite bundles rehype plugins with incompatible @types — safe at runtime.
+        rehypeShiki as never,
+        {
+          theme: 'github-dark',
+          transformers: [
+            transformerNotationDiff({ matchAlgorithm: 'v3' }),
+            transformerNotationHighlight({ matchAlgorithm: 'v3' }),
+            transformerNotationFocus({ matchAlgorithm: 'v3' }),
+            transformerNotationErrorLevel({ matchAlgorithm: 'v3' }),
+            transformerNotationWordHighlight({ matchAlgorithm: 'v3' })
+          ]
+        }
+      ]
+    ]
+  }
 })

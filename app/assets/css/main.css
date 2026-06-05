@@ -129,6 +129,167 @@ body {
   list-style: persian;
 }
 
+.content-hero {
+  --content-hero-parallax: 0px;
+  --content-hero-opacity: 1;
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+}
+
+.content-hero--compact {
+  margin-inline: auto;
+  max-width: 80rem;
+  padding: 2rem 1rem 2.5rem;
+}
+
+@media (min-width: 640px) {
+  .content-hero--compact {
+    padding-top: 2.5rem;
+    padding-bottom: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .content-hero--compact {
+    padding-top: 3rem;
+  }
+}
+
+.content-hero--immersive {
+  display: flex;
+  min-height: 100svh;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  padding: 6.5rem 1rem 3.5rem;
+}
+
+@media (min-width: 640px) {
+  .content-hero--immersive {
+    padding-bottom: 4.5rem;
+  }
+}
+
+.content-hero__backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.content-hero__image-wrap {
+  position: absolute;
+  inset: -12% 0;
+  height: 124%;
+  opacity: var(--content-hero-opacity);
+  will-change: transform, opacity;
+}
+
+.content-hero__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translate3d(0, var(--content-hero-parallax), 0) scale(1.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content-hero__image {
+    transform: scale(1.06);
+  }
+}
+
+.content-hero__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-bg) 18%, transparent) 0%,
+      color-mix(in oklab, var(--color-bg) 8%, transparent) 34%,
+      color-mix(in oklab, var(--color-bg) 72%, transparent) 72%,
+      color-mix(in oklab, var(--color-bg) 94%, transparent) 100%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, #0f1823 10%, transparent) 0%,
+      color-mix(in oklab, #0f1823 42%, transparent) 100%
+    );
+  opacity: calc(0.72 + (1 - var(--content-hero-opacity)) * 0.2);
+}
+
+.dark .content-hero__scrim,
+[data-theme='dark'] .content-hero__scrim {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-bg) 24%, transparent) 0%,
+      color-mix(in oklab, var(--color-bg) 10%, transparent) 36%,
+      color-mix(in oklab, var(--color-bg) 78%, transparent) 74%,
+      color-mix(in oklab, var(--color-bg) 96%, transparent) 100%
+    ),
+    linear-gradient(180deg, color-mix(in oklab, #000 8%, transparent) 0%, rgb(0 0 0 / 58%) 100%);
+}
+
+.content-hero__content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 48rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.content-hero--immersive .content-hero__content {
+  padding: 1.5rem 1.25rem;
+  border-radius: 1.25rem;
+  border: 1px solid color-mix(in oklab, var(--ui-border) 72%, transparent);
+  background: color-mix(in oklab, var(--ui-bg) 84%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.content-hero--compact .content-hero__title {
+  font-size: 2.25rem;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--ui-text-highlighted);
+}
+
+@media (min-width: 640px) {
+  .content-hero--compact .content-hero__title {
+    font-size: 3rem;
+  }
+}
+
+.content-hero--immersive .content-hero__title {
+  font-size: clamp(2.2rem, 5vw, 3.75rem);
+  font-weight: 600;
+  line-height: 1.12;
+  color: var(--ui-text-highlighted);
+}
+
+.content-hero--compact .content-hero__description {
+  margin-top: 1.25rem;
+  font-size: 1rem;
+  line-height: 2;
+  color: var(--ui-text-muted);
+}
+
+@media (min-width: 640px) {
+  .content-hero--compact .content-hero__description {
+    font-size: 1.125rem;
+  }
+}
+
+.content-hero--immersive .content-hero__description {
+  margin-top: 1.25rem;
+  font-size: clamp(1rem, 2.2vw, 1.125rem);
+  line-height: 1.85;
+  color: var(--ui-text-muted);
+}
+
 .prose-mohetios {
   color: var(--ui-text);
   font-family: var(--font-content);
@@ -200,7 +361,7 @@ body {
   text-decoration-thickness: 1px;
 }
 
-.prose-mohetios :where(pre) {
+.prose-mohetios :where(pre:not(.shiki)) {
   border: 1px solid var(--ui-border);
   border-radius: 0.5rem;
   padding: 1rem;
@@ -208,6 +369,60 @@ body {
   background: var(--ui-bg-muted);
   direction: ltr;
   text-align: left;
+}
+
+.prose-mohetios pre.shiki {
+  position: relative;
+  margin: 1.75rem 0;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid var(--ui-border);
+  background: var(--ui-bg-muted);
+  direction: ltr;
+  text-align: left;
+}
+
+.prose-mohetios pre.shiki code {
+  display: grid;
+  overflow-x: auto;
+  padding: 1rem 0;
+  font-size: 0.875rem;
+  line-height: 1.8;
+  background: transparent;
+  border: 0;
+}
+
+.prose-mohetios pre.shiki .line {
+  min-height: 1.8em;
+  padding-inline: 1.25rem;
+}
+
+.prose-mohetios pre.shiki .highlighted,
+.prose-mohetios pre.shiki .focused {
+  background: color-mix(in srgb, var(--ui-primary) 12%, transparent);
+}
+
+.prose-mohetios pre.shiki .diff.add {
+  background: color-mix(in srgb, #22c55e 14%, transparent);
+}
+
+.prose-mohetios pre.shiki .diff.remove {
+  background: color-mix(in srgb, #ef4444 14%, transparent);
+}
+
+.prose-mohetios pre.shiki .highlighted.error {
+  background: color-mix(in srgb, #ef4444 16%, transparent);
+}
+
+.prose-mohetios pre.shiki .highlighted.warning {
+  background: color-mix(in srgb, #f59e0b 16%, transparent);
+}
+
+.prose-mohetios pre.shiki .code-copy-button {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 1;
 }
 
 .prose-mohetios :where(code) {

@@ -214,8 +214,6 @@ async function onSubmit() {
     <ContentHero
       :title="page.title"
       :description="page.description"
-      :updated="page.updated"
-      :status="t('nav.contact')"
     />
 
     <UPageBody>
