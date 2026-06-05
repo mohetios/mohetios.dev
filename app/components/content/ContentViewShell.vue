@@ -42,11 +42,14 @@ defineProps<{
         <slot name="notice" />
 
         <div class="relative">
-          <ContentHtml :html="content" class="prose-mohetios mx-auto max-w-3xl" />
+          <ContentHtml
+            :html="content"
+            class="prose-mohetios mx-auto max-w-[var(--mohetios-reading-width)]"
+          />
           <ContentCodeEnhancer />
         </div>
 
-        <div class="mx-auto mt-10 max-w-3xl">
+        <div class="mx-auto mt-10 max-w-[var(--mohetios-reading-width)]">
           <ContentSubscribeCard size="large" :kind="kind" />
         </div>
       </article>
@@ -68,12 +71,7 @@ defineProps<{
     </div>
 
     <div class="mx-auto mt-12 max-w-6xl space-y-8">
-      <UButton
-        :to="backTo"
-        color="neutral"
-        variant="ghost"
-        icon="i-lucide-arrow-left"
-      >
+      <UButton :to="backTo" color="neutral" variant="ghost" icon="i-lucide-arrow-left">
         {{ backLabel }}
       </UButton>
 

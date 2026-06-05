@@ -25,7 +25,7 @@ defineProps<{
       size="sm"
     >
       <template #toc>
-        <nav class="px-1 pb-2 text-sm">
+        <nav class="px-1 pb-2 text-ui-sm">
           <ul class="space-y-2">
             <li v-for="link in links" :key="link.url">
               <NuxtLink :to="link.url" class="text-muted hover:text-highlighted">

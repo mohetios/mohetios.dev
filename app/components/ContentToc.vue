@@ -13,7 +13,7 @@ defineProps<{
 </script>
 
 <template>
-  <nav v-if="links.length" class="rounded-lg border border-default bg-default p-4 text-sm">
+  <nav v-if="links.length" class="rounded-lg border border-default bg-default p-4 text-ui-sm">
     <p v-if="title" class="mb-3 font-medium text-highlighted">
       {{ title }}
     </p>

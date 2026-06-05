@@ -49,11 +49,7 @@ useMohetSeo({
       :updated="post.updated"
     />
 
-    <ContentHero
-      :title="post.title"
-      :description="post.description"
-      :thumbnail="post.thumbnail"
-    />
+    <ContentHero :title="post.title" :description="post.description" :thumbnail="post.thumbnail" />
 
     <ContentViewShell
       kind="blog"
@@ -70,7 +66,7 @@ useMohetSeo({
     >
       <template #related>
         <section v-if="relatedPosts.length" class="border-t border-default pt-8">
-          <h2 class="mb-4 text-xl font-semibold tracking-tight text-highlighted">
+          <h2 class="mb-4 text-ui-lg font-semibold tracking-tight text-highlighted">
             {{ t('content.related') }}
           </h2>
           <div class="grid gap-4 sm:grid-cols-2">

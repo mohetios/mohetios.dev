@@ -78,7 +78,7 @@ onBeforeUnmount(() => {
     </div>
 
     <div class="content-hero__content">
-      <h1 class="content-hero__title">
+      <h1 class="content-hero__title content-hero-title">
         {{ title }}
       </h1>
 

@@ -30,10 +30,10 @@ const publicTo = computed(() => toPublicPath(props.to))
       </div>
     </template>
 
-    <h3 class="text-lg font-semibold tracking-tight text-highlighted">
+    <h3 class="text-ui-base font-semibold tracking-tight text-highlighted">
       {{ title }}
     </h3>
-    <p v-if="description" class="mt-2 text-sm leading-6 text-muted">
+    <p v-if="description" class="mt-2 text-ui-sm leading-6 text-muted">
       {{ description }}
     </p>
 

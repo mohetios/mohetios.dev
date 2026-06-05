@@ -21,7 +21,6 @@ useMohetSeo({
     <ContentHero
       :title="page.title"
       :description="page.description"
-      :thumbnail="page.thumbnail"
     />
 
     <UPageBody>

@@ -43,49 +43,52 @@ const tagLabel = computed(() =>
   <UCard variant="subtle">
     <div class="space-y-4">
       <div v-if="status">
-        <p class="text-xs font-medium uppercase tracking-widest text-muted">
+        <p class="text-ui-xs font-medium uppercase tracking-widest text-muted">
           {{ t('content.meta.status') }}
         </p>
-        <p class="mt-2 text-sm font-medium text-highlighted">
+        <p class="mt-1 text-ui-sm font-medium text-highlighted">
           {{ status }}
         </p>
       </div>
 
       <div v-if="date">
-        <p class="text-xs font-medium uppercase tracking-widest text-muted">
+        <p class="text-ui-xs font-medium uppercase tracking-widest text-muted">
           {{ kind === 'project' ? t('content.meta.started') : t('content.meta.published') }}
         </p>
-        <p class="mt-2 text-sm font-medium text-highlighted">
+        <p class="mt-1 text-ui-sm font-medium text-highlighted">
           <time :datetime="new Date(date).toISOString()">{{ formatDate(date) }}</time>
         </p>
       </div>
 
       <div v-if="showUpdated">
-        <p class="text-xs font-medium uppercase tracking-widest text-muted">
+        <p class="text-ui-xs font-medium uppercase tracking-widest text-muted">
           {{ t('content.meta.updated') }}
         </p>
-        <p class="mt-2 text-sm font-medium text-highlighted">
+        <p class="mt-1 text-ui-sm font-medium text-highlighted">
           <time :datetime="new Date(updated!).toISOString()">{{ formatDate(updated) }}</time>
         </p>
       </div>
 
       <div>
-        <p class="text-xs font-medium uppercase tracking-widest text-muted">
+        <p class="text-ui-xs font-medium uppercase tracking-widest text-muted">
           {{ t('content.meta.readingTime') }}
         </p>
-        <p class="mt-2 text-sm font-medium text-highlighted">
+        <p class="mt-1 text-ui-sm font-medium text-highlighted">
           {{ t('content.meta.readingTimeValue', { count: readingMinutes }) }}
         </p>
       </div>
 
       <div v-if="tags?.length">
-        <p class="text-xs font-medium uppercase tracking-widest text-muted">
+        <p class="text-ui-xs font-medium uppercase tracking-widest text-muted">
           {{ tagLabel }}
         </p>
         <ContentTagList class="mt-2" :tags="tags" />
       </div>
 
-      <div v-if="kind === 'project' && (projectRepo || projectWebsite)" class="flex flex-wrap gap-2 pt-1">
+      <div
+        v-if="kind === 'project' && (projectRepo || projectWebsite)"
+        class="flex flex-wrap gap-2 pt-1"
+      >
         <UButton
           v-if="projectRepo"
           :to="projectRepo"

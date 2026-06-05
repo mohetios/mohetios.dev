@@ -72,7 +72,7 @@ useMohetSeo({
     >
       <template #related>
         <section v-if="relatedProjects.length" class="border-t border-default pt-8">
-          <h2 class="mb-4 text-xl font-semibold tracking-tight text-highlighted">
+          <h2 class="mb-4 text-ui-lg font-semibold tracking-tight text-highlighted">
             {{ t('content.related') }}
           </h2>
           <div class="grid gap-4 sm:grid-cols-2">

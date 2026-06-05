@@ -38,11 +38,7 @@ useMohetSeo({
       :updated="note.updated"
     />
 
-    <ContentHero
-      :title="note.title"
-      :description="note.description"
-      :thumbnail="note.thumbnail"
-    />
+    <ContentHero :title="note.title" :description="note.description" :thumbnail="note.thumbnail" />
 
     <ContentViewShell
       kind="lab"
@@ -58,8 +54,10 @@ useMohetSeo({
       :tags="note.tags"
     >
       <template #notice>
-        <div class="mx-auto mb-8 max-w-3xl rounded-2xl border border-default bg-muted/30 p-5">
-          <p class="text-sm leading-7 text-muted">
+        <div
+          class="mx-auto mb-8 max-w-[var(--mohetios-reading-width)] rounded-2xl border border-default bg-muted/30 p-5"
+        >
+          <p class="text-ui-sm leading-6 text-muted">
             {{ t('content.lab.workingNote') }}
           </p>
         </div>

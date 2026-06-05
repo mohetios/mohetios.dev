@@ -43,7 +43,7 @@ async function sharePage() {
 <template>
   <UCard variant="subtle">
     <div class="space-y-3">
-      <p class="text-xs font-medium uppercase tracking-widest text-muted">
+      <p class="text-ui-xs font-medium uppercase tracking-widest text-muted">
         {{ t('content.share.title') }}
       </p>
 
