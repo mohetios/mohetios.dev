@@ -1,6 +1,7 @@
 /// <reference lib="webworker" />
 
 import type { AdminPushPayload } from '../shared/contracts/notifications'
+import type { PushInboxAction } from '../shared/contracts/push'
 
 declare const self: ServiceWorkerGlobalScope
 
@@ -22,6 +23,17 @@ type PersistentNotificationOptions = NotificationOptions & {
 type NotificationConstructorWithMaxActions = typeof Notification & {
   maxActions?: number
 }
+
+type ServiceWorkerClientMessage =
+  | {
+      type: 'auth-token'
+      token: string | null
+    }
+  | {
+      type: 'clear-auth-token'
+    }
+
+let authToken: string | null = null
 
 const notificationActions: NotificationActionOption[] = [
   {
@@ -100,7 +112,7 @@ function getNotificationData(notification: Notification) {
 
 async function broadcastDashboardMessage(message: {
   type: 'inbox-action'
-  action: 'read' | 'spam'
+  action: PushInboxAction
   entityId: string
 }) {
   const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true })
@@ -111,7 +123,7 @@ async function broadcastDashboardMessage(message: {
 }
 
 async function updateInboxMessageFromNotification(
-  action: 'read' | 'spam',
+  action: PushInboxAction,
   messageId: string,
   fallbackUrl: string
 ) {
@@ -123,9 +135,14 @@ async function updateInboxMessageFromNotification(
     const response = await fetch('/api/push/inbox-action', {
       method: 'POST',
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: authToken
+        ? {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`
+          }
+        : {
+            'Content-Type': 'application/json'
+          },
       body: JSON.stringify({
         id: messageId,
         action
@@ -172,6 +189,19 @@ self.addEventListener('install', () => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(self.clients.claim())
+})
+
+self.addEventListener('message', (event) => {
+  const message = event.data as ServiceWorkerClientMessage | undefined
+
+  if (message?.type === 'auth-token') {
+    authToken = message.token || null
+    return
+  }
+
+  if (message?.type === 'clear-auth-token') {
+    authToken = null
+  }
 })
 
 self.addEventListener('push', (event) => {

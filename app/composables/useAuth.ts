@@ -20,6 +20,28 @@ async function runAuthRequest<T>(fn: () => Promise<T>, fallback?: string) {
   }
 }
 
+function syncServiceWorkerAuthToken(value: string | null) {
+  if (!import.meta.client || !('serviceWorker' in navigator)) {
+    return
+  }
+
+  const message = value
+    ? {
+        type: 'auth-token',
+        token: value
+      }
+    : {
+        type: 'clear-auth-token'
+      }
+
+  navigator.serviceWorker.controller?.postMessage(message)
+  navigator.serviceWorker.ready
+    .then((registration) => {
+      registration.active?.postMessage(message)
+    })
+    .catch(() => undefined)
+}
+
 export function useAuth() {
   const token = useCookie<string | null>(tokenCookieKey, {
     path: '/',
@@ -44,6 +66,7 @@ export function useAuth() {
   function setToken(value: string) {
     token.value = value
     useGqlToken(value)
+    syncServiceWorkerAuthToken(value)
   }
 
   function clearSession() {
@@ -52,13 +75,16 @@ export function useAuth() {
     meLoaded.value = false
     isFetchingMe.value = false
     useGqlToken(null)
+    syncServiceWorkerAuthToken(null)
   }
 
   function restoreToken() {
     if (token.value) {
       useGqlToken(token.value)
+      syncServiceWorkerAuthToken(token.value)
     } else {
       useGqlToken(null)
+      syncServiceWorkerAuthToken(null)
     }
 
     return token.value

@@ -54,6 +54,7 @@ const {
 })
 
 const leads = computed(() => leadWorkspace.value.leads)
+const isInitialLeadsLoading = computed(() => isLoading.value && !leads.value.length)
 const selectedLead = computed(() => leadWorkspace.value.selectedLead || null)
 
 const leadSummaryCards = computed(() => [
@@ -421,7 +422,7 @@ watch(leadsLoadError, (error) => {
     </template>
 
     <template #summary>
-      <DashboardWorkspaceSummary :items="leadSummaryCards" :loading="isLoading" />
+      <DashboardWorkspaceSummary :items="leadSummaryCards" :loading="isInitialLeadsLoading" />
     </template>
 
     <template #filters>
@@ -484,7 +485,7 @@ watch(leadsLoadError, (error) => {
       flush-list
       :title="t('dashboard.leads.board.title')"
       :description="`${leads.length} ${t('dashboard.leads.board.of')} ${leadWorkspace.summary.total} ${t('dashboard.leads.board.opportunities')}`"
-      :loading="isLoading"
+      :loading="isInitialLeadsLoading"
       :empty="!leads.length"
       :empty-title="t('dashboard.leads.empty.title')"
       :empty-description="t('dashboard.leads.empty.description')"

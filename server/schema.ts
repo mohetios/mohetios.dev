@@ -158,6 +158,7 @@ export const typeDefs = /* GraphQL */ `
   }
 
   enum InboxFilter {
+    UNREAD
     ALL
     NEEDS_REPLY
     LEAD

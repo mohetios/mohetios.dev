@@ -236,6 +236,7 @@
         "archivedHelper": "Closed conversations"
       },
       "filters": {
+        "unread": "Unread",
         "all": "All",
         "needsReply": "Needs Reply",
         "leads": "Leads",
@@ -256,7 +257,7 @@
         "selectDescription": "Choose a conversation from the inbox to review, reply, or add a private note.",
         "reply": "Reply",
         "aiDraft": "AI Draft",
-        "markRead": "Mark Read",
+        "markRead": "Mark as Read",
         "markDone": "Mark Done",
         "archive": "Archive",
         "spam": "Spam",

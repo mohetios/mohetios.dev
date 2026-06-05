@@ -232,6 +232,7 @@
         "archivedHelper": "گفتگوهای بسته‌شده"
       },
       "filters": {
+        "unread": "خوانده‌نشده",
         "all": "همه",
         "needsReply": "نیاز به پاسخ",
         "leads": "سرنخ‌ها",

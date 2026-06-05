@@ -9,7 +9,7 @@ import {
   normalizeInboxReplyRow
 } from '../utils/inbox-map'
 
-type InboxFilter = 'ALL' | 'NEEDS_REPLY' | 'LEAD' | 'REPLIED' | 'ARCHIVED' | 'SPAM'
+type InboxFilter = 'UNREAD' | 'ALL' | 'NEEDS_REPLY' | 'LEAD' | 'REPLIED' | 'ARCHIVED' | 'SPAM'
 
 type InboxWorkspaceInput = {
   filter?: InboxFilter | null
@@ -20,6 +20,10 @@ type InboxWorkspaceInput = {
 }
 
 function buildFilterCondition(filter: InboxFilter): SQL | undefined {
+  if (filter === 'UNREAD') {
+    return eq(inboxMessages.status, 'NEW')
+  }
+
   if (filter === 'NEEDS_REPLY') {
     return inArray(inboxMessages.status, ['NEW', 'OPEN'])
   }

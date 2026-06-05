@@ -29,7 +29,7 @@ useMohetSeo({
 const route = useRoute()
 const toast = useToast()
 
-const activeFilter = ref<InboxWorkspaceFilter>('ALL')
+const activeFilter = ref<InboxWorkspaceFilter>('UNREAD')
 const search = ref('')
 const selectedMessageId = ref<string | undefined>(
   typeof route.query.message === 'string' ? route.query.message : undefined
@@ -62,6 +62,7 @@ type InboxPushActionMessage = {
 let handleServiceWorkerMessage: ((event: MessageEvent) => void) | null = null
 
 const messages = computed(() => inboxWorkspace.value.messages.map(normalizeInboxDto))
+const isInitialInboxLoading = computed(() => isLoading.value && !messages.value.length)
 
 const selectedMessage = computed(() =>
   inboxWorkspace.value.selectedMessage
@@ -74,6 +75,7 @@ const selectedThreadEvents = computed(() =>
 )
 
 const filters = computed(() => [
+  { label: t('dashboard.inbox.filters.unread'), value: 'UNREAD' as const },
   { label: t('dashboard.inbox.filters.all'), value: 'ALL' as const },
   { label: t('dashboard.inbox.filters.needsReply'), value: 'NEEDS_REPLY' as const },
   { label: t('dashboard.inbox.filters.leads'), value: 'LEAD' as const },
@@ -275,6 +277,8 @@ function markSelectedRead() {
   return updateSelectedStatus('OPEN')
 }
 
+const selectedCanBeMarkedRead = computed(() => selectedMessage.value?.status === 'new')
+
 async function convertSelectedToLead() {
   if (!selectedMessage.value) return
 
@@ -393,7 +397,7 @@ onBeforeUnmount(() => {
     </template>
 
     <template #summary>
-      <DashboardWorkspaceSummary :items="summaryCards" :loading="isLoading" />
+      <DashboardWorkspaceSummary :items="summaryCards" :loading="isInitialInboxLoading" />
     </template>
 
     <template #filters>
@@ -426,7 +430,7 @@ onBeforeUnmount(() => {
       fill-height
       :title="t('dashboard.inbox.threads.title')"
       :description="t('dashboard.inbox.threads.description')"
-      :loading="isLoading"
+      :loading="isInitialInboxLoading"
       :empty="!messages.length"
       :empty-title="t('dashboard.inbox.threads.emptyTitle')"
       :empty-description="t('dashboard.inbox.threads.emptyDescription')"
@@ -494,11 +498,11 @@ onBeforeUnmount(() => {
               </UButton>
 
               <UButton
-                v-if="selectedMessage.status === 'new'"
                 color="neutral"
                 variant="outline"
                 icon="i-lucide-mail-open"
                 size="xs"
+                :disabled="!selectedCanBeMarkedRead"
                 @click="markSelectedRead"
               >
                 {{ t('dashboard.inbox.workspace.markRead') }}
