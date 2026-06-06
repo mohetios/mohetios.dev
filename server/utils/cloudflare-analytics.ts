@@ -293,14 +293,6 @@ async function postCloudflareGraphql<T>(
   return payload.data
 }
 
-function createMockReferrersFromTopPages(_topPages: AnalyticsTopPage[]): AnalyticsReferrer[] {
-  return [
-    { source: 'Direct', visits: 0, share: 0, trend: null },
-    { source: 'Search', visits: 0, share: 0, trend: null },
-    { source: 'Referral', visits: 0, share: 0, trend: null }
-  ]
-}
-
 function mergeTopPages(
   rows: Array<{
     count: number
@@ -530,7 +522,7 @@ async function fetchCloudflareAnalyticsFresh(
     return {
       trend,
       topPages,
-      referrers: createMockReferrersFromTopPages(topPages),
+      referrers: [],
       countries,
       webVitals: createPendingWebVitals(),
       edgeSummary: {

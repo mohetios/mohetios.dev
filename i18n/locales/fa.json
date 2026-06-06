@@ -191,8 +191,8 @@
       "dataSources": {
         "cloudflare": "Cloudflare Analytics",
         "cloudflareCached": "Cloudflare Analytics · کش‌شده",
-        "searchConsoleMock": "داده آزمایشی Search Console",
-        "searchConsolePending": "Google Search Console هنوز متصل نشده است. این مقادیر فعلاً برای چیدمان و آزمایش هستند."
+        "searchConsolePendingTitle": "Search Console متصل نیست",
+        "searchConsolePendingDescription": "Google Search Console هنوز متصل نشده است. پس از افزودن اتصال، معیارهای جستجو اینجا نمایش داده می‌شوند."
       },
       "sections": {
         "audienceTrend": "روند مخاطب",

@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { dashboardCardUi } from '~/utils/dashboard-ui'
+import {
+  dashboardCardUi,
+  dashboardChartCardMinHeightClass,
+  dashboardChartCardUi,
+  dashboardChartStandaloneHeightClass
+} from '~/utils/dashboard-ui'
 import type { AnalyticsRange } from '~/composables/useAnalyticsDashboard'
 import type { AudienceMetricMode } from '~/utils/dashboard-charts'
 
@@ -304,8 +309,12 @@ watch(error, (currentError) => {
 
     <!-- Overview tab -->
     <div v-if="activeTab === 'overview'" class="space-y-4">
-      <section class="grid gap-4 xl:grid-cols-5">
-        <UCard variant="outline" :ui="dashboardCardUi" class="flex flex-col xl:col-span-3">
+      <section class="grid items-stretch gap-4 xl:grid-cols-5">
+        <UCard
+          variant="outline"
+          :ui="dashboardChartCardUi"
+          :class="[dashboardChartCardMinHeightClass, 'xl:col-span-3']"
+        >
           <template #header>
             <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
@@ -353,7 +362,11 @@ watch(error, (currentError) => {
           </DashboardAudienceAreaChart>
         </UCard>
 
-        <UCard variant="outline" :ui="dashboardCardUi" class="xl:col-span-2">
+        <UCard
+          variant="outline"
+          :ui="dashboardChartCardUi"
+          :class="[dashboardChartCardMinHeightClass, 'xl:col-span-2']"
+        >
           <template #header>
             <h2 class="text-base font-semibold text-highlighted">
               {{ t('dashboard.analytics.sections.topContentByViews') }}
@@ -443,7 +456,11 @@ watch(error, (currentError) => {
 
     <!-- Content tab -->
     <div v-else-if="activeTab === 'content'" class="space-y-4">
-      <UCard variant="outline" :ui="dashboardCardUi">
+      <UCard
+        variant="outline"
+        :ui="dashboardChartCardUi"
+        :class="dashboardChartStandaloneHeightClass"
+      >
         <template #header>
           <h2 class="text-base font-semibold text-highlighted">
             {{ t('dashboard.analytics.sections.topContentByViews') }}
@@ -455,6 +472,7 @@ watch(error, (currentError) => {
           :value-formatter="formatNumber"
           :label="t('dashboard.analytics.sections.pageViews')"
           :loading="isLoading"
+          :min-height="240"
         >
           <template #empty>
             {{ t('dashboard.analytics.empty.topPages') }}
@@ -528,10 +546,10 @@ watch(error, (currentError) => {
           <UIcon name="i-lucide-info" class="mt-0.5 size-4 shrink-0 text-muted" />
           <div>
             <p class="text-sm font-medium text-highlighted">
-              {{ t('dashboard.analytics.dataSources.searchConsoleMock') }}
+              {{ t('dashboard.analytics.dataSources.searchConsolePendingTitle') }}
             </p>
             <p class="mt-1 text-sm text-muted">
-              {{ t('dashboard.analytics.dataSources.searchConsolePending') }}
+              {{ t('dashboard.analytics.dataSources.searchConsolePendingDescription') }}
             </p>
           </div>
         </div>

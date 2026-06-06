@@ -195,8 +195,8 @@
       "dataSources": {
         "cloudflare": "Cloudflare Analytics",
         "cloudflareCached": "Cloudflare Analytics · cached",
-        "searchConsoleMock": "Search Console mock data",
-        "searchConsolePending": "Google Search Console is not connected yet. These values are placeholders for layout and testing."
+        "searchConsolePendingTitle": "Search Console not connected",
+        "searchConsolePendingDescription": "Google Search Console is not connected yet. Search metrics will appear here once the integration is added."
       },
       "sections": {
         "audienceTrend": "Audience Trend",

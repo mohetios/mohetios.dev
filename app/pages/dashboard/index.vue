@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import type { DashboardSummaryCard } from '~/components/dashboard/DashboardMetricCard.vue'
-import { dashboardCardUi } from '~/utils/dashboard-ui'
+import {
+  dashboardCardUi,
+  dashboardChartCardMinHeightClass,
+  dashboardChartCardUi
+} from '~/utils/dashboard-ui'
 import type { AudienceMetricMode } from '~/utils/dashboard-charts'
 
 definePageMeta({
@@ -190,11 +194,11 @@ watch(error, (currentError) => {
       />
     </section>
 
-    <section class="grid gap-4 xl:grid-cols-5">
+    <section class="grid items-stretch gap-4 xl:grid-cols-5">
       <UCard
         variant="outline"
-        :ui="dashboardCardUi"
-        class="flex flex-col xl:col-span-3"
+        :ui="dashboardChartCardUi"
+        :class="[dashboardChartCardMinHeightClass, 'xl:col-span-3']"
       >
         <template #header>
           <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
