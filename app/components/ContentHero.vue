@@ -3,7 +3,6 @@ const props = defineProps<{
   title: string
   description?: string
   thumbnail?: string
-  imageSizes?: string
 }>()
 
 const heroRef = ref<HTMLElement | null>(null)
@@ -65,16 +64,13 @@ onBeforeUnmount(() => {
   >
     <div v-if="hasImage" class="content-hero__backdrop" aria-hidden="true">
       <div class="content-hero__image-wrap">
-        <NuxtImg
+        <img
           :src="thumbnail"
           :alt="title"
           class="content-hero__image"
-          width="1920"
-          height="1080"
-          :sizes="imageSizes || '100vw'"
           loading="eager"
           fetchpriority="high"
-          placeholder
+          decoding="async"
         />
       </div>
       <div class="content-hero__scrim" />
