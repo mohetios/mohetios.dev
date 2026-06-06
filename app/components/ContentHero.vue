@@ -69,9 +69,12 @@ onBeforeUnmount(() => {
           :src="thumbnail"
           :alt="title"
           class="content-hero__image"
+          width="1920"
+          height="1080"
           :sizes="imageSizes || '100vw'"
           loading="eager"
           fetchpriority="high"
+          placeholder
         />
       </div>
       <div class="content-hero__scrim" />
