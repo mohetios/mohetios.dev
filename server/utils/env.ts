@@ -4,6 +4,14 @@ import type { H3Event } from 'h3'
 import type { EmailDeliveryJob } from '../../shared/contracts/email'
 import type { AdminNotificationJob } from '../../shared/contracts/notifications'
 
+export type AnalyticsConfig = {
+  enableRealAnalytics: string
+  cloudflareAnalyticsToken: string
+  cloudflareAccountId: string
+  cloudflareZoneId: string
+  cloudflareHostname: string
+}
+
 export type ServerEnv = {
   DB: D1Database
   ADMIN_NOTIFICATION_QUEUE?: Queue<AdminNotificationJob>
@@ -34,6 +42,12 @@ type CloudflareRuntimeEnv = {
   NUXT_VAPID_PUBLIC_KEY?: string
   NUXT_VAPID_PRIVATE_KEY?: string
   NUXT_VAPID_SUBJECT?: string
+
+  NUXT_ENABLE_REAL_ANALYTICS?: string
+  NUXT_CLOUDFLARE_ANALYTICS_TOKEN?: string
+  NUXT_CLOUDFLARE_ACCOUNT_ID?: string
+  NUXT_CLOUDFLARE_ZONE_ID?: string
+  NUXT_CLOUDFLARE_HOSTNAME?: string
 }
 
 type CloudflareEvent = H3Event & {
@@ -61,12 +75,43 @@ function readString(...values: unknown[]) {
   return ''
 }
 
-export function getServerEnv(event: H3Event): ServerEnv {
-  const runtimeConfig = useRuntimeConfig(event)
+function getCloudflareRuntimeEnv(event: H3Event): CloudflareRuntimeEnv {
   const cloudflareEvent = event as CloudflareEvent
 
-  const cloudflareEnv =
+  return (
     cloudflareEvent.req?.runtime?.cloudflare?.env || cloudflareEvent.context.cloudflare?.env || {}
+  )
+}
+
+export function getAnalyticsConfig(event: H3Event): AnalyticsConfig {
+  const runtimeConfig = useRuntimeConfig(event)
+  const cloudflareEnv = getCloudflareRuntimeEnv(event)
+
+  return {
+    enableRealAnalytics:
+      readString(runtimeConfig.enableRealAnalytics, cloudflareEnv.NUXT_ENABLE_REAL_ANALYTICS) ||
+      'false',
+    cloudflareAnalyticsToken: readString(
+      runtimeConfig.cloudflareAnalyticsToken,
+      cloudflareEnv.NUXT_CLOUDFLARE_ANALYTICS_TOKEN
+    ),
+    cloudflareAccountId: readString(
+      runtimeConfig.cloudflareAccountId,
+      cloudflareEnv.NUXT_CLOUDFLARE_ACCOUNT_ID
+    ),
+    cloudflareZoneId: readString(
+      runtimeConfig.cloudflareZoneId,
+      cloudflareEnv.NUXT_CLOUDFLARE_ZONE_ID
+    ),
+    cloudflareHostname:
+      readString(runtimeConfig.cloudflareHostname, cloudflareEnv.NUXT_CLOUDFLARE_HOSTNAME) ||
+      'mohetios.dev'
+  }
+}
+
+export function getServerEnv(event: H3Event): ServerEnv {
+  const runtimeConfig = useRuntimeConfig(event)
+  const cloudflareEnv = getCloudflareRuntimeEnv(event)
 
   const DB = cloudflareEnv.DB as D1Database | undefined
 

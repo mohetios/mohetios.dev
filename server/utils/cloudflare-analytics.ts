@@ -1,5 +1,7 @@
 import type { H3Event } from 'h3'
 
+import { getAnalyticsConfig } from './env'
+
 export type AnalyticsRange = 'LAST_7_DAYS' | 'LAST_30_DAYS' | 'LAST_90_DAYS'
 
 export type AudienceTrendPoint = {
@@ -257,8 +259,7 @@ async function postCloudflareGraphql<T>(
   query: string,
   variables: Record<string, unknown>
 ): Promise<T> {
-  const config = useRuntimeConfig(event)
-  const token = config.cloudflareAnalyticsToken
+  const { cloudflareAnalyticsToken: token } = getAnalyticsConfig(event)
 
   const response = await fetch('https://api.cloudflare.com/client/v4/graphql', {
     method: 'POST',
@@ -359,21 +360,45 @@ function mergeCountries(
     .slice(0, 10)
 }
 
+function analyticsConfigDescription(config: ReturnType<typeof getAnalyticsConfig>) {
+  const missing: string[] = []
+
+  if (String(config.enableRealAnalytics) !== 'true') {
+    missing.push('NUXT_ENABLE_REAL_ANALYTICS=true')
+  }
+
+  if (!config.cloudflareAnalyticsToken) {
+    missing.push('NUXT_CLOUDFLARE_ANALYTICS_TOKEN')
+  }
+
+  if (!config.cloudflareZoneId) {
+    missing.push('NUXT_CLOUDFLARE_ZONE_ID')
+  }
+
+  if (!config.cloudflareHostname) {
+    missing.push('NUXT_CLOUDFLARE_HOSTNAME')
+  }
+
+  if (!missing.length) {
+    return 'Cloudflare Analytics is not configured. Showing pending analytics state.'
+  }
+
+  return `Cloudflare Analytics is not configured. Set ${missing.join(', ')} on Cloudflare Pages (production/preview) and redeploy if needed.`
+}
+
 async function fetchCloudflareAnalyticsFresh(
   event: H3Event,
   range: AnalyticsRange
 ): Promise<CloudflareAnalyticsSnapshot> {
-  const config = useRuntimeConfig(event)
+  const config = getAnalyticsConfig(event)
 
   const enabled = String(config.enableRealAnalytics) === 'true'
-  const token = String(config.cloudflareAnalyticsToken || '')
-  const zoneId = String(config.cloudflareZoneId || '')
-  const hostname = String(config.cloudflareHostname || '')
+  const token = config.cloudflareAnalyticsToken
+  const zoneId = config.cloudflareZoneId
+  const hostname = config.cloudflareHostname
 
   if (!enabled || !token || !zoneId || !hostname) {
-    return emptyAnalyticsSnapshot(
-      'Cloudflare Analytics is not configured. Showing pending analytics state.'
-    )
+    return emptyAnalyticsSnapshot(analyticsConfigDescription(config))
   }
 
   const { since, until } = getDateBounds(range)
