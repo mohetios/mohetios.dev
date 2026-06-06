@@ -62,7 +62,23 @@ type InboxPushActionMessage = {
 let handleServiceWorkerMessage: ((event: MessageEvent) => void) | null = null
 
 const messages = computed(() => inboxWorkspace.value.messages.map(normalizeInboxDto))
-const isInitialInboxLoading = computed(() => isLoading.value && !messages.value.length)
+const hasInboxWorkspaceData = computed(() => {
+  const summary = inboxWorkspace.value.summary
+
+  return (
+    summary.unread > 0 ||
+    summary.needsReply > 0 ||
+    summary.leads > 0 ||
+    summary.archived > 0 ||
+    summary.spam > 0 ||
+    summary.total > 0 ||
+    inboxWorkspace.value.messages.length > 0 ||
+    Boolean(inboxWorkspace.value.selectedMessage) ||
+    inboxWorkspace.value.replies.length > 0 ||
+    inboxWorkspace.value.threadEvents.length > 0
+  )
+})
+const isInitialInboxLoading = computed(() => isLoading.value && !hasInboxWorkspaceData.value)
 
 const selectedMessage = computed(() =>
   inboxWorkspace.value.selectedMessage
@@ -218,10 +234,8 @@ function selectMessage(id: string) {
 }
 
 async function loadInbox() {
-  isRefreshing.value = true
-
   try {
-    await refreshInbox()
+    await withDashboardRefresh(isRefreshing, () => refreshInbox())
 
     if (inboxLoadError.value) {
       throw inboxLoadError.value
@@ -236,8 +250,6 @@ async function loadInbox() {
       icon: 'i-lucide-circle-alert',
       title: getInboxErrorMessage(error)
     })
-  } finally {
-    isRefreshing.value = false
   }
 }
 
@@ -387,11 +399,17 @@ onBeforeUnmount(() => {
       <UButton
         color="neutral"
         variant="ghost"
-        icon="i-lucide-refresh-cw"
-        :loading="isRefreshing"
+        :disabled="isRefreshing"
         size="sm"
         @click="loadInbox"
       >
+        <template #leading>
+          <UIcon
+            :name="isRefreshing ? 'i-lucide-loader-circle' : 'i-lucide-refresh-cw'"
+            class="size-4"
+            :class="{ 'animate-spin': isRefreshing }"
+          />
+        </template>
         {{ t('dashboard.inbox.refresh') }}
       </UButton>
     </template>

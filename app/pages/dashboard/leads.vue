@@ -54,7 +54,20 @@ const {
 })
 
 const leads = computed(() => leadWorkspace.value.leads)
-const isInitialLeadsLoading = computed(() => isLoading.value && !leads.value.length)
+const hasLeadWorkspaceData = computed(() => {
+  const summary = leadWorkspace.value.summary
+
+  return (
+    summary.total > 0 ||
+    summary.new > 0 ||
+    summary.qualified > 0 ||
+    summary.highPriority > 0 ||
+    summary.archived > 0 ||
+    leadWorkspace.value.leads.length > 0 ||
+    Boolean(leadWorkspace.value.selectedLead)
+  )
+})
+const isInitialLeadsLoading = computed(() => isLoading.value && !hasLeadWorkspaceData.value)
 const selectedLead = computed(() => leadWorkspace.value.selectedLead || null)
 
 const leadSummaryCards = computed(() => [
@@ -212,18 +225,14 @@ const opportunityFields = computed(() => {
 })
 
 async function loadLeads() {
-  isRefreshing.value = true
-
   try {
-    await refreshLeads()
+    await withDashboardRefresh(isRefreshing, () => refreshLeads())
   } catch (error) {
     toast.add({
       color: 'error',
       icon: 'i-lucide-circle-alert',
       title: getLeadErrorMessage(error)
     })
-  } finally {
-    isRefreshing.value = false
   }
 }
 
@@ -402,11 +411,17 @@ watch(leadsLoadError, (error) => {
       <UButton
         color="neutral"
         variant="ghost"
-        icon="i-lucide-refresh-cw"
-        :loading="isRefreshing"
+        :disabled="isRefreshing"
         size="sm"
         @click="loadLeads"
       >
+        <template #leading>
+          <UIcon
+            :name="isRefreshing ? 'i-lucide-loader-circle' : 'i-lucide-refresh-cw'"
+            class="size-4"
+            :class="{ 'animate-spin': isRefreshing }"
+          />
+        </template>
         {{ t('dashboard.leads.refresh') }}
       </UButton>
 

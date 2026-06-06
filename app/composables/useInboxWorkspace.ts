@@ -144,6 +144,7 @@ export function useInboxWorkspace(input: {
     },
     {
       default: createDefaultInboxWorkspace,
+      dedupe: 'defer',
       watch: [variables]
     }
   )

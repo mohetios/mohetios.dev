@@ -16,7 +16,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
-    "typecheck": "velite build && pnpm gql:schema && nuxt typecheck && pnpm typecheck:workers",
+    "typecheck": "pnpm gql:schema && nuxt typecheck && pnpm typecheck:workers",
     "typecheck:workers": "tsc --noEmit -p workers/tsconfig.json",
     "check": "pnpm lint && pnpm typecheck",
     "clean": "rm -rf .nuxt .output .nitro .cache .velite dist .wrangler",

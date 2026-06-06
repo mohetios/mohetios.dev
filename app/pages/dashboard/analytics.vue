@@ -138,6 +138,18 @@ const totalPageViews = computed(() =>
   analytics.value.trend.reduce((total, point) => total + point.pageViews, 0)
 )
 
+const hasAnalyticsData = computed(() => (
+  analytics.value.metrics.length > 0 ||
+  analytics.value.trend.length > 0 ||
+  analytics.value.topPages.length > 0 ||
+  analytics.value.referrers.length > 0 ||
+  analytics.value.countries.length > 0 ||
+  analytics.value.searchQueries.length > 0 ||
+  analytics.value.webVitals.length > 0 ||
+  analytics.value.dataSourceDescription.length > 0
+))
+const isInitialAnalyticsLoading = computed(() => isLoading.value && !hasAnalyticsData.value)
+
 const filteredPages = computed(() => {
   const query = search.value.trim().toLowerCase()
 
@@ -202,10 +214,8 @@ const searchKpis = computed(() => [
 ])
 
 async function refreshAnalytics() {
-  isRefreshing.value = true
-
   try {
-    await refresh()
+    await withDashboardRefresh(isRefreshing, () => refresh())
 
     toast.add({
       color: 'success',
@@ -221,8 +231,6 @@ async function refreshAnalytics() {
           ? currentError.message
           : t('dashboard.analytics.refreshFailed')
     })
-  } finally {
-    isRefreshing.value = false
   }
 }
 
@@ -269,24 +277,27 @@ watch(error, (currentError) => {
         </UFieldGroup>
 
         <div class="flex items-center gap-2">
-        <UButton
-          color="neutral"
-          variant="ghost"
-          icon="i-lucide-refresh-cw"
-          :loading="isRefreshing"
-          @click="refreshAnalytics"
-        >
-          {{ t('dashboard.analytics.refresh') }}
-        </UButton>
+          <UButton
+            color="neutral"
+            variant="ghost"
+            :disabled="isRefreshing"
+            @click="refreshAnalytics"
+          >
+            <template #leading>
+              <UIcon
+                :name="isRefreshing ? 'i-lucide-loader-circle' : 'i-lucide-refresh-cw'"
+                class="size-4"
+                :class="{ 'animate-spin': isRefreshing }"
+              />
+            </template>
+            {{ t('dashboard.analytics.refresh') }}
+          </UButton>
 
-        <UButton color="neutral" variant="outline" icon="i-lucide-download" disabled>
-          {{ t('dashboard.analytics.export') }}
-        </UButton>
         </div>
       </div>
     </section>
 
-    <section v-if="isLoading" class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <section v-if="isInitialAnalyticsLoading" class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       <USkeleton v-for="item in 4" :key="item" class="h-28 w-full rounded-2xl" />
     </section>
 
@@ -353,7 +364,7 @@ watch(error, (currentError) => {
           <DashboardAudienceAreaChart
             :points="analytics.trend"
             :metric="audienceMetric"
-            :loading="isLoading"
+            :loading="isInitialAnalyticsLoading"
             :aria-label="t('dashboard.analytics.sections.audienceTrendDescription')"
           >
             <template #empty>
@@ -377,7 +388,7 @@ watch(error, (currentError) => {
             :items="topPageChartItems"
             :value-formatter="formatNumber"
             :label="t('dashboard.analytics.sections.pageViews')"
-            :loading="isLoading"
+            :loading="isInitialAnalyticsLoading"
           >
             <template #empty>
               {{ t('dashboard.analytics.empty.topPages') }}
@@ -398,7 +409,7 @@ watch(error, (currentError) => {
             :items="referrerChartItems"
             :value-formatter="formatNumber"
             :label="t('dashboard.analytics.sections.acquisitionMix')"
-            :loading="isLoading"
+            :loading="isInitialAnalyticsLoading"
           >
             <template #empty>
               {{ t('dashboard.analytics.empty.referrers') }}
@@ -417,7 +428,7 @@ watch(error, (currentError) => {
             :items="countryChartItems"
             :value-formatter="formatNumber"
             :label="t('dashboard.analytics.sections.geoSignals')"
-            :loading="isLoading"
+            :loading="isInitialAnalyticsLoading"
           >
             <template #empty>
               {{ t('dashboard.analytics.empty.countries') }}
@@ -471,7 +482,7 @@ watch(error, (currentError) => {
           :items="topPageChartItems"
           :value-formatter="formatNumber"
           :label="t('dashboard.analytics.sections.pageViews')"
-          :loading="isLoading"
+          :loading="isInitialAnalyticsLoading"
           :min-height="240"
         >
           <template #empty>
@@ -634,7 +645,7 @@ watch(error, (currentError) => {
             :items="referrerChartItems"
             :value-formatter="formatNumber"
             :label="t('dashboard.analytics.sections.acquisitionMix')"
-            :loading="isLoading"
+            :loading="isInitialAnalyticsLoading"
           >
             <template #empty>
               {{ t('dashboard.analytics.empty.referrers') }}
@@ -653,7 +664,7 @@ watch(error, (currentError) => {
             :items="countryChartItems"
             :value-formatter="formatNumber"
             :label="t('dashboard.analytics.sections.geoSignals')"
-            :loading="isLoading"
+            :loading="isInitialAnalyticsLoading"
           >
             <template #empty>
               {{ t('dashboard.analytics.empty.countries') }}

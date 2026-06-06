@@ -82,6 +82,25 @@ const totalVisitors = computed(() =>
   dashboardHome.value.audienceTrend.reduce((sum, point) => sum + point.visitors, 0)
 )
 
+const hasDashboardHomeData = computed(() => {
+  const summary = dashboardHome.value.summary
+
+  return (
+    summary.inboxUnread > 0 ||
+    summary.needsReply > 0 ||
+    summary.leads > 0 ||
+    summary.visits > 0 ||
+    summary.pageViews > 0 ||
+    dashboardHome.value.audienceTrend.length > 0 ||
+    dashboardHome.value.inboxPreview.length > 0 ||
+    dashboardHome.value.readerSignals.length > 0 ||
+    dashboardHome.value.systemHealth.length > 0 ||
+    dashboardHome.value.recentActivity.length > 0 ||
+    dashboardHome.value.quickLinks.length > 0
+  )
+})
+const isInitialDashboardLoading = computed(() => isLoading.value && !hasDashboardHomeData.value)
+
 const activityIconByType: Record<string, string> = {
   inbox: 'i-lucide-mail',
   notification: 'i-lucide-bell',
@@ -111,10 +130,8 @@ function formatActivityTime(timestamp: number) {
 const isRefreshing = ref(false)
 
 async function refreshDashboard() {
-  isRefreshing.value = true
-
   try {
-    await refresh()
+    await withDashboardRefresh(isRefreshing, () => refresh())
 
     toast.add({
       color: 'success',
@@ -130,8 +147,6 @@ async function refreshDashboard() {
           ? currentError.message
           : t('dashboard.home.refreshFailed')
     })
-  } finally {
-    isRefreshing.value = false
   }
 }
 
@@ -163,10 +178,16 @@ watch(error, (currentError) => {
         <UButton
           color="neutral"
           variant="outline"
-          icon="i-lucide-refresh-cw"
-          :loading="isRefreshing || isLoading"
+          :disabled="isRefreshing"
           @click="refreshDashboard"
         >
+          <template #leading>
+            <UIcon
+              :name="isRefreshing ? 'i-lucide-loader-circle' : 'i-lucide-refresh-cw'"
+              class="size-4"
+              :class="{ 'animate-spin': isRefreshing }"
+            />
+          </template>
           {{ t('dashboard.home.refresh') }}
         </UButton>
         <UButton
@@ -181,9 +202,9 @@ watch(error, (currentError) => {
     </section>
 
     <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-      <template v-if="isLoading">
+      <template v-if="isInitialDashboardLoading">
         <UCard v-for="index in 4" :key="index" variant="outline" :ui="dashboardCardUi">
-          <USkeleton class="h-20 w-full" />
+          <USkeleton class="h-[6.75rem] w-full" />
         </UCard>
       </template>
       <DashboardMetricCard
@@ -239,7 +260,7 @@ watch(error, (currentError) => {
         <DashboardAudienceAreaChart
           :points="dashboardHome.audienceTrend"
           :metric="audienceMetric"
-          :loading="isLoading"
+          :loading="isInitialDashboardLoading"
           :aria-label="t('dashboard.overview.audienceChartLabel')"
         >
           <template #empty>
@@ -251,22 +272,22 @@ watch(error, (currentError) => {
       <DashboardInboxPreviewCard
         class="xl:col-span-2"
         :items="dashboardHome.inboxPreview"
-        :loading="isLoading"
+        :loading="isInitialDashboardLoading"
       />
     </section>
 
     <section class="grid items-stretch gap-4 lg:grid-cols-2 xl:grid-cols-3">
       <DashboardContentPulseCard
         :content-pulse="dashboardHome.contentPulse"
-        :loading="isLoading"
+        :loading="isInitialDashboardLoading"
       />
       <DashboardReaderSignalsCard
         :signals="dashboardHome.readerSignals"
-        :loading="isLoading"
+        :loading="isInitialDashboardLoading"
       />
       <DashboardSystemHealthCard
         :items="dashboardHome.systemHealth"
-        :loading="isLoading"
+        :loading="isInitialDashboardLoading"
       />
     </section>
 
@@ -282,7 +303,7 @@ watch(error, (currentError) => {
           </h2>
         </template>
 
-        <div v-if="isLoading" class="grid gap-4 md:grid-cols-2">
+        <div v-if="isInitialDashboardLoading" class="grid gap-4 md:grid-cols-2">
           <USkeleton v-for="index in 4" :key="index" class="h-14 w-full" />
         </div>
 
@@ -333,7 +354,7 @@ watch(error, (currentError) => {
           </h2>
         </template>
 
-        <div v-if="isLoading" class="space-y-3">
+        <div v-if="isInitialDashboardLoading" class="space-y-3">
           <USkeleton v-for="index in 4" :key="index" class="h-10 w-full" />
         </div>
 

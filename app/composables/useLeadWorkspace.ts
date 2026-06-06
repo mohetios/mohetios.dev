@@ -114,6 +114,7 @@ export function useLeadWorkspace(input: {
     },
     {
       default: createDefaultLeadWorkspace,
+      dedupe: 'defer',
       watch: [variables]
     }
   )

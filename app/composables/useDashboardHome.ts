@@ -38,7 +38,8 @@ export function useDashboardHome() {
       return result.dashboardHome
     },
     {
-      default: createDefaultDashboardHome
+      default: createDefaultDashboardHome,
+      dedupe: 'defer'
     }
   )
 }

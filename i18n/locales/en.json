@@ -174,7 +174,6 @@
       "refresh": "Refresh",
       "refreshSuccess": "Analytics refreshed.",
       "refreshFailed": "Analytics could not be refreshed.",
-      "export": "Export",
       "tabs": {
         "overview": "Overview",
         "content": "Content",

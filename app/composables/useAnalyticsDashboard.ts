@@ -38,6 +38,7 @@ export function useAnalyticsDashboard(range: Ref<AnalyticsRange>) {
     },
     {
       default: createDefaultAnalyticsDashboard,
+      dedupe: 'defer',
       watch: [range]
     }
   )
