@@ -18,6 +18,8 @@ const isPanelRoute = computed(
   () =>
     pathWithoutLocale.value === '/dashboard' || pathWithoutLocale.value.startsWith('/dashboard/')
 )
+const isAuthLayout = computed(() => route.meta.layout === 'auth')
+const isMinimalChrome = computed(() => isPanelRoute.value || isAuthLayout.value)
 const savedPanelLocale = computed(() =>
   supportedLocales.find((code) => code === localeCookie.value)
 )
@@ -66,17 +68,17 @@ useSeoMeta({
 
 <template>
   <UApp :locale="appLocale">
-    <SiteHeader v-if="!isPanelRoute" />
+    <SiteHeader v-if="!isMinimalChrome" />
 
     <UMain>
-      <div :class="isPanelRoute ? 'mx-auto max-w-none' : 'mx-auto max-w-6xl'">
+      <div :class="isMinimalChrome ? 'mx-auto max-w-none' : 'mx-auto max-w-6xl'">
         <NuxtLayout>
           <NuxtPage />
         </NuxtLayout>
       </div>
     </UMain>
 
-    <template v-if="!isPanelRoute">
+    <template v-if="!isMinimalChrome">
       <USeparator />
       <SiteFooter />
     </template>

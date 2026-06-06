@@ -3,6 +3,7 @@ import { desc, eq, inArray, sql } from 'drizzle-orm'
 import { adminNotifications, inboxMessages } from '../models/schema'
 import type { GraphQLContext } from '../routes/graph'
 import { requirePermission } from '../utils/auth'
+import { getCachedCloudflareAnalytics } from '../utils/cloudflare-analytics'
 
 // D1 remains source of truth. KV can cache dashboardHome as dashboard:home:v1 (60s TTL)
 // later for snapshots and external analytics rollups only — not inbox truth or auth state.
@@ -198,9 +199,22 @@ export async function dashboardHome(_parent: unknown, _args: unknown, context: G
   const inboxUnread = hasInboxData ? realInboxUnread : 2
   const needsReply = hasInboxData ? realNeedsReply : 4
   const leads = hasInboxData ? realLeads : 3
-  const audienceTrend = createDemoAudienceTrend()
-  const visits = audienceTrend.reduce((sum, point) => sum + point.visitors, 0)
-  const pageViews = audienceTrend.reduce((sum, point) => sum + point.pageViews, 0)
+
+  const analytics = await getCachedCloudflareAnalytics(context.event, 'LAST_7_DAYS')
+
+  const audienceTrend =
+    analytics.isConfigured || analytics.trend.length > 0
+      ? analytics.trend
+      : createDemoAudienceTrend()
+
+  const visits = audienceTrend.reduce(
+    (sum: number, point: { visitors: number }) => sum + point.visitors,
+    0
+  )
+  const pageViews = audienceTrend.reduce(
+    (sum: number, point: { pageViews: number }) => sum + point.pageViews,
+    0
+  )
 
   const inboxPreview = hasInboxData
     ? inboxPreviewRows.map(normalizeInboxPreviewMessage)
@@ -243,8 +257,8 @@ export async function dashboardHome(_parent: unknown, _args: unknown, context: G
       leads,
       visits,
       pageViews,
-      searchClicks: 37,
-      avgLoadMs: 412
+      searchClicks: 0,
+      avgLoadMs: 0
     },
 
     audienceTrend,
@@ -268,8 +282,8 @@ export async function dashboardHome(_parent: unknown, _args: unknown, context: G
       },
       {
         label: 'Search pull',
-        value: '37',
-        helper: 'Demo search clicks across current content',
+        value: '0',
+        helper: 'Search Console not connected yet',
         icon: 'i-lucide-search'
       }
     ],
@@ -284,8 +298,8 @@ export async function dashboardHome(_parent: unknown, _args: unknown, context: G
       {
         key: 'analytics',
         label: 'Analytics',
-        status: 'ok',
-        helper: 'Demo analytics are served by the GraphQL resolver'
+        status: analytics.isConfigured && !analytics.isPartial ? 'ok' : 'pending',
+        helper: analytics.dataSourceDescription
       },
       {
         key: 'content',

@@ -135,6 +135,11 @@ export default defineNuxtConfig({
     turnstile: {
       secretKey: process.env.NUXT_TURNSTILE_SECRET_KEY || ''
     },
+    cloudflareAnalyticsToken: process.env.NUXT_CLOUDFLARE_ANALYTICS_TOKEN || '',
+    cloudflareAccountId: process.env.NUXT_CLOUDFLARE_ACCOUNT_ID || '',
+    cloudflareZoneId: process.env.NUXT_CLOUDFLARE_ZONE_ID || '',
+    cloudflareHostname: process.env.NUXT_CLOUDFLARE_HOSTNAME || 'mohetios.dev',
+    enableRealAnalytics: process.env.NUXT_ENABLE_REAL_ANALYTICS || 'false',
     public: {
       turnstile: {
         siteKey: turnstileSiteKey
@@ -211,6 +216,17 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'cloudflare_pages',
+    ...(isProduction
+      ? {
+          storage: {
+            cache: {
+              driver: 'cloudflare-kv-binding',
+              binding: 'ANALYTICS_CACHE',
+              base: 'nitro-cache'
+            }
+          }
+        }
+      : {}),
     compressPublicAssets: {
       brotli: true,
       gzip: true

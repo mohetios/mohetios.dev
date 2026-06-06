@@ -446,7 +446,7 @@ export const typeDefs = /* GraphQL */ `
     source: String!
     visits: Int!
     share: Int!
-    trend: String!
+    trend: String
   }
 
   type AnalyticsCountry {
@@ -478,7 +478,7 @@ export const typeDefs = /* GraphQL */ `
     edgeRequests: String!
     edgeErrors: String!
     avgLoadTime: String!
-    loadTimeTrend: String!
+    loadTimeTrend: String
     progressValue: Int!
   }
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { dashboardCardUi } from '~/utils/dashboard-ui'
 import type { AnalyticsRange } from '~/composables/useAnalyticsDashboard'
+import type { AudienceMetricMode } from '~/utils/dashboard-charts'
 
 definePageMeta({
   layout: 'dashboard',
@@ -21,6 +22,7 @@ const activeTab = ref<AnalyticsTab>('overview')
 const search = ref('')
 
 const range = ref<AnalyticsRange>('LAST_7_DAYS')
+const audienceMetric = ref<AudienceMetricMode>('both')
 const isRefreshing = ref(false)
 
 const {
@@ -39,9 +41,15 @@ const tabItems = computed(() => [
 ])
 
 const rangeItems = computed(() => [
-  { label: t('dashboard.analytics.ranges.last7Days'), value: 'LAST_7_DAYS' },
-  { label: t('dashboard.analytics.ranges.last30Days'), value: 'LAST_30_DAYS' },
-  { label: t('dashboard.analytics.ranges.last90Days'), value: 'LAST_90_DAYS' }
+  { label: t('dashboard.analytics.ranges.last7Days'), value: 'LAST_7_DAYS' as const },
+  { label: t('dashboard.analytics.ranges.last30Days'), value: 'LAST_30_DAYS' as const },
+  { label: t('dashboard.analytics.ranges.last90Days'), value: 'LAST_90_DAYS' as const }
+])
+
+const audienceMetricItems = computed(() => [
+  { label: t('dashboard.analytics.chartMetrics.visitors'), value: 'visitors' as const },
+  { label: t('dashboard.analytics.chartMetrics.pageViews'), value: 'pageViews' as const },
+  { label: t('dashboard.analytics.chartMetrics.both'), value: 'both' as const }
 ])
 
 type BadgeColor = 'primary' | 'info' | 'success' | 'neutral' | 'warning' | 'error'
@@ -73,36 +81,53 @@ function formatNumber(value: number) {
   return new Intl.NumberFormat().format(value)
 }
 
-const safeTrend = computed(() =>
-  analytics.value.trend.length
-    ? analytics.value.trend
-    : [{ date: '', visitors: 0, pageViews: 0, searchClicks: 0 }]
+const topPageChartItems = computed(() =>
+  analytics.value.topPages.slice(0, 8).map((page) => ({
+    label: page.title || page.path,
+    value: page.views,
+    helper: page.path
+  }))
 )
 
-const maxVisitors = computed(() => {
-  const max = Math.max(...safeTrend.value.map((point) => point.visitors))
-  return max > 0 ? max : 1
-})
-
-function getPointStyle(value: number, index: number) {
-  const total = safeTrend.value.length
-  const x = total <= 1 ? 0 : (index / (total - 1)) * 100
-  const y = 100 - (value / maxVisitors.value) * 80
-
-  return `${x},${y}`
-}
-
-const trendPolyline = computed(() =>
-  safeTrend.value.map((point, index) => getPointStyle(point.visitors, index)).join(' ')
+const referrerChartItems = computed(() =>
+  analytics.value.referrers.map((item) => ({
+    label: item.source,
+    value: item.visits,
+    share: item.share,
+    helper: `${item.share}%`
+  }))
 )
 
-const trendAreaPoints = computed(() => {
-  const points = safeTrend.value
-    .map((point, index) => getPointStyle(point.visitors, index))
-    .join(' ')
+const countryChartItems = computed(() =>
+  analytics.value.countries.map((item) => ({
+    label: item.country,
+    value: item.visits,
+    share: item.share,
+    code: item.code,
+    helper: `${item.share}%`
+  }))
+)
 
-  return `0,100 ${points} 100,100`
-})
+const edgeStatItems = computed(() => [
+  {
+    key: 'cacheHitRatio',
+    label: t('dashboard.analytics.sections.cacheEfficiency'),
+    value: analytics.value.edgeSummary.cacheHitRatio,
+    icon: 'i-lucide-database'
+  },
+  {
+    key: 'edgeRequests',
+    label: t('dashboard.analytics.sections.edgeRequests'),
+    value: analytics.value.edgeSummary.edgeRequests,
+    icon: 'i-lucide-globe'
+  },
+  {
+    key: 'edgeErrors',
+    label: t('dashboard.analytics.sections.edgeErrors'),
+    value: analytics.value.edgeSummary.edgeErrors,
+    icon: 'i-lucide-triangle-alert'
+  }
+])
 
 const totalPageViews = computed(() =>
   analytics.value.trend.reduce((total, point) => total + point.pageViews, 0)
@@ -224,16 +249,21 @@ watch(error, (currentError) => {
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <USelect
-          v-model="range"
-          :items="rangeItems"
-          value-key="value"
-          label-key="label"
-          icon="i-lucide-calendar"
-          class="w-full sm:w-44"
-        />
+      <div class="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+        <UFieldGroup size="sm" class="w-full sm:w-auto">
+          <UButton
+            v-for="item in rangeItems"
+            :key="item.value"
+            :variant="range === item.value ? 'soft' : 'outline'"
+            color="primary"
+            icon="i-lucide-calendar"
+            @click="range = item.value"
+          >
+            {{ item.label }}
+          </UButton>
+        </UFieldGroup>
 
+        <div class="flex items-center gap-2">
         <UButton
           color="neutral"
           variant="ghost"
@@ -247,6 +277,7 @@ watch(error, (currentError) => {
         <UButton color="neutral" variant="outline" icon="i-lucide-download" disabled>
           {{ t('dashboard.analytics.export') }}
         </UButton>
+        </div>
       </div>
     </section>
 
@@ -285,101 +316,60 @@ watch(error, (currentError) => {
                   {{ t('dashboard.analytics.sections.audienceTrendDescription') }}
                 </p>
               </div>
-              <div class="text-right">
-                <p class="text-2xl font-semibold text-highlighted">
-                  {{ formatNumber(totalPageViews) }}
-                </p>
-                <p class="text-xs text-muted">
-                  {{ t('dashboard.analytics.sections.pageViews') }}
-                </p>
+              <div class="flex flex-col items-end gap-2">
+                <UFieldGroup size="xs">
+                  <UButton
+                    v-for="item in audienceMetricItems"
+                    :key="item.value"
+                    :variant="audienceMetric === item.value ? 'soft' : 'ghost'"
+                    color="primary"
+                    @click="audienceMetric = item.value"
+                  >
+                    {{ item.label }}
+                  </UButton>
+                </UFieldGroup>
+
+                <div class="text-right">
+                  <p class="text-2xl font-semibold text-highlighted">
+                    {{ formatNumber(totalPageViews) }}
+                  </p>
+                  <p class="text-xs text-muted">
+                    {{ t('dashboard.analytics.sections.pageViews') }}
+                  </p>
+                </div>
               </div>
             </div>
           </template>
 
-          <div class="h-64 min-h-48">
-            <svg
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-              class="h-full w-full"
-              role="img"
-              :aria-label="t('dashboard.analytics.sections.audienceTrendDescription')"
-            >
-              <line
-                v-for="y in [20, 40, 60, 80]"
-                :key="y"
-                x1="0"
-                :y1="y"
-                x2="100"
-                :y2="y"
-                class="stroke-neutral-200 dark:stroke-neutral-700"
-                stroke-width="0.4"
-              />
-
-              <polygon
-                :points="trendAreaPoints"
-                class="fill-current text-primary/10"
-              />
-
-              <polyline
-                :points="trendPolyline"
-                fill="none"
-                class="stroke-current text-primary"
-                stroke-width="1.3"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </div>
-
-          <div
-            class="mt-3 grid gap-1 text-xs text-muted"
-            :style="{ gridTemplateColumns: `repeat(${safeTrend.length}, minmax(0, 1fr))` }"
+          <DashboardAudienceAreaChart
+            :points="analytics.trend"
+            :metric="audienceMetric"
+            :loading="isLoading"
+            :aria-label="t('dashboard.analytics.sections.audienceTrendDescription')"
           >
-            <span v-for="point in safeTrend" :key="point.date" class="truncate">
-              {{ point.date }}
-            </span>
-          </div>
+            <template #empty>
+              {{ t('dashboard.home.audience.pending') }}
+            </template>
+          </DashboardAudienceAreaChart>
         </UCard>
 
         <UCard variant="outline" :ui="dashboardCardUi" class="xl:col-span-2">
           <template #header>
             <h2 class="text-base font-semibold text-highlighted">
-              {{ t('dashboard.analytics.sections.topPages') }}
+              {{ t('dashboard.analytics.sections.topContentByViews') }}
             </h2>
           </template>
 
-          <div
-            v-if="!analytics.topPages.length"
-            class="py-10 text-center text-sm text-muted"
+          <DashboardHorizontalBarChart
+            :items="topPageChartItems"
+            :value-formatter="formatNumber"
+            :label="t('dashboard.analytics.sections.pageViews')"
+            :loading="isLoading"
           >
-            {{ t('dashboard.analytics.empty.topPages') }}
-          </div>
-
-          <ul v-else class="divide-y divide-default">
-            <li
-              v-for="page in analytics.topPages.slice(0, 5)"
-              :key="page.path"
-              class="flex items-start justify-between gap-3 py-3 first:pt-0 last:pb-0"
-            >
-              <div class="min-w-0">
-                <p class="truncate text-sm font-medium text-highlighted">
-                  {{ page.title }}
-                </p>
-                <p class="truncate text-xs text-muted">
-                  {{ page.path }}
-                </p>
-              </div>
-
-              <div class="flex shrink-0 flex-col items-end gap-1">
-                <span class="text-sm font-medium text-highlighted">
-                  {{ formatNumber(page.views) }}
-                </span>
-                <UBadge :color="getSourceColor(page.source)" variant="soft" size="xs" class="rounded-full">
-                  {{ page.source }}
-                </UBadge>
-              </div>
-            </li>
-          </ul>
+            <template #empty>
+              {{ t('dashboard.analytics.empty.topPages') }}
+            </template>
+          </DashboardHorizontalBarChart>
         </UCard>
       </section>
 
@@ -387,56 +377,39 @@ watch(error, (currentError) => {
         <UCard variant="outline" :ui="dashboardCardUi">
           <template #header>
             <h2 class="text-base font-semibold text-highlighted">
-              {{ t('dashboard.analytics.sections.referrers') }}
+              {{ t('dashboard.analytics.sections.acquisitionMix') }}
             </h2>
           </template>
 
-          <div
-            v-if="!analytics.referrers.length"
-            class="py-10 text-center text-sm text-muted"
+          <DashboardProgressList
+            :items="referrerChartItems"
+            :value-formatter="formatNumber"
+            :label="t('dashboard.analytics.sections.acquisitionMix')"
+            :loading="isLoading"
           >
-            {{ t('dashboard.analytics.empty.referrers') }}
-          </div>
-
-          <ul v-else class="space-y-4">
-            <li v-for="item in analytics.referrers" :key="item.source">
-              <div class="flex items-center justify-between text-sm">
-                <span class="font-medium text-highlighted">{{ item.source }}</span>
-                <span class="text-muted">{{ formatNumber(item.visits) }} · {{ item.share }}%</span>
-              </div>
-              <UProgress :model-value="item.share" :max="100" size="sm" class="mt-2" />
-            </li>
-          </ul>
+            <template #empty>
+              {{ t('dashboard.analytics.empty.referrers') }}
+            </template>
+          </DashboardProgressList>
         </UCard>
 
         <UCard variant="outline" :ui="dashboardCardUi">
           <template #header>
             <h2 class="text-base font-semibold text-highlighted">
-              {{ t('dashboard.analytics.sections.countries') }}
+              {{ t('dashboard.analytics.sections.geoSignals') }}
             </h2>
           </template>
 
-          <div
-            v-if="!analytics.countries.length"
-            class="py-10 text-center text-sm text-muted"
+          <DashboardProgressList
+            :items="countryChartItems"
+            :value-formatter="formatNumber"
+            :label="t('dashboard.analytics.sections.geoSignals')"
+            :loading="isLoading"
           >
-            {{ t('dashboard.analytics.empty.countries') }}
-          </div>
-
-          <ul v-else class="space-y-4">
-            <li v-for="item in analytics.countries" :key="item.code">
-              <div class="flex items-center justify-between text-sm">
-                <span class="flex items-center gap-2 font-medium text-highlighted">
-                  <span class="rounded bg-muted/60 px-1.5 py-0.5 text-xs font-medium text-muted">
-                    {{ item.code }}
-                  </span>
-                  {{ item.country }}
-                </span>
-                <span class="text-muted">{{ formatNumber(item.visits) }} · {{ item.share }}%</span>
-              </div>
-              <UProgress :model-value="item.share" :max="100" size="sm" class="mt-2" />
-            </li>
-          </ul>
+            <template #empty>
+              {{ t('dashboard.analytics.empty.countries') }}
+            </template>
+          </DashboardProgressList>
         </UCard>
 
         <UCard variant="outline" :ui="dashboardCardUi">
@@ -470,6 +443,25 @@ watch(error, (currentError) => {
 
     <!-- Content tab -->
     <div v-else-if="activeTab === 'content'" class="space-y-4">
+      <UCard variant="outline" :ui="dashboardCardUi">
+        <template #header>
+          <h2 class="text-base font-semibold text-highlighted">
+            {{ t('dashboard.analytics.sections.topContentByViews') }}
+          </h2>
+        </template>
+
+        <DashboardHorizontalBarChart
+          :items="topPageChartItems"
+          :value-formatter="formatNumber"
+          :label="t('dashboard.analytics.sections.pageViews')"
+          :loading="isLoading"
+        >
+          <template #empty>
+            {{ t('dashboard.analytics.empty.topPages') }}
+          </template>
+        </DashboardHorizontalBarChart>
+      </UCard>
+
       <section class="flex flex-col gap-3 rounded-2xl border border-default bg-default p-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 class="text-sm font-semibold text-highlighted">
@@ -531,6 +523,20 @@ watch(error, (currentError) => {
 
     <!-- Search tab -->
     <div v-else-if="activeTab === 'search'" class="space-y-4">
+      <UCard variant="outline" :ui="dashboardCardUi" class="border-dashed">
+        <div class="flex items-start gap-3">
+          <UIcon name="i-lucide-info" class="mt-0.5 size-4 shrink-0 text-muted" />
+          <div>
+            <p class="text-sm font-medium text-highlighted">
+              {{ t('dashboard.analytics.dataSources.searchConsoleMock') }}
+            </p>
+            <p class="mt-1 text-sm text-muted">
+              {{ t('dashboard.analytics.dataSources.searchConsolePending') }}
+            </p>
+          </div>
+        </div>
+      </UCard>
+
       <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <UCard
           v-for="kpi in searchKpis"
@@ -606,33 +612,16 @@ watch(error, (currentError) => {
             </h2>
           </template>
 
-          <div
-            v-if="!analytics.referrers.length"
-            class="py-10 text-center text-sm text-muted"
+          <DashboardProgressList
+            :items="referrerChartItems"
+            :value-formatter="formatNumber"
+            :label="t('dashboard.analytics.sections.acquisitionMix')"
+            :loading="isLoading"
           >
-            {{ t('dashboard.analytics.empty.referrers') }}
-          </div>
-
-          <ul v-else class="space-y-4">
-            <li v-for="item in analytics.referrers" :key="item.source">
-              <div class="flex items-center justify-between text-sm">
-                <span class="font-medium text-highlighted">{{ item.source }}</span>
-                <span class="flex items-center gap-2 text-muted">
-                  {{ formatNumber(item.visits) }} · {{ item.share }}%
-                  <UBadge
-                    v-if="item.trend"
-                    color="success"
-                    variant="soft"
-                    size="xs"
-                    class="rounded-full"
-                  >
-                    {{ item.trend }}
-                  </UBadge>
-                </span>
-              </div>
-              <UProgress :model-value="item.share" :max="100" size="sm" class="mt-2" />
-            </li>
-          </ul>
+            <template #empty>
+              {{ t('dashboard.analytics.empty.referrers') }}
+            </template>
+          </DashboardProgressList>
         </UCard>
 
         <UCard variant="outline" :ui="dashboardCardUi">
@@ -642,27 +631,16 @@ watch(error, (currentError) => {
             </h2>
           </template>
 
-          <div
-            v-if="!analytics.countries.length"
-            class="py-10 text-center text-sm text-muted"
+          <DashboardProgressList
+            :items="countryChartItems"
+            :value-formatter="formatNumber"
+            :label="t('dashboard.analytics.sections.geoSignals')"
+            :loading="isLoading"
           >
-            {{ t('dashboard.analytics.empty.countries') }}
-          </div>
-
-          <ul v-else class="space-y-4">
-            <li v-for="item in analytics.countries" :key="item.code">
-              <div class="flex items-center justify-between text-sm">
-                <span class="flex items-center gap-2 font-medium text-highlighted">
-                  <span class="rounded bg-muted/60 px-1.5 py-0.5 text-xs font-medium text-muted">
-                    {{ item.code }}
-                  </span>
-                  {{ item.country }}
-                </span>
-                <span class="text-muted">{{ formatNumber(item.visits) }} · {{ item.share }}%</span>
-              </div>
-              <UProgress :model-value="item.share" :max="100" size="sm" class="mt-2" />
-            </li>
-          </ul>
+            <template #empty>
+              {{ t('dashboard.analytics.empty.countries') }}
+            </template>
+          </DashboardProgressList>
         </UCard>
       </section>
     </div>
@@ -726,46 +704,29 @@ watch(error, (currentError) => {
         <UCard variant="outline" :ui="dashboardCardUi" class="lg:col-span-2">
           <template #header>
             <h2 class="text-base font-semibold text-highlighted">
-              {{ t('dashboard.analytics.sections.edgeSummary') }}
+              {{ t('dashboard.analytics.sections.edgeHealth') }}
             </h2>
           </template>
 
-          <div class="grid gap-3 sm:grid-cols-3">
-            <div class="rounded-xl border border-default bg-muted/20 p-3">
-              <div class="flex items-center gap-1.5 text-xs text-muted">
-                <UIcon name="i-lucide-database" class="size-3.5" />
-                Cache hit ratio
-              </div>
-              <p class="mt-1 text-lg font-semibold text-highlighted">
-                {{ analytics.edgeSummary.cacheHitRatio }}
-              </p>
-            </div>
-            <div class="rounded-xl border border-default bg-muted/20 p-3">
-              <div class="flex items-center gap-1.5 text-xs text-muted">
-                <UIcon name="i-lucide-globe" class="size-3.5" />
-                Edge requests
-              </div>
-              <p class="mt-1 text-lg font-semibold text-highlighted">
-                {{ analytics.edgeSummary.edgeRequests }}
-              </p>
-            </div>
-            <div class="rounded-xl border border-default bg-muted/20 p-3">
-              <div class="flex items-center gap-1.5 text-xs text-muted">
-                <UIcon name="i-lucide-triangle-alert" class="size-3.5" />
-                Edge errors
-              </div>
-              <p class="mt-1 text-lg font-semibold text-highlighted">
-                {{ analytics.edgeSummary.edgeErrors }}
-              </p>
-            </div>
-          </div>
+          <DashboardStatStrip :items="edgeStatItems" />
           <p class="mt-3 text-xs text-muted">
-            {{ t('dashboard.analytics.pending.cloudflare') }}
+            {{ t('dashboard.analytics.pending.webVitals') }}
           </p>
+          <UProgress
+            :model-value="analytics.edgeSummary.progressValue"
+            :max="100"
+            size="sm"
+            class="mt-4"
+          />
         </UCard>
       </section>
 
-      <UCard variant="outline" :ui="dashboardCardUi" class="border-dashed">
+      <UCard
+        v-if="analytics.edgeSummary.cacheHitRatio === '—'"
+        variant="outline"
+        :ui="dashboardCardUi"
+        class="border-dashed"
+      >
         <div class="flex items-start gap-3">
           <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted/60">
             <UIcon name="i-lucide-cloud" class="size-5 text-muted" />

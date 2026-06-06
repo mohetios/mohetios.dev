@@ -26,5 +26,12 @@
         "queue": "email-delivery"
       }
     ]
-  }
+  },
+  "kv_namespaces": [
+    {
+      "binding": "ANALYTICS_CACHE",
+      "id": "b331cc85d5bb4ef8a2165f143e06ae59",
+      "preview_id": "1a2351aaf9fc4b9c921d3feb6d3ed89c"
+    }
+  ]
 }

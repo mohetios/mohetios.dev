@@ -92,8 +92,10 @@
         "needsReplyHelper": "گفتگوهای باز در انتظار اقدام",
         "leads": "سرنخ‌ها",
         "leadsHelper": "پیام‌های همکاری یا کار احتمالی",
+        "visitors": "بازدیدکننده",
+        "visitorsHelper": "مخاطب از Cloudflare Analytics (۷ روز گذشته)",
         "pageViews": "بازدید صفحه",
-        "pageViewsHelper": "تحلیل خارجی بعداً متصل می‌شود"
+        "pageViewsHelper": "فعالیت صفحه از Cloudflare Analytics"
       },
       "audience": {
         "pending": "ارائه‌دهنده تحلیل هنوز متصل نشده است"
@@ -145,13 +147,28 @@
         "last30Days": "۳۰ روز گذشته",
         "last90Days": "۹۰ روز گذشته"
       },
+      "chartMetrics": {
+        "visitors": "بازدیدکننده",
+        "pageViews": "بازدید صفحه",
+        "both": "هر دو"
+      },
+      "dataSources": {
+        "cloudflare": "Cloudflare Analytics",
+        "cloudflareCached": "Cloudflare Analytics · کش‌شده",
+        "searchConsoleMock": "داده آزمایشی Search Console",
+        "searchConsolePending": "Google Search Console هنوز متصل نشده است. این مقادیر فعلاً برای چیدمان و آزمایش هستند."
+      },
       "sections": {
         "audienceTrend": "روند مخاطب",
         "audienceTrendDescription": "بازدیدکنندگان در بازه انتخاب‌شده.",
+        "audiencePulse": "نبض مخاطب",
         "pageViews": "بازدید صفحه",
         "topPages": "برترین صفحات",
+        "topContentByViews": "برترین محتوا بر اساس بازدید",
         "referrers": "ارجاع‌دهنده‌ها",
+        "acquisitionMix": "ترکیب جذب",
         "countries": "کشورها",
+        "geoSignals": "سیگنال‌های جغرافیایی",
         "webVitals": "شاخص‌های وب",
         "topContent": "برترین محتوا",
         "searchQueries": "عبارات جستجو",
@@ -159,6 +176,10 @@
         "topCountries": "برترین کشورها",
         "pageLoadTime": "زمان بارگذاری صفحه",
         "edgeSummary": "خلاصه کش / لبه",
+        "edgeHealth": "سلامت لبه",
+        "cacheEfficiency": "کارایی کش",
+        "edgeRequests": "درخواست‌های لبه",
+        "edgeErrors": "خطاهای لبه",
         "cloudflareIntegration": "یکپارچه‌سازی Cloudflare"
       },
       "search": {
@@ -186,7 +207,9 @@
       },
       "pending": {
         "externalAnalytics": "ارائه‌دهنده تحلیل خارجی هنوز متصل نشده است.",
-        "cloudflare": "بعداً Cloudflare Analytics را وصل کنید تا درخواست‌ها، نسبت برخورد کش، خطاهای لبه و فعالیت Worker نمایش داده شود."
+        "cloudflare": "بعداً Cloudflare Analytics را وصل کنید تا درخواست‌ها، نسبت برخورد کش، خطاهای لبه و فعالیت Worker نمایش داده شود.",
+        "webVitals": "شاخص‌های وب به داده Cloudflare Web Analytics/RUM نیاز دارند.",
+        "searchConsole": "اتصال Search Console در فاز بعدی برنامه‌ریزی شده است."
       }
     },
     "overview": {

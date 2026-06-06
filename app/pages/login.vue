@@ -14,6 +14,7 @@ const state = reactive({
 const loading = ref(false)
 
 definePageMeta({
+  layout: 'auth',
   middleware: ['auth']
 })
 
@@ -41,7 +42,7 @@ async function onSubmit(event: FormSubmitEvent<LoginInput>) {
 </script>
 
 <template>
-  <section class="mx-auto flex min-h-[calc(100vh-12rem)] max-w-md items-center px-4 py-12">
+  <div class="w-full max-w-md">
     <UCard
       class="w-full"
       :ui="{
@@ -114,5 +115,5 @@ async function onSubmit(event: FormSubmitEvent<LoginInput>) {
         </div>
       </template>
     </UCard>
-  </section>
+  </div>
 </template>

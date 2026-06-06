@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { DashboardSummaryCard } from '~/components/dashboard/DashboardMetricCard.vue'
 import { dashboardCardUi } from '~/utils/dashboard-ui'
+import type { AudienceMetricMode } from '~/utils/dashboard-charts'
 
 definePageMeta({
   layout: 'dashboard',
@@ -43,12 +44,12 @@ const summaryCards = computed<DashboardSummaryCard[]>(() => {
       to: '/dashboard/inbox'
     },
     {
-      key: 'leads',
-      label: t('dashboard.home.summary.leads'),
-      value: summary.leads,
-      icon: 'i-lucide-user-plus',
-      helper: t('dashboard.home.summary.leadsHelper'),
-      to: '/dashboard/leads'
+      key: 'visitors',
+      label: t('dashboard.home.summary.visitors'),
+      value: summary.visits,
+      icon: 'i-lucide-users',
+      helper: t('dashboard.home.summary.visitorsHelper'),
+      to: '/dashboard/analytics'
     },
     {
       key: 'pageViews',
@@ -61,16 +62,13 @@ const summaryCards = computed<DashboardSummaryCard[]>(() => {
   ]
 })
 
-const audienceChartData = computed(() =>
-  dashboardHome.value.audienceTrend.map((point) => ({
-    label: point.date.slice(5),
-    value: point.visitors
-  }))
-)
+const audienceMetric = ref<AudienceMetricMode>('both')
 
-const safeAudienceData = computed(() =>
-  audienceChartData.value.length ? audienceChartData.value : [{ label: '', value: 0 }]
-)
+const audienceMetricItems = computed(() => [
+  { label: t('dashboard.analytics.chartMetrics.visitors'), value: 'visitors' as const },
+  { label: t('dashboard.analytics.chartMetrics.pageViews'), value: 'pageViews' as const },
+  { label: t('dashboard.analytics.chartMetrics.both'), value: 'both' as const }
+])
 
 const audienceTrendIsEmpty = computed(() =>
   dashboardHome.value.audienceTrend.every((point) => point.visitors === 0 && point.pageViews === 0)
@@ -79,31 +77,6 @@ const audienceTrendIsEmpty = computed(() =>
 const totalVisitors = computed(() =>
   dashboardHome.value.audienceTrend.reduce((sum, point) => sum + point.visitors, 0)
 )
-
-const maxAudienceValue = computed(() => {
-  const max = Math.max(...safeAudienceData.value.map((item) => item.value))
-  return max > 0 ? max : 1
-})
-
-function getPointStyle(value: number, index: number) {
-  const total = safeAudienceData.value.length
-  const x = total <= 1 ? 0 : (index / (total - 1)) * 100
-  const y = 100 - (value / maxAudienceValue.value) * 80
-
-  return `${x},${y}`
-}
-
-const audiencePolyline = computed(() =>
-  safeAudienceData.value.map((item, index) => getPointStyle(item.value, index)).join(' ')
-)
-
-const audienceAreaPoints = computed(() => {
-  const points = safeAudienceData.value
-    .map((item, index) => getPointStyle(item.value, index))
-    .join(' ')
-
-  return `0,100 ${points} 100,100`
-})
 
 const activityIconByType: Record<string, string> = {
   inbox: 'i-lucide-mail',
@@ -245,62 +218,30 @@ watch(error, (currentError) => {
               </p>
             </div>
 
-            <UButton
-              color="neutral"
-              variant="outline"
-              trailing-icon="i-lucide-chevron-down"
-              class="shrink-0"
-              to="/dashboard/analytics"
-            >
-              {{ t('dashboard.overview.visitors') }}
-            </UButton>
+            <UFieldGroup size="xs" class="flex-wrap justify-end">
+              <UButton
+                v-for="item in audienceMetricItems"
+                :key="item.value"
+                :variant="audienceMetric === item.value ? 'soft' : 'ghost'"
+                color="primary"
+                @click="audienceMetric = item.value"
+              >
+                {{ item.label }}
+              </UButton>
+            </UFieldGroup>
           </div>
         </template>
 
-        <div v-if="isLoading" class="h-64 min-h-48">
-          <USkeleton class="h-full w-full" />
-        </div>
-
-        <div v-else class="h-64 min-h-48">
-          <svg
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-            class="h-full w-full"
-            role="img"
-            :aria-label="t('dashboard.overview.audienceChartLabel')"
-          >
-            <line
-              v-for="y in [20, 40, 60, 80]"
-              :key="y"
-              x1="0"
-              :y1="y"
-              x2="100"
-              :y2="y"
-              class="stroke-neutral-200 dark:stroke-neutral-700"
-              stroke-width="0.4"
-            />
-
-            <polygon
-              :points="audienceAreaPoints"
-              class="fill-current text-primary/10"
-            />
-
-            <polyline
-              :points="audiencePolyline"
-              fill="none"
-              class="stroke-current text-primary"
-              stroke-width="1.3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </div>
-
-        <div class="mt-3 grid grid-cols-7 gap-1 text-xs text-muted">
-          <span v-for="item in safeAudienceData" :key="item.label" class="truncate">
-            {{ item.label }}
-          </span>
-        </div>
+        <DashboardAudienceAreaChart
+          :points="dashboardHome.audienceTrend"
+          :metric="audienceMetric"
+          :loading="isLoading"
+          :aria-label="t('dashboard.overview.audienceChartLabel')"
+        >
+          <template #empty>
+            {{ t('dashboard.home.audience.pending') }}
+          </template>
+        </DashboardAudienceAreaChart>
       </UCard>
 
       <DashboardInboxPreviewCard

@@ -2,8 +2,6 @@
 const { locale, locales, t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
-const auth = useAuth()
-const isCheckingAuth = ref(false)
 
 const navigation = computed(() => [
   { label: t('nav.home'), to: localePath('/') },
@@ -22,83 +20,6 @@ const nextLocalePath = computed(() =>
     ? getLocalizedRoutePath(route.path, nextLocale.value.code, { fallbackToSection: true })
     : undefined
 )
-
-const accountItems = computed(() => {
-  if (auth.user.value) {
-    const items: Array<{
-      label: string
-      icon: string
-      disabled?: boolean
-      to?: string
-      onSelect?: () => Promise<void>
-    }> = [
-      {
-        label: auth.user.value.username,
-        icon: 'i-lucide-user',
-        disabled: true
-      },
-      {
-        label: t('nav.profile'),
-        icon: 'i-lucide-circle-user-round',
-        to: localePath('/member/profile')
-      }
-    ]
-
-    if (auth.can('dashboard:view')) {
-      items.push({
-        label: t('nav.dashboard'),
-        icon: 'i-lucide-layout-dashboard',
-        to: '/dashboard'
-      })
-    }
-
-    items.push({
-      label: t('auth.logout'),
-      icon: 'i-lucide-log-out',
-      onSelect: logout
-    })
-
-    return [items]
-  }
-
-  return [
-    [
-      {
-        label: t('auth.login.title'),
-        icon: 'i-lucide-log-in',
-        to: localePath('/login')
-      },
-      {
-        label: t('auth.register.title'),
-        icon: 'i-lucide-user-plus',
-        to: localePath('/register')
-      }
-    ]
-  ]
-})
-
-onMounted(async () => {
-  auth.restoreToken()
-
-  if (!auth.token.value || auth.user.value) {
-    return
-  }
-
-  isCheckingAuth.value = true
-
-  try {
-    await auth.fetchMe()
-  } catch {
-    auth.clearToken()
-  } finally {
-    isCheckingAuth.value = false
-  }
-})
-
-async function logout() {
-  await auth.logout()
-  await navigateTo(localePath('/login'))
-}
 </script>
 
 <template>
@@ -123,16 +44,6 @@ async function logout() {
     <UNavigationMenu :items="navigation" variant="link" class="hidden lg:flex" />
 
     <template #right>
-      <UDropdownMenu :items="accountItems">
-        <UButton
-          color="neutral"
-          variant="ghost"
-          icon="i-lucide-circle-user-round"
-          :loading="isCheckingAuth"
-          :aria-label="auth.user.value ? t('nav.dashboard') : t('auth.login.title')"
-        />
-      </UDropdownMenu>
-
       <UButton
         v-if="nextLocale && nextLocalePath"
         :to="nextLocalePath"

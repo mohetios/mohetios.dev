@@ -96,8 +96,10 @@
         "needsReplyHelper": "Open conversations waiting for action",
         "leads": "Leads",
         "leadsHelper": "Potential work or collaboration messages",
+        "visitors": "Visitors",
+        "visitorsHelper": "Audience from Cloudflare Analytics (last 7 days)",
         "pageViews": "Page views",
-        "pageViewsHelper": "External analytics will be connected later"
+        "pageViewsHelper": "Page activity from Cloudflare Analytics"
       },
       "audience": {
         "pending": "Analytics provider not connected yet"
@@ -149,13 +151,28 @@
         "last30Days": "Last 30 days",
         "last90Days": "Last 90 days"
       },
+      "chartMetrics": {
+        "visitors": "Visitors",
+        "pageViews": "Page views",
+        "both": "Both"
+      },
+      "dataSources": {
+        "cloudflare": "Cloudflare Analytics",
+        "cloudflareCached": "Cloudflare Analytics · cached",
+        "searchConsoleMock": "Search Console mock data",
+        "searchConsolePending": "Google Search Console is not connected yet. These values are placeholders for layout and testing."
+      },
       "sections": {
         "audienceTrend": "Audience Trend",
         "audienceTrendDescription": "Visitors across the selected date range.",
+        "audiencePulse": "Audience pulse",
         "pageViews": "Page views",
         "topPages": "Top Pages",
+        "topContentByViews": "Top content by views",
         "referrers": "Referrers",
+        "acquisitionMix": "Acquisition mix",
         "countries": "Countries",
+        "geoSignals": "Geo signals",
         "webVitals": "Web Vitals",
         "topContent": "Top content",
         "searchQueries": "Search queries",
@@ -163,6 +180,10 @@
         "topCountries": "Top Countries",
         "pageLoadTime": "Page Load Time",
         "edgeSummary": "Cache / Edge summary",
+        "edgeHealth": "Edge health",
+        "cacheEfficiency": "Cache efficiency",
+        "edgeRequests": "Edge requests",
+        "edgeErrors": "Edge errors",
         "cloudflareIntegration": "Cloudflare integration"
       },
       "search": {
@@ -190,7 +211,9 @@
       },
       "pending": {
         "externalAnalytics": "External analytics provider is not connected yet.",
-        "cloudflare": "Connect Cloudflare Analytics later to show real requests, cache hit ratio, edge errors, and Worker activity."
+        "cloudflare": "Connect Cloudflare Analytics later to show real requests, cache hit ratio, edge errors, and Worker activity.",
+        "webVitals": "Web vitals need Cloudflare Web Analytics/RUM data.",
+        "searchConsole": "Search Console integration is planned for the next phase."
       }
     },
     "overview": {
