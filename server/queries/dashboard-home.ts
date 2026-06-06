@@ -3,6 +3,7 @@ import { desc, eq, inArray, sql } from 'drizzle-orm'
 import { adminNotifications, inboxMessages } from '../models/schema'
 import type { GraphQLContext } from '../routes/graph'
 import { requirePermission } from '../utils/auth'
+import { getAnalyticsConfig } from '../utils/env'
 import { getCachedCloudflareAnalytics } from '../utils/cloudflare-analytics'
 
 // D1 remains source of truth. KV can cache dashboardHome as dashboard:home:v1 (60s TTL)
@@ -200,12 +201,16 @@ export async function dashboardHome(_parent: unknown, _args: unknown, context: G
   const needsReply = hasInboxData ? realNeedsReply : 4
   const leads = hasInboxData ? realLeads : 3
 
+  const analyticsConfig = getAnalyticsConfig(context.event)
+  const analyticsEnabled = analyticsConfig.enableRealAnalytics === 'true'
   const analytics = await getCachedCloudflareAnalytics(context.event, 'LAST_7_DAYS')
 
   const audienceTrend =
-    analytics.isConfigured || analytics.trend.length > 0
+    analytics.trend.length > 0
       ? analytics.trend
-      : createDemoAudienceTrend()
+      : analyticsEnabled
+        ? analytics.trend
+        : createDemoAudienceTrend()
 
   const visits = audienceTrend.reduce(
     (sum: number, point: { visitors: number }) => sum + point.visitors,
