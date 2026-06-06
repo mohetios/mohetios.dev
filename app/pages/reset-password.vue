@@ -35,22 +35,13 @@ async function onSubmit() {
 </script>
 
 <template>
-  <div class="w-full max-w-md">
-    <UCard
-      class="w-full"
-      :ui="{
-        body: 'p-6 sm:p-8'
-      }"
-    >
-      <div class="mb-8 space-y-2">
-        <p class="text-sm font-medium text-primary">{{ t('auth.resetPassword.eyebrow') }}</p>
-        <h1 class="text-2xl font-semibold tracking-normal text-highlighted">
-          {{ t('auth.resetPassword.title') }}
-        </h1>
-        <p class="text-sm leading-6 text-muted">{{ t('auth.resetPassword.description') }}</p>
-      </div>
-
-      <UForm :state="state" class="space-y-4" @submit="onSubmit">
+  <UCard
+    class="w-full"
+    :ui="{
+      body: 'p-6 sm:p-8'
+    }"
+  >
+    <UForm :state="state" class="space-y-4" @submit="onSubmit">
         <UFormField name="username" :label="t('auth.fields.username')" required>
           <UInput
             v-model="state.username"
@@ -82,6 +73,5 @@ async function onSubmit() {
           />
         </div>
       </template>
-    </UCard>
-  </div>
+  </UCard>
 </template>

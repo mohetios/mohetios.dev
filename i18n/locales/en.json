@@ -52,6 +52,42 @@
     "status": {
       "authenticated": "Authenticated",
       "guest": "Guest"
+    },
+    "layout": {
+      "exploreSite": "Explore the site",
+      "backToHome": "Back to homepage",
+      "note": "Built slowly. Written honestly. Kept open.",
+      "features": {
+        "console": {
+          "title": "Owner console",
+          "description": "Inbox, leads, analytics, and the quiet ops layer behind the site."
+        },
+        "writing": {
+          "title": "Writing & lab",
+          "description": "Long-form notes, experiments, and the thinking behind the systems."
+        },
+        "projects": {
+          "title": "Projects",
+          "description": "Open notebooks of software, products, and tools in progress."
+        }
+      },
+      "pages": {
+        "login": {
+          "eyebrow": "Private dashboard",
+          "title": "Sign in to continue",
+          "description": "A calm entry point for the owner console and member profile — not a public signup funnel."
+        },
+        "register": {
+          "eyebrow": "First admin",
+          "title": "Create the first account",
+          "description": "The first registration becomes the site owner. Later accounts follow your registration policy."
+        },
+        "resetPassword": {
+          "eyebrow": "Account recovery",
+          "title": "Reset your password",
+          "description": "We will prepare the reset flow. Delivery is still being wired up behind the scenes."
+        }
+      }
     }
   },
   "dashboard": {
