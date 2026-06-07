@@ -1,0 +1,23 @@
+mutation UpdateLeadStatus($id: ID!, $status: LeadStatus!) {
+  updateLeadStatus(id: $id, status: $status) {
+    ...LeadItemFields
+  }
+}
+
+mutation UpdateLeadPriority($id: ID!, $priority: LeadPriority) {
+  updateLeadPriority(id: $id, priority: $priority) {
+    ...LeadItemFields
+  }
+}
+
+mutation UpdateLeadFollowUp($id: ID!, $nextFollowUpAt: String) {
+  updateLeadFollowUp(id: $id, nextFollowUpAt: $nextFollowUpAt) {
+    ...LeadItemFields
+  }
+}
+
+mutation UpdateLeadNotes($id: ID!, $notes: String) {
+  updateLeadNotes(id: $id, notes: $notes) {
+    ...LeadItemFields
+  }
+}

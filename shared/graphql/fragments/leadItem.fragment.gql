@@ -1,23 +1,16 @@
 fragment LeadItemFields on LeadItem {
   id
-  title
-  summary
+  inboxMessageId
   source
   status
-  kind
   priority
   name
   email
   company
-  website
   subject
-  bodyText
-  relatedInboxMessageId
-  relatedInboxThreadId
-  threadKey
-  createdAt
-  updatedAt
+  summary
   lastActivityAt
-  lastContactedAt
-  tags
+  createdAt
+  nextFollowUpAt
+  notes
 }

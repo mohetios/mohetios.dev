@@ -1,10 +1,12 @@
-query LeadWorkspace($input: LeadWorkspaceInput) {
-  leadWorkspace(input: $input) {
+query LeadsWorkspace($input: LeadsWorkspaceInput) {
+  leadsWorkspace(input: $input) {
     summary {
       total
       new
       qualified
-      highPriority
+      followUp
+      won
+      lost
       archived
     }
 
