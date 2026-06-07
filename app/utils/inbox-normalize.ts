@@ -47,7 +47,8 @@ export function normalizeInboxDto(message: InboxMessageDto): InboxMessage {
     createdAt: message.createdAt,
     updatedAt: message.updatedAt,
     lastActivityAt: message.lastActivityAt,
-    time: formatMessageTime(message.createdAt)
+    trashedAt: message.trashedAt,
+    time: formatMessageTime(message.lastActivityAt ?? message.createdAt)
   }
 }
 

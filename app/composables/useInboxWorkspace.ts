@@ -17,6 +17,7 @@ function createDefaultInboxWorkspace(): InboxWorkspace {
       leads: 0,
       archived: 0,
       spam: 0,
+      trash: 0,
       total: 0
     },
     messages: [],
@@ -45,8 +46,7 @@ function updateMessageStatus(
     return {
       ...message,
       status,
-      updatedAt: now,
-      lastActivityAt: now
+      updatedAt: now
     }
   })
   const selectedMessage =
@@ -54,8 +54,7 @@ function updateMessageStatus(
       ? {
           ...workspace.selectedMessage,
           status,
-          updatedAt: now,
-          lastActivityAt: now
+          updatedAt: now
         }
       : workspace.selectedMessage
 
@@ -177,6 +176,24 @@ export function useInboxWorkspace(input: {
     return result.replyToInboxMessage
   }
 
+  async function trashMessage(id: string) {
+    const result = await GqlTrashInboxMessage({ id })
+    await asyncData.refresh()
+    return result.trashInboxMessage
+  }
+
+  async function restoreMessage(id: string) {
+    const result = await GqlRestoreInboxMessage({ id })
+    await asyncData.refresh()
+    return result.restoreInboxMessage
+  }
+
+  async function deleteMessageForever(id: string) {
+    const result = await GqlDeleteInboxMessageForever({ id })
+    await asyncData.refresh()
+    return result.deleteInboxMessageForever
+  }
+
   return {
     data: asyncData.data,
     pending: asyncData.pending,
@@ -185,6 +202,9 @@ export function useInboxWorkspace(input: {
     status: asyncData.status,
     updateStatus,
     updateKind,
-    sendReply
+    sendReply,
+    trashMessage,
+    restoreMessage,
+    deleteMessageForever
   }
 }

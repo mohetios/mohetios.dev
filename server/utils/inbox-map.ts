@@ -25,7 +25,8 @@ export function normalizeInboxMessageRow(message: typeof inboxMessages.$inferSel
     threadKey: message.threadKey,
     createdAt: message.createdAt,
     updatedAt: message.updatedAt,
-    lastActivityAt: message.lastActivityAt
+    lastActivityAt: message.lastActivityAt,
+    trashedAt: message.trashedAt
   }
 }
 
@@ -51,7 +52,7 @@ export function createInboxThreadEvents(
 ) {
   if (!message) return []
 
-  return [
+  const events = [
     {
       id: `message:${message.id}`,
       type: 'inbound_message',
@@ -72,5 +73,20 @@ export function createInboxThreadEvents(
       isPrivate: false,
       deliveryStatus: reply.status.toLowerCase()
     }))
-  ].sort((a, b) => a.createdAt - b.createdAt)
+  ]
+
+  if (message.trashedAt) {
+    events.push({
+      id: `trash:${message.id}`,
+      type: 'status_change',
+      authorName: 'System',
+      authorEmail: '',
+      bodyText: 'Conversation moved to trash',
+      createdAt: message.trashedAt,
+      isPrivate: false,
+      deliveryStatus: 'not_applicable'
+    })
+  }
+
+  return events.sort((a, b) => a.createdAt - b.createdAt)
 }

@@ -21,6 +21,7 @@ export type InboxMessage = {
   createdAt: number
   updatedAt?: number
   lastActivityAt?: number
+  trashedAt?: number | null
 }
 
 export type InboxThreadStatus =

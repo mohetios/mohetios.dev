@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import {
   useInboxWorkspace,
-  type InboxWorkspaceFilter,
   type InboxWorkspaceStatus
 } from '~/composables/useInboxWorkspace'
 import { normalizeInboxDto, normalizeThreadEventDto } from '~/utils/inbox-normalize'
 import {
-  getCategoryColor,
-  getCategoryLabel,
-  getSourceLabel,
-  getStatusColor,
-  getStatusLabel
-} from '~/utils/inbox-thread'
+  getInboxTabI18nKey,
+  inboxTabToFilter,
+  parseInboxTab,
+  PRIMARY_INBOX_TABS,
+  SECONDARY_INBOX_TABS,
+  type InboxTabItem,
+  type InboxTabKey
+} from '~/utils/inbox-tabs'
 
 definePageMeta({
   layout: 'dashboard',
@@ -29,7 +30,9 @@ useMohetSeo({
 const route = useRoute()
 const toast = useToast()
 
-const activeFilter = ref<InboxWorkspaceFilter>('UNREAD')
+const activeTab = computed(() => parseInboxTab(route.query.tab))
+const activeFilter = computed(() => inboxTabToFilter[activeTab.value])
+
 const search = ref('')
 const selectedMessageId = ref<string | undefined>(
   typeof route.query.message === 'string' ? route.query.message : undefined
@@ -42,7 +45,10 @@ const {
   refresh: refreshInbox,
   updateStatus,
   updateKind,
-  sendReply: sendInboxReply
+  sendReply: sendInboxReply,
+  trashMessage,
+  restoreMessage,
+  deleteMessageForever
 } = useInboxWorkspace({
   filter: activeFilter,
   search,
@@ -53,6 +59,12 @@ const replyBody = ref('')
 const composerMode = ref<'reply' | 'note'>('reply')
 const isSendingReply = ref(false)
 const isRefreshing = ref(false)
+const isConversationDrawerOpen = ref(false)
+const canUseConversationDrawer = ref(false)
+const isTrashConfirmOpen = ref(false)
+const isDeleteForeverConfirmOpen = ref(false)
+const isTrashActionPending = ref(false)
+const isDeleteForeverPending = ref(false)
 
 type InboxPushActionMessage = {
   type: 'inbox-action'
@@ -71,6 +83,7 @@ const hasInboxWorkspaceData = computed(() => {
     summary.leads > 0 ||
     summary.archived > 0 ||
     summary.spam > 0 ||
+    summary.trash > 0 ||
     summary.total > 0 ||
     inboxWorkspace.value.messages.length > 0 ||
     Boolean(inboxWorkspace.value.selectedMessage) ||
@@ -79,6 +92,10 @@ const hasInboxWorkspaceData = computed(() => {
   )
 })
 const isInitialInboxLoading = computed(() => isLoading.value && !hasInboxWorkspaceData.value)
+
+const isConversationLoading = computed(
+  () => Boolean(selectedMessageId.value) && isLoading.value && !selectedMessage.value
+)
 
 const selectedMessage = computed(() =>
   inboxWorkspace.value.selectedMessage
@@ -90,86 +107,68 @@ const selectedThreadEvents = computed(() =>
   inboxWorkspace.value.threadEvents.map(normalizeThreadEventDto)
 )
 
-const filters = computed(() => [
-  { label: t('dashboard.inbox.filters.unread'), value: 'UNREAD' as const },
-  { label: t('dashboard.inbox.filters.all'), value: 'ALL' as const },
-  { label: t('dashboard.inbox.filters.needsReply'), value: 'NEEDS_REPLY' as const },
-  { label: t('dashboard.inbox.filters.leads'), value: 'LEAD' as const },
-  { label: t('dashboard.inbox.filters.replied'), value: 'REPLIED' as const },
-  { label: t('dashboard.inbox.filters.archived'), value: 'ARCHIVED' as const },
-  { label: t('dashboard.inbox.filters.spam'), value: 'SPAM' as const }
-])
+const tabCounts = computed<Partial<Record<InboxTabKey, number>>>(() => ({
+  unread: inboxWorkspace.value.summary.unread,
+  'needs-reply': inboxWorkspace.value.summary.needsReply,
+  leads: inboxWorkspace.value.summary.leads,
+  all: inboxWorkspace.value.summary.total,
+  archived: inboxWorkspace.value.summary.archived,
+  spam: inboxWorkspace.value.summary.spam,
+  trash: inboxWorkspace.value.summary.trash
+}))
 
-const summaryCards = computed(() => [
-  {
-    key: 'unread',
-    label: t('dashboard.inbox.summary.unread'),
-    value: inboxWorkspace.value.summary.unread,
-    icon: 'i-lucide-mail',
-    helper: t('dashboard.inbox.summary.unreadHelper')
-  },
-  {
-    key: 'needs_reply',
-    label: t('dashboard.inbox.summary.needsReply'),
-    value: inboxWorkspace.value.summary.needsReply,
-    icon: 'i-lucide-reply',
-    helper: t('dashboard.inbox.summary.needsReplyHelper')
-  },
-  {
-    key: 'leads',
-    label: t('dashboard.inbox.summary.leads'),
-    value: inboxWorkspace.value.summary.leads,
-    icon: 'i-lucide-user-plus',
-    helper: t('dashboard.inbox.summary.leadsHelper')
-  },
-  {
-    key: 'archived',
-    label: t('dashboard.inbox.summary.archived'),
-    value: inboxWorkspace.value.summary.archived,
-    icon: 'i-lucide-archive',
-    helper: t('dashboard.inbox.summary.archivedHelper')
+const selectedHasReplies = computed(() => inboxWorkspace.value.replies.length > 0)
+
+function buildTabItem(key: InboxTabKey): InboxTabItem {
+  const count = tabCounts.value[key]
+
+  return {
+    key,
+    label: t(`dashboard.inbox.tabs.${getInboxTabI18nKey(key)}`),
+    count: count && count > 0 ? count : undefined
   }
-])
+}
+
+const primaryTabs = computed(() => PRIMARY_INBOX_TABS.map(buildTabItem))
+const secondaryTabs = computed(() => SECONDARY_INBOX_TABS.map(buildTabItem))
 
 watch(
-  () => route.query.message,
-  (messageId) => {
+  () => [route.query.tab, route.query.message] as const,
+  ([, messageId]) => {
     selectedMessageId.value = typeof messageId === 'string' ? messageId : undefined
-  }
+  },
+  { immediate: true }
 )
 
 watch(
   () => inboxWorkspace.value.messages,
   (currentMessages) => {
-    if (!currentMessages.length) {
-      if (route.query.message) {
-        return
-      }
-
-      selectedMessageId.value = undefined
+    if (currentMessages.length || route.query.message) {
       return
     }
 
-    const firstMessageId = currentMessages[0]?.id
-
-    if (!selectedMessageId.value && !route.query.message && firstMessageId) {
-      selectMessage(firstMessageId)
-      return
-    }
-
-    const exists = currentMessages.some((message) => message.id === selectedMessageId.value)
-
-    if (
-      !exists &&
-      !inboxWorkspace.value.selectedMessage &&
-      !route.query.message &&
-      firstMessageId
-    ) {
-      selectMessage(firstMessageId)
-    }
-  },
-  { immediate: true }
+    selectedMessageId.value = undefined
+  }
 )
+
+watch(
+  () => selectedMessageId.value,
+  (id) => {
+    if (canUseConversationDrawer.value) {
+      isConversationDrawerOpen.value = Boolean(id)
+    }
+  }
+)
+
+watch(isConversationDrawerOpen, (open) => {
+  if (!canUseConversationDrawer.value) {
+    return
+  }
+
+  if (!open && selectedMessageId.value) {
+    closeConversation()
+  }
+})
 
 watch(inboxLoadError, (error) => {
   if (!error || import.meta.server) {
@@ -215,7 +214,25 @@ function getInboxErrorMessage(error: unknown) {
     return 'Inbox replies table is missing. Apply the inbox replies migration.'
   }
 
+  if (message.includes('no such column: trashed_at')) {
+    return 'Inbox trash column is missing. Apply the inbox trash migration.'
+  }
+
   return message
+}
+
+function selectTab(tab: InboxTabKey) {
+  navigateTo(
+    {
+      path: route.path,
+      query: {
+        ...route.query,
+        tab,
+        message: undefined
+      }
+    },
+    { replace: false }
+  )
 }
 
 function selectMessage(id: string) {
@@ -226,8 +243,23 @@ function selectMessage(id: string) {
       path: route.path,
       query: {
         ...route.query,
+        tab: activeTab.value,
         message: id
       }
+    },
+    { replace: false }
+  )
+}
+
+function closeConversation() {
+  selectedMessageId.value = undefined
+
+  const { message, ...restQuery } = route.query
+
+  navigateTo(
+    {
+      path: route.path,
+      query: restQuery
     },
     { replace: true }
   )
@@ -289,8 +321,6 @@ function markSelectedRead() {
   return updateSelectedStatus('OPEN')
 }
 
-const selectedCanBeMarkedRead = computed(() => selectedMessage.value?.status === 'new')
-
 async function convertSelectedToLead() {
   if (!selectedMessage.value) return
 
@@ -311,8 +341,100 @@ async function convertSelectedToLead() {
   }
 }
 
-function focusReplyComposer() {
-  composerMode.value = 'reply'
+function requestMoveToTrash() {
+  if (!selectedMessage.value) return
+
+  if (selectedHasReplies.value) {
+    isTrashConfirmOpen.value = true
+    return
+  }
+
+  return trashSelected()
+}
+
+async function trashSelected() {
+  if (!selectedMessage.value) return
+
+  isTrashActionPending.value = true
+
+  try {
+    await trashMessage(selectedMessage.value.id)
+
+    toast.add({
+      color: 'success',
+      icon: 'i-lucide-trash-2',
+      title: t('dashboard.inbox.workspace.movedToTrash')
+    })
+
+    isTrashConfirmOpen.value = false
+    closeConversation()
+    await refreshInbox()
+  } catch (error) {
+    toast.add({
+      color: 'error',
+      icon: 'i-lucide-circle-alert',
+      title: getInboxErrorMessage(error)
+    })
+  } finally {
+    isTrashActionPending.value = false
+  }
+}
+
+async function restoreSelected() {
+  if (!selectedMessage.value) return
+
+  try {
+    await restoreMessage(selectedMessage.value.id)
+
+    toast.add({
+      color: 'success',
+      icon: 'i-lucide-rotate-ccw',
+      title: t('dashboard.inbox.workspace.restoredFromTrash')
+    })
+
+    closeConversation()
+    await refreshInbox()
+  } catch (error) {
+    toast.add({
+      color: 'error',
+      icon: 'i-lucide-circle-alert',
+      title: getInboxErrorMessage(error)
+    })
+  }
+}
+
+function requestDeleteForever() {
+  if (!selectedMessage.value) return
+
+  isDeleteForeverConfirmOpen.value = true
+}
+
+async function deleteSelectedForever() {
+  if (!selectedMessage.value) return
+
+  isDeleteForeverPending.value = true
+
+  try {
+    await deleteMessageForever(selectedMessage.value.id)
+
+    toast.add({
+      color: 'success',
+      icon: 'i-lucide-trash',
+      title: t('dashboard.inbox.workspace.deletedForever')
+    })
+
+    isDeleteForeverConfirmOpen.value = false
+    closeConversation()
+    await refreshInbox()
+  } catch (error) {
+    toast.add({
+      color: 'error',
+      icon: 'i-lucide-circle-alert',
+      title: getInboxErrorMessage(error)
+    })
+  } finally {
+    isDeleteForeverPending.value = false
+  }
 }
 
 async function sendReply() {
@@ -361,6 +483,27 @@ function isInboxPushActionMessage(value: unknown): value is InboxPushActionMessa
 }
 
 onMounted(() => {
+  if (import.meta.client) {
+    const mediaQuery = window.matchMedia('(max-width: 1023px)')
+
+    const syncDrawerViewport = () => {
+      canUseConversationDrawer.value = mediaQuery.matches
+
+      if (mediaQuery.matches) {
+        isConversationDrawerOpen.value = Boolean(selectedMessageId.value)
+      } else {
+        isConversationDrawerOpen.value = false
+      }
+    }
+
+    syncDrawerViewport()
+    mediaQuery.addEventListener('change', syncDrawerViewport)
+
+    onBeforeUnmount(() => {
+      mediaQuery.removeEventListener('change', syncDrawerViewport)
+    })
+  }
+
   if (!('serviceWorker' in navigator)) {
     return
   }
@@ -394,6 +537,7 @@ onBeforeUnmount(() => {
   <DashboardWorkspacePage
     :title="t('dashboard.inbox.title')"
     :description="t('dashboard.inbox.description')"
+    grid-class="lg:grid-cols-[minmax(500px,580px)_minmax(0,1fr)]"
   >
     <template #actions>
       <UButton
@@ -414,188 +558,81 @@ onBeforeUnmount(() => {
       </UButton>
     </template>
 
-    <template #summary>
-      <DashboardWorkspaceSummary :items="summaryCards" :loading="isInitialInboxLoading" />
-    </template>
-
-    <template #filters>
-      <DashboardWorkspaceFilterBar>
-        <template #filters>
-          <UButton
-            v-for="filter in filters"
-            :key="filter.value"
-            :color="activeFilter === filter.value ? 'primary' : 'neutral'"
-            :variant="activeFilter === filter.value ? 'soft' : 'ghost'"
-            size="xs"
-            @click="activeFilter = filter.value"
-          >
-            {{ filter.label }}
-          </UButton>
-        </template>
-
-        <template #search>
-          <UInput
-            v-model="search"
-            icon="i-lucide-search"
-            :placeholder="t('dashboard.inbox.threads.search')"
-            size="sm"
-          />
-        </template>
-      </DashboardWorkspaceFilterBar>
-    </template>
-
-    <DashboardWorkspaceListPanel
-      fill-height
-      :title="t('dashboard.inbox.threads.title')"
-      :description="t('dashboard.inbox.threads.description')"
+    <DashboardInboxThreadList
+      :primary-tabs="primaryTabs"
+      :secondary-tabs="secondaryTabs"
+      :active-tab="activeTab"
+      :messages="messages"
+      :search="search"
       :loading="isInitialInboxLoading"
-      :empty="!messages.length"
-      :empty-title="t('dashboard.inbox.threads.emptyTitle')"
-      :empty-description="t('dashboard.inbox.threads.emptyDescription')"
-    >
-      <div class="divide-y divide-default">
-        <DashboardInboxThreadRow
-          v-for="message in messages"
-          :key="message.id"
-          :message="message"
-          :selected="selectedMessageId === message.id"
-          @select="selectMessage(message.id)"
-        />
-      </div>
-    </DashboardWorkspaceListPanel>
+      :selected-message-id="selectedMessageId"
+      @update:search="search = $event"
+      @select-tab="selectTab"
+      @select-message="selectMessage"
+    />
 
-    <DashboardWorkspaceDetailPanel
-      :empty="!selectedMessage"
-      empty-icon="i-lucide-messages-square"
-      :empty-title="t('dashboard.inbox.workspace.selectTitle')"
-      :empty-description="t('dashboard.inbox.workspace.selectDescription')"
-    >
-      <template #header>
-        <div v-if="selectedMessage" class="space-y-3">
-          <div class="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
-            <div class="min-w-0">
-              <h2 class="truncate text-base font-semibold tracking-tight text-highlighted">
-                {{ selectedMessage.subject }}
-              </h2>
+    <DashboardInboxConversation
+      :message="selectedMessage"
+      :events="selectedThreadEvents"
+      :reply-body="replyBody"
+      :composer-mode="composerMode"
+      :is-sending-reply="isSendingReply"
+      :loading="isConversationLoading"
+      @send-reply="sendReply"
+      @update:reply-body="replyBody = $event"
+      @update:composer-mode="composerMode = $event"
+      @mark-read="markSelectedRead"
+      @mark-done="markSelectedDone"
+      @archive="archiveSelected"
+      @spam="spamSelected"
+      @convert-to-lead="convertSelectedToLead"
+      @move-to-trash="requestMoveToTrash"
+      @restore="restoreSelected"
+      @delete-forever="requestDeleteForever"
+    />
 
-              <p class="mt-1 truncate text-sm text-muted">
-                {{ selectedMessage.senderName }} · {{ selectedMessage.senderEmail }} ·
-                {{ getSourceLabel(selectedMessage.source) }}
-              </p>
+    <DashboardInboxConversationDrawer
+      v-if="canUseConversationDrawer"
+      v-model:open="isConversationDrawerOpen"
+      :message="selectedMessage"
+      :events="selectedThreadEvents"
+      :reply-body="replyBody"
+      :composer-mode="composerMode"
+      :is-sending-reply="isSendingReply"
+      :loading="isConversationLoading"
+      @close="closeConversation"
+      @send-reply="sendReply"
+      @update:reply-body="replyBody = $event"
+      @update:composer-mode="composerMode = $event"
+      @mark-read="markSelectedRead"
+      @mark-done="markSelectedDone"
+      @archive="archiveSelected"
+      @spam="spamSelected"
+      @convert-to-lead="convertSelectedToLead"
+      @move-to-trash="requestMoveToTrash"
+      @restore="restoreSelected"
+      @delete-forever="requestDeleteForever"
+    />
 
-              <div class="mt-2 flex flex-wrap gap-1.5">
-                <UBadge :color="getCategoryColor(selectedMessage.kind)" variant="soft" size="sm">
-                  {{ getCategoryLabel(selectedMessage.kind) }}
-                </UBadge>
+    <DashboardInboxConfirmModal
+      v-model:open="isTrashConfirmOpen"
+      :title="t('dashboard.inbox.confirmTrash.title')"
+      :description="t('dashboard.inbox.confirmTrash.description')"
+      :confirm-label="t('dashboard.inbox.confirmTrash.confirm')"
+      :loading="isTrashActionPending"
+      @confirm="trashSelected"
+      @cancel="isTrashConfirmOpen = false"
+    />
 
-                <UBadge :color="getStatusColor(selectedMessage.status)" variant="subtle" size="sm">
-                  {{ getStatusLabel(selectedMessage.status) }}
-                </UBadge>
-              </div>
-            </div>
-
-            <div class="flex shrink-0 flex-wrap gap-1.5">
-              <UButton
-                color="primary"
-                variant="soft"
-                icon="i-lucide-reply"
-                size="xs"
-                @click="focusReplyComposer"
-              >
-                {{ t('dashboard.inbox.workspace.reply') }}
-              </UButton>
-
-              <UButton
-                color="neutral"
-                variant="outline"
-                icon="i-lucide-sparkles"
-                size="xs"
-                disabled
-              >
-                {{ t('dashboard.inbox.workspace.aiDraft') }}
-              </UButton>
-
-              <UButton
-                color="neutral"
-                variant="outline"
-                icon="i-lucide-mail-open"
-                size="xs"
-                :disabled="!selectedCanBeMarkedRead"
-                @click="markSelectedRead"
-              >
-                {{ t('dashboard.inbox.workspace.markRead') }}
-              </UButton>
-
-              <UButton
-                color="success"
-                variant="outline"
-                icon="i-lucide-check"
-                size="xs"
-                @click="markSelectedDone"
-              >
-                {{ t('dashboard.inbox.workspace.markDone') }}
-              </UButton>
-
-              <UButton
-                color="neutral"
-                variant="ghost"
-                icon="i-lucide-archive"
-                size="xs"
-                @click="archiveSelected"
-              >
-                {{ t('dashboard.inbox.workspace.archive') }}
-              </UButton>
-
-              <UButton
-                color="error"
-                variant="ghost"
-                icon="i-lucide-octagon-alert"
-                size="xs"
-                @click="spamSelected"
-              >
-                {{ t('dashboard.inbox.workspace.spam') }}
-              </UButton>
-
-              <UButton
-                color="neutral"
-                variant="ghost"
-                icon="i-lucide-user-plus"
-                size="xs"
-                @click="convertSelectedToLead"
-              >
-                {{ t('dashboard.inbox.workspace.convertToLead') }}
-              </UButton>
-            </div>
-          </div>
-        </div>
-      </template>
-
-      <div v-if="selectedMessage" class="space-y-5">
-        <div class="space-y-3">
-          <DashboardInboxTimelineEvent
-            v-for="event in selectedThreadEvents"
-            :key="event.id"
-            :event="event"
-          />
-        </div>
-
-        <DashboardInboxComposer
-          v-model:composer-mode="composerMode"
-          v-model:reply-body="replyBody"
-          :is-sending-reply="isSendingReply"
-          disable-notes
-          @send-reply="sendReply"
-        />
-
-        <p class="text-xs text-muted">
-          {{ t('dashboard.inbox.workspace.notesDisabled') }}
-        </p>
-
-        <div class="grid gap-3 xl:grid-cols-2">
-          <DashboardInboxDetailsCard :message="selectedMessage" />
-          <DashboardInboxContactCard :message="selectedMessage" />
-        </div>
-      </div>
-    </DashboardWorkspaceDetailPanel>
+    <DashboardInboxConfirmModal
+      v-model:open="isDeleteForeverConfirmOpen"
+      :title="t('dashboard.inbox.confirmDeleteForever.title')"
+      :description="t('dashboard.inbox.confirmDeleteForever.description')"
+      :confirm-label="t('dashboard.inbox.confirmDeleteForever.confirm')"
+      destructive
+      :loading="isDeleteForeverPending"
+      @confirm="deleteSelectedForever"
+      @cancel="isDeleteForeverConfirmOpen = false"
+    />
   </DashboardWorkspacePage>
 </template>

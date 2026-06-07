@@ -300,19 +300,32 @@
         "leads": "Leads",
         "replied": "Replied",
         "archived": "Archived",
-        "spam": "Spam"
+        "spam": "Spam",
+        "trash": "Trash"
       },
       "threads": {
         "title": "Threads",
         "description": "Email and contact-form conversations in one place.",
         "search": "Search threads...",
+        "searchConversations": "Search conversations",
         "emptyTitle": "No threads found",
         "emptyDescription": "Try a different search or filter."
       },
+      "tabs": {
+        "more": "More",
+        "all": "All",
+        "unread": "Unread",
+        "needsReply": "Needs reply",
+        "leads": "Leads",
+        "replied": "Replied",
+        "archived": "Archived",
+        "spam": "Spam",
+        "trash": "Trash"
+      },
       "statusUpdated": "Inbox status updated.",
       "workspace": {
-        "selectTitle": "Select a thread",
-        "selectDescription": "Choose a conversation from the inbox to review, reply, or add a private note.",
+        "selectTitle": "Select a conversation",
+        "selectDescription": "Choose a conversation from the inbox to review and reply.",
         "reply": "Reply",
         "aiDraft": "AI Draft",
         "markRead": "Mark as Read",
@@ -321,7 +334,30 @@
         "spam": "Spam",
         "convertToLead": "Convert to Lead",
         "convertedToLead": "Message converted to lead.",
+        "close": "Close conversation",
+        "moreActions": "More actions",
+        "moveToTrash": "Move to trash",
+        "movedToTrash": "Conversation moved to trash",
+        "restore": "Restore",
+        "restoredFromTrash": "Conversation restored",
+        "deleteForever": "Delete forever",
+        "deletedForever": "Conversation permanently deleted",
         "notesDisabled": "Private notes need persistent storage and will be added later."
+      },
+      "confirmCancel": "Cancel",
+      "confirmTrash": {
+        "title": "Move conversation to trash?",
+        "description": "You can restore it later from the Trash tab.",
+        "confirm": "Move to trash"
+      },
+      "confirmDeleteForever": {
+        "title": "Delete conversation forever?",
+        "description": "This will permanently remove the message, replies, and timeline events from the database. This action cannot be undone.",
+        "confirm": "Delete forever"
+      },
+      "timeline": {
+        "sent": "Sent",
+        "failed": "Failed"
       },
       "composer": {
         "reply": "Reply",
@@ -339,6 +375,7 @@
         "kind": "Kind",
         "status": "Status",
         "received": "Received",
+        "trashed": "Trashed",
         "messageId": "Message ID"
       },
       "contact": {

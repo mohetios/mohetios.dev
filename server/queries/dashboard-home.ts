@@ -1,4 +1,4 @@
-import { desc, eq, inArray, sql } from 'drizzle-orm'
+import { and, desc, eq, inArray, isNull, sql } from 'drizzle-orm'
 
 import { adminNotifications, inboxMessages } from '../models/schema'
 import type { GraphQLContext } from '../routes/graph'
@@ -50,24 +50,31 @@ export async function dashboardHome(_parent: unknown, _args: unknown, context: G
 
   const { db } = context
 
+  const activeOnly = isNull(inboxMessages.trashedAt)
+
   const [unreadRows, needsReplyRows, leadRows, inboxPreviewRows, notificationRows] =
     await Promise.all([
       db
         .select({ count: sql<number>`count(*)` })
         .from(inboxMessages)
-        .where(eq(inboxMessages.status, 'NEW')),
+        .where(and(activeOnly, eq(inboxMessages.status, 'NEW'))),
 
       db
         .select({ count: sql<number>`count(*)` })
         .from(inboxMessages)
-        .where(inArray(inboxMessages.status, ['NEW', 'OPEN'])),
+        .where(and(activeOnly, inArray(inboxMessages.status, ['NEW', 'OPEN']))),
 
       db
         .select({ count: sql<number>`count(*)` })
         .from(inboxMessages)
-        .where(inArray(inboxMessages.kind, ['LEAD', 'COLLABORATION'])),
+        .where(and(activeOnly, inArray(inboxMessages.kind, ['LEAD', 'COLLABORATION']))),
 
-      db.select().from(inboxMessages).orderBy(desc(inboxMessages.createdAt)).limit(5),
+      db
+        .select()
+        .from(inboxMessages)
+        .where(activeOnly)
+        .orderBy(desc(inboxMessages.createdAt))
+        .limit(5),
 
       db.select().from(adminNotifications).orderBy(desc(adminNotifications.createdAt)).limit(8)
     ])

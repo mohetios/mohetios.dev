@@ -2,6 +2,7 @@
 defineProps<{
   title: string
   description?: string
+  gridClass?: string
 }>()
 </script>
 
@@ -34,7 +35,8 @@ defineProps<{
     <slot name="filters" />
 
     <section
-      class="grid min-h-0 gap-4 lg:h-[calc(100dvh-12.5rem)] lg:max-h-[calc(100dvh-12.5rem)] lg:grid-cols-[minmax(340px,420px)_1fr] lg:items-stretch"
+      class="grid min-h-0 gap-4 lg:h-[calc(100dvh-12.5rem)] lg:max-h-[calc(100dvh-12.5rem)] lg:items-stretch"
+      :class="gridClass ?? 'lg:grid-cols-[minmax(340px,420px)_1fr]'"
     >
       <slot />
     </section>

@@ -19,6 +19,9 @@ export const typeDefs = /* GraphQL */ `
     updateInboxMessageStatus(input: UpdateInboxMessageStatusInput!): InboxMessage!
     updateInboxMessageKind(input: UpdateInboxMessageKindInput!): InboxMessage!
     replyToInboxMessage(input: ReplyToInboxMessageInput!): ReplyToInboxMessageResult!
+    trashInboxMessage(id: ID!): InboxMessage!
+    restoreInboxMessage(id: ID!): InboxMessage!
+    deleteInboxMessageForever(id: ID!): DeleteInboxMessagePayload!
     updateLeadReview(input: UpdateLeadReviewInput!): LeadItem!
     markLeadQualified(id: ID!): LeadItem!
     archiveLead(id: ID!): LeadItem!
@@ -83,6 +86,7 @@ export const typeDefs = /* GraphQL */ `
     createdAt: Float!
     updatedAt: Float!
     lastActivityAt: Float!
+    trashedAt: Float
   }
 
   type InboxReply {
@@ -165,6 +169,7 @@ export const typeDefs = /* GraphQL */ `
     REPLIED
     ARCHIVED
     SPAM
+    TRASH
   }
 
   type InboxSummary {
@@ -173,6 +178,7 @@ export const typeDefs = /* GraphQL */ `
     leads: Int!
     archived: Int!
     spam: Int!
+    trash: Int!
     total: Int!
   }
 
@@ -199,6 +205,11 @@ export const typeDefs = /* GraphQL */ `
     id: ID!
     status: InboxReplyStatus!
     error: String
+  }
+
+  type DeleteInboxMessagePayload {
+    id: ID!
+    deleted: Boolean!
   }
 
   enum AdminNotificationType {

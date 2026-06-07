@@ -1,0 +1,6 @@
+mutation DeleteInboxMessageForever($id: ID!) {
+  deleteInboxMessageForever(id: $id) {
+    id
+    deleted
+  }
+}

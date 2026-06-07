@@ -6,6 +6,7 @@ const noteBody = defineModel<string>('noteBody', { default: '' })
 const props = defineProps<{
   isSendingReply: boolean
   disableNotes?: boolean
+  compact?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -27,8 +28,8 @@ watch(
 </script>
 
 <template>
-  <div class="space-y-3 rounded-xl border border-default bg-muted/20 p-4">
-    <div class="flex flex-wrap gap-2">
+  <div :class="compact ? 'space-y-2' : 'space-y-3 rounded-xl border border-default bg-muted/20 p-4'">
+    <div v-if="!compact" class="flex flex-wrap gap-2">
       <UButton
         :color="composerMode === 'reply' ? 'primary' : 'neutral'"
         :variant="composerMode === 'reply' ? 'soft' : 'ghost'"
@@ -52,26 +53,30 @@ watch(
       <UTextarea
         v-model="replyBody"
         :placeholder="t('dashboard.inbox.composer.replyPlaceholder')"
-        :rows="5"
+        :rows="compact ? 3 : 5"
+        :ui="compact ? { base: 'min-h-[88px]' } : undefined"
         class="w-full"
       />
 
-      <div class="flex flex-wrap gap-2">
+      <div :class="compact ? 'flex justify-end' : 'flex flex-wrap gap-2'">
         <UButton
           color="primary"
           icon="i-lucide-send"
           :loading="isSendingReply"
           :disabled="!replyBody.trim()"
+          :size="compact ? 'sm' : 'md'"
           @click="emit('sendReply')"
         >
           {{ t('dashboard.inbox.composer.sendReply') }}
         </UButton>
-        <UButton color="neutral" variant="outline" disabled>
-          {{ t('dashboard.inbox.composer.saveDraft') }}
-        </UButton>
-        <UButton color="neutral" variant="ghost" disabled>
-          {{ t('dashboard.inbox.composer.generateAiDraft') }}
-        </UButton>
+        <template v-if="!compact">
+          <UButton color="neutral" variant="outline" disabled>
+            {{ t('dashboard.inbox.composer.saveDraft') }}
+          </UButton>
+          <UButton color="neutral" variant="ghost" disabled>
+            {{ t('dashboard.inbox.composer.generateAiDraft') }}
+          </UButton>
+        </template>
       </div>
     </template>
 
@@ -79,7 +84,7 @@ watch(
       <UTextarea
         v-model="noteBody"
         :placeholder="t('dashboard.inbox.composer.notePlaceholder')"
-        :rows="5"
+        :rows="compact ? 3 : 5"
         class="w-full"
       />
 

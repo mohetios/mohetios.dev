@@ -1,0 +1,8 @@
+mutation RestoreInboxMessage($id: ID!) {
+  restoreInboxMessage(id: $id) {
+    id
+    trashedAt
+    updatedAt
+    lastActivityAt
+  }
+}

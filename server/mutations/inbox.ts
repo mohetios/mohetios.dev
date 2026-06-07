@@ -2,9 +2,12 @@ import { GraphQLError } from 'graphql'
 
 import type { GraphQLContext } from '../routes/graph'
 import { createInboxMessage } from '../services/inbox/create-inbox-message'
+import { deleteMessageForever } from '../services/inbox/delete-message-forever'
 import { markMessageKind } from '../services/inbox/mark-message-kind'
 import { markMessageStatus } from '../services/inbox/mark-message-status'
 import { replyToMessage } from '../services/inbox/reply-to-message'
+import { restoreMessage } from '../services/inbox/restore-message'
+import { trashMessage } from '../services/inbox/trash-message'
 import { normalizeInboxMessageRow } from '../utils/inbox-map'
 import { createAdminNotification } from '../services/notifications/create-admin-notification'
 import { requirePermission } from '../utils/auth'
@@ -262,6 +265,61 @@ export const inboxMutations = {
       }
     } catch (error) {
       throw new GraphQLError(error instanceof Error ? error.message : 'Reply failed')
+    }
+  },
+
+  trashInboxMessage: async (
+    _parent: unknown,
+    args: { id: string },
+    context: GraphQLContext
+  ) => {
+    requirePermission(context, 'inbox:manage')
+
+    const message = await trashMessage(context.db, args.id)
+
+    if (!message) {
+      throw new GraphQLError('Inbox message not found')
+    }
+
+    return normalizeInboxMessageRow(message)
+  },
+
+  restoreInboxMessage: async (
+    _parent: unknown,
+    args: { id: string },
+    context: GraphQLContext
+  ) => {
+    requirePermission(context, 'inbox:manage')
+
+    const message = await restoreMessage(context.db, args.id)
+
+    if (!message) {
+      throw new GraphQLError('Inbox message not found')
+    }
+
+    return normalizeInboxMessageRow(message)
+  },
+
+  deleteInboxMessageForever: async (
+    _parent: unknown,
+    args: { id: string },
+    context: GraphQLContext
+  ) => {
+    requirePermission(context, 'inbox:manage')
+
+    try {
+      const result = await deleteMessageForever(context.db, args.id)
+
+      if (!result.found) {
+        throw new GraphQLError('Inbox message not found')
+      }
+
+      return {
+        id: args.id,
+        deleted: result.deleted
+      }
+    } catch (error) {
+      throw new GraphQLError(error instanceof Error ? error.message : 'Delete failed')
     }
   }
 }

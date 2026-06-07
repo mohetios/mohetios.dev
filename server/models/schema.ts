@@ -46,7 +46,8 @@ export const inboxMessages = sqliteTable('inbox_messages', {
   threadKey: text('thread_key').notNull(),
   createdAt: integer('created_at').notNull(),
   updatedAt: integer('updated_at').notNull(),
-  lastActivityAt: integer('last_activity_at').notNull()
+  lastActivityAt: integer('last_activity_at').notNull(),
+  trashedAt: integer('trashed_at')
 })
 
 export type InboxMessage = typeof inboxMessages.$inferSelect

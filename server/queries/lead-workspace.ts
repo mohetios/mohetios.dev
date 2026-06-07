@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, like, or, sql, type SQL } from 'drizzle-orm'
+import { and, desc, eq, inArray, isNull, like, or, sql, type SQL } from 'drizzle-orm'
 
 import { inboxMessages } from '../models/schema'
 import type { GraphQLContext } from '../routes/graph'
@@ -68,7 +68,10 @@ function buildSearchCondition(search?: string | null): SQL | undefined {
 }
 
 async function getLeadSummary(db: GraphQLContext['db']) {
-  const baseLeadCondition = inArray(inboxMessages.kind, ['LEAD', 'COLLABORATION'])
+  const baseLeadCondition = and(
+    inArray(inboxMessages.kind, ['LEAD', 'COLLABORATION']),
+    isNull(inboxMessages.trashedAt)
+  )
 
   const [totalRows, newRows, qualifiedRows, highPriorityRows, archivedRows] = await Promise.all([
     db
@@ -123,6 +126,7 @@ export async function leadWorkspace(
   const offset = Math.max(input.offset || 0, 0)
 
   const conditions = [
+    isNull(inboxMessages.trashedAt),
     buildTypeCondition(input.type),
     buildStatusCondition(input.status),
     buildSourceCondition(input.source),
@@ -143,7 +147,12 @@ export async function leadWorkspace(
           .limit(limit)
           .offset(offset)
       : messageQuery
-          .where(inArray(inboxMessages.kind, ['LEAD', 'COLLABORATION']))
+          .where(
+            and(
+              isNull(inboxMessages.trashedAt),
+              inArray(inboxMessages.kind, ['LEAD', 'COLLABORATION'])
+            )
+          )
           .orderBy(desc(inboxMessages.lastActivityAt))
           .limit(limit)
           .offset(offset)

@@ -296,14 +296,27 @@
         "leads": "سرنخ‌ها",
         "replied": "پاسخ‌داده",
         "archived": "بایگانی",
-        "spam": "هرزنامه"
+        "spam": "هرزنامه",
+        "trash": "سطل زباله"
       },
       "threads": {
         "title": "گفتگوها",
         "description": "ایمیل و پیام‌های فرم تماس در یکجا.",
         "search": "جستجوی گفتگوها...",
+        "searchConversations": "جستجوی گفتگوها",
         "emptyTitle": "گفتگویی یافت نشد",
         "emptyDescription": "فیلتر یا جستجو را تغییر دهید."
+      },
+      "tabs": {
+        "more": "بیشتر",
+        "all": "همه",
+        "unread": "خوانده‌نشده",
+        "needsReply": "نیاز به پاسخ",
+        "leads": "سرنخ‌ها",
+        "replied": "پاسخ‌داده",
+        "archived": "بایگانی",
+        "spam": "هرزنامه",
+        "trash": "سطل زباله"
       },
       "statusUpdated": "وضعیت صندوق ورودی به‌روزرسانی شد.",
       "workspace": {
@@ -317,7 +330,30 @@
         "spam": "هرزنامه",
         "convertToLead": "تبدیل به سرنخ",
         "convertedToLead": "پیام به سرنخ تبدیل شد.",
+        "close": "بستن گفتگو",
+        "moreActions": "اقدامات بیشتر",
+        "moveToTrash": "انتقال به سطل زباله",
+        "movedToTrash": "گفتگو به سطل زباله منتقل شد",
+        "restore": "بازیابی",
+        "restoredFromTrash": "گفتگو بازیابی شد",
+        "deleteForever": "حذف دائمی",
+        "deletedForever": "گفتگو برای همیشه حذف شد",
         "notesDisabled": "یادداشت‌های خصوصی به ذخیره‌سازی پایدار نیاز دارند و بعداً اضافه می‌شوند."
+      },
+      "confirmCancel": "انصراف",
+      "confirmTrash": {
+        "title": "گفتگو به سطل زباله منتقل شود؟",
+        "description": "بعداً می‌توانید آن را از تب سطل زباله بازیابی کنید.",
+        "confirm": "انتقال به سطل زباله"
+      },
+      "confirmDeleteForever": {
+        "title": "گفتگو برای همیشه حذف شود؟",
+        "description": "این کار پیام، پاسخ‌ها و رویدادهای گفتگو را برای همیشه از پایگاه داده حذف می‌کند و قابل بازگشت نیست.",
+        "confirm": "حذف دائمی"
+      },
+      "timeline": {
+        "sent": "ارسال شد",
+        "failed": "ناموفق"
       },
       "composer": {
         "reply": "پاسخ",
@@ -335,6 +371,7 @@
         "kind": "دسته",
         "status": "وضعیت",
         "received": "دریافت",
+        "trashed": "حذف‌شده",
         "messageId": "شناسه پیام"
       },
       "contact": {

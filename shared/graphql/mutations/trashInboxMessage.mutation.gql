@@ -1,0 +1,8 @@
+mutation TrashInboxMessage($id: ID!) {
+  trashInboxMessage(id: $id) {
+    id
+    trashedAt
+    updatedAt
+    lastActivityAt
+  }
+}

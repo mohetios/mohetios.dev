@@ -3,19 +3,18 @@ import { eq } from 'drizzle-orm'
 import type { AppDb } from '../../models/client'
 import { inboxMessages } from '../../models/schema'
 
-export async function markMessageStatus(
-  db: AppDb,
-  id: string,
-  status: 'NEW' | 'OPEN' | 'REPLIED' | 'ARCHIVED' | 'SPAM'
-) {
-  const [message] = await db
+export async function restoreMessage(db: AppDb, id: string) {
+  const now = Date.now()
+
+  const [updated] = await db
     .update(inboxMessages)
     .set({
-      status,
-      updatedAt: Date.now()
+      trashedAt: null,
+      updatedAt: now,
+      lastActivityAt: now
     })
     .where(eq(inboxMessages.id, id))
     .returning()
 
-  return message
+  return updated || null
 }

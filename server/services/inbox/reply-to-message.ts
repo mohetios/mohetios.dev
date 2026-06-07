@@ -23,6 +23,10 @@ export async function replyToMessage(
     throw new Error('Message not found')
   }
 
+  if (message.trashedAt) {
+    throw new Error('Restore conversation from trash before replying')
+  }
+
   if (!env.EMAIL_DELIVERY_QUEUE) {
     throw new Error('EMAIL_DELIVERY_QUEUE binding is not configured')
   }
