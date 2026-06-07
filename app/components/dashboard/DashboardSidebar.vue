@@ -6,7 +6,6 @@ type DashboardNavItem = {
   label: string
   icon: string
   to: string
-  badge?: string
 }
 
 const navItems = computed<DashboardNavItem[]>(() => [
@@ -18,8 +17,7 @@ const navItems = computed<DashboardNavItem[]>(() => [
   {
     label: t('dashboard.nav.inbox'),
     icon: 'i-lucide-inbox',
-    to: '/dashboard/inbox',
-    badge: '8'
+    to: '/dashboard/inbox'
   },
   {
     label: t('dashboard.nav.leads'),
@@ -103,12 +101,12 @@ function isActive(path: string) {
           v-for="item in navItems"
           :key="item.to"
           :to="item.to"
-          class="group relative flex min-h-10 items-center rounded-xl px-3 py-2 text-sm transition"
+          class="group flex min-h-10 items-center rounded-xl px-3 py-2 text-sm transition"
           :class="[
             isActive(item.to)
               ? 'bg-primary/10 text-primary'
               : 'text-muted hover:bg-neutral-100 hover:text-highlighted dark:hover:bg-neutral-900',
-            collapsed ? 'justify-center px-2' : 'justify-between'
+            collapsed ? 'justify-center px-2' : 'gap-3'
           ]"
           :aria-current="isActive(item.to) ? 'page' : undefined"
           :title="collapsed ? item.label : undefined"
@@ -122,22 +120,6 @@ function isActive(path: string) {
               {{ item.label }}
             </span>
           </span>
-
-          <UBadge
-            v-if="item.badge && !collapsed"
-            color="primary"
-            variant="soft"
-            size="xs"
-            class="rounded-full"
-          >
-            {{ item.badge }}
-          </UBadge>
-
-          <span
-            v-if="item.badge && collapsed"
-            class="absolute right-2 top-2 size-2 rounded-full bg-primary"
-            aria-hidden="true"
-          />
         </NuxtLink>
       </nav>
     </template>
