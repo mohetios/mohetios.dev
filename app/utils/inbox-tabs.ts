@@ -21,7 +21,7 @@ export const inboxTabToFilter: Record<InboxTabKey, InboxWorkspaceFilter> = {
   trash: 'TRASH'
 }
 
-export const PRIMARY_INBOX_TABS: InboxTabKey[] = ['unread', 'needs-reply', 'leads', 'all']
+export const PRIMARY_INBOX_TABS: InboxTabKey[] = ['all', 'unread', 'needs-reply', 'leads']
 
 export const SECONDARY_INBOX_TABS: InboxTabKey[] = ['replied', 'archived', 'spam', 'trash']
 
