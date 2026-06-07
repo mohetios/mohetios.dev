@@ -9,14 +9,25 @@ export async function markMessageKind(
   kind: 'LEAD' | 'COLLABORATION' | 'PERSONAL' | 'SUPPORT' | 'OTHER' | 'SPAM'
 ) {
   const now = Date.now()
+  const existing = await db
+    .select({ leadStatus: inboxMessages.leadStatus })
+    .from(inboxMessages)
+    .where(eq(inboxMessages.id, id))
+    .limit(1)
+
+  const updateData: Partial<typeof inboxMessages.$inferInsert> = {
+    kind,
+    updatedAt: now,
+    lastActivityAt: now
+  }
+
+  if (kind === 'LEAD' && !existing[0]?.leadStatus) {
+    updateData.leadStatus = 'NEW'
+  }
 
   const [message] = await db
     .update(inboxMessages)
-    .set({
-      kind,
-      updatedAt: now,
-      lastActivityAt: now
-    })
+    .set(updateData)
     .where(eq(inboxMessages.id, id))
     .returning()
 

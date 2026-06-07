@@ -47,7 +47,14 @@ export const inboxMessages = sqliteTable('inbox_messages', {
   createdAt: integer('created_at').notNull(),
   updatedAt: integer('updated_at').notNull(),
   lastActivityAt: integer('last_activity_at').notNull(),
-  trashedAt: integer('trashed_at')
+  trashedAt: integer('trashed_at'),
+  leadStatus: text('lead_status', {
+    enum: ['NEW', 'QUALIFIED', 'FOLLOW_UP', 'WON', 'LOST', 'ARCHIVED']
+  }),
+  leadPriority: text('lead_priority', { enum: ['LOW', 'MEDIUM', 'HIGH'] }),
+  leadNextFollowUpAt: integer('lead_next_follow_up_at'),
+  leadNotes: text('lead_notes'),
+  leadEstimatedValue: integer('lead_estimated_value')
 })
 
 export type InboxMessage = typeof inboxMessages.$inferSelect

@@ -67,7 +67,7 @@ export async function dashboardHome(_parent: unknown, _args: unknown, context: G
       db
         .select({ count: sql<number>`count(*)` })
         .from(inboxMessages)
-        .where(and(activeOnly, inArray(inboxMessages.kind, ['LEAD', 'COLLABORATION']))),
+        .where(and(activeOnly, eq(inboxMessages.kind, 'LEAD'))),
 
       db
         .select()

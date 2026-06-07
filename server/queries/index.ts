@@ -2,7 +2,7 @@ import { analyticsDashboard } from './analytics-dashboard'
 import { dashboardHome } from './dashboard-home'
 import { inboxFieldResolvers, inboxQueries } from './inbox'
 import { inboxWorkspaceQueries } from './inbox-workspace'
-import { leadWorkspaceQueries } from './lead-workspace'
+import { leadsWorkspaceQueries } from './lead-workspace'
 import { me } from './me'
 import { profileQueries } from './profile'
 
@@ -12,7 +12,7 @@ export const Query = {
   analyticsDashboard,
   ...inboxQueries,
   ...inboxWorkspaceQueries,
-  ...leadWorkspaceQueries,
+  ...leadsWorkspaceQueries,
   ...profileQueries
 }
 

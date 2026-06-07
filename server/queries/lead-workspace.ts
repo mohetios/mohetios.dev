@@ -1,53 +1,67 @@
-import { and, desc, eq, inArray, isNull, like, or, sql, type SQL } from 'drizzle-orm'
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  isNotNull,
+  isNull,
+  like,
+  or,
+  sql,
+  type SQL
+} from 'drizzle-orm'
 
 import { inboxMessages } from '../models/schema'
 import type { GraphQLContext } from '../routes/graph'
 import { requirePermission } from '../utils/auth'
 import { normalizeLeadRow } from '../utils/lead-map'
 
-type LeadReviewStatusFilter = 'ALL' | 'NEW' | 'OPEN' | 'REPLIED' | 'ARCHIVED' | 'SPAM'
-type LeadReviewTypeFilter =
+type LeadFilter =
+  | 'NEW'
+  | 'QUALIFIED'
+  | 'FOLLOW_UP'
+  | 'WON'
+  | 'LOST'
   | 'ALL'
-  | 'LEAD'
-  | 'COLLABORATION'
-  | 'PERSONAL'
-  | 'SUPPORT'
-  | 'OTHER'
-type LeadReviewSourceFilter = 'ALL' | 'EMAIL' | 'CONTACT_FORM'
-type LeadReviewPriorityFilter = 'ALL' | 'LOW' | 'NORMAL' | 'HIGH'
+  | 'ARCHIVED'
+  | 'HIGH_PRIORITY'
+  | 'NO_FOLLOW_UP'
 
-type LeadWorkspaceInput = {
-  status?: LeadReviewStatusFilter | null
-  type?: LeadReviewTypeFilter | null
-  source?: LeadReviewSourceFilter | null
-  priority?: LeadReviewPriorityFilter | null
+type LeadsWorkspaceInput = {
+  filter?: LeadFilter | null
   search?: string | null
   selectedLeadId?: string | null
   limit?: number | null
   offset?: number | null
 }
 
-function buildStatusCondition(status?: LeadReviewStatusFilter | null): SQL | undefined {
-  if (!status || status === 'ALL') return undefined
-  return eq(inboxMessages.status, status)
-}
+const baseLeadCondition = and(eq(inboxMessages.kind, 'LEAD'), isNull(inboxMessages.trashedAt))
 
-function buildTypeCondition(type?: LeadReviewTypeFilter | null): SQL | undefined {
-  if (!type || type === 'ALL') {
-    return inArray(inboxMessages.kind, ['LEAD', 'COLLABORATION'])
+function buildFilterCondition(filter?: LeadFilter | null): SQL | undefined {
+  switch (filter) {
+    case 'NEW':
+      return or(isNull(inboxMessages.leadStatus), eq(inboxMessages.leadStatus, 'NEW'))
+    case 'QUALIFIED':
+      return eq(inboxMessages.leadStatus, 'QUALIFIED')
+    case 'FOLLOW_UP':
+      return isNotNull(inboxMessages.leadNextFollowUpAt)
+    case 'WON':
+      return eq(inboxMessages.leadStatus, 'WON')
+    case 'LOST':
+      return eq(inboxMessages.leadStatus, 'LOST')
+    case 'ARCHIVED':
+      return eq(inboxMessages.leadStatus, 'ARCHIVED')
+    case 'HIGH_PRIORITY':
+      return or(
+        eq(inboxMessages.leadPriority, 'HIGH'),
+        and(isNull(inboxMessages.leadPriority), eq(inboxMessages.priority, 'HIGH'))
+      )
+    case 'NO_FOLLOW_UP':
+      return isNull(inboxMessages.leadNextFollowUpAt)
+    case 'ALL':
+    default:
+      return undefined
   }
-
-  return eq(inboxMessages.kind, type)
-}
-
-function buildSourceCondition(source?: LeadReviewSourceFilter | null): SQL | undefined {
-  if (!source || source === 'ALL') return undefined
-  return eq(inboxMessages.source, source)
-}
-
-function buildPriorityCondition(priority?: LeadReviewPriorityFilter | null): SQL | undefined {
-  if (!priority || priority === 'ALL') return undefined
-  return eq(inboxMessages.priority, priority)
 }
 
 function buildSearchCondition(search?: string | null): SQL | undefined {
@@ -61,114 +75,118 @@ function buildSearchCondition(search?: string | null): SQL | undefined {
     like(inboxMessages.senderName, pattern),
     like(inboxMessages.senderEmail, pattern),
     like(inboxMessages.senderCompany, pattern),
-    like(inboxMessages.senderWebsite, pattern),
     like(inboxMessages.subject, pattern),
     like(inboxMessages.bodyText, pattern)
   )
 }
 
 async function getLeadSummary(db: GraphQLContext['db']) {
-  const baseLeadCondition = and(
-    inArray(inboxMessages.kind, ['LEAD', 'COLLABORATION']),
-    isNull(inboxMessages.trashedAt)
-  )
+  const [totalRows, newRows, qualifiedRows, followUpRows, wonRows, lostRows, archivedRows] =
+    await Promise.all([
+      db
+        .select({ count: sql<number>`count(*)` })
+        .from(inboxMessages)
+        .where(baseLeadCondition),
 
-  const [totalRows, newRows, qualifiedRows, highPriorityRows, archivedRows] = await Promise.all([
-    db
-      .select({ count: sql<number>`count(*)` })
-      .from(inboxMessages)
-      .where(baseLeadCondition),
+      db
+        .select({ count: sql<number>`count(*)` })
+        .from(inboxMessages)
+        .where(
+          and(
+            baseLeadCondition,
+            or(isNull(inboxMessages.leadStatus), eq(inboxMessages.leadStatus, 'NEW'))
+          )
+        ),
 
-    db
-      .select({ count: sql<number>`count(*)` })
-      .from(inboxMessages)
-      .where(and(baseLeadCondition, eq(inboxMessages.status, 'NEW'))),
+      db
+        .select({ count: sql<number>`count(*)` })
+        .from(inboxMessages)
+        .where(and(baseLeadCondition, eq(inboxMessages.leadStatus, 'QUALIFIED'))),
 
-    db
-      .select({ count: sql<number>`count(*)` })
-      .from(inboxMessages)
-      .where(
-        and(
-          eq(inboxMessages.kind, 'LEAD'),
-          inArray(inboxMessages.status, ['OPEN', 'REPLIED'])
-        )
-      ),
+      db
+        .select({ count: sql<number>`count(*)` })
+        .from(inboxMessages)
+        .where(and(baseLeadCondition, isNotNull(inboxMessages.leadNextFollowUpAt))),
 
-    db
-      .select({ count: sql<number>`count(*)` })
-      .from(inboxMessages)
-      .where(and(baseLeadCondition, eq(inboxMessages.priority, 'HIGH'))),
+      db
+        .select({ count: sql<number>`count(*)` })
+        .from(inboxMessages)
+        .where(and(baseLeadCondition, eq(inboxMessages.leadStatus, 'WON'))),
 
-    db
-      .select({ count: sql<number>`count(*)` })
-      .from(inboxMessages)
-      .where(and(baseLeadCondition, eq(inboxMessages.status, 'ARCHIVED')))
-  ])
+      db
+        .select({ count: sql<number>`count(*)` })
+        .from(inboxMessages)
+        .where(and(baseLeadCondition, eq(inboxMessages.leadStatus, 'LOST'))),
+
+      db
+        .select({ count: sql<number>`count(*)` })
+        .from(inboxMessages)
+        .where(and(baseLeadCondition, eq(inboxMessages.leadStatus, 'ARCHIVED')))
+    ])
 
   return {
     total: Number(totalRows[0]?.count || 0),
     new: Number(newRows[0]?.count || 0),
     qualified: Number(qualifiedRows[0]?.count || 0),
-    highPriority: Number(highPriorityRows[0]?.count || 0),
+    followUp: Number(followUpRows[0]?.count || 0),
+    won: Number(wonRows[0]?.count || 0),
+    lost: Number(lostRows[0]?.count || 0),
     archived: Number(archivedRows[0]?.count || 0)
   }
 }
 
-export async function leadWorkspace(
+export async function leadsWorkspace(
   _parent: unknown,
-  args: { input?: LeadWorkspaceInput | null },
+  args: { input?: LeadsWorkspaceInput | null },
   context: GraphQLContext
 ) {
-  requirePermission(context, 'inbox:manage')
+  requirePermission(context, 'leads:manage')
 
   const input = args.input || {}
+  const filter = input.filter || 'NEW'
   const limit = Math.min(Math.max(input.limit || 50, 1), 100)
   const offset = Math.max(input.offset || 0, 0)
 
   const conditions = [
-    isNull(inboxMessages.trashedAt),
-    buildTypeCondition(input.type),
-    buildStatusCondition(input.status),
-    buildSourceCondition(input.source),
-    buildPriorityCondition(input.priority),
+    baseLeadCondition,
+    buildFilterCondition(filter),
     buildSearchCondition(input.search)
   ].filter((condition): condition is SQL => Boolean(condition))
 
-  const whereCondition = conditions.length ? and(...conditions) : undefined
-
-  const messageQuery = context.db.select().from(inboxMessages)
+  const whereCondition = and(...conditions)
+  const orderBy =
+    filter === 'FOLLOW_UP'
+      ? [asc(inboxMessages.leadNextFollowUpAt), desc(inboxMessages.lastActivityAt)]
+      : [desc(inboxMessages.lastActivityAt)]
 
   const [summary, messageRows] = await Promise.all([
     getLeadSummary(context.db),
-    whereCondition
-      ? messageQuery
-          .where(whereCondition)
-          .orderBy(desc(inboxMessages.lastActivityAt))
-          .limit(limit)
-          .offset(offset)
-      : messageQuery
-          .where(
-            and(
-              isNull(inboxMessages.trashedAt),
-              inArray(inboxMessages.kind, ['LEAD', 'COLLABORATION'])
-            )
-          )
-          .orderBy(desc(inboxMessages.lastActivityAt))
-          .limit(limit)
-          .offset(offset)
+    context.db
+      .select()
+      .from(inboxMessages)
+      .where(whereCondition)
+      .orderBy(...orderBy)
+      .limit(limit)
+      .offset(offset)
   ])
 
   const leads = messageRows.map(normalizeLeadRow)
 
   let selectedRow = input.selectedLeadId
     ? messageRows.find((message) => message.id === input.selectedLeadId)
-    : messageRows[0]
+    : undefined
 
   if (input.selectedLeadId && !selectedRow) {
     const rows = await context.db
       .select()
       .from(inboxMessages)
-      .where(eq(inboxMessages.id, input.selectedLeadId))
+      .where(
+        and(
+          eq(inboxMessages.id, input.selectedLeadId),
+          eq(inboxMessages.kind, 'LEAD'),
+          isNull(inboxMessages.trashedAt)
+        )
+      )
       .limit(1)
 
     selectedRow = rows[0]
@@ -181,6 +199,6 @@ export async function leadWorkspace(
   }
 }
 
-export const leadWorkspaceQueries = {
-  leadWorkspace
+export const leadsWorkspaceQueries = {
+  leadsWorkspace
 }

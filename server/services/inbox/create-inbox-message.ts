@@ -45,7 +45,8 @@ export async function createInboxMessage(
       ),
       createdAt: now,
       updatedAt: now,
-      lastActivityAt: now
+      lastActivityAt: now,
+      leadStatus: input.kind === 'LEAD' ? 'NEW' : null
     })
     .returning()
 

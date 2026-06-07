@@ -1,52 +1,48 @@
 import type { inboxMessages } from '../models/schema'
 
-export function createLeadPreview(bodyText: string) {
+type LeadStatus = 'NEW' | 'QUALIFIED' | 'FOLLOW_UP' | 'WON' | 'LOST' | 'ARCHIVED'
+type LeadPriority = 'LOW' | 'MEDIUM' | 'HIGH'
+
+function createLeadPreview(bodyText: string) {
   const clean = bodyText.replace(/\s+/g, ' ').trim()
   return clean.length > 220 ? `${clean.slice(0, 217)}...` : clean
 }
 
-export function createLeadTitle(message: typeof inboxMessages.$inferSelect) {
-  return message.subject || `${message.senderName} opportunity`
+function resolveLeadStatus(message: typeof inboxMessages.$inferSelect): LeadStatus {
+  return message.leadStatus || 'NEW'
 }
 
-function createLeadTags(message: typeof inboxMessages.$inferSelect) {
-  return [
-    message.kind.toLowerCase(),
-    message.source.toLowerCase(),
-    message.priority.toLowerCase()
-  ].filter(Boolean)
-}
-
-function getLastContactedAt(message: typeof inboxMessages.$inferSelect) {
-  if (message.status === 'REPLIED') {
-    return message.lastActivityAt
+function resolveLeadPriority(message: typeof inboxMessages.$inferSelect): LeadPriority {
+  if (message.leadPriority) {
+    return message.leadPriority
   }
 
-  return null
+  if (message.priority === 'LOW') {
+    return 'LOW'
+  }
+
+  if (message.priority === 'HIGH') {
+    return 'HIGH'
+  }
+
+  return 'MEDIUM'
 }
 
 export function normalizeLeadRow(message: typeof inboxMessages.$inferSelect) {
   return {
     id: message.id,
-    title: createLeadTitle(message),
-    summary: createLeadPreview(message.bodyText),
+    inboxMessageId: message.id,
     source: message.source,
-    status: message.status,
-    kind: message.kind,
-    priority: message.priority,
+    status: resolveLeadStatus(message),
+    priority: resolveLeadPriority(message),
     name: message.senderName,
     email: message.senderEmail,
     company: message.senderCompany,
-    website: message.senderWebsite,
     subject: message.subject,
-    bodyText: message.bodyText,
-    relatedInboxMessageId: message.id,
-    relatedInboxThreadId: message.id,
-    threadKey: message.threadKey,
-    createdAt: message.createdAt,
-    updatedAt: message.updatedAt,
+    summary: createLeadPreview(message.bodyText),
     lastActivityAt: message.lastActivityAt,
-    lastContactedAt: getLastContactedAt(message),
-    tags: createLeadTags(message)
+    createdAt: message.createdAt,
+    nextFollowUpAt: message.leadNextFollowUpAt,
+    notes: message.leadNotes
   }
 }
