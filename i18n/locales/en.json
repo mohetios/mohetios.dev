@@ -393,72 +393,109 @@
     },
     "leads": {
       "title": "Leads",
-      "description": "Review collaboration, freelance, and partnership opportunities from the Mohetios inbox.",
+      "description": "Review and qualify potential project opportunities.",
       "refresh": "Refresh",
       "addManualLead": "Add manual lead",
-      "searchPlaceholder": "Search leads...",
-      "summary": {
-        "total": "Total Leads",
-        "totalHelper": "Inbox opportunities marked as leads or collaborations",
-        "new": "New",
-        "newHelper": "Not yet reviewed",
-        "qualified": "Qualified",
-        "qualifiedHelper": "Marked as lead and ready to pursue",
-        "highPriority": "High Priority",
-        "highPriorityHelper": "Needs attention soon"
+      "untitled": "Untitled lead",
+      "overdue": "Overdue",
+      "search": {
+        "placeholder": "Search leads"
       },
       "filters": {
-        "all": "All"
+        "new": "New",
+        "qualified": "Qualified",
+        "followUp": "Follow-up",
+        "won": "Won",
+        "lost": "Lost",
+        "all": "All",
+        "archived": "Archived",
+        "highPriority": "High priority",
+        "noFollowUp": "No follow-up"
       },
-      "board": {
-        "title": "Lead board",
-        "of": "of",
-        "opportunities": "opportunities"
+      "tabs": {
+        "more": "More"
+      },
+      "status": {
+        "new": "New",
+        "qualified": "Qualified",
+        "followUp": "Follow-up",
+        "won": "Won",
+        "lost": "Lost",
+        "archived": "Archived"
+      },
+      "priority": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
       },
       "fields": {
-        "name": "Name",
         "email": "Email",
-        "company": "Company",
-        "website": "Website",
         "source": "Source",
-        "type": "Type",
         "status": "Status",
         "priority": "Priority",
         "created": "Created",
-        "lastActivity": "Last Activity",
-        "lastContacted": "Last Contacted"
-      },
-      "sections": {
-        "summary": "Summary",
-        "contact": "Contact",
-        "opportunity": "Opportunity",
-        "tags": "Tags"
+        "notes": "Notes"
       },
       "actions": {
-        "openInboxThread": "Open Inbox Thread",
-        "markQualified": "Mark Qualified",
-        "markedQualified": "Lead marked as qualified.",
-        "markWaiting": "Mark Waiting",
-        "markedWaiting": "Lead marked as waiting/open.",
-        "highPriority": "High Priority",
-        "markedHighPriority": "Lead marked as high priority.",
-        "archive": "Archive",
-        "archived": "Lead archived."
+        "openConversation": "Open conversation",
+        "markQualified": "Mark qualified",
+        "moveToFollowUp": "Move to follow-up",
+        "markWon": "Mark won",
+        "markLost": "Mark lost",
+        "archive": "Archive lead",
+        "setFollowUp": "Set follow-up",
+        "clearFollowUp": "Clear follow-up"
+      },
+      "detail": {
+        "info": "Lead info",
+        "qualification": "Qualification",
+        "conversationPreview": "Conversation preview",
+        "latestActivity": "Latest activity",
+        "nextFollowUp": "Next follow-up",
+        "noNotes": "No notes yet"
+      },
+      "followUp": {
+        "tomorrow": "Tomorrow",
+        "inThreeDays": "In 3 days",
+        "nextWeek": "Next week"
       },
       "empty": {
-        "title": "No leads found",
-        "description": "Try a different search or filter."
+        "new": {
+          "title": "No new leads",
+          "description": "New leads from inbox will appear here."
+        },
+        "qualified": {
+          "title": "No qualified leads",
+          "description": "Mark leads as qualified when they are worth pursuing."
+        },
+        "followUp": {
+          "title": "No follow-ups scheduled",
+          "description": "Set a follow-up date from a lead detail panel."
+        },
+        "won": {
+          "title": "No won leads yet",
+          "description": "Closed opportunities will appear here."
+        },
+        "lost": {
+          "title": "No lost leads",
+          "description": "Leads marked as lost will appear here."
+        },
+        "all": {
+          "title": "No leads yet",
+          "description": "Convert inbox conversations to leads to start tracking them."
+        },
+        "archived": {
+          "title": "No archived leads",
+          "description": "Archived leads will appear here."
+        }
       },
       "select": {
         "title": "Select a lead",
         "description": "Choose a lead to review details and next action."
       },
-      "notes": {
-        "title": "Notes are not enabled yet",
-        "description": "Persistent notes need a dedicated leads or notes table and will be added in a later CRM phase."
-      },
       "errors": {
-        "loadFailed": "Leads could not be loaded."
+        "loadFailed": "Leads could not be loaded.",
+        "updateFailed": "Lead could not be updated."
       }
     }
   },
