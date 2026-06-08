@@ -21,7 +21,7 @@ watch(
 
 const toolbarButton = {
   color: 'neutral' as const,
-  variant: 'outline' as const,
+  variant: 'soft' as const,
   size: 'sm' as const
 }
 
@@ -53,7 +53,15 @@ async function handleRefresh() {
 <template>
   <UDashboardNavbar class="border-b border-default bg-default/90 backdrop-blur" :toggle="false">
     <template #left>
-      <UDashboardSidebarCollapse class="shrink-0" />
+      <div class="flex min-w-0 items-center gap-2">
+        <UDashboardSidebarCollapse  class="shrink-0" />
+        <UDashboardSearchButton
+          variant="soft"
+          class="hidden max-w-xs min-w-0 flex-1 sm:flex"
+          :label="t('dashboard.search.placeholder')"
+        />
+        <UDashboardSearchButton collapsed tooltip class="shrink-0 sm:hidden" />
+      </div>
     </template>
 
     <template #right>
@@ -98,16 +106,10 @@ async function handleRefresh() {
 
         <USeparator orientation="vertical" class="hidden h-6 sm:block" />
 
-        <div class="flex items-center gap-0.5">
-          <UDashboardSearchButton collapsed tooltip :kbds="[]" />
-          <UColorModeButton color="neutral" variant="ghost" size="sm" />
-        </div>
+        <UColorModeButton   size="sm" />
       </div>
 
-      <div v-else class="flex items-center gap-0.5">
-        <UDashboardSearchButton collapsed tooltip :kbds="[]" />
-        <UColorModeButton color="neutral" variant="ghost" size="sm" />
-      </div>
+      <UColorModeButton v-else color="neutral" variant="soft" size="sm" />
     </template>
   </UDashboardNavbar>
 </template>

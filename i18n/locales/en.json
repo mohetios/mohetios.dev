@@ -93,6 +93,21 @@
       "accountName": "Mohetios",
       "accountRole": "Publisher"
     },
+    "search": {
+      "placeholder": "Search dashboard…",
+      "groups": {
+        "navigation": "Go to",
+        "workspace": "Workspace"
+      },
+      "descriptions": {
+        "overview": "Summary, signals, and health",
+        "inbox": "Messages and conversations",
+        "leads": "Inbound leads and follow-ups",
+        "newsletter": "Subscribers and list health",
+        "analytics": "Traffic, content, and search data",
+        "backToSite": "Leave the dashboard"
+      }
+    },
     "home": {
       "title": "Owner Console",
       "description": "A compact overview of inbox, leads, content, audience, and system health.",

@@ -76,6 +76,7 @@ useMohetSeo({
       :tags="post.tags"
       :back-to="localePath('/blog')"
       :back-label="t('content.actions.backToBlog')"
+      show-copy-link
     />
 
     <ContentShell

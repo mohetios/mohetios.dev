@@ -1,0 +1,58 @@
+{
+  "groups": [
+    {
+      "id": "navigation",
+      "labelKey": "dashboard.search.groups.navigation",
+      "items": [
+        {
+          "id": "overview",
+          "labelKey": "dashboard.nav.overview",
+          "descriptionKey": "dashboard.search.descriptions.overview",
+          "icon": "i-lucide-house",
+          "to": "/dashboard"
+        },
+        {
+          "id": "inbox",
+          "labelKey": "dashboard.nav.inbox",
+          "descriptionKey": "dashboard.search.descriptions.inbox",
+          "icon": "i-lucide-inbox",
+          "to": "/dashboard/inbox"
+        },
+        {
+          "id": "leads",
+          "labelKey": "dashboard.nav.leads",
+          "descriptionKey": "dashboard.search.descriptions.leads",
+          "icon": "i-lucide-users",
+          "to": "/dashboard/leads"
+        },
+        {
+          "id": "newsletter",
+          "labelKey": "dashboard.nav.newsletter",
+          "descriptionKey": "dashboard.search.descriptions.newsletter",
+          "icon": "i-lucide-mail-plus",
+          "to": "/dashboard/newsletter"
+        },
+        {
+          "id": "analytics",
+          "labelKey": "dashboard.nav.analytics",
+          "descriptionKey": "dashboard.search.descriptions.analytics",
+          "icon": "i-lucide-chart-column",
+          "to": "/dashboard/analytics"
+        }
+      ]
+    },
+    {
+      "id": "workspace",
+      "labelKey": "dashboard.search.groups.workspace",
+      "items": [
+        {
+          "id": "back-to-site",
+          "labelKey": "dashboard.backToSite",
+          "descriptionKey": "dashboard.search.descriptions.backToSite",
+          "icon": "i-lucide-arrow-left",
+          "to": "/"
+        }
+      ]
+    }
+  ]
+}

@@ -93,6 +93,21 @@
       "accountName": "Mohetios",
       "accountRole": "ناشر"
     },
+    "search": {
+      "placeholder": "جستجو در داشبورد…",
+      "groups": {
+        "navigation": "رفتن به",
+        "workspace": "فضای کار"
+      },
+      "descriptions": {
+        "overview": "خلاصه، سیگنال‌ها و سلامت",
+        "inbox": "پیام‌ها و گفتگوها",
+        "leads": "سرنخ‌های ورودی و پیگیری‌ها",
+        "newsletter": "مشترکان و سلامت فهرست",
+        "analytics": "ترافیک، محتوا و داده جستجو",
+        "backToSite": "خروج از داشبورد"
+      }
+    },
     "home": {
       "title": "میز مدیریت",
       "description": "نمای فشرده از صندوق ورودی، سرنخ‌ها، محتوا، مخاطب و سلامت سیستم.",

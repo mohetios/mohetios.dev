@@ -29,11 +29,9 @@ const hasPostReading = computed(() => hasSurround.value || hasRelated.value)
 <template>
   <footer class="border-t border-default bg-default">
     <div class="mohetios-editorial-column min-w-0 space-y-6 py-8">
-      <ContentShareActions />
-
       <section
         v-if="hasPostReading"
-        class="space-y-4 border-t border-default pt-6"
+        class="space-y-4"
         :aria-label="t('content.article.continueReading')"
       >
         <ContentSurround v-if="hasSurround" :surround="surround || []" />
