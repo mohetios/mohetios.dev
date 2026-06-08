@@ -640,6 +640,14 @@
     "mobileToc": {
       "title": "On this page"
     },
+    "article": {
+      "coreIdea": "Core idea",
+      "continueReading": "Continue reading",
+      "relatedPosts": "Related notes",
+      "updated": "Updated",
+      "by": "By",
+      "metadata": "Article metadata"
+    },
     "blog": {
       "seoTitle": "Writing · Mohetios.dev",
       "eyebrow": "Writing archive",

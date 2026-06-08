@@ -5,14 +5,20 @@ type TocItem = {
   items?: TocItem[]
 }
 
-defineProps<{
-  title?: string
-  links: TocItem[]
-}>()
+withDefaults(
+  defineProps<{
+    title?: string
+    links: TocItem[]
+    compact?: boolean
+  }>(),
+  {
+    compact: false
+  }
+)
 </script>
 
 <template>
-  <div class="rounded-lg border border-default bg-default lg:hidden">
+  <div class="rounded-lg border border-default bg-default" :class="{ 'lg:hidden': !compact }">
     <UAccordion
       :items="[
         {

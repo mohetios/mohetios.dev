@@ -637,6 +637,14 @@
     "mobileToc": {
       "title": "در این صفحه"
     },
+    "article": {
+      "coreIdea": "ایده اصلی",
+      "continueReading": "ادامه مطالعه",
+      "relatedPosts": "یادداشت‌های مرتبط",
+      "updated": "به‌روزرسانی",
+      "by": "نویسنده",
+      "metadata": "اطلاعات مقاله"
+    },
     "blog": {
       "seoTitle": "نوشته‌ها · Mohetios.dev",
       "eyebrow": "آرشیو نوشته‌ها",

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { estimateReadingTimeFromHtml } from '~/utils/content-reading-time'
+
 const route = useRoute()
 const { locale, t } = useI18n()
 const localePath = useLocalePath()
@@ -26,6 +28,19 @@ const relatedPosts = computed(() => {
     .slice(0, 3)
 })
 
+const readingTime = computed(() => {
+  if (post.value?.readingTime) {
+    return post.value.readingTime
+  }
+
+  const minutes = estimateReadingTimeFromHtml(post.value?.content)
+  return t('content.meta.readingTimeValue', { count: minutes })
+})
+
+const articleStatus = computed(
+  () => post.value?.category || post.value?.status || t('badges.blog')
+)
+
 useMohetSeo({
   title: () => `${post.value?.title} · ${t('badges.blog')} · Mohetios.dev`,
   description: post.value.description,
@@ -49,42 +64,33 @@ useMohetSeo({
       :updated="post.updated"
     />
 
-    <ContentHero :title="post.title" :description="post.description" :thumbnail="post.thumbnail" />
+    <ContentArticleHeader
+      :title="post.title"
+      :description="post.description"
+      :thumbnail="post.thumbnail"
+      :thumbnail-alt="post.thumbnailAlt || post.title"
+      :thumbnail-credit="post.thumbnailCredit"
+      :date="post.date"
+      :updated="post.updated"
+      :author="post.author || 'Ali Zemani'"
+      :reading-time="readingTime"
+      :status="articleStatus"
+      :tags="post.tags"
+      :back-to="localePath('/blog')"
+      :back-label="t('content.actions.backToBlog')"
+    />
 
     <ContentViewShell
-      kind="blog"
+      variant="editorial"
       :content="post.content"
       :toc-links="tocLinks"
       :show-toc="showToc"
+      :summary="post.summary"
+    />
+
+    <ContentArticleFooter
       :surround="surround"
-      :back-to="localePath('/blog')"
-      :back-label="t('content.actions.backToBlog')"
-      :date="post.date"
-      :updated="post.updated"
-      :status="t('badges.blog')"
-      :tags="post.tags"
-    >
-      <template #related>
-        <section v-if="relatedPosts.length" class="border-t border-default pt-8">
-          <h2 class="mb-4 text-ui-lg font-semibold tracking-tight text-highlighted">
-            {{ t('content.related') }}
-          </h2>
-          <div class="grid gap-4 sm:grid-cols-2">
-            <ContentListCard
-              v-for="related in relatedPosts"
-              :key="related.id"
-              :title="related.title"
-              :description="related.description"
-              :to="related.path"
-              :date="related.date"
-              :updated="related.updated"
-              :badge="t('badges.blog')"
-              :tags="related.tags"
-              compact
-            />
-          </div>
-        </section>
-      </template>
-    </ContentViewShell>
+      :related-posts="relatedPosts"
+    />
   </UPage>
 </template>

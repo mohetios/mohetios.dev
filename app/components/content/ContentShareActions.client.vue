@@ -1,4 +1,13 @@
 <script setup lang="ts">
+withDefaults(
+  defineProps<{
+    flat?: boolean
+  }>(),
+  {
+    flat: false
+  }
+)
+
 const { t } = useI18n()
 
 const copied = ref(false)
@@ -41,7 +50,7 @@ async function sharePage() {
 </script>
 
 <template>
-  <UCard variant="subtle">
+  <UCard v-if="!flat" variant="subtle">
     <div class="space-y-3">
       <p class="text-ui-xs font-medium uppercase tracking-widest text-muted">
         {{ t('content.share.title') }}
@@ -65,4 +74,21 @@ async function sharePage() {
       </div>
     </div>
   </UCard>
+
+  <div v-else class="flex flex-wrap gap-2">
+    <UButton color="neutral" variant="soft" size="sm" icon="i-lucide-link" @click="copyLink">
+      {{ copied ? t('content.share.copied') : t('content.share.copyLink') }}
+    </UButton>
+
+    <UButton
+      v-if="canShare"
+      color="neutral"
+      variant="soft"
+      size="sm"
+      icon="i-lucide-share-2"
+      @click="sharePage"
+    >
+      {{ t('content.share.native') }}
+    </UButton>
+  </div>
 </template>

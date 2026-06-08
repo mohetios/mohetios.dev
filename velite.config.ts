@@ -51,7 +51,14 @@ const writing = {
   ...baseContent,
   date,
   status: s.string().optional(),
-  tags: s.array(s.string()).default([])
+  tags: s.array(s.string()).default([]),
+  author: s.string().optional(),
+  category: s.string().optional(),
+  readingTime: s.string().optional(),
+  thumbnailAlt: s.string().optional(),
+  thumbnailCredit: s.string().optional(),
+  series: s.string().optional(),
+  summary: s.array(s.string()).optional()
 }
 
 const blog = defineCollection({

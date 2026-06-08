@@ -27,6 +27,13 @@ export type BlogPost = BaseContent & {
   date: string
   status?: string
   tags: string[]
+  author?: string
+  category?: string
+  readingTime?: string
+  thumbnailAlt?: string
+  thumbnailCredit?: string
+  series?: string
+  summary?: string[]
 }
 
 export type LabNote = BlogPost

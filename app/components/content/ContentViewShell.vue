@@ -11,25 +11,36 @@ type SurroundItem = {
   description?: string
 } | null
 
-defineProps<{
-  kind: 'blog' | 'lab' | 'project'
-  content: string
-  tocLinks: TocItem[]
-  showToc: boolean
-  surround: SurroundItem[]
-  backTo: string
-  backLabel: string
-  date?: string | Date
-  updated?: string | Date
-  status?: string
-  tags?: string[]
-  projectRepo?: string
-  projectWebsite?: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    variant?: 'editorial' | 'classic'
+    kind?: 'blog' | 'lab' | 'project'
+    content: string
+    tocLinks?: TocItem[]
+    showToc?: boolean
+    summary?: string[]
+    surround?: SurroundItem[]
+    backTo?: string
+    backLabel?: string
+    date?: string | Date
+    updated?: string | Date
+    status?: string
+    tags?: string[]
+    projectRepo?: string
+    projectWebsite?: string
+  }>(),
+  {
+    variant: 'classic',
+    tocLinks: () => [],
+    showToc: false
+  }
+)
+
+const isEditorial = computed(() => props.variant === 'editorial')
 </script>
 
 <template>
-  <UPageBody>
+  <UPageBody v-if="!isEditorial">
     <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_16rem]">
       <article class="min-w-0">
         <ContentMobileToc
@@ -50,12 +61,13 @@ defineProps<{
         </div>
 
         <div class="mx-auto mt-10 max-w-[var(--mohetios-reading-width)]">
-          <ContentSubscribeCard size="large" :kind="kind" />
+          <ContentSubscribeCard v-if="kind" size="large" :kind="kind" />
         </div>
       </article>
 
       <aside class="hidden lg:block">
         <ContentReaderSidebar
+          v-if="kind"
           :kind="kind"
           :toc-links="tocLinks"
           :show-toc="showToc"
@@ -71,13 +83,45 @@ defineProps<{
     </div>
 
     <div class="mx-auto mt-12 max-w-6xl space-y-8">
-      <UButton :to="backTo" color="neutral" variant="ghost" icon="i-lucide-arrow-left">
+      <UButton
+        v-if="backTo"
+        :to="backTo"
+        color="neutral"
+        variant="ghost"
+        icon="i-lucide-arrow-left"
+      >
         {{ backLabel }}
       </UButton>
 
-      <ContentSurround v-if="surround.length" :surround="surround" />
+      <ContentSurround v-if="surround?.some(Boolean)" :surround="surround || []" />
 
       <slot name="related" />
     </div>
+  </UPageBody>
+
+  <UPageBody v-else>
+    <section class="mohetios-editorial-column py-8">
+      <ContentCodeEnhancer />
+
+      <slot name="notice" />
+
+      <ContentArticleSummary
+        v-if="summary?.length"
+        :items="summary"
+        class="mb-8"
+      />
+
+      <ContentMobileToc
+        v-if="showToc"
+        class="mb-8"
+        compact
+        :title="$t('content.toc')"
+        :links="tocLinks"
+      />
+
+      <article class="prose-mohetios">
+        <ContentHtml :html="content" />
+      </article>
+    </section>
   </UPageBody>
 </template>
