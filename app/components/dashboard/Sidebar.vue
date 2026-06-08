@@ -83,17 +83,22 @@ function isActive(path: string) {
       >
         <NuxtLink
           to="/dashboard"
-          class="flex min-w-0 items-center text-xl font-semibold tracking-tight text-highlighted"
+          class="site-logo-link min-w-0"
           :class="collapsed ? 'justify-center' : ''"
-          aria-label="Mohetios dashboard"
+          :aria-label="`${t('site.name')} ${t('dashboard.title')}`"
         >
           <span
             v-if="collapsed"
-            class="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-base font-semibold text-primary"
+            class="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-base font-bold text-primary"
           >
-            M
+            {{ t('site.logo.part1').charAt(0) }}
           </span>
-          <span v-else class="truncate"> Mohetios </span>
+          <SiteLogo
+            v-else
+            show-tagline
+            caption-key="dashboard.title"
+            size="dashboard"
+          />
         </NuxtLink>
       </div>
     </template>

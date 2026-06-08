@@ -289,6 +289,34 @@ html[dir='rtl'] {
   display: none;
 }
 
+.site-logo--dashboard {
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 0.6rem;
+}
+
+.site-logo--dashboard .site-logo__part1 {
+  font-size: 1.2rem;
+}
+
+.site-logo--dashboard .site-logo__part2 {
+  font-size: 1.12rem;
+}
+
+.site-logo--dashboard .site-logo__tld {
+  font-size: 0.75rem;
+}
+
+.site-logo--dashboard .site-logo__tagline {
+  display: inline;
+  max-width: none;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
 .site-logo-link:hover .site-logo__part1,
 .site-footer__mark:hover .site-logo__part1 {
   color: var(--color-primary);
@@ -309,6 +337,11 @@ html[dir='rtl'] {
   .site-logo--header .site-logo__tagline {
     display: inline;
   }
+}
+
+[dir='rtl'] .site-logo--dashboard .site-logo__tagline {
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

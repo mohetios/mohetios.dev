@@ -4,10 +4,12 @@ const { t, te } = useI18n()
 withDefaults(
   defineProps<{
     showTagline?: boolean
-    size?: 'header' | 'footer'
+    captionKey?: string
+    size?: 'header' | 'footer' | 'dashboard'
   }>(),
   {
     showTagline: false,
+    captionKey: 'site.tagline',
     size: 'header'
   }
 )
@@ -24,6 +26,6 @@ const showTld = computed(() => te('site.logo.tld') && Boolean(t('site.logo.tld')
         <span class="site-logo__dot">.</span>{{ t('site.logo.tld') }}
       </span>
     </span>
-    <span v-if="showTagline" class="site-logo__tagline">{{ t('site.tagline') }}</span>
+    <span v-if="showTagline" class="site-logo__tagline">{{ t(captionKey) }}</span>
   </span>
 </template>
