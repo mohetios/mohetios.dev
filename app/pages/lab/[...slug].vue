@@ -11,8 +11,8 @@ if (!note.value || note.value.draft) {
 }
 
 const notes = computed(() => getLabNotes(locale.value))
-const tocLinks = computed(() => note.value?.tocData || [])
-const showToc = computed(() => tocLinks.value.length > 2)
+const tocLinks = computed(() => getTocNavLinks(note.value?.tocData))
+const showToc = computed(() => shouldShowToc(note.value?.tocData))
 const surround = computed(() => getSurround(notes.value, path.value))
 
 useMohetSeo({
@@ -48,10 +48,6 @@ useMohetSeo({
       :surround="surround"
       :back-to="localePath('/lab')"
       :back-label="t('content.actions.backToLab')"
-      :date="note.date"
-      :updated="note.updated"
-      :status="note.status || t('content.lab.defaultStatus')"
-      :tags="note.tags"
     >
       <template #notice>
         <div

@@ -57,7 +57,7 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
         {{ status }}
       </p>
 
-      <h1 class="mt-3 text-balance text-3xl font-semibold tracking-tight text-highlighted sm:text-4xl lg:text-[2.5rem] lg:leading-[1.12]">
+      <h1 class="mt-3 break-words text-balance text-3xl font-semibold tracking-tight text-highlighted sm:text-4xl lg:text-[2.5rem] lg:leading-[1.12]">
         {{ title }}
       </h1>
 

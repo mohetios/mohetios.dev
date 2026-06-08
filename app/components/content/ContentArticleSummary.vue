@@ -1,12 +1,11 @@
 <script setup lang="ts">
 const props = defineProps<{
   items?: string[]
-  title?: string
 }>()
 
 const { t } = useI18n()
 
-const heading = computed(() => props.title || t('content.article.coreIdea'))
+const heading = computed(() => t('content.article.coreIdea'))
 const hasItems = computed(() => Boolean(props.items?.length))
 </script>
 

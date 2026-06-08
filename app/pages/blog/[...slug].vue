@@ -13,8 +13,8 @@ if (!post.value || post.value.draft) {
 }
 
 const posts = computed(() => getBlogPosts(locale.value))
-const tocLinks = computed(() => post.value?.tocData || [])
-const showToc = computed(() => tocLinks.value.length > 2)
+const tocLinks = computed(() => getTocNavLinks(post.value?.tocData))
+const showToc = computed(() => shouldShowToc(post.value?.tocData))
 const surround = computed(() => getSurround(posts.value, path.value))
 const relatedPosts = computed(() => {
   const currentTags = new Set(post.value?.tags || [])
@@ -81,7 +81,6 @@ useMohetSeo({
     />
 
     <ContentViewShell
-      variant="editorial"
       :content="post.content"
       :toc-links="tocLinks"
       :show-toc="showToc"

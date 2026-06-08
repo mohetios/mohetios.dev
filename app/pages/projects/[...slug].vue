@@ -12,8 +12,8 @@ if (!project.value || project.value.draft) {
 
 const visibleProjects = computed(() => getProjects(locale.value))
 const surround = computed(() => getSurround(visibleProjects.value, path.value))
-const tocLinks = computed(() => project.value?.tocData || [])
-const showToc = computed(() => tocLinks.value.length > 2)
+const tocLinks = computed(() => getTocNavLinks(project.value?.tocData))
+const showToc = computed(() => shouldShowToc(project.value?.tocData))
 const relatedProjects = computed(() => {
   const currentTags = new Set(project.value?.tags || [])
 
@@ -63,12 +63,6 @@ useMohetSeo({
       :surround="surround"
       :back-to="localePath('/projects')"
       :back-label="t('content.actions.backToProjects')"
-      :date="project.date"
-      :updated="project.updated"
-      :status="project.status"
-      :tags="project.tags"
-      :project-repo="project.repo"
-      :project-website="project.website"
     >
       <template #related>
         <section v-if="relatedProjects.length" class="border-t border-default pt-8">

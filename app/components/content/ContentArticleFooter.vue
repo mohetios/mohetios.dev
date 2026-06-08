@@ -28,8 +28,8 @@ const hasPostReading = computed(() => hasSurround.value || hasRelated.value)
 
 <template>
   <footer class="border-t border-default bg-default">
-    <div class="mohetios-editorial-column space-y-6 py-8">
-      <ContentShareActions flat />
+    <div class="mohetios-editorial-column min-w-0 space-y-6 py-8">
+      <ContentShareActions />
 
       <section
         v-if="hasPostReading"

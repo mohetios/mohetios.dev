@@ -340,12 +340,15 @@ html[dir='rtl'] .content-hero__title {
 }
 
 .prose-mohetios {
+  width: 100%;
   max-width: var(--mohetios-reading-width);
+  min-width: 0;
   font-size: var(--mohetios-reading-size);
   line-height: var(--mohetios-reading-leading);
   letter-spacing: var(--mohetios-reading-tracking);
   color: var(--ui-text);
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .prose-mohetios > *:first-child {
@@ -508,15 +511,11 @@ html[lang='fa'] .prose-mohetios blockquote {
 }
 
 @media (max-width: 640px) {
-  .prose-mohetios {
+  .prose-mohetios table {
+    display: block;
+    max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-  }
-
-  .prose-mohetios table {
-    width: max-content;
-    min-width: 100%;
-    max-width: none;
   }
 }
 
@@ -555,6 +554,9 @@ html[lang='fa'] .prose-mohetios blockquote {
   font-family: var(--font-mono);
   font-size: 0.9em;
   color: var(--ui-text-highlighted);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: pre-wrap;
 }
 
 .prose-mohetios kbd {
@@ -576,6 +578,7 @@ html[lang='fa'] .prose-mohetios blockquote {
 
 .prose-mohetios pre:not(.shiki) {
   margin: 1.75rem 0;
+  max-width: 100%;
   overflow-x: auto;
   border-radius: 1rem;
   border: 1px solid var(--ui-border);
@@ -588,16 +591,19 @@ html[lang='fa'] .prose-mohetios blockquote {
 .prose-mohetios pre.shiki {
   position: relative;
   margin: 1.75rem 0;
-  overflow: hidden;
+  max-width: 100%;
+  overflow-x: auto;
   border-radius: 1rem;
   border: 1px solid var(--ui-border);
   background: var(--ui-bg-muted);
   font-size: var(--mohetios-code-size);
   line-height: var(--mohetios-code-leading);
+  -webkit-overflow-scrolling: touch;
 }
 
 .prose-mohetios pre.shiki code {
   display: grid;
+  min-width: 0;
   overflow-x: auto;
   padding: 1rem 0;
   font-size: inherit;
@@ -644,14 +650,11 @@ html[lang='fa'] .prose-mohetios blockquote {
 
 @media (max-width: 640px) {
   .prose-mohetios pre.shiki {
-    margin-inline: -1rem;
-    border-radius: 0;
-    border-inline: 0;
     font-size: 0.8125rem;
   }
 
   .prose-mohetios pre.shiki .line {
-    padding-inline: 1rem;
+    padding-inline: 0.875rem;
   }
 }
 
@@ -661,6 +664,9 @@ html[lang='fa'] .prose-mohetios blockquote {
 
 .prose-mohetios img,
 .prose-mohetios video {
+  display: block;
+  max-width: 100%;
+  height: auto;
   border-radius: 1rem;
   border: 1px solid var(--ui-border);
 }
@@ -748,9 +754,16 @@ html[dir='rtl'] .prose-mohetios p {
 
 .mohetios-editorial-column {
   width: 100%;
-  max-width: var(--mohetios-reading-width);
+  max-width: min(var(--mohetios-reading-width), 100%);
+  min-width: 0;
   margin-inline: auto;
   padding-inline: 1rem;
+  box-sizing: border-box;
+  overflow-x: clip;
+}
+
+.mohetios-editorial-column .prose-mohetios {
+  max-width: none;
 }
 
 @media (min-width: 640px) {
@@ -775,9 +788,12 @@ html[dir='rtl'] .prose-mohetios p {
 
 .mohetios-editorial-header {
   width: 100%;
-  max-width: var(--mohetios-reading-width);
+  max-width: min(var(--mohetios-reading-width), 100%);
+  min-width: 0;
   margin-inline: auto;
   padding-inline: 1rem;
+  box-sizing: border-box;
+  overflow-x: clip;
 }
 
 @media (min-width: 640px) {
@@ -794,9 +810,12 @@ html[dir='rtl'] .prose-mohetios p {
 
 .mohetios-editorial-hero {
   width: 100%;
-  max-width: var(--mohetios-editorial-hero-width);
+  max-width: min(var(--mohetios-editorial-hero-width), 100%);
+  min-width: 0;
   margin-inline: auto;
   padding-inline: 1rem;
+  box-sizing: border-box;
+  overflow-x: clip;
 }
 
 @media (min-width: 640px) {

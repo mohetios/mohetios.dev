@@ -3,10 +3,23 @@ import labJson from '../../.velite/lab.json'
 import pagesJson from '../../.velite/pages.json'
 import projectsJson from '../../.velite/projects.json'
 
-type TocItem = {
+export type TocItem = {
   title: string
   url: string
   items?: TocItem[]
+}
+
+/** Velite often nests all headings under a single h1 root — unwrap for nav display. */
+export function getTocNavLinks(items: TocItem[] = []) {
+  if (items.length === 1 && items[0]?.items?.length) {
+    return items[0].items
+  }
+
+  return items
+}
+
+export function shouldShowToc(items: TocItem[] = []) {
+  return getTocNavLinks(items).length > 0
 }
 
 type BaseContent = {
