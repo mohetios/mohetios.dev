@@ -3,7 +3,10 @@ import { and, desc, eq, inArray, isNull, sql } from 'drizzle-orm'
 import { adminNotifications, inboxMessages } from '../models/schema'
 import type { GraphQLContext } from '../routes/graph'
 import { requirePermission } from '../utils/auth'
-import { getCachedCloudflareAnalytics } from '../utils/cloudflare-analytics'
+import {
+  getCachedCloudflareAnalytics,
+  type AnalyticsRange
+} from '../utils/cloudflare-analytics'
 
 // D1 remains source of truth. KV can cache dashboardHome as dashboard:home:v1 (60s TTL)
 // later for snapshots and external analytics rollups only — not inbox truth or auth state.
@@ -45,7 +48,12 @@ function normalizeInboxPreviewMessage(message: typeof inboxMessages.$inferSelect
   }
 }
 
-export async function dashboardHome(_parent: unknown, _args: unknown, context: GraphQLContext) {
+export async function dashboardHome(
+  _parent: unknown,
+  args: { range?: AnalyticsRange | null },
+  context: GraphQLContext
+) {
+  const range = args.range || 'LAST_7_DAYS'
   requirePermission(context, 'dashboard:view')
 
   const { db } = context
@@ -83,7 +91,7 @@ export async function dashboardHome(_parent: unknown, _args: unknown, context: G
   const needsReply = Number(needsReplyRows[0]?.count || 0)
   const leads = Number(leadRows[0]?.count || 0)
 
-  const analytics = await getCachedCloudflareAnalytics(context.event, 'LAST_7_DAYS')
+  const analytics = await getCachedCloudflareAnalytics(context.event, range)
   const audienceTrend = analytics.trend
 
   const visits = audienceTrend.reduce(

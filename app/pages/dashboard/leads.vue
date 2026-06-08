@@ -52,6 +52,12 @@ const {
 })
 
 const isRefreshing = ref(false)
+
+useDashboardPageToolbar({
+  isRefreshing,
+  onRefresh: () => loadLeads()
+})
+
 const isMutating = ref(false)
 const isLeadDrawerOpen = ref(false)
 const canUseLeadDrawer = ref(false)
@@ -281,6 +287,7 @@ function handleUpdateNotes(notes: string | null) {
 
   runLeadMutation(() => updateLeadNotes(selectedLead.value!.id, notes))
 }
+
 </script>
 
 <template>
@@ -290,29 +297,6 @@ function handleUpdateNotes(notes: string | null) {
       :description="t('dashboard.leads.description')"
       grid-class="lg:grid-cols-[minmax(500px,580px)_minmax(0,1fr)]"
     >
-      <template #actions>
-        <UButton
-          color="neutral"
-          variant="ghost"
-          size="sm"
-          :disabled="isRefreshing"
-          @click="loadLeads"
-        >
-          <template #leading>
-            <UIcon
-              :name="isRefreshing ? 'i-lucide-loader-circle' : 'i-lucide-refresh-cw'"
-              class="size-4"
-              :class="{ 'animate-spin': isRefreshing }"
-            />
-          </template>
-          {{ t('dashboard.leads.refresh') }}
-        </UButton>
-
-        <UButton color="neutral" variant="soft" icon="i-lucide-plus" disabled>
-          {{ t('dashboard.leads.addManualLead') }}
-        </UButton>
-      </template>
-
       <DashboardLeadsList
         :primary-tabs="primaryTabs"
         :secondary-tabs="secondaryTabs"

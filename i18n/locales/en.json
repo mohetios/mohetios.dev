@@ -93,13 +93,6 @@
       "accountName": "Mohetios",
       "accountRole": "Publisher"
     },
-    "topbar": {
-      "search": "Search...",
-      "range24h": "Last 24 Hours",
-      "range7d": "Last 7 Days",
-      "range30d": "Last 30 Days",
-      "newPost": "New Post"
-    },
     "home": {
       "title": "Owner Console",
       "description": "A compact overview of inbox, leads, content, audience, and system health.",

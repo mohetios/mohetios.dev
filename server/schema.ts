@@ -4,7 +4,7 @@ export const typeDefs = /* GraphQL */ `
     me: User
     inboxWorkspace(input: InboxWorkspaceInput): InboxWorkspace!
     leadsWorkspace(input: LeadsWorkspaceInput): LeadsWorkspace!
-    dashboardHome: DashboardHome!
+    dashboardHome(range: AnalyticsRange = LAST_7_DAYS): DashboardHome!
     analyticsDashboard(range: AnalyticsRange!): AnalyticsDashboard!
     newsletterSubscribers(input: NewsletterSubscribersFilterInput): NewsletterSubscribersConnection!
   }

@@ -1,5 +1,5 @@
-query DashboardHome {
-  dashboardHome {
+query DashboardHome($range: AnalyticsRange!) {
+  dashboardHome(range: $range) {
     summary {
       inboxUnread
       needsReply

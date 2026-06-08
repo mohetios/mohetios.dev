@@ -15,7 +15,15 @@ definePageMeta({
 const { t, locale } = useI18n()
 const toast = useToast()
 
-const { data: dashboardHome, pending: isLoading, error, refresh } = await useDashboardHome()
+const range = useDashboardRangePreference()
+const isRefreshing = ref(false)
+
+useDashboardPageToolbar({
+  isRefreshing,
+  onRefresh: () => refreshDashboard()
+})
+
+const { data: dashboardHome, pending: isLoading, error, refresh } = await useDashboardHome(range)
 
 useMohetSeo({
   title: () => t('dashboard.home.title'),
@@ -122,8 +130,6 @@ function formatActivityTime(timestamp: number) {
   return timeFormatter.value.format(new Date(timestamp))
 }
 
-const isRefreshing = ref(false)
-
 async function refreshDashboard() {
   try {
     await withDashboardRefresh(isRefreshing, () => refresh())
@@ -156,35 +162,16 @@ watch(error, (currentError) => {
 
 <template>
   <div class="mx-auto w-full max-w-[1600px] space-y-6">
-    <section class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-      <div>
+    <section class="flex min-w-0 items-start gap-3">
+      <UDashboardSidebarCollapse class="shrink-0 lg:hidden" />
+
+      <div class="min-w-0">
         <h1 class="text-3xl font-semibold tracking-tight text-highlighted">
           {{ t('dashboard.home.title') }}
         </h1>
         <p class="mt-1 text-sm text-muted">
           {{ t('dashboard.home.description') }}
         </p>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <UButton
-          color="neutral"
-          variant="outline"
-          :disabled="isRefreshing"
-          @click="refreshDashboard"
-        >
-          <template #leading>
-            <UIcon
-              :name="isRefreshing ? 'i-lucide-loader-circle' : 'i-lucide-refresh-cw'"
-              class="size-4"
-              :class="{ 'animate-spin': isRefreshing }"
-            />
-          </template>
-          {{ t('dashboard.home.refresh') }}
-        </UButton>
-        <UButton color="neutral" variant="outline" icon="i-lucide-inbox" to="/dashboard/inbox">
-          {{ t('dashboard.overview.openInbox') }}
-        </UButton>
       </div>
     </section>
 

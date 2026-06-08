@@ -26,9 +26,14 @@ type AnalyticsTab = 'overview' | 'content' | 'search' | 'referrers' | 'performan
 const activeTab = ref<AnalyticsTab>('overview')
 const search = ref('')
 
-const range = ref<AnalyticsRange>('LAST_7_DAYS')
-const audienceMetric = ref<AudienceMetricMode>('both')
+const range = useDashboardRangePreference()
 const isRefreshing = ref(false)
+const audienceMetric = ref<AudienceMetricMode>('both')
+
+useDashboardPageToolbar({
+  isRefreshing,
+  onRefresh: () => refreshAnalytics()
+})
 
 const { data: analytics, pending: isLoading, error, refresh } = await useAnalyticsDashboard(range)
 
@@ -42,12 +47,6 @@ const tabItems = computed(() => [
   { label: t('dashboard.analytics.tabs.search'), value: 'search', icon: 'i-lucide-search' },
   { label: t('dashboard.analytics.tabs.referrers'), value: 'referrers', icon: 'i-lucide-share-2' },
   { label: t('dashboard.analytics.tabs.performance'), value: 'performance', icon: 'i-lucide-gauge' }
-])
-
-const rangeItems = computed(() => [
-  { label: t('dashboard.analytics.ranges.last7Days'), value: 'LAST_7_DAYS' as const },
-  { label: t('dashboard.analytics.ranges.last30Days'), value: 'LAST_30_DAYS' as const },
-  { label: t('dashboard.analytics.ranges.last90Days'), value: 'LAST_90_DAYS' as const }
 ])
 
 const audienceMetricItems = computed(() => [
@@ -252,49 +251,16 @@ watch(error, (currentError) => {
 
 <template>
   <div class="mx-auto flex w-full max-w-[1600px] flex-col gap-6">
-    <section class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-      <div class="flex min-w-0 items-start gap-3">
-        <div>
-          <h1 class="text-3xl font-semibold tracking-tight text-highlighted">
-            {{ t('dashboard.analytics.title') }}
-          </h1>
-          <p class="mt-1 text-sm text-muted">
-            {{ t('dashboard.analytics.description') }}
-          </p>
-        </div>
-      </div>
+    <section class="flex min-w-0 items-start gap-3">
+      <UDashboardSidebarCollapse class="shrink-0 lg:hidden" />
 
-      <div class="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
-        <UFieldGroup size="sm" class="w-full sm:w-auto">
-          <UButton
-            v-for="item in rangeItems"
-            :key="item.value"
-            :variant="range === item.value ? 'soft' : 'outline'"
-            color="primary"
-            icon="i-lucide-calendar"
-            @click="range = item.value"
-          >
-            {{ item.label }}
-          </UButton>
-        </UFieldGroup>
-
-        <div class="flex items-center gap-2">
-          <UButton
-            color="neutral"
-            variant="ghost"
-            :disabled="isRefreshing"
-            @click="refreshAnalytics"
-          >
-            <template #leading>
-              <UIcon
-                :name="isRefreshing ? 'i-lucide-loader-circle' : 'i-lucide-refresh-cw'"
-                class="size-4"
-                :class="{ 'animate-spin': isRefreshing }"
-              />
-            </template>
-            {{ t('dashboard.analytics.refresh') }}
-          </UButton>
-        </div>
+      <div class="min-w-0">
+        <h1 class="text-3xl font-semibold tracking-tight text-highlighted">
+          {{ t('dashboard.analytics.title') }}
+        </h1>
+        <p class="mt-1 text-sm text-muted">
+          {{ t('dashboard.analytics.description') }}
+        </p>
       </div>
     </section>
 

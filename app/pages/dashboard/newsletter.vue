@@ -42,6 +42,11 @@ const limit = ref(50)
 const offset = ref(0)
 const isRefreshing = ref(false)
 
+useDashboardPageToolbar({
+  isRefreshing,
+  onRefresh: () => refreshSubscribers()
+})
+
 const statusItems = computed(() => [
   { label: t('dashboard.newsletter.allStatuses'), value: 'ALL' as const },
   { label: t('dashboard.newsletter.status.subscribed'), value: 'SUBSCRIBED' as const },
@@ -225,17 +230,6 @@ watch([search, statusFilter], () => {
     :description="t('dashboard.newsletter.description')"
     grid-class="grid-cols-1"
   >
-    <template #actions>
-      <UButton
-        variant="soft"
-        icon="i-lucide-refresh-cw"
-        :loading="isRefreshing"
-        @click="refreshSubscribers"
-      >
-        {{ t('dashboard.newsletter.refresh') }}
-      </UButton>
-    </template>
-
     <template #summary>
       <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <DashboardMetric v-for="metric in summaryCards" :key="metric.key" :metric="metric" />

@@ -59,6 +59,12 @@ const replyBody = ref('')
 const composerMode = ref<'reply' | 'note'>('reply')
 const isSendingReply = ref(false)
 const isRefreshing = ref(false)
+
+useDashboardPageToolbar({
+  isRefreshing,
+  onRefresh: () => loadInbox()
+})
+
 const isConversationDrawerOpen = ref(false)
 const canUseConversationDrawer = ref(false)
 const isTrashConfirmOpen = ref(false)
@@ -593,25 +599,6 @@ onBeforeUnmount(() => {
     :description="t('dashboard.inbox.description')"
     grid-class="lg:grid-cols-[minmax(500px,580px)_minmax(0,1fr)]"
   >
-    <template #actions>
-      <UButton
-        color="neutral"
-        variant="ghost"
-        :disabled="isRefreshing"
-        size="sm"
-        @click="loadInbox"
-      >
-        <template #leading>
-          <UIcon
-            :name="isRefreshing ? 'i-lucide-loader-circle' : 'i-lucide-refresh-cw'"
-            class="size-4"
-            :class="{ 'animate-spin': isRefreshing }"
-          />
-        </template>
-        {{ t('dashboard.inbox.refresh') }}
-      </UButton>
-    </template>
-
     <DashboardInboxThreads
       :primary-tabs="primaryTabs"
       :secondary-tabs="secondaryTabs"

@@ -1,4 +1,7 @@
+import type { AnalyticsRange } from '#gql'
 import type { DashboardHomeQuery } from '#gql'
+
+import { DEFAULT_DASHBOARD_RANGE } from '~~/shared/constants/dashboard-range'
 
 export type DashboardHome = DashboardHomeQuery['dashboardHome']
 
@@ -27,19 +30,24 @@ function createDefaultDashboardHome(): DashboardHome {
   }
 }
 
-export function useDashboardHome() {
+export function useDashboardHome(range?: Ref<AnalyticsRange>) {
   const auth = useAuth()
   auth.restoreToken()
 
+  const variables = computed(() => ({
+    range: range?.value ?? DEFAULT_DASHBOARD_RANGE
+  }))
+
   return useAsyncData<DashboardHome>(
-    'dashboard:home',
+    () => `dashboard:home:${variables.value.range}`,
     async () => {
-      const result = await GqlDashboardHome()
+      const result = await GqlDashboardHome(variables.value)
       return result.dashboardHome
     },
     {
       default: createDefaultDashboardHome,
-      dedupe: 'defer'
+      dedupe: 'defer',
+      watch: range ? [variables] : []
     }
   )
 }
