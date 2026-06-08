@@ -121,6 +121,7 @@ function updateMessageKind(workspace: InboxWorkspace, id: string, kind: InboxWor
 
 export function useInboxWorkspace(input: {
   filter: Ref<InboxWorkspaceFilter>
+  unreadOnly: Ref<boolean>
   search: Ref<string>
   selectedMessageId: Ref<string | undefined>
 }) {
@@ -130,6 +131,7 @@ export function useInboxWorkspace(input: {
   const variables = computed<{ input: InboxWorkspaceInput }>(() => ({
     input: {
       filter: input.filter.value,
+      unreadOnly: input.unreadOnly.value,
       search: input.search.value || null,
       selectedMessageId: input.selectedMessageId.value || null,
       limit: 50,

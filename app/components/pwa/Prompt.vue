@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { isIOS, isInstallable, shouldShowInstallGuide, promptInstall } = usePwaPrompt()
+const { isIOS, isInstallable, shouldShowInstallGuide, promptInstall } = usePwaInstallPrompt()
 
 const dismissed = useCookie<boolean>('mohetios_pwa_install_dismissed', {
   default: () => false,

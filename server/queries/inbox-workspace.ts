@@ -21,6 +21,7 @@ type InboxFilter =
 
 type InboxWorkspaceInput = {
   filter?: InboxFilter | null
+  unreadOnly?: boolean | null
   search?: string | null
   selectedMessageId?: string | null
   limit?: number | null
@@ -154,6 +155,7 @@ export async function inboxWorkspace(
   const conditions = [
     buildTrashScopeCondition(filter),
     buildFilterCondition(filter),
+    input.unreadOnly ? eq(inboxMessages.status, 'NEW') : undefined,
     buildSearchCondition(input.search)
   ].filter((condition): condition is SQL => Boolean(condition))
 

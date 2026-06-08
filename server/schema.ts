@@ -201,6 +201,7 @@ export const typeDefs = /* GraphQL */ `
 
   input InboxWorkspaceInput {
     filter: InboxFilter = ALL
+    unreadOnly: Boolean = false
     search: String
     selectedMessageId: ID
     limit: Int = 50

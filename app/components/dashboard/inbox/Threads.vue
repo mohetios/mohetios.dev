@@ -6,6 +6,8 @@ defineProps<{
   primaryTabs: InboxTabItem[]
   secondaryTabs: InboxTabItem[]
   activeTab: InboxTabKey
+  unreadOnly: boolean
+  unreadCount?: number
   messages: InboxMessage[]
   search: string
   loading: boolean
@@ -15,6 +17,7 @@ defineProps<{
 const emit = defineEmits<{
   'update:search': [value: string]
   'select-tab': [tab: InboxTabKey]
+  'update:unread-only': [value: boolean]
   'select-message': [id: string]
 }>()
 
@@ -29,7 +32,10 @@ const { t } = useI18n()
       :primary-tabs="primaryTabs"
       :secondary-tabs="secondaryTabs"
       :active-tab="activeTab"
+      :unread-only="unreadOnly"
+      :unread-count="unreadCount"
       @select-tab="emit('select-tab', $event)"
+      @update:unread-only="emit('update:unread-only', $event)"
     />
 
     <div class="border-b border-default px-3 py-2">

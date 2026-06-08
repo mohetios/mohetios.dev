@@ -5,6 +5,7 @@ import {
   getInboxTabI18nKey,
   inboxTabToFilter,
   parseInboxTab,
+  parseUnreadOnly,
   PRIMARY_INBOX_TABS,
   SECONDARY_INBOX_TABS,
   type InboxTabItem,
@@ -29,6 +30,7 @@ const toast = useToast()
 
 const activeTab = computed(() => parseInboxTab(route.query.tab))
 const activeFilter = computed(() => inboxTabToFilter[activeTab.value])
+const unreadOnly = computed(() => parseUnreadOnly(route.query.unread, route.query.tab))
 
 const search = ref('')
 const selectedMessageId = ref<string | undefined>(
@@ -48,6 +50,7 @@ const {
   deleteMessageForever
 } = useInboxWorkspace({
   filter: activeFilter,
+  unreadOnly,
   search,
   selectedMessageId
 })
@@ -104,8 +107,9 @@ const selectedThreadEvents = computed(() =>
   inboxWorkspace.value.threadEvents.map(normalizeThreadEventDto)
 )
 
+const unreadCount = computed(() => inboxWorkspace.value.summary.unread)
+
 const tabCounts = computed<Partial<Record<InboxTabKey, number>>>(() => ({
-  unread: inboxWorkspace.value.summary.unread,
   'needs-reply': inboxWorkspace.value.summary.needsReply,
   leads: inboxWorkspace.value.summary.leads,
   all: inboxWorkspace.value.summary.total,
@@ -128,6 +132,30 @@ function buildTabItem(key: InboxTabKey): InboxTabItem {
 
 const primaryTabs = computed(() => PRIMARY_INBOX_TABS.map(buildTabItem))
 const secondaryTabs = computed(() => SECONDARY_INBOX_TABS.map(buildTabItem))
+
+watch(
+  () => route.query.tab,
+  (tab) => {
+    if (tab !== 'unread') {
+      return
+    }
+
+    const { message, ...restQuery } = route.query
+
+    navigateTo(
+      {
+        path: route.path,
+        query: {
+          ...restQuery,
+          tab: 'all',
+          unread: restQuery.unread || '1'
+        }
+      },
+      { replace: true }
+    )
+  },
+  { immediate: true }
+)
 
 watch(
   () => [route.query.tab, route.query.message] as const,
@@ -218,15 +246,44 @@ function getInboxErrorMessage(error: unknown) {
   return message
 }
 
+function inboxQueryFromRoute(overrides: Record<string, string | undefined> = {}) {
+  const query: Record<string, string> = {}
+
+  for (const [key, value] of Object.entries(route.query)) {
+    if (typeof value === 'string') {
+      query[key] = value
+    }
+  }
+
+  for (const [key, value] of Object.entries(overrides)) {
+    if (value === undefined) {
+      delete query[key]
+    } else {
+      query[key] = value
+    }
+  }
+
+  return query
+}
+
 function selectTab(tab: InboxTabKey) {
   navigateTo(
     {
       path: route.path,
-      query: {
-        ...route.query,
-        tab,
+      query: inboxQueryFromRoute({ tab, message: undefined })
+    },
+    { replace: false }
+  )
+}
+
+function setUnreadOnly(value: boolean) {
+  navigateTo(
+    {
+      path: route.path,
+      query: inboxQueryFromRoute({
+        unread: value ? '1' : undefined,
         message: undefined
-      }
+      })
     },
     { replace: false }
   )
@@ -559,12 +616,15 @@ onBeforeUnmount(() => {
       :primary-tabs="primaryTabs"
       :secondary-tabs="secondaryTabs"
       :active-tab="activeTab"
+      :unread-only="unreadOnly"
+      :unread-count="unreadCount"
       :messages="messages"
       :search="search"
       :loading="isInitialInboxLoading"
       :selected-message-id="selectedMessageId"
       @update:search="search = $event"
       @select-tab="selectTab"
+      @update:unread-only="setUnreadOnly"
       @select-message="selectMessage"
     />
 

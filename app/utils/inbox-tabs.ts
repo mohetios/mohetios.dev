@@ -21,18 +21,30 @@ export const inboxTabToFilter: Record<InboxTabKey, InboxWorkspaceFilter> = {
   trash: 'TRASH'
 }
 
-export const PRIMARY_INBOX_TABS: InboxTabKey[] = ['all', 'unread', 'needs-reply', 'leads']
+export const PRIMARY_INBOX_TABS: InboxTabKey[] = ['all', 'needs-reply', 'leads']
 
 export const SECONDARY_INBOX_TABS: InboxTabKey[] = ['replied', 'archived', 'spam', 'trash']
 
 const VALID_TABS = new Set<string>(Object.keys(inboxTabToFilter))
 
 export function parseInboxTab(value: unknown): InboxTabKey {
+  if (value === 'unread') {
+    return 'all'
+  }
+
   if (typeof value === 'string' && VALID_TABS.has(value)) {
     return value as InboxTabKey
   }
 
-  return 'unread'
+  return 'all'
+}
+
+export function parseUnreadOnly(unreadQuery: unknown, tabQuery: unknown) {
+  if (unreadQuery === '1' || unreadQuery === 'true') {
+    return true
+  }
+
+  return tabQuery === 'unread'
 }
 
 export type InboxTabItem = {
