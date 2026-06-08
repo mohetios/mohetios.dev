@@ -127,9 +127,9 @@
         "leads": "Leads",
         "leadsHelper": "Potential work or collaboration messages",
         "visitors": "Visitors",
-        "visitorsHelper": "Audience from Cloudflare Analytics (last 7 days)",
+        "visitorsHelper": "Audience from Cloudflare Analytics ({range})",
         "pageViews": "Page views",
-        "pageViewsHelper": "Page activity from Cloudflare Analytics"
+        "pageViewsHelper": "Page activity from Cloudflare Analytics ({range})"
       },
       "audience": {
         "pending": "Analytics provider not connected yet"
@@ -249,7 +249,7 @@
       "title": "Overview",
       "description": "A simple command center for your audience, content, inbox, and system.",
       "audience": "Audience",
-      "audienceHelper": "Total visitors in the last 7 days",
+      "audienceHelper": "Total visitors in {range}",
       "visitors": "Visitors",
       "inboxPreview": "Inbox Preview",
       "contentPulse": "Content Pulse",
@@ -262,7 +262,7 @@
       "quickNote": "Quick Note",
       "quickNotePlaceholder": "Jot down a quick note...",
       "addQuickNote": "Add quick note",
-      "audienceChartLabel": "Audience visitors trend for the last 7 days",
+      "audienceChartLabel": "Audience visitors trend for {range}",
       "openInbox": "Open Inbox",
       "viewAll": "View all",
       "viewDetails": "Details",

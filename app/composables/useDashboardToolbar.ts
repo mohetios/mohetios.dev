@@ -15,6 +15,10 @@ type DashboardToolbarRuntime = {
   refreshHandler: (() => void | Promise<void>) | null
 }
 
+type DashboardRangeRuntime = {
+  range: Ref<DashboardAnalyticsRange>
+}
+
 export function useDashboardToolbarPreset() {
   const route = useRoute()
 
@@ -35,29 +39,34 @@ export function useDashboardToolbarRuntime() {
 }
 
 export function useDashboardRangePreference() {
+  const nuxtApp = useNuxtApp()
   const stored = useCookie<string>(DASHBOARD_RANGE_COOKIE, {
     default: () => DEFAULT_DASHBOARD_RANGE,
     sameSite: 'lax',
     maxAge: 60 * 60 * 24 * 365
   })
 
-  const range = ref<DashboardAnalyticsRange>(parseDashboardRange(stored.value))
+  if (!nuxtApp._dashboardRangeRuntime) {
+    const range = ref<DashboardAnalyticsRange>(parseDashboardRange(stored.value))
 
-  watch(stored, (value) => {
-    const parsed = parseDashboardRange(value)
+    watch(stored, (value) => {
+      const parsed = parseDashboardRange(value)
 
-    if (range.value !== parsed) {
-      range.value = parsed
-    }
-  })
+      if (range.value !== parsed) {
+        range.value = parsed
+      }
+    })
 
-  watch(range, (value) => {
-    if (stored.value !== value) {
-      stored.value = value
-    }
-  })
+    watch(range, (value) => {
+      if (stored.value !== value) {
+        stored.value = value
+      }
+    })
 
-  return range
+    nuxtApp._dashboardRangeRuntime = { range } satisfies DashboardRangeRuntime
+  }
+
+  return (nuxtApp._dashboardRangeRuntime as DashboardRangeRuntime).range
 }
 
 export function useDashboardPageToolbar(options: {

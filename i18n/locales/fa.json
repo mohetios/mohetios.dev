@@ -127,9 +127,9 @@
         "leads": "سرنخ‌ها",
         "leadsHelper": "پیام‌های همکاری یا کار احتمالی",
         "visitors": "بازدیدکننده",
-        "visitorsHelper": "مخاطب از Cloudflare Analytics (۷ روز گذشته)",
+        "visitorsHelper": "مخاطب از Cloudflare Analytics ({range})",
         "pageViews": "بازدید صفحه",
-        "pageViewsHelper": "فعالیت صفحه از Cloudflare Analytics"
+        "pageViewsHelper": "فعالیت صفحه از Cloudflare Analytics ({range})"
       },
       "audience": {
         "pending": "ارائه‌دهنده تحلیل هنوز متصل نشده است"
@@ -249,7 +249,7 @@
       "title": "نمای کلی",
       "description": "مرکز فرمان ساده برای مخاطب، محتوا، صندوق ورودی و سیستم.",
       "audience": "مخاطب",
-      "audienceHelper": "کل بازدیدکنندگان در ۷ روز گذشته",
+      "audienceHelper": "کل بازدیدکنندگان در {range}",
       "visitors": "بازدیدکنندگان",
       "inboxPreview": "پیش‌نمایش صندوق ورودی",
       "contentPulse": "نبض محتوا",
@@ -262,7 +262,7 @@
       "quickNote": "یادداشت سریع",
       "quickNotePlaceholder": "یک یادداشت کوتاه بنویسید...",
       "addQuickNote": "افزودن یادداشت سریع",
-      "audienceChartLabel": "روند بازدیدکنندگان مخاطب در ۷ روز گذشته",
+      "audienceChartLabel": "روند بازدیدکنندگان مخاطب در {range}",
       "openInbox": "باز کردن صندوق ورودی",
       "viewAll": "مشاهده همه",
       "viewDetails": "جزئیات",

@@ -18,3 +18,9 @@ export function parseDashboardRange(value: unknown): DashboardAnalyticsRange {
 
   return DEFAULT_DASHBOARD_RANGE
 }
+
+export const DASHBOARD_RANGE_LABEL_KEYS: Record<DashboardAnalyticsRange, string> = {
+  LAST_7_DAYS: 'dashboard.analytics.ranges.last7Days',
+  LAST_30_DAYS: 'dashboard.analytics.ranges.last30Days',
+  LAST_90_DAYS: 'dashboard.analytics.ranges.last90Days'
+}

@@ -34,20 +34,18 @@ export function useDashboardHome(range?: Ref<AnalyticsRange>) {
   const auth = useAuth()
   auth.restoreToken()
 
-  const variables = computed(() => ({
-    range: range?.value ?? DEFAULT_DASHBOARD_RANGE
-  }))
-
   return useAsyncData<DashboardHome>(
-    () => `dashboard:home:${variables.value.range}`,
+    () => `dashboard:home:${range?.value ?? DEFAULT_DASHBOARD_RANGE}`,
     async () => {
-      const result = await GqlDashboardHome(variables.value)
+      const result = await GqlDashboardHome({
+        range: range?.value ?? DEFAULT_DASHBOARD_RANGE
+      })
       return result.dashboardHome
     },
     {
       default: createDefaultDashboardHome,
       dedupe: 'defer',
-      watch: range ? [variables] : []
+      watch: range ? [range] : []
     }
   )
 }

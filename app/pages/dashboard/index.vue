@@ -6,6 +6,7 @@ import {
   dashboardChartCardUi
 } from '~/utils/dashboard-ui'
 import type { AudienceMetricMode } from '~/utils/dashboard-charts'
+import { DASHBOARD_RANGE_LABEL_KEYS } from '~~/shared/constants/dashboard-range'
 
 definePageMeta({
   layout: 'dashboard',
@@ -16,6 +17,7 @@ const { t, locale } = useI18n()
 const toast = useToast()
 
 const range = useDashboardRangePreference()
+const rangeLabel = computed(() => t(DASHBOARD_RANGE_LABEL_KEYS[range.value]))
 const isRefreshing = ref(false)
 
 useDashboardPageToolbar({
@@ -55,7 +57,7 @@ const summaryCards = computed<DashboardSummaryCard[]>(() => {
       label: t('dashboard.home.summary.visitors'),
       value: summary.visits,
       icon: 'i-lucide-users',
-      helper: t('dashboard.home.summary.visitorsHelper'),
+      helper: t('dashboard.home.summary.visitorsHelper', { range: rangeLabel.value }),
       to: '/dashboard/analytics'
     },
     {
@@ -63,7 +65,7 @@ const summaryCards = computed<DashboardSummaryCard[]>(() => {
       label: t('dashboard.home.summary.pageViews'),
       value: summary.pageViews,
       icon: 'i-lucide-chart-line',
-      helper: t('dashboard.home.summary.pageViewsHelper'),
+      helper: t('dashboard.home.summary.pageViewsHelper', { range: rangeLabel.value }),
       to: '/dashboard/analytics'
     }
   ]
@@ -103,6 +105,7 @@ const hasDashboardHomeData = computed(() => {
   )
 })
 const isInitialDashboardLoading = computed(() => isLoading.value && !hasDashboardHomeData.value)
+const isAudienceLoading = computed(() => isLoading.value)
 
 const activityIconByType: Record<string, string> = {
   inbox: 'i-lucide-mail',
@@ -207,7 +210,7 @@ watch(error, (currentError) => {
                 </p>
               </div>
               <p class="mt-1 text-sm text-muted">
-                {{ t('dashboard.overview.audienceHelper') }}
+                {{ t('dashboard.overview.audienceHelper', { range: rangeLabel }) }}
               </p>
               <p v-if="audienceTrendIsEmpty" class="mt-2 text-xs text-muted">
                 {{ t('dashboard.home.audience.pending') }}
@@ -229,10 +232,11 @@ watch(error, (currentError) => {
         </template>
 
         <DashboardAudienceAreaChart
+          :key="range"
           :points="dashboardHome.audienceTrend"
           :metric="audienceMetric"
-          :loading="isInitialDashboardLoading"
-          :aria-label="t('dashboard.overview.audienceChartLabel')"
+          :loading="isAudienceLoading"
+          :aria-label="t('dashboard.overview.audienceChartLabel', { range: rangeLabel })"
         >
           <template #empty>
             {{ t('dashboard.home.audience.pending') }}

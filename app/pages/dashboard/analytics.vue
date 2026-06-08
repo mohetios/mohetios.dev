@@ -5,7 +5,6 @@ import {
   dashboardChartCardUi,
   dashboardChartStandaloneHeightClass
 } from '~/utils/dashboard-ui'
-import type { AnalyticsRange } from '~/composables/useAnalyticsDashboard'
 import type { AudienceMetricMode } from '~/utils/dashboard-charts'
 
 definePageMeta({
@@ -152,6 +151,7 @@ const hasAnalyticsData = computed(
     analytics.value.dataSourceDescription.length > 0
 )
 const isInitialAnalyticsLoading = computed(() => isLoading.value && !hasAnalyticsData.value)
+const isAnalyticsChartLoading = computed(() => isLoading.value)
 
 const filteredPages = computed(() => {
   const query = search.value.trim().toLowerCase()
@@ -325,9 +325,10 @@ watch(error, (currentError) => {
           </template>
 
           <DashboardAudienceAreaChart
+            :key="range"
             :points="analytics.trend"
             :metric="audienceMetric"
-            :loading="isInitialAnalyticsLoading"
+            :loading="isAnalyticsChartLoading"
             :aria-label="t('dashboard.analytics.sections.audienceTrendDescription')"
           >
             <template #empty>

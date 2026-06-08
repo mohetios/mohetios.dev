@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {
   DASHBOARD_ANALYTICS_RANGES,
-  type DashboardAnalyticsRange
+  DASHBOARD_RANGE_LABEL_KEYS
 } from '~~/shared/constants/dashboard-range'
 
 const { t } = useI18n()
@@ -25,15 +25,9 @@ const toolbarButton = {
   size: 'sm' as const
 }
 
-const rangeLabels: Record<DashboardAnalyticsRange, string> = {
-  LAST_7_DAYS: 'dashboard.analytics.ranges.last7Days',
-  LAST_30_DAYS: 'dashboard.analytics.ranges.last30Days',
-  LAST_90_DAYS: 'dashboard.analytics.ranges.last90Days'
-}
-
 const rangeMenuItems = computed(() => [
   DASHBOARD_ANALYTICS_RANGES.map((value) => ({
-    label: t(rangeLabels[value]),
+    label: t(DASHBOARD_RANGE_LABEL_KEYS[value]),
     icon: range.value === value ? 'i-lucide-check' : undefined,
     onSelect: () => {
       range.value = value
@@ -73,7 +67,7 @@ async function handleRefresh() {
             trailing-icon="i-lucide-chevron-down"
           >
             <span class="max-w-[8.5rem] truncate sm:max-w-none">
-              {{ t(rangeLabels[range]) }}
+              {{ t(DASHBOARD_RANGE_LABEL_KEYS[range]) }}
             </span>
           </UButton>
         </UDropdownMenu>
