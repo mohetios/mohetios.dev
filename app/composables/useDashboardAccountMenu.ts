@@ -13,7 +13,9 @@ export function useDashboardAccountMenu() {
     return locales.value.find((item) => item.code !== locale.value)
   })
 
-  const accountLabel = computed(() => auth.user.value?.username || t('dashboard.sidebar.accountName'))
+  const accountLabel = computed(
+    () => auth.user.value?.username || t('dashboard.sidebar.accountName')
+  )
   const accountRole = computed(() => auth.user.value?.role || t('dashboard.sidebar.accountRole'))
 
   const user = computed(() => ({

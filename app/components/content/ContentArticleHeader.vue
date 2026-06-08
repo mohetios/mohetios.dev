@@ -50,14 +50,13 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
         {{ backLabel }}
       </NuxtLink>
 
-      <p
-        v-if="status"
-        class="text-ui-xs font-medium uppercase tracking-[0.2em] text-primary"
-      >
+      <p v-if="status" class="text-ui-xs font-medium uppercase tracking-[0.2em] text-primary">
         {{ status }}
       </p>
 
-      <h1 class="mt-3 break-words text-balance text-3xl font-semibold tracking-tight text-highlighted sm:text-4xl lg:text-[2.5rem] lg:leading-[1.12]">
+      <h1
+        class="mt-3 break-words text-balance text-3xl font-semibold tracking-tight text-highlighted sm:text-4xl lg:text-[2.5rem] lg:leading-[1.12]"
+      >
         {{ title }}
       </h1>
 

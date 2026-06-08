@@ -28,7 +28,9 @@ watch(
 </script>
 
 <template>
-  <div :class="compact ? 'space-y-2' : 'space-y-3 rounded-xl border border-default bg-muted/20 p-4'">
+  <div
+    :class="compact ? 'space-y-2' : 'space-y-3 rounded-xl border border-default bg-muted/20 p-4'"
+  >
     <div v-if="!compact" class="flex flex-wrap gap-2">
       <UButton
         :color="composerMode === 'reply' ? 'primary' : 'neutral'"

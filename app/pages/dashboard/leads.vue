@@ -284,70 +284,72 @@ function handleUpdateNotes(notes: string | null) {
 </script>
 
 <template>
-  <DashboardWorkspacePage
-    :title="t('dashboard.leads.title')"
-    :description="t('dashboard.leads.description')"
-    grid-class="lg:grid-cols-[minmax(500px,580px)_minmax(0,1fr)]"
-  >
-    <template #actions>
-      <UButton
-        color="neutral"
-        variant="ghost"
-        size="sm"
-        :disabled="isRefreshing"
-        @click="loadLeads"
-      >
-        <template #leading>
-          <UIcon
-            :name="isRefreshing ? 'i-lucide-loader-circle' : 'i-lucide-refresh-cw'"
-            class="size-4"
-            :class="{ 'animate-spin': isRefreshing }"
-          />
-        </template>
-        {{ t('dashboard.leads.refresh') }}
-      </UButton>
+  <div>
+    <DashboardWorkspacePage
+      :title="t('dashboard.leads.title')"
+      :description="t('dashboard.leads.description')"
+      grid-class="lg:grid-cols-[minmax(500px,580px)_minmax(0,1fr)]"
+    >
+      <template #actions>
+        <UButton
+          color="neutral"
+          variant="ghost"
+          size="sm"
+          :disabled="isRefreshing"
+          @click="loadLeads"
+        >
+          <template #leading>
+            <UIcon
+              :name="isRefreshing ? 'i-lucide-loader-circle' : 'i-lucide-refresh-cw'"
+              class="size-4"
+              :class="{ 'animate-spin': isRefreshing }"
+            />
+          </template>
+          {{ t('dashboard.leads.refresh') }}
+        </UButton>
 
-      <UButton color="neutral" variant="soft" icon="i-lucide-plus" disabled>
-        {{ t('dashboard.leads.addManualLead') }}
-      </UButton>
-    </template>
+        <UButton color="neutral" variant="soft" icon="i-lucide-plus" disabled>
+          {{ t('dashboard.leads.addManualLead') }}
+        </UButton>
+      </template>
 
-    <DashboardLeadsList
-      :primary-tabs="primaryTabs"
-      :secondary-tabs="secondaryTabs"
-      :active-tab="activeTab"
-      :leads="leads"
-      :search="search"
-      :loading="isInitialLeadsLoading"
-      :selected-lead-id="selectedLeadId"
-      @update:search="search = $event"
-      @select-tab="selectTab"
-      @select-lead="selectLead"
-    />
+      <DashboardLeadsList
+        :primary-tabs="primaryTabs"
+        :secondary-tabs="secondaryTabs"
+        :active-tab="activeTab"
+        :leads="leads"
+        :search="search"
+        :loading="isInitialLeadsLoading"
+        :selected-lead-id="selectedLeadId"
+        @update:search="search = $event"
+        @select-tab="selectTab"
+        @select-lead="selectLead"
+      />
 
-    <DashboardLeadsLeadDetail
+      <DashboardLeadsLeadDetail
+        :lead="selectedLead"
+        :loading="isLeadDetailLoading"
+        :mutating="isMutating"
+        @open-conversation="openInboxConversation"
+        @update-status="handleUpdateStatus"
+        @update-priority="handleUpdatePriority"
+        @update-follow-up="handleUpdateFollowUp"
+        @update-notes="handleUpdateNotes"
+      />
+    </DashboardWorkspacePage>
+
+    <DashboardLeadsLeadDrawer
+      v-if="canUseLeadDrawer"
+      v-model:open="isLeadDrawerOpen"
       :lead="selectedLead"
       :loading="isLeadDetailLoading"
       :mutating="isMutating"
+      @close="closeLeadDetail"
       @open-conversation="openInboxConversation"
       @update-status="handleUpdateStatus"
       @update-priority="handleUpdatePriority"
       @update-follow-up="handleUpdateFollowUp"
       @update-notes="handleUpdateNotes"
     />
-  </DashboardWorkspacePage>
-
-  <DashboardLeadsLeadDrawer
-    v-if="canUseLeadDrawer"
-    v-model:open="isLeadDrawerOpen"
-    :lead="selectedLead"
-    :loading="isLeadDetailLoading"
-    :mutating="isMutating"
-    @close="closeLeadDetail"
-    @open-conversation="openInboxConversation"
-    @update-status="handleUpdateStatus"
-    @update-priority="handleUpdatePriority"
-    @update-follow-up="handleUpdateFollowUp"
-    @update-notes="handleUpdateNotes"
-  />
+  </div>
 </template>

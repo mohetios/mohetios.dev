@@ -4,11 +4,7 @@ import type { AppDb } from '../../models/client'
 import { adminNotifications, inboxMessages, inboxReplies } from '../../models/schema'
 
 export async function deleteMessageForever(db: AppDb, id: string) {
-  const [message] = await db
-    .select()
-    .from(inboxMessages)
-    .where(eq(inboxMessages.id, id))
-    .limit(1)
+  const [message] = await db.select().from(inboxMessages).where(eq(inboxMessages.id, id)).limit(1)
 
   if (!message) {
     return { found: false as const, deleted: false as const }

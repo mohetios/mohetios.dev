@@ -376,24 +376,24 @@ Create `src/index.ts`:
 
 ```ts
 interface Env {
-  FORWARD_TO_EMAIL?: string;
+  FORWARD_TO_EMAIL?: string
 }
 
 export default {
   async email(message, env, ctx): Promise<void> {
-    console.log("Email received");
-    console.log("From:", message.from);
-    console.log("To:", message.to);
-    console.log("Subject:", message.headers.get("subject"));
-    console.log("Raw size:", message.rawSize);
+    console.log('Email received')
+    console.log('From:', message.from)
+    console.log('To:', message.to)
+    console.log('Subject:', message.headers.get('subject'))
+    console.log('Raw size:', message.rawSize)
 
     // For the first test, forward the email to a verified destination.
     // This keeps the email useful while we are still learning.
     if (env.FORWARD_TO_EMAIL) {
-      await message.forward(env.FORWARD_TO_EMAIL);
+      await message.forward(env.FORWARD_TO_EMAIL)
     }
-  },
-} satisfies ExportedHandler<Env>;
+  }
+} satisfies ExportedHandler<Env>
 ```
 
 This is enough for the first proof.
@@ -518,44 +518,44 @@ That is where `postal-mime` helps.
 Update `src/index.ts`:
 
 ```ts
-import * as PostalMime from "postal-mime";
+import * as PostalMime from 'postal-mime'
 
 interface Env {
-  FORWARD_TO_EMAIL?: string;
+  FORWARD_TO_EMAIL?: string
 }
 
 function safeHeader(message: ForwardableEmailMessage, name: string) {
-  return message.headers.get(name) || message.headers.get(name.toLowerCase()) || "";
+  return message.headers.get(name) || message.headers.get(name.toLowerCase()) || ''
 }
 
 export default {
   async email(message, env, ctx): Promise<void> {
-    console.log("Email received");
+    console.log('Email received')
 
-    const parser = new PostalMime.default();
-    const rawEmail = new Response(message.raw);
-    const parsed = await parser.parse(await rawEmail.arrayBuffer());
+    const parser = new PostalMime.default()
+    const rawEmail = new Response(message.raw)
+    const parsed = await parser.parse(await rawEmail.arrayBuffer())
 
-    const subject = parsed.subject || safeHeader(message, "subject") || "(no subject)";
-    const from = parsed.from?.address || message.from;
-    const fromName = parsed.from?.name || "";
-    const to = parsed.to?.map((item) => item.address).join(", ") || message.to;
-    const messageId = parsed.messageId || safeHeader(message, "message-id");
+    const subject = parsed.subject || safeHeader(message, 'subject') || '(no subject)'
+    const from = parsed.from?.address || message.from
+    const fromName = parsed.from?.name || ''
+    const to = parsed.to?.map((item) => item.address).join(', ') || message.to
+    const messageId = parsed.messageId || safeHeader(message, 'message-id')
 
-    console.log("From:", from);
-    console.log("From name:", fromName);
-    console.log("To:", to);
-    console.log("Subject:", subject);
-    console.log("Message ID:", messageId);
-    console.log("Text body:", parsed.text || "");
-    console.log("HTML body:", parsed.html || "");
-    console.log("Attachments:", parsed.attachments?.length || 0);
+    console.log('From:', from)
+    console.log('From name:', fromName)
+    console.log('To:', to)
+    console.log('Subject:', subject)
+    console.log('Message ID:', messageId)
+    console.log('Text body:', parsed.text || '')
+    console.log('HTML body:', parsed.html || '')
+    console.log('Attachments:', parsed.attachments?.length || 0)
 
     if (env.FORWARD_TO_EMAIL) {
-      await message.forward(env.FORWARD_TO_EMAIL);
+      await message.forward(env.FORWARD_TO_EMAIL)
     }
-  },
-} satisfies ExportedHandler<Env>;
+  }
+} satisfies ExportedHandler<Env>
 ```
 
 Now the Worker is not only reacting to the email.
@@ -664,35 +664,31 @@ npx wrangler d1 migrations apply email_worker_demo --remote
 Now update the Worker and insert the email.
 
 ```ts
-import * as PostalMime from "postal-mime";
+import * as PostalMime from 'postal-mime'
 
 interface Env {
-  DB?: D1Database;
-  FORWARD_TO_EMAIL?: string;
+  DB?: D1Database
+  FORWARD_TO_EMAIL?: string
 }
 
 function safeHeader(message: ForwardableEmailMessage, name: string) {
-  return message.headers.get(name) || message.headers.get(name.toLowerCase()) || "";
+  return message.headers.get(name) || message.headers.get(name.toLowerCase()) || ''
 }
 
-async function storeEmail(
-  message: ForwardableEmailMessage,
-  parsed: any,
-  env: Env
-) {
+async function storeEmail(message: ForwardableEmailMessage, parsed: any, env: Env) {
   if (!env.DB) {
-    console.log("D1 is not configured. Skipping storage.");
-    return;
+    console.log('D1 is not configured. Skipping storage.')
+    return
   }
 
-  const id = crypto.randomUUID();
-  const now = new Date().toISOString();
+  const id = crypto.randomUUID()
+  const now = new Date().toISOString()
 
-  const subject = parsed.subject || safeHeader(message, "subject") || "(no subject)";
-  const fromEmail = parsed.from?.address || message.from;
-  const fromName = parsed.from?.name || "";
-  const toEmail = parsed.to?.map((item: any) => item.address).join(", ") || message.to;
-  const messageId = parsed.messageId || safeHeader(message, "message-id");
+  const subject = parsed.subject || safeHeader(message, 'subject') || '(no subject)'
+  const fromEmail = parsed.from?.address || message.from
+  const fromName = parsed.from?.name || ''
+  const toEmail = parsed.to?.map((item: any) => item.address).join(', ') || message.to
+  const messageId = parsed.messageId || safeHeader(message, 'message-id')
 
   await env.DB.prepare(
     `
@@ -718,33 +714,33 @@ async function storeEmail(
       fromName,
       toEmail,
       subject,
-      parsed.text || "",
-      parsed.html || "",
+      parsed.text || '',
+      parsed.html || '',
       messageId,
       message.rawSize || 0,
-      "received",
+      'received',
       now
     )
-    .run();
+    .run()
 
-  console.log("Email stored in D1:", id);
+  console.log('Email stored in D1:', id)
 }
 
 export default {
   async email(message, env, ctx): Promise<void> {
-    const parser = new PostalMime.default();
-    const rawEmail = new Response(message.raw);
-    const parsed = await parser.parse(await rawEmail.arrayBuffer());
+    const parser = new PostalMime.default()
+    const rawEmail = new Response(message.raw)
+    const parsed = await parser.parse(await rawEmail.arrayBuffer())
 
-    console.log("Email received:", parsed.subject || "(no subject)");
+    console.log('Email received:', parsed.subject || '(no subject)')
 
-    await storeEmail(message, parsed, env);
+    await storeEmail(message, parsed, env)
 
     if (env.FORWARD_TO_EMAIL) {
-      await message.forward(env.FORWARD_TO_EMAIL);
+      await message.forward(env.FORWARD_TO_EMAIL)
     }
-  },
-} satisfies ExportedHandler<Env>;
+  }
+} satisfies ExportedHandler<Env>
 ```
 
 This is still small, but now we have the first real inbox foundation.
@@ -819,44 +815,40 @@ It is only enough to protect the demo endpoint.
 Update `src/index.ts` and add a `fetch()` handler beside the `email()` handler:
 
 ```ts
-import * as PostalMime from "postal-mime";
+import * as PostalMime from 'postal-mime'
 
 interface Env {
-  DB?: D1Database;
-  EMAIL?: SendEmail;
-  FROM_EMAIL: string;
-  FORWARD_TO_EMAIL?: string;
-  ADMIN_TOKEN?: string;
+  DB?: D1Database
+  EMAIL?: SendEmail
+  FROM_EMAIL: string
+  FORWARD_TO_EMAIL?: string
+  ADMIN_TOKEN?: string
 }
 
 function safeHeader(message: ForwardableEmailMessage, name: string) {
-  return message.headers.get(name) || message.headers.get(name.toLowerCase()) || "";
+  return message.headers.get(name) || message.headers.get(name.toLowerCase()) || ''
 }
 
 function isAuthorized(request: Request, env: Env) {
-  if (!env.ADMIN_TOKEN) return false;
+  if (!env.ADMIN_TOKEN) return false
 
-  const header = request.headers.get("Authorization") || "";
-  const token = header.replace("Bearer ", "").trim();
+  const header = request.headers.get('Authorization') || ''
+  const token = header.replace('Bearer ', '').trim()
 
-  return token === env.ADMIN_TOKEN;
+  return token === env.ADMIN_TOKEN
 }
 
-async function storeEmail(
-  message: ForwardableEmailMessage,
-  parsed: any,
-  env: Env
-) {
-  if (!env.DB) return;
+async function storeEmail(message: ForwardableEmailMessage, parsed: any, env: Env) {
+  if (!env.DB) return
 
-  const id = crypto.randomUUID();
-  const now = new Date().toISOString();
+  const id = crypto.randomUUID()
+  const now = new Date().toISOString()
 
-  const subject = parsed.subject || safeHeader(message, "subject") || "(no subject)";
-  const fromEmail = parsed.from?.address || message.from;
-  const fromName = parsed.from?.name || "";
-  const toEmail = parsed.to?.map((item: any) => item.address).join(", ") || message.to;
-  const messageId = parsed.messageId || safeHeader(message, "message-id");
+  const subject = parsed.subject || safeHeader(message, 'subject') || '(no subject)'
+  const fromEmail = parsed.from?.address || message.from
+  const fromName = parsed.from?.name || ''
+  const toEmail = parsed.to?.map((item: any) => item.address).join(', ') || message.to
+  const messageId = parsed.messageId || safeHeader(message, 'message-id')
 
   await env.DB.prepare(
     `
@@ -882,65 +874,59 @@ async function storeEmail(
       fromName,
       toEmail,
       subject,
-      parsed.text || "",
-      parsed.html || "",
+      parsed.text || '',
+      parsed.html || '',
       messageId,
       message.rawSize || 0,
-      "received",
+      'received',
       now
     )
-    .run();
+    .run()
 }
 
 export default {
   async email(message, env, ctx): Promise<void> {
-    const parser = new PostalMime.default();
-    const rawEmail = new Response(message.raw);
-    const parsed = await parser.parse(await rawEmail.arrayBuffer());
+    const parser = new PostalMime.default()
+    const rawEmail = new Response(message.raw)
+    const parsed = await parser.parse(await rawEmail.arrayBuffer())
 
-    console.log("Email received:", parsed.subject || "(no subject)");
+    console.log('Email received:', parsed.subject || '(no subject)')
 
-    await storeEmail(message, parsed, env);
+    await storeEmail(message, parsed, env)
 
     if (env.FORWARD_TO_EMAIL) {
-      await message.forward(env.FORWARD_TO_EMAIL);
+      await message.forward(env.FORWARD_TO_EMAIL)
     }
   },
 
   async fetch(request, env, ctx): Promise<Response> {
-    const url = new URL(request.url);
+    const url = new URL(request.url)
 
-    if (request.method === "POST" && url.pathname === "/send") {
+    if (request.method === 'POST' && url.pathname === '/send') {
       if (!isAuthorized(request, env)) {
-        return Response.json(
-          { ok: false, error: "Unauthorized" },
-          { status: 401 }
-        );
+        return Response.json({ ok: false, error: 'Unauthorized' }, { status: 401 })
       }
 
       if (!env.EMAIL) {
         return Response.json(
-          { ok: false, error: "Email sending binding is not configured" },
+          { ok: false, error: 'Email sending binding is not configured' },
           { status: 500 }
-        );
+        )
       }
 
-      let body: any;
+      let body: any
 
       try {
-        body = await request.json();
+        body = await request.json()
       } catch {
-        return Response.json(
-          { ok: false, error: "Invalid JSON body" },
-          { status: 400 }
-        );
+        return Response.json({ ok: false, error: 'Invalid JSON body' }, { status: 400 })
       }
 
       if (!body.to || !body.subject || !body.text) {
         return Response.json(
-          { ok: false, error: "to, subject, and text are required" },
+          { ok: false, error: 'to, subject, and text are required' },
           { status: 400 }
-        );
+        )
       }
 
       try {
@@ -948,34 +934,31 @@ export default {
           to: body.to,
           from: {
             email: env.FROM_EMAIL,
-            name: "Email Worker Demo",
+            name: 'Email Worker Demo'
           },
           subject: body.subject,
           text: body.text,
-          html: body.html,
-        });
+          html: body.html
+        })
 
         return Response.json({
           ok: true,
-          messageId: response.messageId,
-        });
+          messageId: response.messageId
+        })
       } catch (error) {
-        console.error("Email sending failed:", error);
+        console.error('Email sending failed:', error)
 
-        return Response.json(
-          { ok: false, error: "Email sending failed" },
-          { status: 500 }
-        );
+        return Response.json({ ok: false, error: 'Email sending failed' }, { status: 500 })
       }
     }
 
     return Response.json({
       ok: true,
-      name: "email-worker-demo",
-      routes: ["/send"],
-    });
-  },
-} satisfies ExportedHandler<Env>;
+      name: 'email-worker-demo',
+      routes: ['/send']
+    })
+  }
+} satisfies ExportedHandler<Env>
 ```
 
 Now the Worker has two faces.
@@ -1038,12 +1021,12 @@ For this first note, I would keep the reply simple and use the Email Sending bin
 
 ```ts
 interface Env {
-  EMAIL: SendEmail;
+  EMAIL: SendEmail
 }
 
 export default {
   async email(message, env, ctx): Promise<void> {
-    const subject = message.headers.get("subject") || "Your message";
+    const subject = message.headers.get('subject') || 'Your message'
 
     await env.EMAIL.send({
       to: message.from,
@@ -1061,14 +1044,14 @@ This is a small automatic reply from a Cloudflare Email Worker.
         <p>I received your message.</p>
         <p>This is a small automatic reply from a Cloudflare Email Worker.</p>
         <p>— Email Worker Demo</p>
-      `,
-    });
+      `
+    })
 
     if (message.to) {
-      console.log("Auto-reply sent from:", message.to);
+      console.log('Auto-reply sent from:', message.to)
     }
-  },
-} satisfies ExportedHandler<Env>;
+  }
+} satisfies ExportedHandler<Env>
 ```
 
 This is useful for things like:

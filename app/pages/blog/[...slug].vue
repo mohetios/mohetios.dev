@@ -37,9 +37,7 @@ const readingTime = computed(() => {
   return t('content.meta.readingTimeValue', { count: minutes })
 })
 
-const articleStatus = computed(
-  () => post.value?.category || post.value?.status || t('badges.blog')
-)
+const articleStatus = computed(() => post.value?.category || post.value?.status || t('badges.blog'))
 
 useMohetSeo({
   title: () => `${post.value?.title} · ${t('badges.blog')} · Mohetios.dev`,
@@ -87,9 +85,6 @@ useMohetSeo({
       :summary="post.summary"
     />
 
-    <ContentArticleFooter
-      :surround="surround"
-      :related-posts="relatedPosts"
-    />
+    <ContentArticleFooter :surround="surround" :related-posts="relatedPosts" />
   </UPage>
 </template>

@@ -33,7 +33,7 @@ const navItems = computed<DashboardNavItem[]>(() => [
     label: t('dashboard.nav.analytics'),
     icon: 'i-lucide-chart-column',
     to: '/dashboard/analytics'
-  },
+  }
   // {
   //   label: t('dashboard.nav.system'),
   //   icon: 'i-lucide-server',
@@ -88,9 +88,7 @@ function isActive(path: string) {
           >
             M
           </span>
-          <span v-else class="truncate">
-            Mohetios
-          </span>
+          <span v-else class="truncate"> Mohetios </span>
         </NuxtLink>
       </div>
     </template>

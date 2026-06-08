@@ -413,12 +413,7 @@ async function fetchCloudflareAnalyticsFresh(
       until
     })
 
-    const [
-      visitorTotals,
-      topPageBatches,
-      countryBatches,
-      errorTotals
-    ] = await Promise.all([
+    const [visitorTotals, topPageBatches, countryBatches, errorTotals] = await Promise.all([
       Promise.all(
         visitorSlices.map((slice) =>
           postCloudflareGraphql<{

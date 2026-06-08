@@ -30,9 +30,7 @@
       "label": "lint",
       "type": "shell",
       "command": "pnpm lint",
-      "problemMatcher": [
-        "$eslint-stylish"
-      ],
+      "problemMatcher": ["$eslint-stylish"],
       "presentation": {
         "reveal": "silent",
         "panel": "shared"
@@ -42,9 +40,7 @@
       "label": "lint:fix",
       "type": "shell",
       "command": "pnpm lint:fix",
-      "problemMatcher": [
-        "$eslint-stylish"
-      ],
+      "problemMatcher": ["$eslint-stylish"],
       "presentation": {
         "reveal": "silent",
         "panel": "shared"
@@ -54,9 +50,7 @@
       "label": "typecheck",
       "type": "shell",
       "command": "pnpm typecheck",
-      "problemMatcher": [
-        "$tsc"
-      ],
+      "problemMatcher": ["$tsc"],
       "presentation": {
         "reveal": "silent",
         "panel": "shared"
@@ -66,10 +60,7 @@
       "label": "check",
       "type": "shell",
       "command": "pnpm check",
-      "dependsOn": [
-        "lint",
-        "typecheck"
-      ],
+      "dependsOn": ["lint", "typecheck"],
       "dependsOrder": "sequence",
       "problemMatcher": [],
       "presentation": {

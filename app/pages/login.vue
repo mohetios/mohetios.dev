@@ -49,61 +49,61 @@ async function onSubmit(event: FormSubmitEvent<LoginInput>) {
     }"
   >
     <UForm :state="state" class="space-y-4" :on-submit="onSubmit">
-        <UFormField name="username" :label="t('auth.fields.username')" required>
-          <UInput
-            v-model="state.username"
-            name="username"
-            required
-            autocomplete="username"
-            icon="i-lucide-user"
-            size="lg"
-            class="w-full"
-          />
-        </UFormField>
-
-        <UFormField name="password" :label="t('auth.fields.password')" required>
-          <UInput
-            v-model="state.password"
-            name="password"
-            required
-            type="password"
-            autocomplete="current-password"
-            icon="i-lucide-lock"
-            size="lg"
-            class="w-full"
-          />
-        </UFormField>
-
-        <div class="flex justify-end">
-          <UButton
-            :to="localePath('/reset-password')"
-            variant="link"
-            color="neutral"
-            size="sm"
-            :label="t('auth.resetPassword.link')"
-          />
-        </div>
-
-        <UButton
-          type="submit"
-          block
+      <UFormField name="username" :label="t('auth.fields.username')" required>
+        <UInput
+          v-model="state.username"
+          name="username"
+          required
+          autocomplete="username"
+          icon="i-lucide-user"
           size="lg"
-          icon="i-lucide-log-in"
-          :loading="loading"
-          :label="t('auth.login.action')"
+          class="w-full"
         />
-      </UForm>
+      </UFormField>
 
-      <template #footer>
-        <div class="flex items-center justify-between gap-3 text-sm">
-          <span class="text-muted">{{ t('auth.login.noAccount') }}</span>
-          <UButton
-            :to="localePath('/register')"
-            variant="link"
-            color="neutral"
-            :label="t('auth.register.title')"
-          />
-        </div>
-      </template>
+      <UFormField name="password" :label="t('auth.fields.password')" required>
+        <UInput
+          v-model="state.password"
+          name="password"
+          required
+          type="password"
+          autocomplete="current-password"
+          icon="i-lucide-lock"
+          size="lg"
+          class="w-full"
+        />
+      </UFormField>
+
+      <div class="flex justify-end">
+        <UButton
+          :to="localePath('/reset-password')"
+          variant="link"
+          color="neutral"
+          size="sm"
+          :label="t('auth.resetPassword.link')"
+        />
+      </div>
+
+      <UButton
+        type="submit"
+        block
+        size="lg"
+        icon="i-lucide-log-in"
+        :loading="loading"
+        :label="t('auth.login.action')"
+      />
+    </UForm>
+
+    <template #footer>
+      <div class="flex items-center justify-between gap-3 text-sm">
+        <span class="text-muted">{{ t('auth.login.noAccount') }}</span>
+        <UButton
+          :to="localePath('/register')"
+          variant="link"
+          color="neutral"
+          :label="t('auth.register.title')"
+        />
+      </div>
+    </template>
   </UCard>
 </template>

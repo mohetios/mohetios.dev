@@ -38,7 +38,12 @@ const { t, locale } = useI18n()
             {{ getLeadSourceLabel(lead.source, t) }}
           </UBadge>
 
-          <UBadge size="xs" :color="getLeadStatusColor(lead.status)" variant="soft" class="shrink-0">
+          <UBadge
+            size="xs"
+            :color="getLeadStatusColor(lead.status)"
+            variant="soft"
+            class="shrink-0"
+          >
             {{ getLeadStatusLabel(lead.status, t) }}
           </UBadge>
 

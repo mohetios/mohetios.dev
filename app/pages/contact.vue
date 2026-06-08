@@ -211,10 +211,7 @@ async function onSubmit() {
 
 <template>
   <UPage v-if="page">
-    <ContentHero
-      :title="page.title"
-      :description="page.description"
-    />
+    <ContentHero :title="page.title" :description="page.description" />
 
     <UPageBody>
       <section class="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">

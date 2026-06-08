@@ -78,10 +78,7 @@ const isOpen = ref(false)
           <dt class="text-muted">{{ t('dashboard.inbox.details.received') }}</dt>
           <dd class="text-highlighted">{{ message.time }}</dd>
         </div>
-        <div
-          v-if="message.trashedAt"
-          class="flex items-center justify-between gap-3"
-        >
+        <div v-if="message.trashedAt" class="flex items-center justify-between gap-3">
           <dt class="text-muted">{{ t('dashboard.inbox.details.trashed') }}</dt>
           <dd class="text-highlighted">
             {{ formatMessageTime(message.trashedAt) }}

@@ -91,11 +91,7 @@ function kindBadge(kind: string) {
     </p>
 
     <ul v-else class="divide-y divide-default">
-      <li
-        v-for="item in items"
-        :key="item.id"
-        class="py-3 first:pt-0 last:pb-0"
-      >
+      <li v-for="item in items" :key="item.id" class="py-3 first:pt-0 last:pb-0">
         <NuxtLink
           :to="`/dashboard/inbox?message=${item.id}`"
           class="flex gap-3 rounded-lg transition-colors hover:bg-muted/30"

@@ -30,15 +30,14 @@ const range = ref<AnalyticsRange>('LAST_7_DAYS')
 const audienceMetric = ref<AudienceMetricMode>('both')
 const isRefreshing = ref(false)
 
-const {
-  data: analytics,
-  pending: isLoading,
-  error,
-  refresh
-} = await useAnalyticsDashboard(range)
+const { data: analytics, pending: isLoading, error, refresh } = await useAnalyticsDashboard(range)
 
 const tabItems = computed(() => [
-  { label: t('dashboard.analytics.tabs.overview'), value: 'overview', icon: 'i-lucide-layout-dashboard' },
+  {
+    label: t('dashboard.analytics.tabs.overview'),
+    value: 'overview',
+    icon: 'i-lucide-layout-dashboard'
+  },
   { label: t('dashboard.analytics.tabs.content'), value: 'content', icon: 'i-lucide-file-text' },
   { label: t('dashboard.analytics.tabs.search'), value: 'search', icon: 'i-lucide-search' },
   { label: t('dashboard.analytics.tabs.referrers'), value: 'referrers', icon: 'i-lucide-share-2' },
@@ -61,25 +60,29 @@ type BadgeColor = 'primary' | 'info' | 'success' | 'neutral' | 'warning' | 'erro
 
 function getSourceColor(source: string): BadgeColor {
   return (
-    {
-      Direct: 'neutral',
-      Search: 'primary',
-      Social: 'info',
-      Referral: 'success',
-      Newsletter: 'warning'
-    } satisfies Record<string, BadgeColor>
-  )[source] || 'neutral'
+    (
+      {
+        Direct: 'neutral',
+        Search: 'primary',
+        Social: 'info',
+        Referral: 'success',
+        Newsletter: 'warning'
+      } satisfies Record<string, BadgeColor>
+    )[source] || 'neutral'
+  )
 }
 
 function getVitalColor(status: string): BadgeColor {
   return (
-    {
-      Good: 'success',
-      'Needs improvement': 'warning',
-      Poor: 'error',
-      Pending: 'neutral'
-    } satisfies Record<string, BadgeColor>
-  )[status] || 'neutral'
+    (
+      {
+        Good: 'success',
+        'Needs improvement': 'warning',
+        Poor: 'error',
+        Pending: 'neutral'
+      } satisfies Record<string, BadgeColor>
+    )[status] || 'neutral'
+  )
 }
 
 function formatNumber(value: number) {
@@ -138,16 +141,17 @@ const totalPageViews = computed(() =>
   analytics.value.trend.reduce((total, point) => total + point.pageViews, 0)
 )
 
-const hasAnalyticsData = computed(() => (
-  analytics.value.metrics.length > 0 ||
-  analytics.value.trend.length > 0 ||
-  analytics.value.topPages.length > 0 ||
-  analytics.value.referrers.length > 0 ||
-  analytics.value.countries.length > 0 ||
-  analytics.value.searchQueries.length > 0 ||
-  analytics.value.webVitals.length > 0 ||
-  analytics.value.dataSourceDescription.length > 0
-))
+const hasAnalyticsData = computed(
+  () =>
+    analytics.value.metrics.length > 0 ||
+    analytics.value.trend.length > 0 ||
+    analytics.value.topPages.length > 0 ||
+    analytics.value.referrers.length > 0 ||
+    analytics.value.countries.length > 0 ||
+    analytics.value.searchQueries.length > 0 ||
+    analytics.value.webVitals.length > 0 ||
+    analytics.value.dataSourceDescription.length > 0
+)
 const isInitialAnalyticsLoading = computed(() => isLoading.value && !hasAnalyticsData.value)
 
 const filteredPages = computed(() => {
@@ -241,9 +245,7 @@ watch(error, (currentError) => {
     color: 'error',
     icon: 'i-lucide-circle-alert',
     title:
-      currentError instanceof Error
-        ? currentError.message
-        : t('dashboard.analytics.refreshFailed')
+      currentError instanceof Error ? currentError.message : t('dashboard.analytics.refreshFailed')
   })
 })
 </script>
@@ -292,7 +294,6 @@ watch(error, (currentError) => {
             </template>
             {{ t('dashboard.analytics.refresh') }}
           </UButton>
-
         </div>
       </div>
     </section>
@@ -302,11 +303,7 @@ watch(error, (currentError) => {
     </section>
 
     <section v-else class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-      <DashboardMetricCard
-        v-for="metric in analytics.metrics"
-        :key="metric.key"
-        :metric="metric"
-      />
+      <DashboardMetricCard v-for="metric in analytics.metrics" :key="metric.key" :metric="metric" />
     </section>
 
     <UTabs
@@ -455,7 +452,12 @@ watch(error, (currentError) => {
               </div>
               <div class="flex shrink-0 items-center gap-2">
                 <span class="text-sm font-semibold text-highlighted">{{ vital.value }}</span>
-                <UBadge :color="getVitalColor(vital.status)" variant="soft" size="xs" class="rounded-full">
+                <UBadge
+                  :color="getVitalColor(vital.status)"
+                  variant="soft"
+                  size="xs"
+                  class="rounded-full"
+                >
                   {{ vital.status }}
                 </UBadge>
               </div>
@@ -491,7 +493,9 @@ watch(error, (currentError) => {
         </DashboardHorizontalBarChart>
       </UCard>
 
-      <section class="flex flex-col gap-3 rounded-2xl border border-default bg-default p-3 sm:flex-row sm:items-center sm:justify-between">
+      <section
+        class="flex flex-col gap-3 rounded-2xl border border-default bg-default p-3 sm:flex-row sm:items-center sm:justify-between"
+      >
         <div>
           <h2 class="text-sm font-semibold text-highlighted">
             {{ t('dashboard.analytics.sections.topContent') }}
@@ -512,16 +516,24 @@ watch(error, (currentError) => {
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
             <thead>
-              <tr class="border-b border-default text-left text-xs uppercase tracking-wide text-muted">
+              <tr
+                class="border-b border-default text-left text-xs uppercase tracking-wide text-muted"
+              >
                 <th class="px-4 py-3 font-medium">{{ t('dashboard.analytics.table.page') }}</th>
                 <th class="px-4 py-3 font-medium">{{ t('dashboard.analytics.table.views') }}</th>
                 <th class="px-4 py-3 font-medium">{{ t('dashboard.analytics.table.visitors') }}</th>
                 <th class="px-4 py-3 font-medium">{{ t('dashboard.analytics.table.avgTime') }}</th>
-                <th class="px-4 py-3 font-medium">{{ t('dashboard.analytics.table.topSource') }}</th>
+                <th class="px-4 py-3 font-medium">
+                  {{ t('dashboard.analytics.table.topSource') }}
+                </th>
               </tr>
             </thead>
             <tbody class="divide-y divide-default">
-              <tr v-for="page in filteredPages" :key="page.path" class="transition hover:bg-muted/30">
+              <tr
+                v-for="page in filteredPages"
+                :key="page.path"
+                class="transition hover:bg-muted/30"
+              >
                 <td class="px-4 py-3">
                   <p class="font-medium text-highlighted">{{ page.title }}</p>
                   <p class="text-xs text-muted">{{ page.path }}</p>
@@ -530,7 +542,12 @@ watch(error, (currentError) => {
                 <td class="px-4 py-3 text-muted">{{ formatNumber(page.visitors) }}</td>
                 <td class="px-4 py-3 text-muted">{{ page.avgTime }}</td>
                 <td class="px-4 py-3">
-                  <UBadge :color="getSourceColor(page.source)" variant="soft" size="xs" class="rounded-full">
+                  <UBadge
+                    :color="getSourceColor(page.source)"
+                    variant="soft"
+                    size="xs"
+                    class="rounded-full"
+                  >
                     {{ page.source }}
                   </UBadge>
                 </td>
@@ -567,14 +584,11 @@ watch(error, (currentError) => {
       </UCard>
 
       <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <UCard
-          v-for="kpi in searchKpis"
-          :key="kpi.key"
-          variant="outline"
-          :ui="dashboardCardUi"
-        >
+        <UCard v-for="kpi in searchKpis" :key="kpi.key" variant="outline" :ui="dashboardCardUi">
           <div class="flex items-center gap-3">
-            <div class="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <div
+              class="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary"
+            >
               <UIcon :name="kpi.icon" class="size-5" />
             </div>
             <div>
@@ -598,10 +612,14 @@ watch(error, (currentError) => {
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
             <thead>
-              <tr class="border-b border-default text-left text-xs uppercase tracking-wide text-muted">
+              <tr
+                class="border-b border-default text-left text-xs uppercase tracking-wide text-muted"
+              >
                 <th class="px-4 py-3 font-medium">{{ t('dashboard.analytics.table.query') }}</th>
                 <th class="px-4 py-3 font-medium">{{ t('dashboard.analytics.search.clicks') }}</th>
-                <th class="px-4 py-3 font-medium">{{ t('dashboard.analytics.search.impressions') }}</th>
+                <th class="px-4 py-3 font-medium">
+                  {{ t('dashboard.analytics.search.impressions') }}
+                </th>
                 <th class="px-4 py-3 font-medium">{{ t('dashboard.analytics.search.ctr') }}</th>
                 <th class="px-4 py-3 font-medium">{{ t('dashboard.analytics.table.position') }}</th>
                 <th class="px-4 py-3 font-medium">{{ t('dashboard.analytics.table.page') }}</th>
@@ -690,7 +708,12 @@ watch(error, (currentError) => {
                 {{ vital.value }}
               </p>
             </div>
-            <UBadge :color="getVitalColor(vital.status)" variant="soft" size="sm" class="rounded-full">
+            <UBadge
+              :color="getVitalColor(vital.status)"
+              variant="soft"
+              size="sm"
+              class="rounded-full"
+            >
               {{ vital.status }}
             </UBadge>
           </div>

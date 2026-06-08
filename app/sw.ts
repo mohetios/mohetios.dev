@@ -61,9 +61,7 @@ const viewNotificationAction: NotificationActionOption = {
 
 function getNotificationActions(payload: AdminPushPayload) {
   const actions =
-    payload.entityId && payload.entityId !== 'test'
-      ? notificationActions
-      : [viewNotificationAction]
+    payload.entityId && payload.entityId !== 'test' ? notificationActions : [viewNotificationAction]
   const notificationApi = Notification as NotificationConstructorWithMaxActions
   const maxActions =
     typeof notificationApi.maxActions === 'number' && notificationApi.maxActions >= 0

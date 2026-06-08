@@ -49,21 +49,14 @@ const deliveryLabel = computed(() => {
 </script>
 
 <template>
-  <div
-    v-if="isSystem"
-    class="flex justify-center py-1"
-  >
+  <div v-if="isSystem" class="flex justify-center py-1">
     <p class="max-w-[90%] text-center text-xs text-muted">
       {{ event.bodyText }}
       <span> · {{ event.time }}</span>
     </p>
   </div>
 
-  <div
-    v-else
-    class="flex"
-    :class="isOutgoing ? 'justify-end' : 'justify-start'"
-  >
+  <div v-else class="flex" :class="isOutgoing ? 'justify-end' : 'justify-start'">
     <article
       class="max-w-[86%] rounded-2xl px-4 py-3 text-sm shadow-sm lg:max-w-[72%]"
       :class="

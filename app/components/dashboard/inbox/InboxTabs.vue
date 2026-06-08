@@ -28,14 +28,8 @@ const moreMenuItems = computed(() =>
 </script>
 
 <template>
-  <nav
-    class="shrink-0 border-b border-default bg-default"
-    aria-label="Inbox filters"
-  >
-    <div
-      class="flex items-stretch overflow-x-auto scrollbar-none"
-      role="tablist"
-    >
+  <nav class="shrink-0 border-b border-default bg-default" aria-label="Inbox filters">
+    <div class="flex items-stretch overflow-x-auto scrollbar-none" role="tablist">
       <button
         v-for="tab in primaryTabs"
         :key="tab.key"

@@ -88,55 +88,45 @@ function buildSearchCondition(search?: string | null): SQL | undefined {
 async function getInboxSummary(db: GraphQLContext['db']) {
   const activeOnly = isNull(inboxMessages.trashedAt)
 
-  const [
-    unreadRows,
-    needsReplyRows,
-    leadRows,
-    archivedRows,
-    spamRows,
-    trashRows,
-    totalRows
-  ] = await Promise.all([
-    db
-      .select({ count: sql<number>`count(*)` })
-      .from(inboxMessages)
-      .where(and(activeOnly, eq(inboxMessages.status, 'NEW'))),
+  const [unreadRows, needsReplyRows, leadRows, archivedRows, spamRows, trashRows, totalRows] =
+    await Promise.all([
+      db
+        .select({ count: sql<number>`count(*)` })
+        .from(inboxMessages)
+        .where(and(activeOnly, eq(inboxMessages.status, 'NEW'))),
 
-    db
-      .select({ count: sql<number>`count(*)` })
-      .from(inboxMessages)
-      .where(and(activeOnly, inArray(inboxMessages.status, ['NEW', 'OPEN']))),
+      db
+        .select({ count: sql<number>`count(*)` })
+        .from(inboxMessages)
+        .where(and(activeOnly, inArray(inboxMessages.status, ['NEW', 'OPEN']))),
 
-    db
-      .select({ count: sql<number>`count(*)` })
-      .from(inboxMessages)
-      .where(and(activeOnly, inArray(inboxMessages.kind, ['LEAD', 'COLLABORATION']))),
+      db
+        .select({ count: sql<number>`count(*)` })
+        .from(inboxMessages)
+        .where(and(activeOnly, inArray(inboxMessages.kind, ['LEAD', 'COLLABORATION']))),
 
-    db
-      .select({ count: sql<number>`count(*)` })
-      .from(inboxMessages)
-      .where(and(activeOnly, eq(inboxMessages.status, 'ARCHIVED'))),
+      db
+        .select({ count: sql<number>`count(*)` })
+        .from(inboxMessages)
+        .where(and(activeOnly, eq(inboxMessages.status, 'ARCHIVED'))),
 
-    db
-      .select({ count: sql<number>`count(*)` })
-      .from(inboxMessages)
-      .where(
-        and(
-          activeOnly,
-          or(eq(inboxMessages.status, 'SPAM'), eq(inboxMessages.kind, 'SPAM'))
-        )
-      ),
+      db
+        .select({ count: sql<number>`count(*)` })
+        .from(inboxMessages)
+        .where(
+          and(activeOnly, or(eq(inboxMessages.status, 'SPAM'), eq(inboxMessages.kind, 'SPAM')))
+        ),
 
-    db
-      .select({ count: sql<number>`count(*)` })
-      .from(inboxMessages)
-      .where(isNotNull(inboxMessages.trashedAt)),
+      db
+        .select({ count: sql<number>`count(*)` })
+        .from(inboxMessages)
+        .where(isNotNull(inboxMessages.trashedAt)),
 
-    db
-      .select({ count: sql<number>`count(*)` })
-      .from(inboxMessages)
-      .where(activeOnly)
-  ])
+      db
+        .select({ count: sql<number>`count(*)` })
+        .from(inboxMessages)
+        .where(activeOnly)
+    ])
 
   return {
     unread: Number(unreadRows[0]?.count || 0),

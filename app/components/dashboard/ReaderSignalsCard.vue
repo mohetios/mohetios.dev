@@ -10,10 +10,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <DashboardSectionCard
-    :title="t('dashboard.overview.readerSignals')"
-    class="h-full"
-  >
+  <DashboardSectionCard :title="t('dashboard.overview.readerSignals')" class="h-full">
     <div v-if="loading" class="space-y-3">
       <USkeleton v-for="index in 3" :key="index" class="h-14 w-full" />
     </div>
@@ -29,7 +26,9 @@ const { t } = useI18n()
         class="rounded-xl border border-default bg-muted/20 p-3"
       >
         <div class="flex items-start gap-3">
-          <div class="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <div
+            class="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary"
+          >
             <UIcon :name="signal.icon" class="size-4" />
           </div>
 

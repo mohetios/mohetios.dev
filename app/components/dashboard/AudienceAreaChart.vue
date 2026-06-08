@@ -19,6 +19,8 @@ const props = withDefaults(
   }>(),
   {
     metric: 'both',
+    loading: false,
+    height: undefined,
     minHeight: dashboardChartMinHeightPx,
     ariaLabel: 'Audience trend chart'
   }
@@ -40,11 +42,7 @@ const yFormatter = (value: number) => formatChartNumber(value)
 </script>
 
 <template>
-  <div
-    class="relative min-h-0 flex-1"
-    role="img"
-    :aria-label="ariaLabel"
-  >
+  <div class="relative min-h-0 flex-1" role="img" :aria-label="ariaLabel">
     <div v-if="loading" class="absolute inset-0">
       <USkeleton class="h-full w-full" />
     </div>
@@ -56,11 +54,7 @@ const yFormatter = (value: number) => formatChartNumber(value)
       <slot name="empty" />
     </div>
 
-    <div
-      v-else
-      ref="containerRef"
-      class="absolute inset-0 overflow-hidden"
-    >
+    <div v-else ref="containerRef" class="absolute inset-0 overflow-hidden">
       <ClientOnly>
         <AreaChart
           :data="chartData"

@@ -19,8 +19,13 @@ withDefaults(
     backLabel?: string
   }>(),
   {
+    kind: undefined,
     tocLinks: () => [],
-    showToc: false
+    showToc: false,
+    summary: undefined,
+    surround: undefined,
+    backTo: undefined,
+    backLabel: undefined
   }
 )
 </script>
@@ -32,18 +37,9 @@ withDefaults(
 
       <slot name="notice" />
 
-      <ContentArticleSummary
-        v-if="summary?.length"
-        :items="summary"
-        class="mb-8"
-      />
+      <ContentArticleSummary v-if="summary?.length" :items="summary" class="mb-8" />
 
-      <ContentToc
-        v-if="showToc"
-        class="mb-8"
-        :title="$t('content.toc')"
-        :links="tocLinks"
-      />
+      <ContentToc v-if="showToc" class="mb-8" :title="$t('content.toc')" :links="tocLinks" />
 
       <article class="prose-mohetios">
         <ContentHtml :html="content" />

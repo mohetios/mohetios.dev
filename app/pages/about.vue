@@ -18,10 +18,7 @@ useMohetSeo({
 
 <template>
   <UPage v-if="page">
-    <ContentHero
-      :title="page.title"
-      :description="page.description"
-    />
+    <ContentHero :title="page.title" :description="page.description" />
 
     <UPageBody>
       <article class="mx-auto max-w-3xl">

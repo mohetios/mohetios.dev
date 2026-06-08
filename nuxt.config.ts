@@ -48,7 +48,9 @@ const localizedSsrRouteRules = Object.fromEntries(
 
 const localizedClientAuthRouteRules = Object.fromEntries(
   supportedLocales
-    .flatMap((locale) => authRouteSections.map((section) => getLocalizedPublicPath(section, locale)))
+    .flatMap((locale) =>
+      authRouteSections.map((section) => getLocalizedPublicPath(section, locale))
+    )
     .map((route) => [route, { ssr: false, prerender: false }])
 )
 

@@ -62,15 +62,8 @@ const pageCopy = computed(() => ({
               </div>
 
               <ul class="hidden max-w-lg space-y-4 sm:block">
-                <li
-                  v-for="feature in features"
-                  :key="feature.key"
-                  class="flex gap-3"
-                >
-                  <UIcon
-                    :name="feature.icon"
-                    class="mt-0.5 size-4 shrink-0 text-primary"
-                  />
+                <li v-for="feature in features" :key="feature.key" class="flex gap-3">
+                  <UIcon :name="feature.icon" class="mt-0.5 size-4 shrink-0 text-primary" />
                   <div class="space-y-1">
                     <p class="text-sm font-medium text-highlighted">
                       {{ t(`auth.layout.features.${feature.key}.title`) }}

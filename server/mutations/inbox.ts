@@ -268,11 +268,7 @@ export const inboxMutations = {
     }
   },
 
-  trashInboxMessage: async (
-    _parent: unknown,
-    args: { id: string },
-    context: GraphQLContext
-  ) => {
+  trashInboxMessage: async (_parent: unknown, args: { id: string }, context: GraphQLContext) => {
     requirePermission(context, 'inbox:manage')
 
     const message = await trashMessage(context.db, args.id)
@@ -284,11 +280,7 @@ export const inboxMutations = {
     return normalizeInboxMessageRow(message)
   },
 
-  restoreInboxMessage: async (
-    _parent: unknown,
-    args: { id: string },
-    context: GraphQLContext
-  ) => {
+  restoreInboxMessage: async (_parent: unknown, args: { id: string }, context: GraphQLContext) => {
     requirePermission(context, 'inbox:manage')
 
     const message = await restoreMessage(context.db, args.id)

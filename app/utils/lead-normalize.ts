@@ -61,20 +61,25 @@ export function getLeadStatusLabel(status: LeadItemDto['status'], t: (key: strin
 }
 
 export function getLeadStatusColor(status: LeadItemDto['status']) {
-  const colorMap: Record<LeadItemDto['status'], 'primary' | 'success' | 'warning' | 'neutral' | 'error'> =
-    {
-      NEW: 'primary',
-      QUALIFIED: 'success',
-      FOLLOW_UP: 'warning',
-      WON: 'success',
-      LOST: 'neutral',
-      ARCHIVED: 'neutral'
-    }
+  const colorMap: Record<
+    LeadItemDto['status'],
+    'primary' | 'success' | 'warning' | 'neutral' | 'error'
+  > = {
+    NEW: 'primary',
+    QUALIFIED: 'success',
+    FOLLOW_UP: 'warning',
+    WON: 'success',
+    LOST: 'neutral',
+    ARCHIVED: 'neutral'
+  }
 
   return colorMap[status]
 }
 
-export function getLeadPriorityLabel(priority: LeadItemDto['priority'], t: (key: string) => string) {
+export function getLeadPriorityLabel(
+  priority: LeadItemDto['priority'],
+  t: (key: string) => string
+) {
   const keyMap: Record<LeadItemDto['priority'], string> = {
     LOW: 'low',
     MEDIUM: 'medium',

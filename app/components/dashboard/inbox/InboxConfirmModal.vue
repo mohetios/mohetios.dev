@@ -31,11 +31,7 @@ const { t } = useI18n()
         </div>
 
         <div class="flex justify-end gap-2">
-          <UButton
-            color="neutral"
-            variant="ghost"
-            @click="emit('cancel')"
-          >
+          <UButton color="neutral" variant="ghost" @click="emit('cancel')">
             {{ t('dashboard.inbox.confirmCancel') }}
           </UButton>
           <UButton

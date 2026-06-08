@@ -16,9 +16,7 @@ function mapThreadEventType(type: string): InboxThreadEvent['type'] {
   return 'inbound'
 }
 
-function mapDeliveryStatus(
-  status: string
-): InboxThreadEvent['deliveryStatus'] | undefined {
+function mapDeliveryStatus(status: string): InboxThreadEvent['deliveryStatus'] | undefined {
   if (status === 'sent') return 'sent'
   if (status === 'failed') return 'failed'
   if (status === 'draft') return 'draft'

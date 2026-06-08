@@ -45,11 +45,7 @@ const { t } = useI18n()
 
     <div class="min-h-0 flex-1 overflow-y-auto">
       <div v-if="loading" class="divide-y divide-default">
-        <div
-          v-for="index in 6"
-          :key="index"
-          class="px-3 py-4"
-        >
+        <div v-for="index in 6" :key="index" class="px-3 py-4">
           <div class="flex items-start gap-3">
             <USkeleton class="h-4 w-24" />
             <USkeleton class="ms-auto h-3 w-10" />

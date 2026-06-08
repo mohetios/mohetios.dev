@@ -32,7 +32,14 @@ export const leadTabToFilter: Record<LeadTabKey, LeadFilter> = {
   'no-follow-up': 'NO_FOLLOW_UP'
 }
 
-export const PRIMARY_LEAD_TABS: LeadTabKey[] = ['new', 'qualified', 'follow-up', 'all', 'won', 'lost']
+export const PRIMARY_LEAD_TABS: LeadTabKey[] = [
+  'new',
+  'qualified',
+  'follow-up',
+  'all',
+  'won',
+  'lost'
+]
 
 export const SECONDARY_LEAD_TABS: LeadTabKey[] = ['archived', 'high-priority', 'no-follow-up']
 
@@ -68,7 +75,14 @@ export function getLeadTabI18nKey(tab: LeadTabKey) {
   return TAB_I18N_KEY[tab]
 }
 
-export type LeadEmptyStateKey = 'new' | 'qualified' | 'followUp' | 'won' | 'lost' | 'all' | 'archived'
+export type LeadEmptyStateKey =
+  | 'new'
+  | 'qualified'
+  | 'followUp'
+  | 'won'
+  | 'lost'
+  | 'all'
+  | 'archived'
 
 export function getLeadEmptyStateKey(tab: LeadTabKey): LeadEmptyStateKey {
   if (tab === 'follow-up') return 'followUp'

@@ -7,9 +7,7 @@ defineProps<{
 </script>
 
 <template>
-  <div
-    class="mx-auto w-full max-w-[1600px] flex flex-col gap-4 pb-5 sm:pb-6"
-  >
+  <div class="mx-auto w-full max-w-[1600px] flex flex-col gap-4 pb-5 sm:pb-6">
     <section class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div class="flex min-w-0 items-start gap-3">
         <UDashboardSidebarCollapse class="shrink-0 lg:hidden" />

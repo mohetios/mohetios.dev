@@ -42,36 +42,36 @@ async function onSubmit() {
     }"
   >
     <UForm :state="state" class="space-y-4" @submit="onSubmit">
-        <UFormField name="username" :label="t('auth.fields.username')" required>
-          <UInput
-            v-model="state.username"
-            autocomplete="username"
-            icon="i-lucide-user"
-            size="lg"
-            class="w-full"
-          />
-        </UFormField>
-
-        <UButton
-          type="submit"
-          block
+      <UFormField name="username" :label="t('auth.fields.username')" required>
+        <UInput
+          v-model="state.username"
+          autocomplete="username"
+          icon="i-lucide-user"
           size="lg"
-          icon="i-lucide-send"
-          :loading="loading"
-          :label="t('auth.resetPassword.action')"
+          class="w-full"
         />
-      </UForm>
+      </UFormField>
 
-      <template #footer>
-        <div class="flex items-center justify-between gap-3 text-sm">
-          <span class="text-muted">{{ t('auth.resetPassword.remembered') }}</span>
-          <UButton
-            :to="localePath('/login')"
-            variant="link"
-            color="neutral"
-            :label="t('auth.login.title')"
-          />
-        </div>
-      </template>
+      <UButton
+        type="submit"
+        block
+        size="lg"
+        icon="i-lucide-send"
+        :loading="loading"
+        :label="t('auth.resetPassword.action')"
+      />
+    </UForm>
+
+    <template #footer>
+      <div class="flex items-center justify-between gap-3 text-sm">
+        <span class="text-muted">{{ t('auth.resetPassword.remembered') }}</span>
+        <UButton
+          :to="localePath('/login')"
+          variant="link"
+          color="neutral"
+          :label="t('auth.login.title')"
+        />
+      </div>
+    </template>
   </UCard>
 </template>

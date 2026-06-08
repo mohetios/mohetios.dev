@@ -44,16 +44,40 @@ function clearFollowUp() {
     />
 
     <div class="flex flex-wrap gap-2">
-      <UButton size="xs" color="neutral" variant="soft" :disabled="disabled" @click="applyQuickOption(1)">
+      <UButton
+        size="xs"
+        color="neutral"
+        variant="soft"
+        :disabled="disabled"
+        @click="applyQuickOption(1)"
+      >
         {{ t('dashboard.leads.followUp.tomorrow') }}
       </UButton>
-      <UButton size="xs" color="neutral" variant="soft" :disabled="disabled" @click="applyQuickOption(3)">
+      <UButton
+        size="xs"
+        color="neutral"
+        variant="soft"
+        :disabled="disabled"
+        @click="applyQuickOption(3)"
+      >
         {{ t('dashboard.leads.followUp.inThreeDays') }}
       </UButton>
-      <UButton size="xs" color="neutral" variant="soft" :disabled="disabled" @click="applyQuickOption(7)">
+      <UButton
+        size="xs"
+        color="neutral"
+        variant="soft"
+        :disabled="disabled"
+        @click="applyQuickOption(7)"
+      >
         {{ t('dashboard.leads.followUp.nextWeek') }}
       </UButton>
-      <UButton size="xs" color="neutral" variant="ghost" :disabled="disabled" @click="clearFollowUp">
+      <UButton
+        size="xs"
+        color="neutral"
+        variant="ghost"
+        :disabled="disabled"
+        @click="clearFollowUp"
+      >
         {{ t('dashboard.leads.actions.clearFollowUp') }}
       </UButton>
     </div>

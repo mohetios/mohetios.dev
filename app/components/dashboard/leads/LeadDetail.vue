@@ -111,20 +111,10 @@ function saveNotes() {
             <UBadge size="xs" :color="getLeadStatusColor(lead.status)" variant="soft">
               {{ getLeadStatusLabel(lead.status, t) }}
             </UBadge>
-            <UBadge
-              v-if="lead.priority === 'HIGH'"
-              size="xs"
-              color="warning"
-              variant="soft"
-            >
+            <UBadge v-if="lead.priority === 'HIGH'" size="xs" color="warning" variant="soft">
               {{ getLeadPriorityLabel(lead.priority, t) }}
             </UBadge>
-            <UBadge
-              v-if="lead.isFollowUpOverdue"
-              size="xs"
-              color="warning"
-              variant="soft"
-            >
+            <UBadge v-if="lead.isFollowUpOverdue" size="xs" color="warning" variant="soft">
               {{ t('dashboard.leads.overdue') }}
             </UBadge>
           </div>
@@ -183,7 +173,9 @@ function saveNotes() {
 
           <div class="space-y-3">
             <div>
-              <label class="mb-1 block text-xs text-muted">{{ t('dashboard.leads.fields.status') }}</label>
+              <label class="mb-1 block text-xs text-muted">{{
+                t('dashboard.leads.fields.status')
+              }}</label>
               <USelect
                 v-model="statusValue"
                 :items="statusOptions"
@@ -196,7 +188,9 @@ function saveNotes() {
             </div>
 
             <div>
-              <label class="mb-1 block text-xs text-muted">{{ t('dashboard.leads.fields.priority') }}</label>
+              <label class="mb-1 block text-xs text-muted">{{
+                t('dashboard.leads.fields.priority')
+              }}</label>
               <USelect
                 v-model="priorityValue"
                 :items="priorityOptions"
@@ -209,7 +203,9 @@ function saveNotes() {
             </div>
 
             <div>
-              <label class="mb-1 block text-xs text-muted">{{ t('dashboard.leads.actions.setFollowUp') }}</label>
+              <label class="mb-1 block text-xs text-muted">{{
+                t('dashboard.leads.actions.setFollowUp')
+              }}</label>
               <DashboardLeadsLeadFollowUpPicker
                 v-model="followUpDraft"
                 :disabled="mutating"
@@ -219,7 +215,9 @@ function saveNotes() {
             </div>
 
             <div>
-              <label class="mb-1 block text-xs text-muted">{{ t('dashboard.leads.fields.notes') }}</label>
+              <label class="mb-1 block text-xs text-muted">{{
+                t('dashboard.leads.fields.notes')
+              }}</label>
               <UTextarea
                 v-model="notesDraft"
                 :rows="4"

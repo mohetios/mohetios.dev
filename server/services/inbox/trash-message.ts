@@ -4,11 +4,7 @@ import type { AppDb } from '../../models/client'
 import { inboxMessages } from '../../models/schema'
 
 export async function trashMessage(db: AppDb, id: string) {
-  const [existing] = await db
-    .select()
-    .from(inboxMessages)
-    .where(eq(inboxMessages.id, id))
-    .limit(1)
+  const [existing] = await db.select().from(inboxMessages).where(eq(inboxMessages.id, id)).limit(1)
 
   if (!existing) {
     return null

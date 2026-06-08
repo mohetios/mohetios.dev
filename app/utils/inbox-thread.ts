@@ -24,13 +24,7 @@ export type InboxMessage = {
   trashedAt?: number | null
 }
 
-export type InboxThreadStatus =
-  | 'new'
-  | 'open'
-  | 'needs_reply'
-  | 'replied'
-  | 'archived'
-  | 'spam'
+export type InboxThreadStatus = 'new' | 'open' | 'needs_reply' | 'replied' | 'archived' | 'spam'
 
 export type InboxThreadEventType =
   | 'inbound'

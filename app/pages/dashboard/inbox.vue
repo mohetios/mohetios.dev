@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import {
-  useInboxWorkspace,
-  type InboxWorkspaceStatus
-} from '~/composables/useInboxWorkspace'
+import { useInboxWorkspace, type InboxWorkspaceStatus } from '~/composables/useInboxWorkspace'
 import { normalizeInboxDto, normalizeThreadEventDto } from '~/utils/inbox-normalize'
 import {
   getInboxTabI18nKey,

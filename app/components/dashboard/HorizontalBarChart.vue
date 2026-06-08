@@ -19,6 +19,11 @@ const props = withDefaults(
     minHeight?: number
   }>(),
   {
+    maxItems: 8,
+    valueFormatter: undefined,
+    loading: false,
+    label: undefined,
+    height: undefined,
     minHeight: dashboardChartMinHeightPx
   }
 )
@@ -61,11 +66,7 @@ const yFormatter = (value: number) =>
       <slot name="empty" />
     </div>
 
-    <div
-      v-else
-      ref="containerRef"
-      class="absolute inset-0 overflow-hidden"
-    >
+    <div v-else ref="containerRef" class="absolute inset-0 overflow-hidden">
       <ClientOnly>
         <BarChart
           :data="chartData"

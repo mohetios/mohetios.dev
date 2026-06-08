@@ -1,4 +1,10 @@
-import type { InboxFilter, InboxKind, InboxStatus, InboxWorkspaceInput, InboxWorkspaceQuery } from '#gql'
+import type {
+  InboxFilter,
+  InboxKind,
+  InboxStatus,
+  InboxWorkspaceInput,
+  InboxWorkspaceQuery
+} from '#gql'
 
 export type InboxWorkspaceFilter = InboxFilter
 export type InboxWorkspaceStatus = InboxStatus
@@ -27,11 +33,7 @@ function createDefaultInboxWorkspace(): InboxWorkspace {
   }
 }
 
-function updateMessageStatus(
-  workspace: InboxWorkspace,
-  id: string,
-  status: InboxWorkspaceStatus
-) {
+function updateMessageStatus(workspace: InboxWorkspace, id: string, status: InboxWorkspaceStatus) {
   const now = Date.now()
   let previousStatus: InboxWorkspaceStatus | null =
     workspace.selectedMessage?.id === id ? workspace.selectedMessage.status : null

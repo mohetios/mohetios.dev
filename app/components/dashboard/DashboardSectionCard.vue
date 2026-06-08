@@ -13,11 +13,7 @@ defineProps<{
 </script>
 
 <template>
-  <UCard
-    v-bind="$attrs"
-    variant="outline"
-    :ui="dashboardCardUi"
-  >
+  <UCard v-bind="$attrs" variant="outline" :ui="dashboardCardUi">
     <template #header>
       <div class="flex items-center justify-between gap-3">
         <h2 class="text-base font-semibold text-highlighted">

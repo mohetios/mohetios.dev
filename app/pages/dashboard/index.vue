@@ -15,12 +15,7 @@ definePageMeta({
 const { t, locale } = useI18n()
 const toast = useToast()
 
-const {
-  data: dashboardHome,
-  pending: isLoading,
-  error,
-  refresh
-} = await useDashboardHome()
+const { data: dashboardHome, pending: isLoading, error, refresh } = await useDashboardHome()
 
 useMohetSeo({
   title: () => t('dashboard.home.title'),
@@ -104,15 +99,15 @@ const isInitialDashboardLoading = computed(() => isLoading.value && !hasDashboar
 const activityIconByType: Record<string, string> = {
   inbox: 'i-lucide-mail',
   notification: 'i-lucide-bell',
-  'new_inbound_email': 'i-lucide-mail',
-  'new_contact_message': 'i-lucide-inbox'
+  new_inbound_email: 'i-lucide-mail',
+  new_contact_message: 'i-lucide-inbox'
 }
 
 const activityIconClass: Record<string, string> = {
   inbox: 'text-primary',
   notification: 'text-muted',
-  'new_inbound_email': 'text-primary',
-  'new_contact_message': 'text-primary'
+  new_inbound_email: 'text-primary',
+  new_contact_message: 'text-primary'
 }
 
 const timeFormatter = computed(
@@ -143,9 +138,7 @@ async function refreshDashboard() {
       color: 'error',
       icon: 'i-lucide-circle-alert',
       title:
-        currentError instanceof Error
-          ? currentError.message
-          : t('dashboard.home.refreshFailed')
+        currentError instanceof Error ? currentError.message : t('dashboard.home.refreshFailed')
     })
   }
 }
@@ -156,8 +149,7 @@ watch(error, (currentError) => {
   toast.add({
     color: 'error',
     icon: 'i-lucide-circle-alert',
-    title:
-      currentError instanceof Error ? currentError.message : t('dashboard.home.refreshFailed')
+    title: currentError instanceof Error ? currentError.message : t('dashboard.home.refreshFailed')
   })
 })
 </script>
@@ -190,12 +182,7 @@ watch(error, (currentError) => {
           </template>
           {{ t('dashboard.home.refresh') }}
         </UButton>
-        <UButton
-          color="neutral"
-          variant="outline"
-          icon="i-lucide-inbox"
-          to="/dashboard/inbox"
-        >
+        <UButton color="neutral" variant="outline" icon="i-lucide-inbox" to="/dashboard/inbox">
           {{ t('dashboard.overview.openInbox') }}
         </UButton>
       </div>
@@ -235,10 +222,7 @@ watch(error, (currentError) => {
               <p class="mt-1 text-sm text-muted">
                 {{ t('dashboard.overview.audienceHelper') }}
               </p>
-              <p
-                v-if="audienceTrendIsEmpty"
-                class="mt-2 text-xs text-muted"
-              >
+              <p v-if="audienceTrendIsEmpty" class="mt-2 text-xs text-muted">
                 {{ t('dashboard.home.audience.pending') }}
               </p>
             </div>
@@ -292,11 +276,7 @@ watch(error, (currentError) => {
     </section>
 
     <section class="grid gap-4 lg:grid-cols-3">
-      <UCard
-        variant="outline"
-        :ui="dashboardCardUi"
-        class="lg:col-span-2"
-      >
+      <UCard variant="outline" :ui="dashboardCardUi" class="lg:col-span-2">
         <template #header>
           <h2 class="text-base font-semibold text-highlighted">
             {{ t('dashboard.overview.recentActivity') }}

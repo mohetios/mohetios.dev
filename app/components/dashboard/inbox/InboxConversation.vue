@@ -91,11 +91,7 @@ function focusComposer() {
         </div>
 
         <div v-else class="space-y-4">
-          <DashboardInboxMessageBubble
-            v-for="event in events"
-            :key="event.id"
-            :event="event"
-          />
+          <DashboardInboxMessageBubble v-for="event in events" :key="event.id" :event="event" />
         </div>
       </div>
 

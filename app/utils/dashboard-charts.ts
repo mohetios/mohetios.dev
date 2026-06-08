@@ -34,9 +34,7 @@ type ChartCategory = {
   color: string
 }
 
-export function getAudienceCategories(
-  metric: AudienceMetricMode
-): Record<string, ChartCategory> {
+export function getAudienceCategories(metric: AudienceMetricMode): Record<string, ChartCategory> {
   if (metric === 'visitors') {
     return {
       visitors: { ...audienceMetricColors.visitors }

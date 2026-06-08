@@ -18,11 +18,7 @@ async function getLeadMessage(db: GraphQLContext['db'], id: string) {
     .select()
     .from(inboxMessages)
     .where(
-      and(
-        eq(inboxMessages.id, id),
-        eq(inboxMessages.kind, 'LEAD'),
-        isNull(inboxMessages.trashedAt)
-      )
+      and(eq(inboxMessages.id, id), eq(inboxMessages.kind, 'LEAD'), isNull(inboxMessages.trashedAt))
     )
     .limit(1)
 
