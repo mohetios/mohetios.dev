@@ -228,7 +228,7 @@ watch(error, (currentError) => {
           </div>
         </template>
 
-        <DashboardAreaChart
+        <DashboardAudienceAreaChart
           :points="dashboardHome.audienceTrend"
           :metric="audienceMetric"
           :loading="isInitialDashboardLoading"
@@ -237,7 +237,7 @@ watch(error, (currentError) => {
           <template #empty>
             {{ t('dashboard.home.audience.pending') }}
           </template>
-        </DashboardAreaChart>
+        </DashboardAudienceAreaChart>
       </UCard>
 
       <DashboardInboxPreview

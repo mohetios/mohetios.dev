@@ -64,7 +64,28 @@ export type CloudflareAnalyticsSnapshot = {
   isPartial: boolean
 }
 
-const MAX_ADAPTIVE_DAY_BATCH = 14
+// Batches concurrent per-day adaptive queries to stay under GraphQL rate limits.
+const ADAPTIVE_CONCURRENT_DAY_BATCH = 14
+
+const ADAPTIVE_SETTINGS_QUERY = /* GraphQL */ `
+  query ZoneAdaptiveSettings($zoneTag: string) {
+    viewer {
+      zones(filter: { zoneTag: $zoneTag }) {
+        settings {
+          httpRequestsAdaptiveGroups {
+            maxDuration
+            notOlderThan
+          }
+        }
+      }
+    }
+  }
+`
+
+type AdaptiveLimits = {
+  maxQueryDays: number
+  maxHistoryDays: number
+}
 
 const TRAFFIC_TREND_QUERY = /* GraphQL */ `
   query ZoneTrafficTrend($zoneTag: string, $since: Date, $until: Date) {
@@ -156,14 +177,22 @@ function getRangeDays(range: AnalyticsRange) {
   return 7
 }
 
+function startOfToday() {
+  const date = new Date()
+  date.setHours(0, 0, 0, 0)
+  return date
+}
+
 function getDateBounds(range: AnalyticsRange) {
-  const end = new Date()
-  const start = new Date()
-  start.setDate(end.getDate() - getRangeDays(range))
+  const start = startOfToday()
+  start.setDate(start.getDate() - (getRangeDays(range) - 1))
+
+  const until = startOfToday()
+  until.setDate(until.getDate() + 1)
 
   return {
     since: start.toISOString().slice(0, 10),
-    until: end.toISOString().slice(0, 10)
+    until: until.toISOString().slice(0, 10)
   }
 }
 
@@ -179,13 +208,41 @@ function createDayFilter(hostname: string, dayStart: Date) {
   }
 }
 
-function getDailySlices(range: AnalyticsRange, hostname: string) {
-  const batchDays = Math.min(getRangeDays(range), MAX_ADAPTIVE_DAY_BATCH)
+function secondsToDays(seconds: number) {
+  return Math.max(1, Math.floor(seconds / 86_400))
+}
+
+function getEffectiveAdaptiveDays(range: AnalyticsRange, limits: AdaptiveLimits) {
+  return Math.min(getRangeDays(range), limits.maxHistoryDays)
+}
+
+async function fetchAdaptiveLimits(event: H3Event, zoneId: string): Promise<AdaptiveLimits> {
+  const data = await postCloudflareGraphql<{
+    viewer: {
+      zones: Array<{
+        settings?: {
+          httpRequestsAdaptiveGroups?: {
+            maxDuration?: number
+            notOlderThan?: number
+          }
+        }
+      }>
+    }
+  }>(event, ADAPTIVE_SETTINGS_QUERY, { zoneTag: zoneId })
+
+  const settings = data.viewer.zones[0]?.settings?.httpRequestsAdaptiveGroups
+
+  return {
+    maxQueryDays: secondsToDays(settings?.maxDuration ?? 86_400),
+    maxHistoryDays: secondsToDays(settings?.notOlderThan ?? 604_800)
+  }
+}
+
+function getDailySlices(dayCount: number, hostname: string) {
   const slices: Array<{ date: string; filter: ReturnType<typeof createDayFilter> }> = []
 
-  for (let offset = batchDays - 1; offset >= 0; offset -= 1) {
-    const dayStart = new Date()
-    dayStart.setHours(0, 0, 0, 0)
+  for (let offset = dayCount - 1; offset >= 0; offset -= 1) {
+    const dayStart = startOfToday()
     dayStart.setDate(dayStart.getDate() - offset)
 
     slices.push({
@@ -195,6 +252,22 @@ function getDailySlices(range: AnalyticsRange, hostname: string) {
   }
 
   return slices
+}
+
+async function mapInBatches<T, R>(
+  items: T[],
+  batchSize: number,
+  mapper: (item: T) => Promise<R>
+): Promise<R[]> {
+  const results: R[] = []
+
+  for (let index = 0; index < items.length; index += batchSize) {
+    const batch = items.slice(index, index + batchSize)
+    const batchResults = await Promise.all(batch.map(mapper))
+    results.push(...batchResults)
+  }
+
+  return results
 }
 
 function formatNumber(value: number) {
@@ -394,10 +467,13 @@ async function fetchCloudflareAnalyticsFresh(
   }
 
   const { since, until } = getDateBounds(range)
-  const dailySlices = getDailySlices(range, hostname)
-  const visitorSlices = dailySlices.slice(-Math.min(getRangeDays(range), MAX_ADAPTIVE_DAY_BATCH))
 
   try {
+    const adaptiveLimits = await fetchAdaptiveLimits(event, zoneId)
+    const adaptiveDays = getEffectiveAdaptiveDays(range, adaptiveLimits)
+    const dailySlices = getDailySlices(adaptiveDays, hostname)
+    const usesPartialAdaptiveRange = adaptiveDays < getRangeDays(range)
+
     const trendData = await postCloudflareGraphql<{
       viewer: {
         zones: Array<{
@@ -414,79 +490,70 @@ async function fetchCloudflareAnalyticsFresh(
     })
 
     const [visitorTotals, topPageBatches, countryBatches, errorTotals] = await Promise.all([
-      Promise.all(
-        visitorSlices.map((slice) =>
-          postCloudflareGraphql<{
-            viewer: {
-              zones: Array<{
-                httpRequestsAdaptiveGroups: Array<{
-                  count: number
-                  sum?: { visits?: number }
-                }>
+      mapInBatches(dailySlices, ADAPTIVE_CONCURRENT_DAY_BATCH, (slice) =>
+        postCloudflareGraphql<{
+          viewer: {
+            zones: Array<{
+              httpRequestsAdaptiveGroups: Array<{
+                count: number
+                sum?: { visits?: number }
               }>
-            }
-          }>(event, DAILY_TOTAL_QUERY, {
-            zoneTag: zoneId,
-            filter: slice.filter
-          }).then((data) => ({
-            date: slice.date,
-            visits: Number(data.viewer.zones[0]?.httpRequestsAdaptiveGroups[0]?.sum?.visits || 0),
-            pageViews: Number(data.viewer.zones[0]?.httpRequestsAdaptiveGroups[0]?.count || 0)
-          }))
-        )
+            }>
+          }
+        }>(event, DAILY_TOTAL_QUERY, {
+          zoneTag: zoneId,
+          filter: slice.filter
+        }).then((data) => ({
+          date: slice.date,
+          visits: Number(data.viewer.zones[0]?.httpRequestsAdaptiveGroups[0]?.sum?.visits || 0)
+        }))
       ),
-      Promise.all(
-        dailySlices.map((slice) =>
-          postCloudflareGraphql<{
-            viewer: {
-              zones: Array<{
-                httpRequestsAdaptiveGroups: Array<{
-                  count: number
-                  sum?: { visits?: number }
-                  dimensions?: { clientRequestPath?: string }
-                }>
+      mapInBatches(dailySlices, ADAPTIVE_CONCURRENT_DAY_BATCH, (slice) =>
+        postCloudflareGraphql<{
+          viewer: {
+            zones: Array<{
+              httpRequestsAdaptiveGroups: Array<{
+                count: number
+                sum?: { visits?: number }
+                dimensions?: { clientRequestPath?: string }
               }>
-            }
-          }>(event, DAILY_TOP_PAGES_QUERY, {
-            zoneTag: zoneId,
-            filter: slice.filter
-          }).then((data) => data.viewer.zones[0]?.httpRequestsAdaptiveGroups || [])
-        )
+            }>
+          }
+        }>(event, DAILY_TOP_PAGES_QUERY, {
+          zoneTag: zoneId,
+          filter: slice.filter
+        }).then((data) => data.viewer.zones[0]?.httpRequestsAdaptiveGroups || [])
       ),
-      Promise.all(
-        dailySlices.map((slice) =>
-          postCloudflareGraphql<{
-            viewer: {
-              zones: Array<{
-                httpRequestsAdaptiveGroups: Array<{
-                  count: number
-                  sum?: { visits?: number }
-                  dimensions?: { clientCountryName?: string }
-                }>
+      mapInBatches(dailySlices, ADAPTIVE_CONCURRENT_DAY_BATCH, (slice) =>
+        postCloudflareGraphql<{
+          viewer: {
+            zones: Array<{
+              httpRequestsAdaptiveGroups: Array<{
+                count: number
+                sum?: { visits?: number }
+                dimensions?: { clientCountryName?: string }
               }>
-            }
-          }>(event, DAILY_COUNTRIES_QUERY, {
-            zoneTag: zoneId,
-            filter: slice.filter
-          }).then((data) => data.viewer.zones[0]?.httpRequestsAdaptiveGroups || [])
-        )
+            }>
+          }
+        }>(event, DAILY_COUNTRIES_QUERY, {
+          zoneTag: zoneId,
+          filter: slice.filter
+        }).then((data) => data.viewer.zones[0]?.httpRequestsAdaptiveGroups || [])
       ),
-      Promise.all(
-        dailySlices.map((slice) =>
-          postCloudflareGraphql<{
-            viewer: {
-              zones: Array<{
-                httpRequestsAdaptiveGroups: Array<{ count: number }>
-              }>
-            }
-          }>(event, DAILY_ERRORS_QUERY, {
-            zoneTag: zoneId,
-            filter: {
-              ...slice.filter,
-              edgeResponseStatus_geq: 500
-            }
-          }).then((data) => Number(data.viewer.zones[0]?.httpRequestsAdaptiveGroups[0]?.count || 0))
-        )
+      mapInBatches(dailySlices, ADAPTIVE_CONCURRENT_DAY_BATCH, (slice) =>
+        postCloudflareGraphql<{
+          viewer: {
+            zones: Array<{
+              httpRequestsAdaptiveGroups: Array<{ count: number }>
+            }>
+          }
+        }>(event, DAILY_ERRORS_QUERY, {
+          zoneTag: zoneId,
+          filter: {
+            ...slice.filter,
+            edgeResponseStatus_geq: 500
+          }
+        }).then((data) => Number(data.viewer.zones[0]?.httpRequestsAdaptiveGroups[0]?.count || 0))
       )
     ])
 
@@ -512,8 +579,6 @@ async function fetchCloudflareAnalyticsFresh(
     const edgeRequests = trend.reduce((sum, point) => sum + point.pageViews, 0)
     const edgeErrors = errorTotals.reduce((sum, count) => sum + count, 0)
 
-    const partialRange = getRangeDays(range) > MAX_ADAPTIVE_DAY_BATCH
-
     return {
       trend,
       topPages,
@@ -529,11 +594,11 @@ async function fetchCloudflareAnalyticsFresh(
         progressValue: 0
       },
       dataSourceLabel: 'Cloudflare Analytics',
-      dataSourceDescription: partialRange
-        ? `Traffic trend covers ${getRangeDays(range)} days. Top pages, countries, and edge details use the most recent ${MAX_ADAPTIVE_DAY_BATCH} days due to Cloudflare query limits.`
-        : 'Traffic and edge metrics are loaded from Cloudflare Analytics and cached with Nitro/KV.',
+      dataSourceDescription: usesPartialAdaptiveRange
+        ? `Traffic trend covers ${getRangeDays(range)} days. Visitor, top pages, countries, and edge error metrics use the last ${adaptiveDays} days allowed by your Cloudflare zone analytics limits (max ${adaptiveLimits.maxQueryDays} days per adaptive query, ${adaptiveLimits.maxHistoryDays} days of history).`
+        : `Traffic and edge metrics are loaded from Cloudflare Analytics for the last ${getRangeDays(range)} days and cached with Nitro/KV.`,
       isConfigured: true,
-      isPartial: partialRange
+      isPartial: usesPartialAdaptiveRange
     }
   } catch (error) {
     return {

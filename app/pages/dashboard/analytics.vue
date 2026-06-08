@@ -324,7 +324,7 @@ watch(error, (currentError) => {
             </div>
           </template>
 
-          <DashboardAreaChart
+          <DashboardAudienceAreaChart
             :points="analytics.trend"
             :metric="audienceMetric"
             :loading="isInitialAnalyticsLoading"
@@ -333,7 +333,7 @@ watch(error, (currentError) => {
             <template #empty>
               {{ t('dashboard.home.audience.pending') }}
             </template>
-          </DashboardAreaChart>
+          </DashboardAudienceAreaChart>
         </UCard>
 
         <UCard
@@ -347,7 +347,7 @@ watch(error, (currentError) => {
             </h2>
           </template>
 
-          <DashboardBarChart
+          <DashboardRankedBarChart
             :items="topPageChartItems"
             :value-formatter="formatNumber"
             :label="t('dashboard.analytics.sections.pageViews')"
@@ -356,7 +356,7 @@ watch(error, (currentError) => {
             <template #empty>
               {{ t('dashboard.analytics.empty.topPages') }}
             </template>
-          </DashboardBarChart>
+          </DashboardRankedBarChart>
         </UCard>
       </section>
 
@@ -446,7 +446,7 @@ watch(error, (currentError) => {
           </h2>
         </template>
 
-        <DashboardBarChart
+        <DashboardRankedBarChart
           :items="topPageChartItems"
           :value-formatter="formatNumber"
           :label="t('dashboard.analytics.sections.pageViews')"
@@ -456,7 +456,7 @@ watch(error, (currentError) => {
           <template #empty>
             {{ t('dashboard.analytics.empty.topPages') }}
           </template>
-        </DashboardBarChart>
+        </DashboardRankedBarChart>
       </UCard>
 
       <section
