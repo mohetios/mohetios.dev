@@ -1,6 +1,11 @@
 {
   "site": {
     "name": "Mohetios.dev",
+    "logo": {
+      "part1": "Mohet",
+      "part2": "ios",
+      "tld": "dev"
+    },
     "tagline": "Where ideas unfold into systems.",
     "description": "A technical notebook for software, product engineering, open-source work, and the practice of building useful systems.",
     "footer": "Built slowly. Written honestly. Kept open."

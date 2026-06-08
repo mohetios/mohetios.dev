@@ -5,7 +5,7 @@
   font-family: 'Farhang';
   font-style: normal;
   font-weight: 100 900;
-  src: url('~/assets/fonts/FarhangVariableDot.woff') format('woff');
+  src: url('~/assets/fonts/FarhangVariable.woff') format('woff');
   font-display: swap;
 }
 
@@ -181,8 +181,166 @@ html[dir='rtl'] {
   font-feature-settings: normal;
 }
 
-[dir='rtl'] .logo-mark {
-  font-family: Farhang, Vazirmatn, sans-serif;
+.site-logo-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.site-logo {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  line-height: 1;
+}
+
+.site-logo__wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+}
+
+.site-logo__part1 {
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: var(--ui-text-highlighted);
+  transition: color 180ms ease;
+}
+
+.site-logo__part2 {
+  font-size: 1.28rem;
+  font-weight: 500;
+  background: linear-gradient(
+    118deg,
+    var(--color-primary) 0%,
+    color-mix(in oklab, var(--color-primary) 58%, var(--color-accent)) 52%,
+    var(--color-accent) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  transition:
+    filter 180ms ease,
+    transform 180ms ease;
+}
+
+.site-logo__tld {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--ui-text-muted);
+  transition: color 180ms ease;
+}
+
+.site-logo__dot {
+  color: var(--color-gold);
+}
+
+.site-logo__tagline {
+  display: none;
+  max-width: 14rem;
+  font-size: 0.78rem;
+  font-weight: 450;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--ui-text-muted);
+}
+
+.site-logo__tagline::before {
+  content: '';
+  display: inline-block;
+  width: 1px;
+  height: 1rem;
+  margin-inline-end: 0.75rem;
+  background: color-mix(in oklab, var(--ui-border) 88%, transparent);
+  vertical-align: middle;
+  transform: translateY(-0.06em);
+}
+
+.site-logo--footer {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.site-logo--footer .site-logo__part1 {
+  font-size: 1.55rem;
+}
+
+.site-logo--footer .site-logo__part2 {
+  font-size: 1.45rem;
+}
+
+.site-logo--footer .site-logo__tld {
+  font-size: 0.9rem;
+}
+
+.site-logo--footer .site-logo__tagline {
+  display: block;
+  max-width: none;
+  margin-top: 0.2rem;
+  font-size: 0.875rem;
+}
+
+.site-logo--footer .site-logo__tagline::before {
+  display: none;
+}
+
+.site-logo-link:hover .site-logo__part1,
+.site-footer__mark:hover .site-logo__part1 {
+  color: var(--color-primary);
+}
+
+.site-logo-link:hover .site-logo__part2,
+.site-footer__mark:hover .site-logo__part2 {
+  filter: brightness(1.12) saturate(1.08);
+  transform: translateY(-0.5px);
+}
+
+.site-logo-link:hover .site-logo__tld,
+.site-footer__mark:hover .site-logo__tld {
+  color: var(--ui-text-toned);
+}
+
+@media (min-width: 1280px) {
+  .site-logo--header .site-logo__tagline {
+    display: inline;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-logo__part1,
+  .site-logo__part2,
+  .site-logo__tld {
+    transition: none;
+  }
+
+  .site-logo-link:hover .site-logo__part2,
+  .site-footer__mark:hover .site-logo__part2 {
+    transform: none;
+  }
+}
+
+[dir='rtl'] .site-logo__wordmark {
+  font-family: var(--font-fa);
+  letter-spacing: 0;
+}
+
+[dir='rtl'] .site-logo__part1 {
+  font-weight: 700;
+}
+
+[dir='rtl'] .site-logo__part2 {
+  font-weight: 600;
+}
+
+[dir='rtl'] .site-logo__tagline {
+  font-family: var(--font-fa);
+  letter-spacing: 0;
+  line-height: 1.45;
 }
 
 .site-logo-image {
@@ -910,20 +1068,6 @@ html[dir='rtl'] .prose-mohetios p {
 .site-footer__logo {
   width: 4.5rem;
   height: 4.5rem;
-}
-
-.site-footer__name {
-  display: block;
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: 0;
-}
-
-.site-footer__tagline {
-  display: block;
-  margin-top: 0.2rem;
-  color: var(--color-muted);
-  font-size: 0.875rem;
 }
 
 .site-footer__description {

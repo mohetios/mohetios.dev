@@ -74,10 +74,7 @@ const footerSections = computed<FooterSection[]>(() => [
             class="site-logo-image site-footer__logo"
             aria-hidden="true"
           />
-          <span>
-            <span class="logo-mark site-footer__name">{{ t('site.name') }}</span>
-            <span class="site-footer__tagline">{{ t('site.tagline') }}</span>
-          </span>
+          <SiteLogo show-tagline size="footer" />
         </NuxtLink>
 
         <p class="site-footer__description">
