@@ -8,7 +8,6 @@ declare global {
     ADMIN_NOTIFICATION_QUEUE?: Queue
     NUXT_JWT_SECRET?: string
     NUXT_AUTH_TOKEN_TTL_SECONDS?: string
-    NUXT_ALLOW_PUBLIC_REGISTER?: string
     NUXT_MAIL_FROM?: string
     NUXT_MAIL_FROM_NAME?: string
     NUXT_VAPID_PUBLIC_KEY?: string

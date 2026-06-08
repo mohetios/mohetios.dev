@@ -19,7 +19,6 @@ export type ServerEnv = {
 
   NUXT_JWT_SECRET: string
   NUXT_AUTH_TOKEN_TTL_SECONDS: string
-  NUXT_ALLOW_PUBLIC_REGISTER: string
 
   NUXT_MAIL_FROM: string
   NUXT_MAIL_FROM_NAME: string
@@ -36,7 +35,6 @@ type CloudflareRuntimeEnv = {
 
   NUXT_JWT_SECRET?: string
   NUXT_AUTH_TOKEN_TTL_SECONDS?: string
-  NUXT_ALLOW_PUBLIC_REGISTER?: string
   NUXT_MAIL_FROM?: string
   NUXT_MAIL_FROM_NAME?: string
   NUXT_VAPID_PUBLIC_KEY?: string
@@ -139,10 +137,6 @@ export function getServerEnv(event: H3Event): ServerEnv {
     NUXT_AUTH_TOKEN_TTL_SECONDS:
       readString(runtimeConfig.authTokenTtlSeconds, cloudflareEnv.NUXT_AUTH_TOKEN_TTL_SECONDS) ||
       '604800',
-
-    NUXT_ALLOW_PUBLIC_REGISTER:
-      readString(runtimeConfig.allowPublicRegister, cloudflareEnv.NUXT_ALLOW_PUBLIC_REGISTER) ||
-      'false',
 
     NUXT_MAIL_FROM:
       readString(runtimeConfig.mailFrom, cloudflareEnv.NUXT_MAIL_FROM) || 'hi@mohetios.dev',

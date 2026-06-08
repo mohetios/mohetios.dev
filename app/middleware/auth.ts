@@ -19,10 +19,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   const isMemberRoute = pathWithoutLocale === '/member' || pathWithoutLocale.startsWith('/member/')
 
-  const isAuthRoute =
-    pathWithoutLocale === '/login' ||
-    pathWithoutLocale === '/register' ||
-    pathWithoutLocale === '/reset-password'
+  const isAuthRoute = pathWithoutLocale === '/login'
 
   const requiredPermission =
     typeof to.meta.requiredPermission === 'string'

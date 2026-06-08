@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const { t } = useI18n()
-const route = useRoute()
 
 const features = [
   { key: 'console', icon: 'i-lucide-layout-dashboard' },
@@ -8,19 +7,9 @@ const features = [
   { key: 'projects', icon: 'i-lucide-folder-open' }
 ] as const
 
-const pathWithoutLocale = computed(() => stripLocalePrefix(route.path))
+const { data: setupAvailable } = useNuxtData('auth:setup-available')
 
-const pageKey = computed(() => {
-  if (pathWithoutLocale.value === '/register') {
-    return 'register'
-  }
-
-  if (pathWithoutLocale.value === '/reset-password') {
-    return 'resetPassword'
-  }
-
-  return 'login'
-})
+const pageKey = computed(() => (setupAvailable.value === true ? 'register' : 'login'))
 
 const pageCopy = computed(() => ({
   eyebrow: t(`auth.layout.pages.${pageKey.value}.eyebrow`),

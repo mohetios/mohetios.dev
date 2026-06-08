@@ -18,44 +18,29 @@
   "auth": {
     "fields": {
       "username": "Username",
-      "email": "Email",
       "password": "Password"
     },
     "login": {
-      "eyebrow": "Private dashboard",
       "title": "Login",
       "description": "Access the private Mohetios dashboard.",
-      "action": "Login",
-      "noAccount": "Need the first admin account?"
+      "action": "Login"
     },
     "register": {
-      "eyebrow": "First admin",
-      "title": "Register",
-      "description": "Create the first admin account, or a user account when public registration is enabled.",
-      "action": "Create account",
-      "hasAccount": "Already have an account?"
-    },
-    "resetPassword": {
-      "eyebrow": "Account recovery",
-      "title": "Reset password",
-      "description": "Enter your username and we will prepare the password reset flow.",
-      "action": "Send reset link",
-      "link": "Forgot password?",
-      "remembered": "Remembered your password?",
-      "sentTitle": "Reset request noted",
-      "sentDescription": "Password reset delivery is a template for now and will be connected later."
+      "title": "Create admin account",
+      "description": "Create the first owner account for this site.",
+      "action": "Create account"
     },
     "logout": "Logout",
     "errors": {
-      "generic": "Authentication failed"
+      "generic": "Authentication failed",
+      "verificationTitle": "Verification required",
+      "verificationDescription": "Please complete the verification check before continuing."
     },
     "status": {
       "authenticated": "Authenticated",
       "guest": "Guest"
     },
     "layout": {
-      "exploreSite": "Explore the site",
-      "backToHome": "Back to homepage",
       "note": "Built slowly. Written honestly. Kept open.",
       "features": {
         "console": {
@@ -80,12 +65,7 @@
         "register": {
           "eyebrow": "First admin",
           "title": "Create the first account",
-          "description": "The first registration becomes the site owner. Later accounts follow your registration policy."
-        },
-        "resetPassword": {
-          "eyebrow": "Account recovery",
-          "title": "Reset your password",
-          "description": "We will prepare the reset flow. Delivery is still being wired up behind the scenes."
+          "description": "No admin exists yet. The first account becomes the site owner."
         }
       }
     }

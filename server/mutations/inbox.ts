@@ -11,6 +11,7 @@ import { trashMessage } from '../services/inbox/trash-message'
 import { normalizeInboxMessageRow } from '../utils/inbox-map'
 import { createAdminNotification } from '../services/notifications/create-admin-notification'
 import { requirePermission } from '../utils/auth'
+import { requireTurnstileToken } from '../utils/turnstile'
 import type { AdminNotificationJob } from '../../shared/contracts/notifications'
 
 type ContactTopic = 'PROJECT' | 'CONSULTING' | 'COLLABORATION' | 'WRITING' | 'OTHER'
@@ -143,15 +144,6 @@ function createNotificationPreview(value: string, maxLength = 140) {
   return `${preview.slice(0, maxLength - 1).trim()}...`
 }
 
-async function verifyContactTurnstile(token: string, context: GraphQLContext) {
-  const normalizedToken = normalizeText(token, 2048, 'Verification token')
-  const result = await verifyTurnstileToken(normalizedToken, context.event)
-
-  if (!result.success) {
-    throw new GraphQLError('Verification failed. Please try again.')
-  }
-}
-
 export const inboxMutations = {
   createContactMessage: async (
     _parent: unknown,
@@ -165,7 +157,7 @@ export const inboxMutations = {
     const company = normalizeOptionalText(args.input.company, 160, 'Company')
     const website = normalizeUrl(args.input.website)
 
-    await verifyContactTurnstile(args.input.turnstileToken, context)
+    await requireTurnstileToken(args.input.turnstileToken, context)
 
     if (!validTopics.has(topic as ContactTopic)) {
       throw new GraphQLError('Topic is invalid')

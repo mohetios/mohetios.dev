@@ -1,5 +1,6 @@
 export const typeDefs = /* GraphQL */ `
   type Query {
+    authSetupAvailable: Boolean!
     me: User
     memberProfile: User
     inboxWorkspace(input: InboxWorkspaceInput): InboxWorkspace!
@@ -55,11 +56,13 @@ export const typeDefs = /* GraphQL */ `
     username: String!
     password: String!
     displayName: String
+    turnstileToken: String!
   }
 
   input LoginInput {
     username: String!
     password: String!
+    turnstileToken: String!
   }
 
   input UpdateProfileInput {

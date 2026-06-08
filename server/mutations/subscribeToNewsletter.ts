@@ -5,6 +5,7 @@ import { newsletterSubscribers } from '../models/schema'
 import type { GraphQLContext } from '../routes/graph'
 import { createId } from '../utils/id'
 import { normalizeNewsletterSubscriberRow } from '../utils/newsletter-map'
+import { requireTurnstileToken } from '../utils/turnstile'
 import type { EmailDeliveryJob } from '../../shared/contracts/email'
 
 type SubscribeToNewsletterArgs = {
@@ -101,13 +102,8 @@ export const subscribeToNewsletter = async (
   const source = normalizeOptionalText(args.input.source, 80, 'Source')
   const locale = normalizeOptionalText(args.input.locale, 10, 'Locale')
   const consentText = normalizeText(args.input.consentText, 1000, 'Consent text')
-  const turnstileToken = normalizeText(args.input.turnstileToken, 2048, 'Verification token')
 
-  const turnstileResult = await verifyTurnstileToken(turnstileToken, context.event)
-
-  if (!turnstileResult.success) {
-    throw new GraphQLError('Verification failed. Please try again.')
-  }
+  await requireTurnstileToken(args.input.turnstileToken, context)
 
   const now = Date.now()
   const turnstileVerifiedAt = now

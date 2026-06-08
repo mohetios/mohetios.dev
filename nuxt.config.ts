@@ -21,7 +21,8 @@ const immutableAssetHeaders = {
 const turnstileSiteKey = process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || ''
 
 const staticRouteSections = ['/', '/blog', '/lab', '/projects', '/about', '/contact']
-const authRouteSections = ['/login', '/register', '/reset-password']
+const authRouteSections = ['/login']
+const authRedirectSections = ['/register', '/reset-password']
 const contentRoutePatterns = ['/blog/**', '/lab/**', '/projects/**', '/tags/**']
 const memberRoutePatterns = ['/member/**']
 
@@ -52,6 +53,15 @@ const localizedClientAuthRouteRules = Object.fromEntries(
       authRouteSections.map((section) => getLocalizedPublicPath(section, locale))
     )
     .map((route) => [route, { ssr: false, prerender: false }])
+)
+
+const localizedAuthRedirectRouteRules = Object.fromEntries(
+  supportedLocales.flatMap((locale) =>
+    authRedirectSections.map((section) => [
+      getLocalizedPublicPath(section, locale),
+      { redirect: getLocalizedPublicPath('/login', locale) }
+    ])
+  )
 )
 
 function getContentRoutes() {
@@ -128,7 +138,6 @@ export default defineNuxtConfig({
   runtimeConfig: {
     jwtSecret: process.env.NUXT_JWT_SECRET || '',
     authTokenTtlSeconds: process.env.NUXT_AUTH_TOKEN_TTL_SECONDS || '604800',
-    allowPublicRegister: process.env.NUXT_ALLOW_PUBLIC_REGISTER || 'false',
     mailFrom: process.env.NUXT_MAIL_FROM || 'hi@mohetios.dev',
     mailFromName: process.env.NUXT_MAIL_FROM_NAME || 'Mohetios.dev',
     vapidPublicKey: process.env.NUXT_VAPID_PUBLIC_KEY || '',
@@ -183,6 +192,7 @@ export default defineNuxtConfig({
   routeRules: {
     ...localizedHtmlRouteRules,
     ...localizedClientAuthRouteRules,
+    ...localizedAuthRedirectRouteRules,
 
     '/dashboard': { ssr: true, prerender: false },
     '/dashboard/**': { ssr: true, prerender: false },

@@ -1,7 +1,6 @@
 import { count, eq } from 'drizzle-orm'
 import { GraphQLError } from 'graphql'
 
-import type { UserRole } from '../../shared/constants/permissions'
 import { users } from '../models/schema'
 import type { GraphQLContext } from '../routes/graph'
 import {
@@ -12,16 +11,26 @@ import {
 } from '../utils/auth'
 import { generateSalt, getPasswordIterations, hashPassword, signAuthToken } from '../utils/crypto'
 import { createId } from '../utils/id'
+import { requireTurnstileToken } from '../utils/turnstile'
 
 type RegisterArgs = {
   input: {
     username: string
     password: string
     displayName?: string | null
+    turnstileToken: string
   }
 }
 
 export async function register(_parent: unknown, args: RegisterArgs, context: GraphQLContext) {
+  await requireTurnstileToken(args.input.turnstileToken, context)
+
+  const [userCount] = await context.db.select({ value: count() }).from(users)
+
+  if ((userCount?.value ?? 0) !== 0) {
+    throw new GraphQLError('Registration is closed')
+  }
+
   const username = normalizeUsername(args.input.username)
   const password = args.input.password
 
@@ -38,16 +47,9 @@ export async function register(_parent: unknown, args: RegisterArgs, context: Gr
     throw new GraphQLError('Registration is closed')
   }
 
-  const [userCount] = await context.db.select({ value: count() }).from(users)
-  const firstUser = (userCount?.value ?? 0) === 0
-
-  // if (!firstUser && context.env.NUXT_ALLOW_PUBLIC_REGISTER !== 'true') {
-  //   throw new GraphQLError('Registration is closed')
-  // }
-
   const now = new Date().toISOString()
   const id = createId()
-  const role: Exclude<UserRole, 'GUEST'> = firstUser ? 'OWNER' : 'MEMBER'
+  const role = 'OWNER' as const
   const salt = generateSalt()
   const iterations = getPasswordIterations()
   const passwordHash = await hashPassword(password, salt, iterations)

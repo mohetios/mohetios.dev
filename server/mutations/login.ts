@@ -10,17 +10,21 @@ import {
   validateUsername
 } from '../utils/auth'
 import { signAuthToken, verifyPassword } from '../utils/crypto'
+import { requireTurnstileToken } from '../utils/turnstile'
 
 type LoginArgs = {
   input: {
     username: string
     password: string
+    turnstileToken: string
   }
 }
 
 const invalidLoginMessage = 'Invalid username or password.'
 
 export async function login(_parent: unknown, args: LoginArgs, context: GraphQLContext) {
+  await requireTurnstileToken(args.input.turnstileToken, context)
+
   const username = normalizeUsername(args.input.username)
 
   try {
