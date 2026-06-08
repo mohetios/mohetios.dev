@@ -98,7 +98,7 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
         </template>
       </div>
 
-      <ContentTagList v-if="tags?.length" class="mt-5" :tags="tags" size="sm" />
+      <ContentTags v-if="tags?.length" class="mt-5" :tags="tags" size="sm" />
     </div>
 
     <figure v-if="thumbnail" class="mohetios-editorial-hero pb-10">

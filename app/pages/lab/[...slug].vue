@@ -40,7 +40,7 @@ useMohetSeo({
 
     <ContentHero :title="note.title" :description="note.description" :thumbnail="note.thumbnail" />
 
-    <ContentViewShell
+    <ContentShell
       kind="lab"
       :content="note.content"
       :toc-links="tocLinks"
@@ -58,6 +58,6 @@ useMohetSeo({
           </p>
         </div>
       </template>
-    </ContentViewShell>
+    </ContentShell>
   </UPage>
 </template>

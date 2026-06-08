@@ -26,7 +26,7 @@ useMohetSeo({
       </article>
 
       <section class="mx-auto mt-10 max-w-3xl">
-        <NewsletterSubscribeBlock source="about" />
+        <NewsletterSubscribe source="about" />
       </section>
     </UPageBody>
   </UPage>

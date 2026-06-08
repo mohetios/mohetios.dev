@@ -73,6 +73,15 @@ function getContentRoutes() {
 const prerenderRoutes = [...getContentRoutes(), '/robots.txt', '/sitemap.xml']
 
 export default defineNuxtConfig({
+  components: {
+    dirs: [
+      {
+        path: '~/components',
+        pathPrefix: true
+      }
+    ]
+  },
+
   modules: [
     ...(isDev ? ['@nuxt/eslint', 'nitro-cloudflare-dev'] : []),
     '@nuxtjs/i18n',

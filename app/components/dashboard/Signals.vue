@@ -10,7 +10,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <DashboardSectionCard :title="t('dashboard.overview.readerSignals')" class="h-full">
+  <DashboardSection :title="t('dashboard.overview.readerSignals')" class="h-full">
     <div v-if="loading" class="space-y-3">
       <USkeleton v-for="index in 3" :key="index" class="h-14 w-full" />
     </div>
@@ -48,5 +48,5 @@ const { t } = useI18n()
         </div>
       </li>
     </ul>
-  </DashboardSectionCard>
+  </DashboardSection>
 </template>

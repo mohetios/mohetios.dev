@@ -38,7 +38,7 @@ const publicTo = computed(() => toPublicPath(props.to))
     </p>
 
     <template #footer>
-      <ContentTagList :tags="tags" />
+      <ContentTags :tags="tags" />
     </template>
   </UPageCard>
 </template>

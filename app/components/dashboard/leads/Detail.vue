@@ -87,7 +87,7 @@ function saveNotes() {
       <USkeleton class="h-24 w-full" />
     </div>
 
-    <DashboardWorkspaceEmptyState
+    <DashboardWorkspaceEmpty
       v-else-if="!lead"
       icon="i-lucide-user-search"
       :title="t('dashboard.leads.select.title')"
@@ -132,7 +132,7 @@ function saveNotes() {
       </div>
 
       <div class="min-h-0 flex-1 space-y-5 overflow-y-auto p-4">
-        <DashboardLeadsLeadActions
+        <DashboardLeadsActions
           :disabled="mutating"
           @open-conversation="emit('open-conversation')"
           @update-status="emit('update-status', $event)"
@@ -206,7 +206,7 @@ function saveNotes() {
               <label class="mb-1 block text-xs text-muted">{{
                 t('dashboard.leads.actions.setFollowUp')
               }}</label>
-              <DashboardLeadsLeadFollowUpPicker
+              <DashboardLeadsFollowUp
                 v-model="followUpDraft"
                 :disabled="mutating"
                 @save="emit('update-follow-up', $event)"

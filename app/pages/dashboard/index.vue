@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DashboardSummaryCard } from '~/components/dashboard/DashboardMetricCard.vue'
+import type { DashboardSummaryCard } from '~/components/dashboard/Metric.vue'
 import {
   dashboardCardUi,
   dashboardChartCardMinHeightClass,
@@ -194,7 +194,7 @@ watch(error, (currentError) => {
           <USkeleton class="h-[6.75rem] w-full" />
         </UCard>
       </template>
-      <DashboardMetricCard
+      <DashboardMetric
         v-for="metric in summaryCards"
         v-else
         :key="metric.key"
@@ -241,7 +241,7 @@ watch(error, (currentError) => {
           </div>
         </template>
 
-        <DashboardAudienceAreaChart
+        <DashboardAreaChart
           :points="dashboardHome.audienceTrend"
           :metric="audienceMetric"
           :loading="isInitialDashboardLoading"
@@ -250,10 +250,10 @@ watch(error, (currentError) => {
           <template #empty>
             {{ t('dashboard.home.audience.pending') }}
           </template>
-        </DashboardAudienceAreaChart>
+        </DashboardAreaChart>
       </UCard>
 
-      <DashboardInboxPreviewCard
+      <DashboardInboxPreview
         class="xl:col-span-2"
         :items="dashboardHome.inboxPreview"
         :loading="isInitialDashboardLoading"
@@ -261,15 +261,15 @@ watch(error, (currentError) => {
     </section>
 
     <section class="grid items-stretch gap-4 lg:grid-cols-2 xl:grid-cols-3">
-      <DashboardContentPulseCard
+      <DashboardPulse
         :content-pulse="dashboardHome.contentPulse"
         :loading="isInitialDashboardLoading"
       />
-      <DashboardReaderSignalsCard
+      <DashboardSignals
         :signals="dashboardHome.readerSignals"
         :loading="isInitialDashboardLoading"
       />
-      <DashboardSystemHealthCard
+      <DashboardHealth
         :items="dashboardHome.systemHealth"
         :loading="isInitialDashboardLoading"
       />

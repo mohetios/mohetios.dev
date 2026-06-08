@@ -26,7 +26,7 @@ function statusLabel(status: string) {
 </script>
 
 <template>
-  <DashboardSectionCard
+  <DashboardSection
     :title="t('dashboard.overview.contentPulse')"
     to="/blog"
     :link-label="t('dashboard.overview.viewAll')"
@@ -78,5 +78,5 @@ function statusLabel(status: string) {
         </li>
       </ul>
     </template>
-  </DashboardSectionCard>
+  </DashboardSection>
 </template>

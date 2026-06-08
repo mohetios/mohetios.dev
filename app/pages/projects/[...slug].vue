@@ -55,7 +55,7 @@ useMohetSeo({
       :thumbnail="project.thumbnail"
     />
 
-    <ContentViewShell
+    <ContentShell
       kind="project"
       :content="project.content"
       :toc-links="tocLinks"
@@ -70,7 +70,7 @@ useMohetSeo({
             {{ t('content.related') }}
           </h2>
           <div class="grid gap-4 sm:grid-cols-2">
-            <ProjectCard
+            <ProjectsCard
               v-for="related in relatedProjects"
               :key="related.id"
               :title="related.title"
@@ -89,6 +89,6 @@ useMohetSeo({
           </div>
         </section>
       </template>
-    </ContentViewShell>
+    </ContentShell>
   </UPage>
 </template>

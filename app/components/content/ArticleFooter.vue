@@ -43,7 +43,7 @@ const hasPostReading = computed(() => hasSurround.value || hasRelated.value)
             {{ t('content.article.relatedPosts') }}
           </p>
           <div class="grid gap-3 sm:grid-cols-2">
-            <ContentListCard
+            <ContentList
               v-for="related in relatedPosts"
               :key="related.id || related.path"
               :title="related.title"
@@ -59,7 +59,7 @@ const hasPostReading = computed(() => hasSurround.value || hasRelated.value)
       </section>
 
       <section class="border-t border-default pt-6">
-        <ContentSubscribeCard size="compact" kind="blog" />
+        <ContentSubscribe size="compact" kind="blog" />
       </section>
     </div>
   </footer>

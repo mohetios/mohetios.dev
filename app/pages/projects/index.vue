@@ -46,7 +46,7 @@ useMohetSeo({
             </div>
           </div>
           <UPageGrid>
-            <ProjectCard
+            <ProjectsCard
               v-for="project in featuredProjects"
               :key="project.id"
               :title="project.title"
@@ -70,7 +70,7 @@ useMohetSeo({
             {{ t('content.projects.archive') }}
           </h2>
           <UPageGrid>
-            <ProjectCard
+            <ProjectsCard
               v-for="project in otherProjects"
               :key="project.id"
               :title="project.title"
@@ -90,7 +90,7 @@ useMohetSeo({
         </section>
       </div>
 
-      <EmptyState
+      <UiEmpty
         v-else
         :title="t('empty.projectsTitle')"
         :description="t('empty.projectsDescription')"

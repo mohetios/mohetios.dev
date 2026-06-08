@@ -9,7 +9,7 @@ const localePath = useLocalePath()
 </script>
 
 <template>
-  <NewsletterSubscribeBlock
+  <NewsletterSubscribe
     v-if="kind === 'blog'"
     :compact="size === 'compact'"
     source="blog_post"
@@ -17,7 +17,7 @@ const localePath = useLocalePath()
     :description="t('content.subscribe.blog.description')"
   />
 
-  <NewsletterSubscribeBlock
+  <NewsletterSubscribe
     v-else-if="kind === 'lab'"
     :compact="size === 'compact'"
     source="lab_post"

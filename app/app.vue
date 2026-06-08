@@ -83,6 +83,6 @@ useSeoMeta({
       <SiteFooter />
     </template>
 
-    <AdminPushPermissionPrompt />
+    <AdminPushPrompt />
   </UApp>
 </template>

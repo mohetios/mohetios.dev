@@ -53,7 +53,7 @@ useMohetSeo({
       </div>
 
       <div v-if="visibleNotes.length" class="grid gap-4">
-        <ContentListCard
+        <ContentList
           v-for="note in visibleNotes"
           :key="note.id"
           :title="note.title"
@@ -68,7 +68,7 @@ useMohetSeo({
           compact
         />
       </div>
-      <EmptyState v-else :title="t('empty.labTitle')" :description="t('empty.labDescription')" />
+      <UiEmpty v-else :title="t('empty.labTitle')" :description="t('empty.labDescription')" />
     </UPageBody>
   </UPage>
 </template>

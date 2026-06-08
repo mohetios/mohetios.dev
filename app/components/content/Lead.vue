@@ -52,7 +52,7 @@ const publicTo = computed(() => toPublicPath(props.to))
       </p>
       <div class="mt-5 space-y-4">
         <ContentMeta :date="date" :updated="updated" />
-        <ContentTagList :tags="tags" />
+        <ContentTags :tags="tags" />
       </div>
       <UButton
         :to="publicTo"

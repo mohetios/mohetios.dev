@@ -27,7 +27,7 @@ useMohetSeo({
 
     <UPageBody>
       <div v-if="visiblePosts.length" class="space-y-10">
-        <ContentLeadCard
+        <ContentLead
           v-if="featuredPost"
           :title="featuredPost.title"
           :description="featuredPost.description"
@@ -55,7 +55,7 @@ useMohetSeo({
         </div>
 
         <UPageGrid v-if="remainingPosts.length">
-          <ContentListCard
+          <ContentList
             v-for="post in remainingPosts"
             :key="post.id"
             :title="post.title"
@@ -70,7 +70,7 @@ useMohetSeo({
         </UPageGrid>
       </div>
 
-      <EmptyState v-else :title="t('empty.blogTitle')" :description="t('empty.blogDescription')" />
+      <UiEmpty v-else :title="t('empty.blogTitle')" :description="t('empty.blogDescription')" />
     </UPageBody>
   </UPage>
 </template>

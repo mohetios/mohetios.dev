@@ -24,7 +24,7 @@ function statusLabel(status: string) {
 </script>
 
 <template>
-  <DashboardSectionCard
+  <DashboardSection
     :title="t('dashboard.overview.systemHealth')"
     to="/dashboard/analytics"
     :link-label="t('dashboard.overview.viewDetails')"
@@ -59,5 +59,5 @@ function statusLabel(status: string) {
         </UBadge>
       </li>
     </ul>
-  </DashboardSectionCard>
+  </DashboardSection>
 </template>

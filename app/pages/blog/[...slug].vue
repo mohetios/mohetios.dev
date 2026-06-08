@@ -78,7 +78,7 @@ useMohetSeo({
       :back-label="t('content.actions.backToBlog')"
     />
 
-    <ContentViewShell
+    <ContentShell
       :content="post.content"
       :toc-links="tocLinks"
       :show-toc="showToc"

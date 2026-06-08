@@ -36,7 +36,7 @@ const publicTo = computed(() => toPublicPath(props.to))
 
     <template #footer>
       <div class="space-y-4">
-        <ContentTagList :tags="tags" />
+        <ContentTags :tags="tags" />
         <div class="flex flex-wrap items-center gap-2">
           <UButton
             :to="publicTo"

@@ -33,7 +33,7 @@ const { t } = useI18n()
     }"
   >
     <template #content>
-      <DashboardLeadsLeadDetail
+      <DashboardLeadsDetail
         v-if="lead"
         :lead="lead"
         :loading="loading"

@@ -248,7 +248,7 @@ function formatDate(date?: string | Date) {
           :thumbnail="post.thumbnail"
         />
       </UPageGrid>
-      <EmptyState v-else :title="t('empty.blogTitle')" :description="t('empty.blogDescription')" />
+      <UiEmpty v-else :title="t('empty.blogTitle')" :description="t('empty.blogDescription')" />
     </UPageSection>
 
     <section class="px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
@@ -277,7 +277,7 @@ function formatDate(date?: string | Date) {
               hide-media
             />
           </div>
-          <EmptyState
+          <UiEmpty
             v-else
             :title="t('empty.labTitle')"
             :description="t('empty.labDescription')"
@@ -308,7 +308,7 @@ function formatDate(date?: string | Date) {
               hide-media
             />
           </div>
-          <EmptyState
+          <UiEmpty
             v-else
             :title="t('empty.projectsTitle')"
             :description="t('empty.projectsDescription')"
@@ -373,7 +373,7 @@ function formatDate(date?: string | Date) {
 
     <section class="px-4 pb-16 sm:px-6 lg:px-8">
       <div class="mx-auto max-w-6xl">
-        <NewsletterSubscribeBlock source="home" />
+        <NewsletterSubscribe source="home" />
       </div>
     </section>
   </div>

@@ -326,7 +326,7 @@ function handleUpdateNotes(notes: string | null) {
         @select-lead="selectLead"
       />
 
-      <DashboardLeadsLeadDetail
+      <DashboardLeadsDetail
         :lead="selectedLead"
         :loading="isLeadDetailLoading"
         :mutating="isMutating"
@@ -338,7 +338,7 @@ function handleUpdateNotes(notes: string | null) {
       />
     </DashboardWorkspacePage>
 
-    <DashboardLeadsLeadDrawer
+    <DashboardLeadsDrawer
       v-if="canUseLeadDrawer"
       v-model:open="isLeadDrawerOpen"
       :lead="selectedLead"

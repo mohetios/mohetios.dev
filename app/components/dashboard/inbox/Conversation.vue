@@ -55,7 +55,7 @@ function focusComposer() {
         : 'hidden min-h-[calc(100vh-var(--dashboard-header-height,4rem)-2rem)] lg:flex'
     "
   >
-    <DashboardWorkspaceEmptyState
+    <DashboardWorkspaceEmpty
       v-if="!message && !loading"
       icon="i-lucide-messages-square"
       :title="t('dashboard.inbox.workspace.selectTitle')"
@@ -81,7 +81,7 @@ function focusComposer() {
         @delete-forever="emit('delete-forever')"
       />
 
-      <DashboardInboxCompactMeta :message="message" />
+      <DashboardInboxMeta :message="message" />
 
       <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4 pb-28">
         <div v-if="loading" class="space-y-4">
@@ -91,7 +91,7 @@ function focusComposer() {
         </div>
 
         <div v-else class="space-y-4">
-          <DashboardInboxMessageBubble v-for="event in events" :key="event.id" :event="event" />
+          <DashboardInboxBubble v-for="event in events" :key="event.id" :event="event" />
         </div>
       </div>
 

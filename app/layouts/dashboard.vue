@@ -16,6 +16,6 @@ import { dashboardPanelBodyUi } from '~/utils/dashboard-ui'
       </template>
     </UDashboardPanel>
 
-    <PwaInstallPrompt />
+    <PwaPrompt />
   </UDashboardGroup>
 </template>

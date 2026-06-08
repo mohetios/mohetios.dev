@@ -150,7 +150,7 @@ useSeoMeta({
               >
                 {{ featuredItem.description }}
               </p>
-              <ContentTagList class="mt-5" :tags="featuredItem.tags" />
+              <ContentTags class="mt-5" :tags="featuredItem.tags" />
             </article>
           </section>
 
@@ -178,13 +178,13 @@ useSeoMeta({
                 <p v-if="item.description" class="mt-2 line-clamp-3 text-sm leading-6 text-muted">
                   {{ item.description }}
                 </p>
-                <ContentTagList class="mt-4" :tags="item.tags" size="xs" />
+                <ContentTags class="mt-4" :tags="item.tags" size="xs" />
               </article>
             </div>
           </section>
 
           <div v-if="!matchedItems.length" class="space-y-5">
-            <EmptyState :title="t('tags.emptyTitle')" :description="t('tags.emptyDescription')" />
+            <UiEmpty :title="t('tags.emptyTitle')" :description="t('tags.emptyDescription')" />
             <div class="flex flex-wrap gap-2">
               <UButton :to="localePath('/blog')" color="neutral" variant="subtle">
                 {{ t('tags.backToWriting') }}

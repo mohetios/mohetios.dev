@@ -303,7 +303,7 @@ watch(error, (currentError) => {
     </section>
 
     <section v-else class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-      <DashboardMetricCard v-for="metric in analytics.metrics" :key="metric.key" :metric="metric" />
+      <DashboardMetric v-for="metric in analytics.metrics" :key="metric.key" :metric="metric" />
     </section>
 
     <UTabs
@@ -358,7 +358,7 @@ watch(error, (currentError) => {
             </div>
           </template>
 
-          <DashboardAudienceAreaChart
+          <DashboardAreaChart
             :points="analytics.trend"
             :metric="audienceMetric"
             :loading="isInitialAnalyticsLoading"
@@ -367,7 +367,7 @@ watch(error, (currentError) => {
             <template #empty>
               {{ t('dashboard.home.audience.pending') }}
             </template>
-          </DashboardAudienceAreaChart>
+          </DashboardAreaChart>
         </UCard>
 
         <UCard
@@ -381,7 +381,7 @@ watch(error, (currentError) => {
             </h2>
           </template>
 
-          <DashboardHorizontalBarChart
+          <DashboardBarChart
             :items="topPageChartItems"
             :value-formatter="formatNumber"
             :label="t('dashboard.analytics.sections.pageViews')"
@@ -390,7 +390,7 @@ watch(error, (currentError) => {
             <template #empty>
               {{ t('dashboard.analytics.empty.topPages') }}
             </template>
-          </DashboardHorizontalBarChart>
+          </DashboardBarChart>
         </UCard>
       </section>
 
@@ -402,7 +402,7 @@ watch(error, (currentError) => {
             </h2>
           </template>
 
-          <DashboardProgressList
+          <DashboardProgress
             :items="referrerChartItems"
             :value-formatter="formatNumber"
             :label="t('dashboard.analytics.sections.acquisitionMix')"
@@ -411,7 +411,7 @@ watch(error, (currentError) => {
             <template #empty>
               {{ t('dashboard.analytics.empty.referrers') }}
             </template>
-          </DashboardProgressList>
+          </DashboardProgress>
         </UCard>
 
         <UCard variant="outline" :ui="dashboardCardUi">
@@ -421,7 +421,7 @@ watch(error, (currentError) => {
             </h2>
           </template>
 
-          <DashboardProgressList
+          <DashboardProgress
             :items="countryChartItems"
             :value-formatter="formatNumber"
             :label="t('dashboard.analytics.sections.geoSignals')"
@@ -430,7 +430,7 @@ watch(error, (currentError) => {
             <template #empty>
               {{ t('dashboard.analytics.empty.countries') }}
             </template>
-          </DashboardProgressList>
+          </DashboardProgress>
         </UCard>
 
         <UCard variant="outline" :ui="dashboardCardUi">
@@ -480,7 +480,7 @@ watch(error, (currentError) => {
           </h2>
         </template>
 
-        <DashboardHorizontalBarChart
+        <DashboardBarChart
           :items="topPageChartItems"
           :value-formatter="formatNumber"
           :label="t('dashboard.analytics.sections.pageViews')"
@@ -490,7 +490,7 @@ watch(error, (currentError) => {
           <template #empty>
             {{ t('dashboard.analytics.empty.topPages') }}
           </template>
-        </DashboardHorizontalBarChart>
+        </DashboardBarChart>
       </UCard>
 
       <section
@@ -659,7 +659,7 @@ watch(error, (currentError) => {
             </h2>
           </template>
 
-          <DashboardProgressList
+          <DashboardProgress
             :items="referrerChartItems"
             :value-formatter="formatNumber"
             :label="t('dashboard.analytics.sections.acquisitionMix')"
@@ -668,7 +668,7 @@ watch(error, (currentError) => {
             <template #empty>
               {{ t('dashboard.analytics.empty.referrers') }}
             </template>
-          </DashboardProgressList>
+          </DashboardProgress>
         </UCard>
 
         <UCard variant="outline" :ui="dashboardCardUi">
@@ -678,7 +678,7 @@ watch(error, (currentError) => {
             </h2>
           </template>
 
-          <DashboardProgressList
+          <DashboardProgress
             :items="countryChartItems"
             :value-formatter="formatNumber"
             :label="t('dashboard.analytics.sections.geoSignals')"
@@ -687,7 +687,7 @@ watch(error, (currentError) => {
             <template #empty>
               {{ t('dashboard.analytics.empty.countries') }}
             </template>
-          </DashboardProgressList>
+          </DashboardProgress>
         </UCard>
       </section>
     </div>
@@ -760,7 +760,7 @@ watch(error, (currentError) => {
             </h2>
           </template>
 
-          <DashboardStatStrip :items="edgeStatItems" />
+          <DashboardStats :items="edgeStatItems" />
           <p class="mt-3 text-xs text-muted">
             {{ t('dashboard.analytics.pending.webVitals') }}
           </p>

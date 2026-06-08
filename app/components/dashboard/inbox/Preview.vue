@@ -76,7 +76,7 @@ function kindBadge(kind: string) {
 </script>
 
 <template>
-  <DashboardSectionCard
+  <DashboardSection
     :title="t('dashboard.overview.inboxPreview')"
     to="/dashboard/inbox"
     :link-label="t('dashboard.overview.viewAll')"
@@ -145,5 +145,5 @@ function kindBadge(kind: string) {
         </NuxtLink>
       </li>
     </ul>
-  </DashboardSectionCard>
+  </DashboardSection>
 </template>

@@ -2,11 +2,8 @@ export const typeDefs = /* GraphQL */ `
   type Query {
     authSetupAvailable: Boolean!
     me: User
-    memberProfile: User
     inboxWorkspace(input: InboxWorkspaceInput): InboxWorkspace!
     leadsWorkspace(input: LeadsWorkspaceInput): LeadsWorkspace!
-    adminNotifications: [AdminNotification!]!
-    pushSubscriptions: [PushSubscription!]!
     dashboardHome: DashboardHome!
     analyticsDashboard(range: AnalyticsRange!): AnalyticsDashboard!
     newsletterSubscribers(input: NewsletterSubscribersFilterInput): NewsletterSubscribersConnection!
@@ -16,7 +13,6 @@ export const typeDefs = /* GraphQL */ `
     register(input: RegisterInput!): AuthPayload!
     login(input: LoginInput!): AuthPayload!
     logout: Boolean!
-    updateMyProfile(input: UpdateProfileInput!): User!
     createContactMessage(input: CreateContactMessageInput!): InboxMessage!
     subscribeToNewsletter(input: SubscribeToNewsletterInput!): SubscribeToNewsletterPayload!
     updateInboxMessageStatus(input: UpdateInboxMessageStatusInput!): InboxMessage!
@@ -65,13 +61,6 @@ export const typeDefs = /* GraphQL */ `
     turnstileToken: String!
   }
 
-  input UpdateProfileInput {
-    displayName: String
-    bio: String
-    website: String
-    avatarUrl: String
-  }
-
   type InboxMessage {
     id: ID!
     source: InboxSource!
@@ -107,29 +96,6 @@ export const typeDefs = /* GraphQL */ `
     error: String
     createdAt: Float!
     sentAt: Float
-  }
-
-  type AdminNotification {
-    id: ID!
-    type: AdminNotificationType!
-    title: String!
-    body: String!
-    url: String!
-    entityType: String!
-    entityId: String!
-    readAt: Float
-    createdAt: Float!
-  }
-
-  type PushSubscription {
-    id: ID!
-    userId: ID!
-    endpoint: String!
-    userAgent: String
-    deviceLabel: String
-    createdAt: Float!
-    lastUsedAt: Float
-    disabledAt: Float
   }
 
   enum InboxSource {
@@ -216,11 +182,6 @@ export const typeDefs = /* GraphQL */ `
   type DeleteInboxMessagePayload {
     id: ID!
     deleted: Boolean!
-  }
-
-  enum AdminNotificationType {
-    NEW_INBOUND_EMAIL
-    NEW_CONTACT_MESSAGE
   }
 
   input CreateContactMessageInput {

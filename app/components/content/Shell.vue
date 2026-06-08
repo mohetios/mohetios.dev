@@ -64,7 +64,7 @@ withDefaults(
 
       <slot name="related" />
 
-      <ContentSubscribeCard v-if="kind" size="large" :kind="kind" />
+      <ContentSubscribe v-if="kind" size="large" :kind="kind" />
     </div>
   </UPageBody>
 </template>

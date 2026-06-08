@@ -555,7 +555,7 @@ onBeforeUnmount(() => {
       </UButton>
     </template>
 
-    <DashboardInboxThreadList
+    <DashboardInboxThreads
       :primary-tabs="primaryTabs"
       :secondary-tabs="secondaryTabs"
       :active-tab="activeTab"
@@ -611,7 +611,7 @@ onBeforeUnmount(() => {
       @delete-forever="requestDeleteForever"
     />
 
-    <DashboardInboxConfirmModal
+    <DashboardInboxConfirm
       v-model:open="isTrashConfirmOpen"
       :title="t('dashboard.inbox.confirmTrash.title')"
       :description="t('dashboard.inbox.confirmTrash.description')"
@@ -621,7 +621,7 @@ onBeforeUnmount(() => {
       @cancel="isTrashConfirmOpen = false"
     />
 
-    <DashboardInboxConfirmModal
+    <DashboardInboxConfirm
       v-model:open="isDeleteForeverConfirmOpen"
       :title="t('dashboard.inbox.confirmDeleteForever.title')"
       :description="t('dashboard.inbox.confirmDeleteForever.description')"
