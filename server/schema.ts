@@ -8,6 +8,7 @@ export const typeDefs = /* GraphQL */ `
     pushSubscriptions: [PushSubscription!]!
     dashboardHome: DashboardHome!
     analyticsDashboard(range: AnalyticsRange!): AnalyticsDashboard!
+    newsletterSubscribers(input: NewsletterSubscribersFilterInput): NewsletterSubscribersConnection!
   }
 
   type Mutation {
@@ -16,6 +17,7 @@ export const typeDefs = /* GraphQL */ `
     logout: Boolean!
     updateMyProfile(input: UpdateProfileInput!): User!
     createContactMessage(input: CreateContactMessageInput!): InboxMessage!
+    subscribeToNewsletter(input: SubscribeToNewsletterInput!): SubscribeToNewsletterPayload!
     updateInboxMessageStatus(input: UpdateInboxMessageStatusInput!): InboxMessage!
     updateInboxMessageKind(input: UpdateInboxMessageKindInput!): InboxMessage!
     replyToInboxMessage(input: ReplyToInboxMessageInput!): ReplyToInboxMessageResult!
@@ -486,6 +488,70 @@ export const typeDefs = /* GraphQL */ `
     edgeSummary: AnalyticsEdgeSummary!
     dataSourceLabel: String!
     dataSourceDescription: String!
+  }
+
+  enum NewsletterSubscriberStatus {
+    PENDING
+    SUBSCRIBED
+    UNSUBSCRIBED
+    BOUNCED
+    COMPLAINED
+  }
+
+  type NewsletterSubscriber {
+    id: ID!
+    email: String!
+    name: String
+    status: NewsletterSubscriberStatus!
+    source: String
+    locale: String
+    consentText: String!
+    consentVersion: String!
+    consentAt: Float!
+    confirmedAt: Float
+    unsubscribedAt: Float
+    lastEmailSentAt: Float
+    createdAt: Float!
+    updatedAt: Float!
+  }
+
+  input SubscribeToNewsletterInput {
+    email: String!
+    name: String
+    source: String
+    locale: String
+    turnstileToken: String!
+    consentAccepted: Boolean!
+    consentText: String!
+  }
+
+  type SubscribeToNewsletterPayload {
+    ok: Boolean!
+    status: NewsletterSubscriberStatus!
+    message: String!
+    subscriber: NewsletterSubscriber
+  }
+
+  input NewsletterSubscribersFilterInput {
+    status: NewsletterSubscriberStatus
+    search: String
+    limit: Int
+    offset: Int
+  }
+
+  type NewsletterSubscribersSummary {
+    total: Int!
+    subscribed: Int!
+    pending: Int!
+    unsubscribed: Int!
+  }
+
+  type NewsletterSubscribersConnection {
+    items: [NewsletterSubscriber!]!
+    total: Int!
+    limit: Int!
+    offset: Int!
+    summary: NewsletterSubscribersSummary!
   }
 `
 

@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core'
+import { index, integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core'
 
 export const users = sqliteTable('users', {
   id: text('id').primaryKey(),
@@ -117,3 +117,44 @@ export const pushSubscriptions = sqliteTable(
 
 export type PushSubscription = typeof pushSubscriptions.$inferSelect
 export type NewPushSubscription = typeof pushSubscriptions.$inferInsert
+
+export const newsletterSubscribers = sqliteTable(
+  'newsletter_subscribers',
+  {
+    id: text('id').primaryKey(),
+    email: text('email').notNull(),
+    normalizedEmail: text('normalized_email').notNull(),
+    name: text('name'),
+    status: text('status', {
+      enum: ['pending', 'subscribed', 'unsubscribed', 'bounced', 'complained']
+    })
+      .notNull()
+      .default('subscribed'),
+    source: text('source'),
+    locale: text('locale'),
+    tags: text('tags'),
+    consentText: text('consent_text').notNull(),
+    consentVersion: text('consent_version').notNull().default('newsletter-consent-v1'),
+    consentAt: integer('consent_at').notNull(),
+    confirmedAt: integer('confirmed_at'),
+    unsubscribedAt: integer('unsubscribed_at'),
+    lastEmailSentAt: integer('last_email_sent_at'),
+    lastOpenedAt: integer('last_opened_at'),
+    lastClickedAt: integer('last_clicked_at'),
+    unsubscribeTokenHash: text('unsubscribe_token_hash'),
+    ipHash: text('ip_hash'),
+    userAgentHash: text('user_agent_hash'),
+    turnstileVerifiedAt: integer('turnstile_verified_at'),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull()
+  },
+  (table) => [
+    uniqueIndex('newsletter_subscribers_email_idx').on(table.email),
+    uniqueIndex('newsletter_subscribers_normalized_email_idx').on(table.normalizedEmail),
+    index('newsletter_subscribers_status_idx').on(table.status),
+    index('newsletter_subscribers_created_at_idx').on(table.createdAt)
+  ]
+)
+
+export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect
+export type NewNewsletterSubscriber = typeof newsletterSubscribers.$inferInsert

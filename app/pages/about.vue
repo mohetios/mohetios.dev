@@ -24,6 +24,10 @@ useMohetSeo({
       <article class="mx-auto max-w-3xl">
         <ContentHtml :html="page.content" class="prose-mohetios" />
       </article>
+
+      <section class="mx-auto mt-10 max-w-3xl">
+        <NewsletterSubscribeBlock source="about" />
+      </section>
     </UPageBody>
   </UPage>
 </template>

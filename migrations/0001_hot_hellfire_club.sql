@@ -1,1 +1,0 @@
-ALTER TABLE `inbox_messages` ADD `trashed_at` integer;

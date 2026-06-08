@@ -63,6 +63,13 @@ type InboxMessageRow = {
   subject: string
 }
 
+type NewsletterSubscriberRow = {
+  id: string
+  email: string
+  status: string
+  last_email_sent_at: number | null
+}
+
 type UnreadInboxReminderRow = {
   id: string
   sender_name: string
@@ -279,6 +286,7 @@ async function sendEmail(
     toEmail: string
     subject: string
     text: string
+    html?: string
   }
 ) {
   const fromEmail = input.fromEmail.trim()
@@ -302,10 +310,22 @@ async function sendEmail(
   msg.setRecipient(toEmail)
   msg.setSubject(input.subject || 'No subject')
 
-  msg.addMessage({
-    contentType: 'text/plain',
-    data: input.text
-  })
+  if (input.html) {
+    msg.addMessage({
+      contentType: 'text/plain',
+      data: input.text
+    })
+
+    msg.addMessage({
+      contentType: 'text/html',
+      data: input.html
+    })
+  } else {
+    msg.addMessage({
+      contentType: 'text/plain',
+      data: input.text
+    })
+  }
 
   const email = new EmailMessage(fromEmail, toEmail, msg.asRaw())
 
@@ -409,6 +429,85 @@ async function handleEmailDelivery(job: EmailDeliveryJob, env: Env) {
   }
 }
 
+function getNewsletterWelcomeEmailContent() {
+  const text = `Thanks for subscribing to Mohetios.dev.
+
+You'll receive occasional notes about product engineering, Cloudflare-native systems, AI workflows, open-source experiments, and technical writing.
+
+No spam. You can unsubscribe anytime.
+
+— Ali
+Mohetios.dev`
+
+  const html = `<p>Thanks for subscribing to <strong>Mohetios.dev</strong>.</p>
+
+<p>
+You'll receive occasional notes about product engineering,
+Cloudflare-native systems, AI workflows, open-source experiments,
+and technical writing.
+</p>
+
+<p>No spam. You can unsubscribe anytime.</p>
+
+<p>— Ali<br />Mohetios.dev</p>`
+
+  return { text, html }
+}
+
+async function handleNewsletterWelcome(job: Extract<EmailDeliveryJob, { type: 'SEND_NEWSLETTER_WELCOME' }>, env: Env) {
+  const subscriber = await env.DB.prepare(
+    `SELECT id, email, status, last_email_sent_at
+     FROM newsletter_subscribers
+     WHERE id = ?`
+  )
+    .bind(job.subscriberId)
+    .first<NewsletterSubscriberRow>()
+
+  if (!subscriber) {
+    console.warn('Newsletter subscriber not found', job)
+    return
+  }
+
+  if (subscriber.status !== 'subscribed') {
+    return
+  }
+
+  if (subscriber.last_email_sent_at) {
+    return
+  }
+
+  const { text, html } = getNewsletterWelcomeEmailContent()
+
+  try {
+    await sendEmail(env, {
+      fromEmail: getMailFrom(env),
+      fromName: getMailFromName(env),
+      toEmail: subscriber.email,
+      subject: 'Welcome to Mohetios.dev',
+      text,
+      html
+    })
+
+    const now = Date.now()
+
+    await env.DB.prepare(
+      `UPDATE newsletter_subscribers
+       SET last_email_sent_at = ?,
+           updated_at = ?
+       WHERE id = ?`
+    )
+      .bind(now, now, subscriber.id)
+      .run()
+  } catch (error) {
+    console.error('Newsletter welcome email failed', {
+      subscriberId: subscriber.id,
+      error
+    })
+
+    throw error
+  }
+}
+
 async function handleJob(job: WorkerJob, env: Env) {
   if (job.type === 'NEW_CONTACT_MESSAGE' || job.type === 'NEW_INBOUND_EMAIL') {
     await handleAdminNotification(job, env)
@@ -417,6 +516,11 @@ async function handleJob(job: WorkerJob, env: Env) {
 
   if (job.type === 'SEND_INBOX_REPLY') {
     await handleEmailDelivery(job, env)
+    return
+  }
+
+  if (job.type === 'SEND_NEWSLETTER_WELCOME') {
+    await handleNewsletterWelcome(job, env)
   }
 }
 

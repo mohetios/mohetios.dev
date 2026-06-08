@@ -9,7 +9,24 @@ const localePath = useLocalePath()
 </script>
 
 <template>
+  <NewsletterSubscribeBlock
+    v-if="kind === 'blog'"
+    :compact="size === 'compact'"
+    source="blog_post"
+    :title="t('content.subscribe.blog.title')"
+    :description="t('content.subscribe.blog.description')"
+  />
+
+  <NewsletterSubscribeBlock
+    v-else-if="kind === 'lab'"
+    :compact="size === 'compact'"
+    source="lab_post"
+    :title="t('content.subscribe.lab.title')"
+    :description="t('content.subscribe.lab.description')"
+  />
+
   <UCard
+    v-else
     :variant="size === 'compact' ? 'subtle' : 'outline'"
     :class="size === 'large' ? 'p-1' : ''"
   >
@@ -22,31 +39,16 @@ const localePath = useLocalePath()
               : 'text-ui-sm font-medium text-highlighted'
           "
         >
-          {{ t(`content.subscribe.${kind}.title`) }}
+          {{ t('content.subscribe.project.title') }}
         </p>
         <p class="mt-2 text-ui-sm leading-6 text-muted">
-          {{ t(`content.subscribe.${kind}.description`) }}
+          {{ t('content.subscribe.project.description') }}
         </p>
       </div>
 
-      <template v-if="kind === 'project'">
-        <UButton :to="localePath('/contact')" color="primary" variant="soft" icon="i-lucide-mail">
-          {{ t('content.subscribe.project.action') }}
-        </UButton>
-      </template>
-
-      <template v-else>
-        <UInput
-          type="email"
-          :placeholder="t(`content.subscribe.${kind}.placeholder`)"
-          disabled
-          class="w-full"
-          size="md"
-        />
-        <p class="text-ui-xs text-muted">
-          {{ t(`content.subscribe.${kind}.comingSoon`) }}
-        </p>
-      </template>
+      <UButton :to="localePath('/contact')" color="primary" variant="soft" icon="i-lucide-mail">
+        {{ t('content.subscribe.project.action') }}
+      </UButton>
     </div>
   </UCard>
 </template>

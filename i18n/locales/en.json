@@ -101,6 +101,7 @@
       "overview": "Overview",
       "inbox": "Inbox",
       "leads": "Leads",
+      "newsletter": "Newsletter",
       "content": "Content",
       "analytics": "Analytics",
       "system": "System",
@@ -497,6 +498,37 @@
         "loadFailed": "Leads could not be loaded.",
         "updateFailed": "Lead could not be updated."
       }
+    },
+    "newsletter": {
+      "title": "Newsletter",
+      "description": "People who subscribed to Mohetios.dev updates.",
+      "refresh": "Refresh",
+      "searchPlaceholder": "Search by email or name",
+      "statusFilter": "Status",
+      "allStatuses": "All statuses",
+      "empty": "No subscribers yet.",
+      "loadFailed": "Subscribers could not be loaded.",
+      "summary": {
+        "total": "Total subscribers",
+        "subscribed": "Subscribed",
+        "pending": "Pending",
+        "unsubscribed": "Unsubscribed"
+      },
+      "table": {
+        "email": "Email",
+        "name": "Name",
+        "status": "Status",
+        "source": "Source",
+        "locale": "Locale",
+        "subscribedAt": "Subscribed"
+      },
+      "status": {
+        "pending": "Pending",
+        "subscribed": "Subscribed",
+        "unsubscribed": "Unsubscribed",
+        "bounced": "Bounced",
+        "complained": "Complained"
+      }
     }
   },
   "push": {
@@ -616,14 +648,12 @@
       "blog": {
         "title": "Follow the notebook",
         "description": "Occasional notes on product engineering, systems, and building in public.",
-        "placeholder": "Email address",
-        "comingSoon": "Newsletter system is coming soon."
+        "placeholder": "Email address"
       },
       "lab": {
         "title": "Follow lab notes",
         "description": "Short updates from experiments, prototypes, and technical research.",
-        "placeholder": "Email address",
-        "comingSoon": "Newsletter system is coming soon."
+        "placeholder": "Email address"
       },
       "project": {
         "title": "Interested in this work?",
@@ -723,6 +753,23 @@
     "cta": {
       "title": "Follow the work as it takes shape.",
       "description": "Read the notes, inspect the projects, and trace the decisions behind the systems."
+    }
+  },
+  "newsletter": {
+    "title": "Subscribe to the newsletter",
+    "description": "Occasional notes about product engineering, Cloudflare-native systems, AI workflows, and open-source experiments.",
+    "emailLabel": "Email address",
+    "consent": "I agree to receive occasional emails from Mohetios.dev. I can unsubscribe anytime.",
+    "submit": "Subscribe",
+    "submitting": "Subscribing...",
+    "success": "Thanks — you're subscribed.",
+    "pending": "Please check your inbox to confirm your subscription.",
+    "alreadySubscribed": "You're already on the list.",
+    "error": "Subscription failed. Please try again.",
+    "privacyNote": "No spam. Just occasional technical notes.",
+    "validation": {
+      "email": "Please enter a valid email address.",
+      "turnstile": "Please complete the verification check."
     }
   },
   "contact": {

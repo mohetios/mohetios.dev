@@ -24,6 +24,11 @@ const navItems = computed<DashboardNavItem[]>(() => [
     icon: 'i-lucide-users',
     to: '/dashboard/leads'
   },
+  {
+    label: t('dashboard.nav.newsletter'),
+    icon: 'i-lucide-mail-plus',
+    to: '/dashboard/newsletter'
+  },
   // {
   //   label: t('dashboard.nav.content'),
   //   icon: 'i-lucide-file-text',

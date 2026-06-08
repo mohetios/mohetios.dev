@@ -1,0 +1,12 @@
+mutation SubscribeToNewsletter($input: SubscribeToNewsletterInput!) {
+  subscribeToNewsletter(input: $input) {
+    ok
+    status
+    message
+    subscriber {
+      id
+      email
+      status
+    }
+  }
+}

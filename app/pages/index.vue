@@ -370,5 +370,11 @@ function formatDate(date?: string | Date) {
         </div>
       </div>
     </section>
+
+    <section class="px-4 pb-16 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-6xl">
+        <NewsletterSubscribeBlock source="home" />
+      </div>
+    </section>
   </div>
 </template>

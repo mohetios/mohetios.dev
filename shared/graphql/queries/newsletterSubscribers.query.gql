@@ -1,0 +1,26 @@
+query NewsletterSubscribers($input: NewsletterSubscribersFilterInput) {
+  newsletterSubscribers(input: $input) {
+    total
+    limit
+    offset
+    summary {
+      total
+      subscribed
+      pending
+      unsubscribed
+    }
+    items {
+      id
+      email
+      name
+      status
+      source
+      locale
+      consentAt
+      confirmedAt
+      unsubscribedAt
+      createdAt
+      updatedAt
+    }
+  }
+}

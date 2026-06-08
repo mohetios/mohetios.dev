@@ -28,7 +28,13 @@ CREATE TABLE `inbox_messages` (
 	`thread_key` text NOT NULL,
 	`created_at` integer NOT NULL,
 	`updated_at` integer NOT NULL,
-	`last_activity_at` integer NOT NULL
+	`last_activity_at` integer NOT NULL,
+	`trashed_at` integer,
+	`lead_status` text,
+	`lead_priority` text,
+	`lead_next_follow_up_at` integer,
+	`lead_notes` text,
+	`lead_estimated_value` integer
 );
 --> statement-breakpoint
 CREATE TABLE `inbox_replies` (
@@ -46,6 +52,35 @@ CREATE TABLE `inbox_replies` (
 	FOREIGN KEY (`inbox_message_id`) REFERENCES `inbox_messages`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
+CREATE TABLE `newsletter_subscribers` (
+	`id` text PRIMARY KEY NOT NULL,
+	`email` text NOT NULL,
+	`normalized_email` text NOT NULL,
+	`name` text,
+	`status` text DEFAULT 'subscribed' NOT NULL,
+	`source` text,
+	`locale` text,
+	`tags` text,
+	`consent_text` text NOT NULL,
+	`consent_version` text DEFAULT 'newsletter-consent-v1' NOT NULL,
+	`consent_at` integer NOT NULL,
+	`confirmed_at` integer,
+	`unsubscribed_at` integer,
+	`last_email_sent_at` integer,
+	`last_opened_at` integer,
+	`last_clicked_at` integer,
+	`unsubscribe_token_hash` text,
+	`ip_hash` text,
+	`user_agent_hash` text,
+	`turnstile_verified_at` integer,
+	`created_at` integer NOT NULL,
+	`updated_at` integer NOT NULL
+);
+--> statement-breakpoint
+CREATE UNIQUE INDEX `newsletter_subscribers_email_idx` ON `newsletter_subscribers` (`email`);--> statement-breakpoint
+CREATE UNIQUE INDEX `newsletter_subscribers_normalized_email_idx` ON `newsletter_subscribers` (`normalized_email`);--> statement-breakpoint
+CREATE INDEX `newsletter_subscribers_status_idx` ON `newsletter_subscribers` (`status`);--> statement-breakpoint
+CREATE INDEX `newsletter_subscribers_created_at_idx` ON `newsletter_subscribers` (`created_at`);--> statement-breakpoint
 CREATE TABLE `push_subscriptions` (
 	`id` text PRIMARY KEY NOT NULL,
 	`user_id` text NOT NULL,

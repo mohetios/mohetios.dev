@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1780475264818,
-      "tag": "0000_narrow_enchantress",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1780860371103,
-      "tag": "0001_hot_hellfire_club",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1780863245441,
-      "tag": "0002_wakeful_doctor_strange",
+      "when": 1780933097186,
+      "tag": "0000_broken_carmella_unuscione",
       "breakpoints": true
     }
   ]

@@ -4,6 +4,7 @@ export type Permission =
   | 'dashboard:view'
   | 'leads:manage'
   | 'inbox:manage'
+  | 'newsletter:manage'
   | 'comments:create'
   | 'comments:moderate'
   | 'chat:access'
@@ -15,6 +16,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     'dashboard:view',
     'leads:manage',
     'inbox:manage',
+    'newsletter:manage',
     'comments:create',
     'comments:moderate',
     'chat:access',
