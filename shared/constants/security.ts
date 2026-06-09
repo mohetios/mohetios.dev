@@ -6,6 +6,13 @@ export type RateLimitRule = {
 /** Matches nuxt-security `requestSizeLimiter.maxRequestSizeInBytes`. */
 export const REQUEST_SIZE_LIMIT_BYTES = 200_000
 
+/** CSP origins for Cloudflare-injected scripts (Turnstile, Web Analytics beacon). */
+export const CLOUDFLARE_CSP_ORIGINS = {
+  turnstile: 'https://challenges.cloudflare.com',
+  webAnalyticsScript: 'https://static.cloudflareinsights.com',
+  webAnalyticsConnect: 'https://cloudflareinsights.com'
+} as const
+
 /**
  * Coarse per-IP limit for `/graph` and `/api/**` via nuxt-security.
  * Site-wide rateLimiter stays off so static/prerendered pages are unaffected.

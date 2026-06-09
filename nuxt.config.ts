@@ -4,7 +4,11 @@ import {
   getPrerenderContentRoutes,
   supportedLocales
 } from './app/utils/content'
-import { API_GRAPH_RATE_LIMITER, REQUEST_SIZE_LIMIT_BYTES } from './shared/constants/security'
+import {
+  API_GRAPH_RATE_LIMITER,
+  CLOUDFLARE_CSP_ORIGINS,
+  REQUEST_SIZE_LIMIT_BYTES
+} from './shared/constants/security'
 
 const isDev = process.env.NODE_ENV !== 'production'
 const isProduction = process.env.NODE_ENV === 'production'
@@ -89,17 +93,19 @@ const contentSecurityPolicy = {
   'script-src': [
     "'self'",
     "'unsafe-inline'",
-    'https://challenges.cloudflare.com',
+    CLOUDFLARE_CSP_ORIGINS.turnstile,
+    CLOUDFLARE_CSP_ORIGINS.webAnalyticsScript,
     ...(isDev ? ["'unsafe-eval'"] : [])
   ],
   'script-src-attr': ["'none'"],
   'style-src': ["'self'", "'unsafe-inline'"],
   'connect-src': [
     "'self'",
-    'https://challenges.cloudflare.com',
+    CLOUDFLARE_CSP_ORIGINS.turnstile,
+    CLOUDFLARE_CSP_ORIGINS.webAnalyticsConnect,
     ...(isDev ? ['ws:', 'wss:'] : [])
   ],
-  'frame-src': ['https://challenges.cloudflare.com'],
+  'frame-src': [CLOUDFLARE_CSP_ORIGINS.turnstile],
   'worker-src': ["'self'", 'blob:'],
   'manifest-src': ["'self'"]
 }
