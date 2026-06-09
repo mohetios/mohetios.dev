@@ -23,41 +23,38 @@ const { t } = useI18n()
 
 const hasSurround = computed(() => props.surround?.some(Boolean) ?? false)
 const hasRelated = computed(() => Boolean(props.relatedPosts?.length))
-const hasPostReading = computed(() => hasSurround.value || hasRelated.value)
 </script>
 
 <template>
-  <footer class="border-t border-default bg-default">
-    <div class="mohetios-editorial-column min-w-0 space-y-6 py-8">
-      <section
-        v-if="hasPostReading"
-        class="space-y-4"
-        :aria-label="t('content.article.continueReading')"
-      >
-        <ContentSurround v-if="hasSurround" :surround="surround || []" />
+  <footer class="mohetios-site-column min-w-0">
+    <div class="space-y-10">
+      <section v-if="hasSurround" class="space-y-4">
+        <p class="mohetios-article-section-label">
+          {{ t('content.article.continueReading') }}
+        </p>
+        <ContentSurround :surround="surround || []" />
+      </section>
 
-        <div v-if="hasRelated" :class="{ 'border-t border-default pt-4': hasSurround }">
-          <p class="mohetios-article-section-label mb-3">
-            {{ t('content.article.relatedPosts') }}
-          </p>
-          <div class="grid gap-3 sm:grid-cols-2">
-            <ContentList
-              v-for="related in relatedPosts"
-              :key="related.id || related.path"
-              :title="related.title"
-              :description="related.description"
-              :to="related.path"
-              :date="related.date"
-              :updated="related.updated"
-              :badge="t('badges.blog')"
-              compact
-            />
-          </div>
+      <section v-if="hasRelated" class="space-y-4">
+        <p class="mohetios-article-section-label">
+          {{ t('content.article.relatedPosts') }}
+        </p>
+        <div class="mohetios-content-footer-list">
+          <ContentList
+            v-for="related in relatedPosts"
+            :key="related.id || related.path"
+            plain
+            :title="related.title"
+            :description="related.description"
+            :to="related.path"
+            :date="related.date"
+            :updated="related.updated"
+          />
         </div>
       </section>
 
-      <section class="border-t border-default pt-6">
-        <ContentSubscribe size="compact" kind="blog" />
+      <section>
+        <ContentSubscribe kind="blog" plain />
       </section>
     </div>
   </footer>

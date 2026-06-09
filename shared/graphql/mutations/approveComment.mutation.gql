@@ -1,0 +1,8 @@
+mutation ApproveComment($id: ID!) {
+  approveComment(id: $id) {
+    id
+    status
+    approvedAt
+    updatedAt
+  }
+}

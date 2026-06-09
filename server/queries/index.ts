@@ -6,12 +6,15 @@ import { inboxWorkspaceQueries } from './inbox-workspace'
 import { leadsWorkspaceQueries } from './lead-workspace'
 import { me } from './me'
 import { newsletterSubscribersQuery } from './newsletter-subscribers'
+import { adminComments, publicComments } from './public-comments'
 export const Query = {
   authSetupAvailable,
   me,
   dashboardHome,
   analyticsDashboard,
   newsletterSubscribers: newsletterSubscribersQuery,
+  publicComments,
+  adminComments,
   ...inboxWorkspaceQueries,
   ...leadsWorkspaceQueries
 }

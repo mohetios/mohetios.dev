@@ -7,6 +7,14 @@ export const typeDefs = /* GraphQL */ `
     dashboardHome(range: AnalyticsRange = LAST_7_DAYS): DashboardHome!
     analyticsDashboard(range: AnalyticsRange!): AnalyticsDashboard!
     newsletterSubscribers(input: NewsletterSubscribersFilterInput): NewsletterSubscribersConnection!
+    publicComments(targetType: CommentTargetType!, targetPath: String!): [PublicComment!]!
+    adminComments(
+      status: CommentStatus
+      targetPath: String
+      search: String
+      limit: Int
+      offset: Int
+    ): AdminCommentConnection!
   }
 
   type Mutation {
@@ -25,6 +33,11 @@ export const typeDefs = /* GraphQL */ `
     updateLeadPriority(id: ID!, priority: LeadPriority): LeadItem!
     updateLeadFollowUp(id: ID!, nextFollowUpAt: String): LeadItem!
     updateLeadNotes(id: ID!, notes: String): LeadItem!
+    createComment(input: CreateCommentInput!): CreateCommentPayload!
+    approveComment(id: ID!): AdminComment!
+    markCommentSpam(id: ID!, reason: String): AdminComment!
+    deleteComment(id: ID!): AdminComment!
+    updateComment(id: ID!, body: String!): AdminComment!
   }
 
   type User {
@@ -517,6 +530,87 @@ export const typeDefs = /* GraphQL */ `
     limit: Int!
     offset: Int!
     summary: NewsletterSubscribersSummary!
+  }
+
+  enum CommentTargetType {
+    BLOG_POST
+  }
+
+  enum CommentStatus {
+    PENDING
+    APPROVED
+    SPAM
+    DELETED
+  }
+
+  type PublicComment {
+    id: ID!
+    targetPath: String!
+    parentId: ID
+    depth: Int!
+    authorName: String!
+    body: String!
+    createdAt: Float!
+    replies: [PublicComment!]!
+  }
+
+  type AdminComment {
+    id: ID!
+    targetType: CommentTargetType!
+    targetPath: String!
+    targetTitle: String!
+    parentId: ID
+    depth: Int!
+    authorName: String!
+    authorEmail: String!
+    body: String!
+    bodyOriginal: String!
+    status: CommentStatus!
+    statusReason: String
+    approvedAt: Float
+    approvedBy: ID
+    spammedAt: Float
+    spammedBy: ID
+    deletedAt: Float
+    deletedBy: ID
+    editedAt: Float
+    editedBy: ID
+    createdAt: Float!
+    updatedAt: Float!
+    preview: String!
+    parentPreview: String
+  }
+
+  type AdminCommentSummary {
+    pending: Int!
+    approved: Int!
+    spam: Int!
+    deleted: Int!
+  }
+
+  type AdminCommentConnection {
+    items: [AdminComment!]!
+    total: Int!
+    limit: Int!
+    offset: Int!
+    summary: AdminCommentSummary!
+  }
+
+  input CreateCommentInput {
+    targetType: CommentTargetType!
+    targetPath: String!
+    targetTitle: String!
+    parentId: ID
+    authorName: String!
+    authorEmail: String!
+    body: String!
+    turnstileToken: String!
+  }
+
+  type CreateCommentPayload {
+    ok: Boolean!
+    message: String!
+    commentId: ID!
   }
 `
 

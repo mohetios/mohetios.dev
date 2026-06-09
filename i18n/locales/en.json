@@ -109,6 +109,7 @@
         "inbox": "Messages and conversations",
         "leads": "Inbound leads and follow-ups",
         "newsletter": "Subscribers and list health",
+        "comments": "Moderate article comments",
         "analytics": "Traffic, content, and search data",
         "backToSite": "Leave the dashboard"
       }
@@ -522,6 +523,59 @@
         "bounced": "Bounced",
         "complained": "Complained"
       }
+    },
+    "comments": {
+      "title": "Comments",
+      "description": "Moderate article comments before they appear publicly.",
+      "refresh": "Refresh",
+      "searchPlaceholder": "Search by author, email, body, or post",
+      "statusFilter": "Status",
+      "allStatuses": "All statuses",
+      "empty": "No comments yet.",
+      "loadFailed": "Comments could not be loaded.",
+      "detailTitle": "Comment detail",
+      "parentContext": "Reply to",
+      "detail": {
+        "emptyTitle": "Select a comment",
+        "emptyDescription": "Choose a row from the table to review and moderate it.",
+        "editBody": "Comment body",
+        "updatedAt": "Updated",
+        "statusReason": "Moderation reason"
+      },
+      "summary": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "spam": "Spam",
+        "deleted": "Deleted"
+      },
+      "table": {
+        "createdAt": "Created",
+        "author": "Author",
+        "post": "Post",
+        "preview": "Comment",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "spam": "Spam",
+        "deleted": "Deleted"
+      },
+      "actions": {
+        "approve": "Approve",
+        "spam": "Mark spam",
+        "delete": "Delete",
+        "save": "Save edit",
+        "open": "View"
+      },
+      "mutations": {
+        "approveSuccess": "Comment approved.",
+        "spamSuccess": "Comment marked as spam.",
+        "deleteSuccess": "Comment deleted.",
+        "updateSuccess": "Comment updated.",
+        "failed": "Action failed. Please try again."
+      }
     }
   },
   "push": {
@@ -663,6 +717,8 @@
     "article": {
       "coreIdea": "Core idea",
       "continueReading": "Continue reading",
+      "previous": "Previous",
+      "next": "Next",
       "relatedPosts": "Related notes",
       "updated": "Updated",
       "by": "By",
@@ -765,6 +821,41 @@
       "turnstile": "Please complete the verification check."
     }
   },
+  "comments": {
+    "title": "Discussion",
+    "moderationNote": "Thoughtful comments, corrections, and questions are welcome. Comments are reviewed before publishing.",
+    "nameLabel": "Name",
+    "namePlaceholder": "Your name",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you{'@'}example.com",
+    "commentLabel": "Comment",
+    "commentPlaceholder": "Write a comment…",
+    "replyLabel": "Reply",
+    "replyPlaceholder": "Write your reply…",
+    "publishedComments": "Published comments",
+    "commentCount": "{count} comments",
+    "replyAction": "Reply",
+    "cancelReply": "Cancel reply",
+    "submit": "Submit comment",
+    "submitReply": "Submit reply",
+    "submitting": "Submitting…",
+    "success": "Thanks — your comment is waiting for review.",
+    "error": "Your comment could not be submitted. Please try again.",
+    "empty": "No comments yet. Start the discussion.",
+    "loadFailed": "Comments could not be loaded.",
+    "privacyNote": "Your email is used only for moderation updates. It is not shown publicly.",
+    "validation": {
+      "name": "Please enter your name.",
+      "nameMax": "Name must be 80 characters or less.",
+      "email": "Please enter a valid email address.",
+      "emailMax": "Email must be 254 characters or less.",
+      "comment": "Please write a little more.",
+      "commentMax": "Comment must be 4000 characters or less.",
+      "htmlNotAllowed": "HTML is not allowed in comments.",
+      "maxLinks": "Comments may include at most 2 links.",
+      "turnstile": "Please complete the verification check."
+    }
+  },
   "contact": {
     "topics": {
       "project": "Project / freelance work",
@@ -783,7 +874,7 @@
       "name": "Name",
       "namePlaceholder": "Your name",
       "email": "Email",
-      "emailPlaceholder": "you[at]example.com",
+      "emailPlaceholder": "you{'@'}example.com",
       "topic": "Topic",
       "topicPlaceholder": "Choose the closest topic",
       "company": "Company",
@@ -816,7 +907,7 @@
     "channels": {
       "email": {
         "title": "Email",
-        "description": "hi[at]mohetios.dev"
+        "description": "hi{'@'}mohetios.dev"
       },
       "work": {
         "title": "Best fit",

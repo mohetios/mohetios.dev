@@ -1,0 +1,20 @@
+query PublicComments($targetType: CommentTargetType!, $targetPath: String!) {
+  publicComments(targetType: $targetType, targetPath: $targetPath) {
+    id
+    targetPath
+    parentId
+    depth
+    authorName
+    body
+    createdAt
+    replies {
+      id
+      targetPath
+      parentId
+      depth
+      authorName
+      body
+      createdAt
+    }
+  }
+}

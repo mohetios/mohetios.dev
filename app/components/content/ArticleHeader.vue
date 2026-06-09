@@ -40,7 +40,7 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
 </script>
 
 <template>
-  <header class="border-b border-default bg-default">
+  <header class="bg-default">
     <div class="mohetios-editorial-header pb-10 pt-8">
       <div
         v-if="backTo || showCopyLink"

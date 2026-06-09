@@ -55,6 +55,11 @@ const PRESETS: Record<string, DashboardToolbarPreset> = {
     showRange: false,
     refreshLabelKey: 'dashboard.newsletter.refresh',
     actions: []
+  },
+  '/dashboard/comments': {
+    showRange: false,
+    refreshLabelKey: 'dashboard.comments.refresh',
+    actions: []
   }
 }
 

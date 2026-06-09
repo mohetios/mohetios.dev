@@ -86,6 +86,16 @@ useMohetSeo({
       :summary="post.summary"
     />
 
-    <ContentArticleFooter :surround="surround" :related-posts="relatedPosts" />
+    <div class="mohetios-article-tail">
+      <ClientOnly>
+        <CommentsBlock
+          target-type="BLOG_POST"
+          :target-path="path"
+          :target-title="post.title"
+        />
+      </ClientOnly>
+
+      <ContentArticleFooter :surround="surround" :related-posts="relatedPosts" />
+    </div>
   </UPage>
 </template>

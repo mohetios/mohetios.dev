@@ -1,0 +1,9 @@
+mutation MarkCommentSpam($id: ID!, $reason: String) {
+  markCommentSpam(id: $id, reason: $reason) {
+    id
+    status
+    statusReason
+    spammedAt
+    updatedAt
+  }
+}

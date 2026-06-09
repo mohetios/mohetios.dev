@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineProps<{
   kind: 'blog' | 'lab' | 'project'
-  size: 'compact' | 'large'
+  plain?: boolean
 }>()
 
 const { t } = useI18n()
@@ -11,7 +11,8 @@ const localePath = useLocalePath()
 <template>
   <NewsletterSubscribe
     v-if="kind === 'blog'"
-    :compact="size === 'compact'"
+    compact
+    :plain="plain"
     source="blog_post"
     :title="t('content.subscribe.blog.title')"
     :description="t('content.subscribe.blog.description')"
@@ -19,26 +20,17 @@ const localePath = useLocalePath()
 
   <NewsletterSubscribe
     v-else-if="kind === 'lab'"
-    :compact="size === 'compact'"
+    compact
+    :plain="plain"
     source="lab_post"
     :title="t('content.subscribe.lab.title')"
     :description="t('content.subscribe.lab.description')"
   />
 
-  <UCard
-    v-else
-    :variant="size === 'compact' ? 'subtle' : 'outline'"
-    :class="size === 'large' ? 'p-1' : ''"
-  >
-    <div :class="size === 'large' ? 'space-y-4 p-4 sm:p-6' : 'space-y-3'">
+  <UCard v-else variant="subtle">
+    <div class="space-y-3">
       <div>
-        <p
-          :class="
-            size === 'large'
-              ? 'text-ui-lg font-semibold tracking-tight text-highlighted'
-              : 'text-ui-sm font-medium text-highlighted'
-          "
-        >
+        <p class="text-ui-sm font-medium text-highlighted">
           {{ t('content.subscribe.project.title') }}
         </p>
         <p class="mt-2 text-ui-sm leading-6 text-muted">

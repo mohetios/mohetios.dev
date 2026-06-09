@@ -65,26 +65,18 @@ useMohetSeo({
       :back-label="t('content.actions.backToProjects')"
     >
       <template #related>
-        <section v-if="relatedProjects.length" class="border-t border-default pt-8">
-          <h2 class="mb-4 text-ui-lg font-semibold tracking-tight text-highlighted">
+        <section v-if="relatedProjects.length" class="space-y-4">
+          <p class="mohetios-article-section-label">
             {{ t('content.related') }}
-          </h2>
-          <div class="grid gap-4 sm:grid-cols-2">
-            <ProjectsCard
+          </p>
+          <div class="mohetios-content-footer-list">
+            <ContentList
               v-for="related in relatedProjects"
               :key="related.id"
+              plain
               :title="related.title"
               :description="related.description"
               :to="related.path"
-              :date="related.date"
-              :updated="related.updated"
-              :status="related.status"
-              :tags="related.tags"
-              :thumbnail="related.thumbnail"
-              :repo="related.repo"
-              :website="related.website"
-              :action-label="t('content.actions.openProject')"
-              hide-media
             />
           </div>
         </section>

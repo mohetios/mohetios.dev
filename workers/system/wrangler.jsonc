@@ -27,7 +27,7 @@
     ]
   },
   "triggers": {
-    "crons": ["*/30 * * * *"]
+    "crons": ["0 */12 * * *"]
   },
   "send_email": [
     {

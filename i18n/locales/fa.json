@@ -109,6 +109,7 @@
         "inbox": "پیام‌ها و گفتگوها",
         "leads": "سرنخ‌های ورودی و پیگیری‌ها",
         "newsletter": "مشترکان و سلامت فهرست",
+        "comments": "بررسی نظرات مقاله",
         "analytics": "ترافیک، محتوا و داده جستجو",
         "backToSite": "خروج از داشبورد"
       }
@@ -522,6 +523,59 @@
         "bounced": "برگشتی",
         "complained": "شکایت"
       }
+    },
+    "comments": {
+      "title": "نظرات",
+      "description": "نظرات مقاله را قبل از انتشار عمومی بررسی کن.",
+      "refresh": "به‌روزرسانی",
+      "searchPlaceholder": "جستجو با نویسنده، ایمیل، متن یا مقاله",
+      "statusFilter": "وضعیت",
+      "allStatuses": "همه وضعیت‌ها",
+      "empty": "هنوز نظری ثبت نشده.",
+      "loadFailed": "بارگذاری نظرات ممکن نشد.",
+      "detailTitle": "جزئیات نظر",
+      "parentContext": "پاسخ به",
+      "detail": {
+        "emptyTitle": "یک نظر انتخاب کن",
+        "emptyDescription": "برای بررسی و مدیریت، یک ردیف از جدول را انتخاب کن.",
+        "editBody": "متن نظر",
+        "updatedAt": "به‌روزرسانی",
+        "statusReason": "دلیل بررسی"
+      },
+      "summary": {
+        "pending": "در انتظار",
+        "approved": "تأیید شده",
+        "spam": "اسپم",
+        "deleted": "حذف شده"
+      },
+      "table": {
+        "createdAt": "تاریخ",
+        "author": "نویسنده",
+        "post": "مقاله",
+        "preview": "نظر",
+        "status": "وضعیت",
+        "actions": "عملیات"
+      },
+      "status": {
+        "pending": "در انتظار",
+        "approved": "تأیید شده",
+        "spam": "اسپم",
+        "deleted": "حذف شده"
+      },
+      "actions": {
+        "approve": "تأیید",
+        "spam": "علامت اسپم",
+        "delete": "حذف",
+        "save": "ذخیره ویرایش",
+        "open": "مشاهده"
+      },
+      "mutations": {
+        "approveSuccess": "نظر تأیید شد.",
+        "spamSuccess": "نظر به‌عنوان اسپم علامت‌گذاری شد.",
+        "deleteSuccess": "نظر حذف شد.",
+        "updateSuccess": "نظر به‌روزرسانی شد.",
+        "failed": "عملیات انجام نشد. دوباره امتحان کن."
+      }
     }
   },
   "push": {
@@ -664,6 +718,8 @@
     "article": {
       "coreIdea": "ایده اصلی",
       "continueReading": "ادامه مطالعه",
+      "previous": "قبلی",
+      "next": "بعدی",
       "relatedPosts": "یادداشت‌های مرتبط",
       "updated": "به‌روزرسانی",
       "by": "نویسنده",
@@ -766,6 +822,41 @@
       "turnstile": "لطفاً تأیید امنیتی را کامل کن."
     }
   },
+  "comments": {
+    "title": "بحث",
+    "moderationNote": "نظرات فکرشده، اصلاحات و پرسش‌ها خوش‌آمدند. نظرات قبل از انتشار بررسی می‌شوند.",
+    "nameLabel": "نام",
+    "namePlaceholder": "نام شما",
+    "emailLabel": "ایمیل",
+    "emailPlaceholder": "you{'@'}example.com",
+    "commentLabel": "نظر",
+    "commentPlaceholder": "نظر خود را بنویس…",
+    "replyLabel": "پاسخ",
+    "replyPlaceholder": "پاسخ خود را بنویس…",
+    "publishedComments": "نظرات منتشر شده",
+    "commentCount": "{count} نظر",
+    "replyAction": "پاسخ",
+    "cancelReply": "لغو پاسخ",
+    "submit": "ارسال نظر",
+    "submitReply": "ارسال پاسخ",
+    "submitting": "در حال ارسال…",
+    "success": "ممنون — نظرت در انتظار بررسی است.",
+    "error": "ارسال نظر انجام نشد. دوباره امتحان کن.",
+    "empty": "هنوز نظری نیست. بحث را شروع کن.",
+    "loadFailed": "بارگذاری نظرات ممکن نشد.",
+    "privacyNote": "ایمیل فقط برای به‌روزرسانی وضعیت بررسی استفاده می‌شود و عمومی نمایش داده نمی‌شود.",
+    "validation": {
+      "name": "نام خود را وارد کن.",
+      "nameMax": "نام باید حداکثر ۸۰ کاراکتر باشد.",
+      "email": "یک ایمیل معتبر وارد کن.",
+      "emailMax": "ایمیل باید حداکثر ۲۵۴ کاراکتر باشد.",
+      "comment": "لطفاً کمی بیشتر بنویس.",
+      "commentMax": "نظر باید حداکثر ۴۰۰۰ کاراکتر باشد.",
+      "htmlNotAllowed": "استفاده از HTML در نظرات مجاز نیست.",
+      "maxLinks": "نظرات می‌توانند حداکثر ۲ لینک داشته باشند.",
+      "turnstile": "لطفاً تأیید امنیتی را کامل کن."
+    }
+  },
   "contact": {
     "topics": {
       "project": "پروژه / همکاری فریلنس",
@@ -784,7 +875,7 @@
       "name": "نام",
       "namePlaceholder": "نام شما",
       "email": "ایمیل",
-      "emailPlaceholder": "you[at]example.com",
+      "emailPlaceholder": "you{'@'}example.com",
       "topic": "موضوع",
       "topicPlaceholder": "نزدیک‌ترین موضوع را انتخاب کنید",
       "company": "شرکت",
@@ -817,7 +908,7 @@
     "channels": {
       "email": {
         "title": "ایمیل",
-        "description": "hi[at]mohetios.dev"
+        "description": "hi{'@'}mohetios.dev"
       },
       "work": {
         "title": "زمینه‌های مناسب",

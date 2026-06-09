@@ -1,0 +1,51 @@
+query AdminComments(
+  $status: CommentStatus
+  $targetPath: String
+  $search: String
+  $limit: Int
+  $offset: Int
+) {
+  adminComments(
+    status: $status
+    targetPath: $targetPath
+    search: $search
+    limit: $limit
+    offset: $offset
+  ) {
+    total
+    limit
+    offset
+    summary {
+      pending
+      approved
+      spam
+      deleted
+    }
+    items {
+      id
+      targetType
+      targetPath
+      targetTitle
+      parentId
+      depth
+      authorName
+      authorEmail
+      body
+      bodyOriginal
+      status
+      statusReason
+      approvedAt
+      approvedBy
+      spammedAt
+      spammedBy
+      deletedAt
+      deletedBy
+      editedAt
+      editedBy
+      createdAt
+      updatedAt
+      preview
+      parentPreview
+    }
+  }
+}

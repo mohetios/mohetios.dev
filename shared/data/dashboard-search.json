@@ -33,6 +33,13 @@
           "to": "/dashboard/newsletter"
         },
         {
+          "id": "comments",
+          "labelKey": "dashboard.nav.comments",
+          "descriptionKey": "dashboard.search.descriptions.comments",
+          "icon": "i-lucide-message-square",
+          "to": "/dashboard/comments"
+        },
+        {
           "id": "analytics",
           "labelKey": "dashboard.nav.analytics",
           "descriptionKey": "dashboard.search.descriptions.analytics",

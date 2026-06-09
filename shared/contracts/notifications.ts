@@ -1,6 +1,7 @@
 export type AdminNotificationType =
   | 'NEW_INBOUND_EMAIL'
   | 'NEW_CONTACT_MESSAGE'
+  | 'NEW_COMMENT'
   | 'UNREAD_INBOX_REMINDER'
 
 export type AdminNotificationJob =
@@ -12,6 +13,11 @@ export type AdminNotificationJob =
   | {
       type: 'NEW_CONTACT_MESSAGE'
       inboxMessageId: string
+      notificationId: string
+    }
+  | {
+      type: 'NEW_COMMENT'
+      commentId: string
       notificationId: string
     }
 

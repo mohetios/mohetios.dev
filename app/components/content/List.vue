@@ -10,13 +10,23 @@ const props = defineProps<{
   tags?: string[]
   thumbnail?: string
   compact?: boolean
+  plain?: boolean
 }>()
 
 const publicTo = computed(() => toPublicPath(props.to))
 </script>
 
 <template>
-  <UPageCard :to="publicTo" variant="subtle" class="h-full">
+  <NuxtLink v-if="plain" :to="publicTo" class="mohetios-content-footer-list__item">
+    <p class="mohetios-content-footer-list__title">
+      {{ title }}
+    </p>
+    <p v-if="description" class="mohetios-content-footer-list__description">
+      {{ description }}
+    </p>
+  </NuxtLink>
+
+  <UPageCard v-else :to="publicTo" variant="subtle" class="h-full">
     <template v-if="!compact" #header>
       <ContentCardMedia :title="title" :thumbnail="thumbnail" />
     </template>

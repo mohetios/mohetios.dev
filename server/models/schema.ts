@@ -83,7 +83,9 @@ export type NewInboxReply = typeof inboxReplies.$inferInsert
 
 export const adminNotifications = sqliteTable('admin_notifications', {
   id: text('id').primaryKey(),
-  type: text('type', { enum: ['NEW_INBOUND_EMAIL', 'NEW_CONTACT_MESSAGE'] }).notNull(),
+  type: text('type', {
+    enum: ['NEW_INBOUND_EMAIL', 'NEW_CONTACT_MESSAGE', 'NEW_COMMENT']
+  }).notNull(),
   title: text('title').notNull(),
   body: text('body').notNull(),
   url: text('url').notNull(),
@@ -158,3 +160,51 @@ export const newsletterSubscribers = sqliteTable(
 
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect
 export type NewNewsletterSubscriber = typeof newsletterSubscribers.$inferInsert
+
+export const comments = sqliteTable(
+  'comments',
+  {
+    id: text('id').primaryKey(),
+    targetType: text('target_type', { enum: ['BLOG_POST'] }).notNull(),
+    targetPath: text('target_path').notNull(),
+    targetTitle: text('target_title').notNull(),
+    parentId: text('parent_id'),
+    depth: integer('depth').notNull().default(0),
+    authorName: text('author_name').notNull(),
+    authorEmail: text('author_email').notNull(),
+    authorEmailHash: text('author_email_hash').notNull(),
+    authorUserId: text('author_user_id'),
+    bodyOriginal: text('body_original').notNull(),
+    body: text('body').notNull(),
+    status: text('status', { enum: ['PENDING', 'APPROVED', 'SPAM', 'DELETED'] })
+      .notNull()
+      .default('PENDING'),
+    statusReason: text('status_reason'),
+    ipHash: text('ip_hash'),
+    userAgentHash: text('user_agent_hash'),
+    approvedAt: integer('approved_at'),
+    approvedBy: text('approved_by'),
+    spammedAt: integer('spammed_at'),
+    spammedBy: text('spammed_by'),
+    deletedAt: integer('deleted_at'),
+    deletedBy: text('deleted_by'),
+    editedAt: integer('edited_at'),
+    editedBy: text('edited_by'),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull()
+  },
+  (table) => [
+    index('comments_target_public_idx').on(
+      table.targetType,
+      table.targetPath,
+      table.status,
+      table.createdAt
+    ),
+    index('comments_admin_status_idx').on(table.status, table.createdAt),
+    index('comments_parent_idx').on(table.parentId),
+    index('comments_email_hash_idx').on(table.authorEmailHash)
+  ]
+)
+
+export type Comment = typeof comments.$inferSelect
+export type NewComment = typeof comments.$inferInsert

@@ -23,6 +23,7 @@
     "clean": "rm -rf .nuxt .output .nitro .cache .velite dist .wrangler",
     "db:generate": "drizzle-kit generate",
     "db:push": "wrangler d1 migrations apply DB --local",
+    "db:seed": "node scripts/seed-local-db.mjs",
     "db:studio": "drizzle-kit studio",
     "types:cloudflare": "wrangler types",
     "postinstall": "velite build && pnpm gql:schema && nuxt prepare"

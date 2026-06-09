@@ -48,23 +48,32 @@ withDefaults(
 
     <div
       v-if="backTo || surround?.some(Boolean) || $slots.related || kind"
-      class="mohetios-editorial-column min-w-0 space-y-8 pb-10"
+      class="mohetios-article-tail"
     >
-      <UButton
-        v-if="backTo"
-        :to="backTo"
-        color="neutral"
-        variant="ghost"
-        icon="i-lucide-arrow-left"
-      >
-        {{ backLabel }}
-      </UButton>
+      <div class="mohetios-site-column min-w-0 space-y-10">
+        <UButton
+          v-if="backTo"
+          :to="backTo"
+          color="neutral"
+          variant="ghost"
+          icon="i-lucide-arrow-left"
+        >
+          {{ backLabel }}
+        </UButton>
 
-      <ContentSurround v-if="surround?.some(Boolean)" :surround="surround || []" />
+        <section v-if="surround?.some(Boolean)" class="space-y-4">
+          <p class="mohetios-article-section-label">
+            {{ $t('content.article.continueReading') }}
+          </p>
+          <ContentSurround :surround="surround || []" />
+        </section>
 
-      <slot name="related" />
+        <slot name="related" />
 
-      <ContentSubscribe v-if="kind" size="large" :kind="kind" />
+        <section v-if="kind">
+          <ContentSubscribe :kind="kind" plain />
+        </section>
+      </div>
     </div>
   </UPageBody>
 </template>

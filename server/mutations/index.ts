@@ -4,6 +4,7 @@ import { login } from './login'
 import { logout } from './logout'
 import { register } from './register'
 import { subscribeToNewsletter } from './subscribeToNewsletter'
+import { commentMutations } from './comments'
 
 export const Mutation = {
   login,
@@ -11,5 +12,6 @@ export const Mutation = {
   logout,
   subscribeToNewsletter,
   ...inboxMutations,
-  ...leadMutations
+  ...leadMutations,
+  ...commentMutations
 }

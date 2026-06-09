@@ -50,9 +50,7 @@ useMohetSeo({
       :back-label="t('content.actions.backToLab')"
     >
       <template #notice>
-        <div
-          class="mx-auto mb-8 max-w-[var(--mohetios-reading-width)] rounded-2xl border border-default bg-muted/30 p-5"
-        >
+        <div class="mb-8 rounded-xl bg-muted/25 px-5 py-4 sm:px-6 sm:py-5">
           <p class="text-ui-sm leading-6 text-muted">
             {{ t('content.lab.workingNote') }}
           </p>

@@ -64,10 +64,13 @@ async function handleRefresh() {
           <UButton
             v-bind="toolbarButton"
             icon="i-lucide-calendar-days"
-            trailing-icon="i-lucide-chevron-down"
+            :aria-label="t(DASHBOARD_RANGE_LABEL_KEYS[range])"
           >
-            <span class="max-w-[8.5rem] truncate sm:max-w-none">
-              {{ t(DASHBOARD_RANGE_LABEL_KEYS[range]) }}
+            <span class="hidden items-center gap-1 sm:inline-flex">
+              <span class="max-w-[8.5rem] truncate sm:max-w-none">
+                {{ t(DASHBOARD_RANGE_LABEL_KEYS[range]) }}
+              </span>
+              <UIcon name="i-lucide-chevron-down" class="size-4 shrink-0" />
             </span>
           </UButton>
         </UDropdownMenu>
@@ -79,13 +82,17 @@ async function handleRefresh() {
           :icon="action.icon"
           :to="action.to ? localePath(action.to) : undefined"
           :disabled="action.disabled"
+          :aria-label="t(action.labelKey)"
         >
-          {{ t(action.labelKey) }}
+          <span class="hidden sm:inline">
+            {{ t(action.labelKey) }}
+          </span>
         </UButton>
 
         <UButton
           v-bind="toolbarButton"
           :disabled="runtime.isRefreshing.value"
+          :aria-label="t(preset.refreshLabelKey)"
           @click="handleRefresh"
         >
           <template #leading>
@@ -95,7 +102,9 @@ async function handleRefresh() {
               :class="{ 'animate-spin': runtime.isRefreshing.value }"
             />
           </template>
-          {{ t(preset.refreshLabelKey) }}
+          <span class="hidden sm:inline">
+            {{ t(preset.refreshLabelKey) }}
+          </span>
         </UButton>
 
         <USeparator orientation="vertical" class="hidden h-6 sm:block" />

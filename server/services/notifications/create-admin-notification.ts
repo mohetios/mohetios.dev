@@ -2,10 +2,12 @@ import type { AppDb } from '../../models/client'
 import { adminNotifications } from '../../models/schema'
 import { createId } from '../../utils/id'
 
+type StoredAdminNotificationType = 'NEW_INBOUND_EMAIL' | 'NEW_CONTACT_MESSAGE' | 'NEW_COMMENT'
+
 export async function createAdminNotification(
   db: AppDb,
   input: {
-    type: 'NEW_INBOUND_EMAIL' | 'NEW_CONTACT_MESSAGE'
+    type: StoredAdminNotificationType
     title: string
     body: string
     url: string

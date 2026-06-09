@@ -33,7 +33,7 @@ type WorkerJob = AdminNotificationJob | EmailDeliveryJob
 
 type NotificationRow = {
   id: string
-  type: AdminNotificationJob['type']
+  type: AdminNotificationJob['type'] | 'NEW_COMMENT' | 'UNREAD_INBOX_REMINDER'
   title: string
   body: string
   url: string | null
@@ -68,6 +68,13 @@ type NewsletterSubscriberRow = {
   email: string
   status: string
   last_email_sent_at: number | null
+}
+
+type CommentRow = {
+  id: string
+  author_email: string
+  target_title: string
+  status: string
 }
 
 type UnreadInboxReminderRow = {
@@ -508,8 +515,125 @@ async function handleNewsletterWelcome(job: Extract<EmailDeliveryJob, { type: 'S
   }
 }
 
+async function getCommentRow(env: Env, commentId: string) {
+  return env.DB.prepare(
+    `SELECT id, author_email, target_title, status
+     FROM comments
+     WHERE id = ?`
+  )
+    .bind(commentId)
+    .first<CommentRow>()
+}
+
+function getCommentReceivedEmailContent(targetTitle: string) {
+  const text = `Thanks for your comment on Mohetios.dev.
+
+We received your note on "${targetTitle}". It is waiting for review. If approved, it will appear under the article.
+
+— Mohetios.dev`
+
+  const html = `<p>Thanks for your comment on <strong>Mohetios.dev</strong>.</p>
+<p>We received your note on <strong>${targetTitle}</strong>. It is waiting for review. If approved, it will appear under the article.</p>
+<p>— Mohetios.dev</p>`
+
+  return { text, html }
+}
+
+function getCommentApprovedEmailContent(targetTitle: string) {
+  const text = `Your comment on "${targetTitle}" has been approved and is now visible on Mohetios.dev.
+
+— Mohetios.dev`
+
+  const html = `<p>Your comment on <strong>${targetTitle}</strong> has been approved and is now visible on Mohetios.dev.</p>
+<p>— Mohetios.dev</p>`
+
+  return { text, html }
+}
+
+function getCommentSpamEmailContent(targetTitle: string) {
+  const text = `Your comment on "${targetTitle}" could not be published after review.
+
+— Mohetios.dev`
+
+  const html = `<p>Your comment on <strong>${targetTitle}</strong> could not be published after review.</p>
+<p>— Mohetios.dev</p>`
+
+  return { text, html }
+}
+
+async function handleCommentReceivedEmail(
+  job: Extract<EmailDeliveryJob, { type: 'COMMENT_RECEIVED_CONFIRMATION_EMAIL' }>,
+  env: Env
+) {
+  const comment = await getCommentRow(env, job.commentId)
+
+  if (!comment) {
+    console.warn('Comment not found for confirmation email', job)
+    return
+  }
+
+  const { text, html } = getCommentReceivedEmailContent(comment.target_title)
+
+  await sendEmail(env, {
+    fromEmail: getMailFrom(env),
+    fromName: getMailFromName(env),
+    toEmail: comment.author_email,
+    subject: 'We received your comment on Mohetios.dev',
+    text,
+    html
+  })
+}
+
+async function handleCommentApprovedEmail(
+  job: Extract<EmailDeliveryJob, { type: 'COMMENT_APPROVED_EMAIL' }>,
+  env: Env
+) {
+  const comment = await getCommentRow(env, job.commentId)
+
+  if (!comment || comment.status !== 'APPROVED') {
+    return
+  }
+
+  const { text, html } = getCommentApprovedEmailContent(comment.target_title)
+
+  await sendEmail(env, {
+    fromEmail: getMailFrom(env),
+    fromName: getMailFromName(env),
+    toEmail: comment.author_email,
+    subject: 'Your comment was approved',
+    text,
+    html
+  })
+}
+
+async function handleCommentSpamEmail(
+  job: Extract<EmailDeliveryJob, { type: 'COMMENT_MARKED_SPAM_EMAIL' }>,
+  env: Env
+) {
+  const comment = await getCommentRow(env, job.commentId)
+
+  if (!comment || comment.status !== 'SPAM') {
+    return
+  }
+
+  const { text, html } = getCommentSpamEmailContent(comment.target_title)
+
+  await sendEmail(env, {
+    fromEmail: getMailFrom(env),
+    fromName: getMailFromName(env),
+    toEmail: comment.author_email,
+    subject: 'Your comment could not be published',
+    text,
+    html
+  })
+}
+
 async function handleJob(job: WorkerJob, env: Env) {
-  if (job.type === 'NEW_CONTACT_MESSAGE' || job.type === 'NEW_INBOUND_EMAIL') {
+  if (
+    job.type === 'NEW_CONTACT_MESSAGE' ||
+    job.type === 'NEW_INBOUND_EMAIL' ||
+    job.type === 'NEW_COMMENT'
+  ) {
     await handleAdminNotification(job, env)
     return
   }
@@ -521,6 +645,21 @@ async function handleJob(job: WorkerJob, env: Env) {
 
   if (job.type === 'SEND_NEWSLETTER_WELCOME') {
     await handleNewsletterWelcome(job, env)
+    return
+  }
+
+  if (job.type === 'COMMENT_RECEIVED_CONFIRMATION_EMAIL') {
+    await handleCommentReceivedEmail(job, env)
+    return
+  }
+
+  if (job.type === 'COMMENT_APPROVED_EMAIL') {
+    await handleCommentApprovedEmail(job, env)
+    return
+  }
+
+  if (job.type === 'COMMENT_MARKED_SPAM_EMAIL') {
+    await handleCommentSpamEmail(job, env)
   }
 }
 
