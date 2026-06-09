@@ -1,4 +1,10 @@
-export type CommentTargetType = 'BLOG_POST'
+export const COMMENT_TARGET_TYPES = ['BLOG_POST', 'LAB_NOTE', 'PROJECT'] as const
+
+export type CommentTargetType = (typeof COMMENT_TARGET_TYPES)[number]
+
+export function isCommentTargetType(value: string): value is CommentTargetType {
+  return COMMENT_TARGET_TYPES.includes(value as CommentTargetType)
+}
 
 export const COMMENT_STATUSES = ['PENDING', 'APPROVED', 'SPAM', 'DELETED'] as const
 export type CommentStatus = (typeof COMMENT_STATUSES)[number]

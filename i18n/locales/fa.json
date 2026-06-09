@@ -91,8 +91,7 @@
       "analytics": "تحلیل‌ها",
       "system": "سیستم",
       "settings": "تنظیمات",
-      "comments": "نظرات",
-      "forms": "فرم‌ها"
+      "comments": "نظرات"
     },
     "sidebar": {
       "accountName": "Mohetios",
@@ -825,9 +824,7 @@
   "comments": {
     "title": "بحث",
     "moderationNote": "نظرات فکرشده، اصلاحات و پرسش‌ها خوش‌آمدند. نظرات قبل از انتشار بررسی می‌شوند.",
-    "nameLabel": "نام",
     "namePlaceholder": "نام شما",
-    "emailLabel": "ایمیل",
     "emailPlaceholder": "you{'@'}example.com",
     "commentLabel": "نظر",
     "commentPlaceholder": "نظر خود را بنویس…",
@@ -843,6 +840,7 @@
     "success": "ممنون — نظرت در انتظار بررسی است.",
     "error": "ارسال نظر انجام نشد. دوباره امتحان کن.",
     "empty": "هنوز نظری نیست. بحث را شروع کن.",
+    "loading": "در حال بارگذاری بحث",
     "loadFailed": "بارگذاری نظرات ممکن نشد.",
     "privacyNote": "ایمیل فقط برای به‌روزرسانی وضعیت بررسی استفاده می‌شود و عمومی نمایش داده نمی‌شود.",
     "validation": {

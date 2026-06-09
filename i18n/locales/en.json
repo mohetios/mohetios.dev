@@ -91,8 +91,7 @@
       "analytics": "Analytics",
       "system": "System",
       "settings": "Settings",
-      "comments": "Comments",
-      "forms": "Forms"
+      "comments": "Comments"
     },
     "sidebar": {
       "accountName": "Mohetios",
@@ -824,9 +823,7 @@
   "comments": {
     "title": "Discussion",
     "moderationNote": "Thoughtful comments, corrections, and questions are welcome. Comments are reviewed before publishing.",
-    "nameLabel": "Name",
     "namePlaceholder": "Your name",
-    "emailLabel": "Email",
     "emailPlaceholder": "you{'@'}example.com",
     "commentLabel": "Comment",
     "commentPlaceholder": "Write a comment…",
@@ -842,6 +839,7 @@
     "success": "Thanks — your comment is waiting for review.",
     "error": "Your comment could not be submitted. Please try again.",
     "empty": "No comments yet. Start the discussion.",
+    "loading": "Loading discussion",
     "loadFailed": "Comments could not be loaded.",
     "privacyNote": "Your email is used only for moderation updates. It is not shown publicly.",
     "validation": {

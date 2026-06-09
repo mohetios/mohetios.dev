@@ -80,22 +80,40 @@ useMohetSeo({
     />
 
     <ContentShell
+      kind="blog"
       :content="post.content"
       :toc-links="tocLinks"
       :show-toc="showToc"
       :summary="post.summary"
-    />
-
-    <div class="mohetios-article-tail">
-      <ClientOnly>
-        <CommentsBlock
+      :surround="surround"
+    >
+      <template #comments>
+        <ContentComments
           target-type="BLOG_POST"
           :target-path="path"
           :target-title="post.title"
         />
-      </ClientOnly>
+      </template>
 
-      <ContentArticleFooter :surround="surround" :related-posts="relatedPosts" />
-    </div>
+      <template #related>
+        <section v-if="relatedPosts.length" class="space-y-4">
+          <p class="mohetios-article-section-label">
+            {{ t('content.article.relatedPosts') }}
+          </p>
+          <div class="mohetios-content-footer-list">
+            <ContentList
+              v-for="related in relatedPosts"
+              :key="related.id || related.path"
+              plain
+              :title="related.title"
+              :description="related.description"
+              :to="related.path"
+              :date="related.date"
+              :updated="related.updated"
+            />
+          </div>
+        </section>
+      </template>
+    </ContentShell>
   </UPage>
 </template>

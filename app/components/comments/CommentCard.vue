@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { CommentTargetType } from '~~/shared/constants/comments'
+
 type PublicComment = {
   id: string
   authorName: string
@@ -9,7 +11,7 @@ type PublicComment = {
 
 type Props = {
   comment: PublicComment
-  targetType: 'BLOG_POST'
+  targetType: CommentTargetType
   targetPath: string
   targetTitle: string
 }

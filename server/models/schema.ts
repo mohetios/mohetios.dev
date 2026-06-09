@@ -165,7 +165,7 @@ export const comments = sqliteTable(
   'comments',
   {
     id: text('id').primaryKey(),
-    targetType: text('target_type', { enum: ['BLOG_POST'] }).notNull(),
+    targetType: text('target_type', { enum: ['BLOG_POST', 'LAB_NOTE', 'PROJECT'] }).notNull(),
     targetPath: text('target_path').notNull(),
     targetTitle: text('target_title').notNull(),
     parentId: text('parent_id'),

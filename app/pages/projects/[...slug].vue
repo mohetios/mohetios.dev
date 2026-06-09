@@ -64,6 +64,14 @@ useMohetSeo({
       :back-to="localePath('/projects')"
       :back-label="t('content.actions.backToProjects')"
     >
+      <template #comments>
+        <ContentComments
+          target-type="PROJECT"
+          :target-path="path"
+          :target-title="project.title"
+        />
+      </template>
+
       <template #related>
         <section v-if="relatedProjects.length" class="space-y-4">
           <p class="mohetios-article-section-label">

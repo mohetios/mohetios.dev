@@ -2,7 +2,10 @@ import { GraphQLError } from 'graphql'
 
 import type { EmailDeliveryJob } from '../../../shared/contracts/email'
 import type { AdminNotificationJob } from '../../../shared/contracts/notifications'
-import type { CommentTargetType } from '../../../shared/constants/comments'
+import {
+  isCommentTargetType,
+  type CommentTargetType
+} from '../../../shared/constants/comments'
 import type { GraphQLContext } from '../../routes/graph'
 import { comments } from '../../models/schema'
 import { createAdminNotification } from '../notifications/create-admin-notification'
@@ -50,9 +53,11 @@ async function queueCommentConfirmationEmail(context: GraphQLContext, commentId:
 }
 
 export async function createPendingComment(context: GraphQLContext, input: CreateCommentInput) {
-  if (input.targetType !== 'BLOG_POST') {
+  if (!isCommentTargetType(input.targetType)) {
     throw new GraphQLError('Target type is invalid')
   }
+
+  const targetType = input.targetType
 
   const targetPath = normalizeCommentTargetPath(input.targetPath)
   const targetTitle = normalizeCommentTargetTitle(input.targetTitle)
@@ -84,7 +89,7 @@ export async function createPendingComment(context: GraphQLContext, input: Creat
     .insert(comments)
     .values({
       id: commentId,
-      targetType: 'BLOG_POST',
+      targetType,
       targetPath,
       targetTitle,
       parentId,

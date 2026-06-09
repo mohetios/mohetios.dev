@@ -14,7 +14,6 @@ type NotificationActionOption = {
 
 type PersistentNotificationOptions = NotificationOptions & {
   actions?: NotificationActionOption[]
-  image?: string
   requireInteraction?: boolean
   renotify?: boolean
   timestamp?: number
@@ -36,8 +35,8 @@ type ServiceWorkerClientMessage =
 
 let authToken: string | null = null
 
-const pushSiteLogoIcon = '/icons/android-chrome-512x512.png'
-const pushSiteLogoBadge = '/icons/android-chrome-192x192.png'
+const pushSiteLogoIcon = '/icons/android-chrome-192x192.png'
+const pushSiteLogoBadge = '/icons/favicon-32x32.png'
 
 function getPushAssetUrl(path: string) {
   return new URL(path, self.location.origin).href
@@ -224,7 +223,6 @@ self.addEventListener('push', (event) => {
     body: payload.body || 'New notification',
     icon: getPushAssetUrl(pushSiteLogoIcon),
     badge: getPushAssetUrl(pushSiteLogoBadge),
-    image: getPushAssetUrl(pushSiteLogoIcon),
     actions: getNotificationActions(payload),
     requireInteraction: true,
     renotify: true,

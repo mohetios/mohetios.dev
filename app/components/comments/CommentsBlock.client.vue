@@ -7,8 +7,10 @@ type PublicComment = {
   replies?: PublicComment[]
 }
 
+import type { CommentTargetType } from '~~/shared/constants/comments'
+
 type Props = {
-  targetType: 'BLOG_POST'
+  targetType: CommentTargetType
   targetPath: string
   targetTitle: string
 }

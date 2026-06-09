@@ -534,6 +534,8 @@ export const typeDefs = /* GraphQL */ `
 
   enum CommentTargetType {
     BLOG_POST
+    LAB_NOTE
+    PROJECT
   }
 
   enum CommentStatus {

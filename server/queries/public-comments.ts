@@ -4,6 +4,7 @@ import { GraphQLError } from 'graphql'
 import {
   COMMENT_LIMITS,
   COMMENT_STATUSES,
+  isCommentTargetType,
   type CommentStatus,
   type CommentTargetType
 } from '../../shared/constants/comments'
@@ -50,9 +51,11 @@ export async function publicComments(
   args: PublicCommentsArgs,
   context: GraphQLContext
 ) {
-  if (args.targetType !== 'BLOG_POST') {
+  if (!isCommentTargetType(args.targetType)) {
     throw new GraphQLError('Target type is invalid')
   }
+
+  const targetType = args.targetType
 
   const targetPath = args.targetPath.trim()
 
@@ -73,7 +76,7 @@ export async function publicComments(
     .from(comments)
     .where(
       and(
-        eq(comments.targetType, 'BLOG_POST'),
+        eq(comments.targetType, targetType),
         eq(comments.targetPath, targetPath),
         eq(comments.status, 'APPROVED'),
         eq(comments.depth, 0),

@@ -10,8 +10,10 @@ import {
   getGraphqlHttpStatus
 } from '~/utils/graphql-error'
 
+import type { CommentTargetType } from '~~/shared/constants/comments'
+
 type Props = {
-  targetType: 'BLOG_POST'
+  targetType: CommentTargetType
   targetPath: string
   targetTitle: string
   parentId?: string | null

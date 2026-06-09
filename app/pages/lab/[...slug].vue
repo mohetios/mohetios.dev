@@ -56,6 +56,14 @@ useMohetSeo({
           </p>
         </div>
       </template>
+
+      <template #comments>
+        <ContentComments
+          target-type="LAB_NOTE"
+          :target-path="path"
+          :target-title="note.title"
+        />
+      </template>
     </ContentShell>
   </UPage>
 </template>

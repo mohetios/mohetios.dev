@@ -47,9 +47,11 @@ withDefaults(
     </section>
 
     <div
-      v-if="backTo || surround?.some(Boolean) || $slots.related || kind"
+      v-if="backTo || surround?.some(Boolean) || $slots.related || kind || $slots.comments"
       class="mohetios-article-tail"
     >
+      <slot name="comments" />
+
       <div class="mohetios-site-column min-w-0 space-y-10">
         <UButton
           v-if="backTo"
