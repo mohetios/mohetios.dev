@@ -14,6 +14,7 @@ type NotificationActionOption = {
 
 type PersistentNotificationOptions = NotificationOptions & {
   actions?: NotificationActionOption[]
+  image?: string
   requireInteraction?: boolean
   renotify?: boolean
   timestamp?: number
@@ -34,6 +35,13 @@ type ServiceWorkerClientMessage =
     }
 
 let authToken: string | null = null
+
+const pushSiteLogoIcon = '/icons/android-chrome-512x512.png'
+const pushSiteLogoBadge = '/icons/android-chrome-192x192.png'
+
+function getPushAssetUrl(path: string) {
+  return new URL(path, self.location.origin).href
+}
 
 const notificationActions: NotificationActionOption[] = [
   {
@@ -60,8 +68,15 @@ const viewNotificationAction: NotificationActionOption = {
 }
 
 function getNotificationActions(payload: AdminPushPayload) {
+  const inboxTypes = new Set<AdminPushPayload['type']>([
+    'NEW_INBOUND_EMAIL',
+    'NEW_CONTACT_MESSAGE'
+  ])
+
   const actions =
-    payload.entityId && payload.entityId !== 'test' ? notificationActions : [viewNotificationAction]
+    payload.entityId && inboxTypes.has(payload.type)
+      ? notificationActions
+      : [viewNotificationAction]
   const notificationApi = Notification as NotificationConstructorWithMaxActions
   const maxActions =
     typeof notificationApi.maxActions === 'number' && notificationApi.maxActions >= 0
@@ -207,8 +222,9 @@ self.addEventListener('push', (event) => {
   const url = payload.url || '/dashboard/inbox'
   const options: PersistentNotificationOptions = {
     body: payload.body || 'New notification',
-    icon: '/icons/android-chrome-192x192.png',
-    badge: '/icons/android-chrome-192x192.png',
+    icon: getPushAssetUrl(pushSiteLogoIcon),
+    badge: getPushAssetUrl(pushSiteLogoBadge),
+    image: getPushAssetUrl(pushSiteLogoIcon),
     actions: getNotificationActions(payload),
     requireInteraction: true,
     renotify: true,

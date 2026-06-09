@@ -130,17 +130,12 @@ export function useAdminPushNotifications() {
     return subscription.unsubscribe()
   }
 
-  async function sendTestNotification() {
-    return requestPush('/api/push/test', {})
-  }
-
   return {
     isSupported,
     permission,
     refreshPermission,
     ensureSubscribed,
     subscribe,
-    unsubscribe,
-    sendTestNotification
+    unsubscribe
   }
 }
