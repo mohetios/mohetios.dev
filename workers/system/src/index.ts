@@ -660,7 +660,10 @@ async function handleJob(job: WorkerJob, env: Env) {
 
   if (job.type === 'COMMENT_MARKED_SPAM_EMAIL') {
     await handleCommentSpamEmail(job, env)
+    return
   }
+
+  console.warn('Unhandled queue job', { type: (job as { type?: string }).type })
 }
 
 export default {
