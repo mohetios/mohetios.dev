@@ -1,7 +1,7 @@
 import { and, count, eq, gte, isNull } from 'drizzle-orm'
 import { GraphQLError } from 'graphql'
 
-import { COMMENT_LIMITS } from '../../shared/constants/comments'
+import { COMMENT_ERROR_CODES, COMMENT_LIMITS } from '../../shared/constants/comments'
 import type { AppDb } from '../models/client'
 import { comments } from '../models/schema'
 
@@ -25,7 +25,9 @@ export async function enforceCommentRateLimit(db: AppDb, input: RateLimitInput) 
     .where(and(eq(comments.ipHash, input.ipHash), gte(comments.createdAt, ipWindowStart)))
 
   if ((ipCountRow?.value ?? 0) >= rateLimit.commentsPerIpMax) {
-    throw new GraphQLError('Too many comments. Please try again later.')
+    throw new GraphQLError('Too many comments. Please try again later.', {
+      extensions: { code: COMMENT_ERROR_CODES.RATE_LIMIT_IP }
+    })
   }
 
   const [emailCountRow] = await db
@@ -36,7 +38,9 @@ export async function enforceCommentRateLimit(db: AppDb, input: RateLimitInput) 
     )
 
   if ((emailCountRow?.value ?? 0) >= rateLimit.commentsPerEmailMax) {
-    throw new GraphQLError('Too many comments from this email. Please try again later.')
+    throw new GraphQLError('Too many comments from this email. Please try again later.', {
+      extensions: { code: COMMENT_ERROR_CODES.RATE_LIMIT_EMAIL }
+    })
   }
 
   if (input.depth === 1) {
@@ -52,7 +56,9 @@ export async function enforceCommentRateLimit(db: AppDb, input: RateLimitInput) 
       )
 
     if ((replyCountRow?.value ?? 0) >= rateLimit.repliesPerIpMax) {
-      throw new GraphQLError('Too many replies. Please try again later.')
+      throw new GraphQLError('Too many replies. Please try again later.', {
+        extensions: { code: COMMENT_ERROR_CODES.RATE_LIMIT_REPLY }
+      })
     }
   }
 }

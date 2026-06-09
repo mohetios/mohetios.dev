@@ -22,3 +22,9 @@ export const COMMENT_LIMITS = {
     commentsPerEmailMax: 5
   }
 } as const
+
+export const COMMENT_ERROR_CODES = {
+  RATE_LIMIT_IP: 'COMMENT_RATE_LIMIT_IP',
+  RATE_LIMIT_EMAIL: 'COMMENT_RATE_LIMIT_EMAIL',
+  RATE_LIMIT_REPLY: 'COMMENT_RATE_LIMIT_REPLY'
+} as const

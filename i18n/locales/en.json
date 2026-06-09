@@ -853,7 +853,10 @@
       "commentMax": "Comment must be 4000 characters or less.",
       "htmlNotAllowed": "HTML is not allowed in comments.",
       "maxLinks": "Comments may include at most 2 links.",
-      "turnstile": "Please complete the verification check."
+      "turnstile": "Please complete the verification check.",
+      "rateLimitIp": "You have sent too many comments. Please try again later.",
+      "rateLimitEmail": "Too many comments from this email address. Please try again later.",
+      "rateLimitReply": "You have sent too many replies. Please try again later."
     }
   },
   "contact": {

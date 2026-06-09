@@ -87,6 +87,10 @@ export function isAuthError(error: unknown) {
   return status === 401 || status === 403 || code === 'UNAUTHENTICATED' || code === 'FORBIDDEN'
 }
 
+export function getGraphqlErrorCode(error: unknown) {
+  return getFirstGraphqlError(error)?.extensions?.code
+}
+
 export function getGraphqlErrorMessage(error: unknown, fallback = 'GraphQL request failed') {
   const gqlError = getFirstGraphqlError(error)
 

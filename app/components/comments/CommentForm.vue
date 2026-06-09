@@ -3,6 +3,8 @@ import {
   createCommentFormSchema,
   type CommentFormState
 } from '~~/shared/validation/comment-form'
+import { COMMENT_ERROR_CODES } from '~~/shared/constants/comments'
+import { getGraphqlErrorCode, getGraphqlErrorMessage } from '~/utils/graphql-error'
 
 type Props = {
   targetType: 'BLOG_POST'
@@ -62,6 +64,24 @@ const bodyPlaceholder = computed(() =>
   props.parentId ? t('comments.replyPlaceholder') : t('comments.commentPlaceholder')
 )
 
+const commentErrorMessages = computed(
+  (): Record<string, string> => ({
+    [COMMENT_ERROR_CODES.RATE_LIMIT_IP]: t('comments.validation.rateLimitIp'),
+    [COMMENT_ERROR_CODES.RATE_LIMIT_EMAIL]: t('comments.validation.rateLimitEmail'),
+    [COMMENT_ERROR_CODES.RATE_LIMIT_REPLY]: t('comments.validation.rateLimitReply')
+  })
+)
+
+function resolveSubmitError(error: unknown) {
+  const code = getGraphqlErrorCode(error)
+
+  if (code && commentErrorMessages.value[code]) {
+    return commentErrorMessages.value[code]
+  }
+
+  return getGraphqlErrorMessage(error, t('comments.error'))
+}
+
 function waitForTurnstileToken(timeoutMs = 10000) {
   if (turnstileToken.value) {
     return Promise.resolve(turnstileToken.value)
@@ -98,6 +118,7 @@ async function onSubmit() {
   const token = await waitForTurnstileToken()
 
   if (!token) {
+    submitState.value = 'error'
     formError.value = t('comments.validation.turnstile')
     turnstile.value?.reset()
     return
@@ -124,14 +145,7 @@ async function onSubmit() {
     emit('submitted')
   } catch (error) {
     submitState.value = 'error'
-
-    const gqlError =
-      error && typeof error === 'object'
-        ? (error as { response?: { errors?: Array<{ message?: string }> } }).response?.errors?.[0]
-        : undefined
-
-    formError.value =
-      gqlError?.message || (error instanceof Error ? error.message : t('comments.error'))
+    formError.value = resolveSubmitError(error)
 
     turnstileToken.value = ''
     turnstile.value?.reset()
