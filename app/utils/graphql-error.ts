@@ -91,6 +91,26 @@ export function getGraphqlErrorCode(error: unknown) {
   return getFirstGraphqlError(error)?.extensions?.code
 }
 
+export function getGraphqlHttpStatus(error: unknown) {
+  const gqlError = getFirstGraphqlError(error)
+  const gqlStatus = getGraphqlStatus(gqlError)
+
+  if (gqlStatus) return gqlStatus
+
+  if (!error || typeof error !== 'object') return null
+
+  const currentError = error as ErrorLike
+
+  return (
+    currentError.statusCode ||
+    currentError.status ||
+    currentError.response?.status ||
+    currentError.data?.status ||
+    currentError.data?.statusCode ||
+    null
+  )
+}
+
 export function getGraphqlErrorMessage(error: unknown, fallback = 'GraphQL request failed') {
   const gqlError = getFirstGraphqlError(error)
 

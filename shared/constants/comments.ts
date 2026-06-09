@@ -12,15 +12,7 @@ export const COMMENT_LIMITS = {
   maxLinks: 2,
   publicLimit: 50,
   adminDefaultLimit: 50,
-  adminMaxLimit: 100,
-  rateLimit: {
-    commentsPerIpWindowMs: 10 * 60 * 1000,
-    commentsPerIpMax: 3,
-    repliesPerIpWindowMs: 10 * 60 * 1000,
-    repliesPerIpMax: 2,
-    commentsPerEmailWindowMs: 24 * 60 * 60 * 1000,
-    commentsPerEmailMax: 5
-  }
+  adminMaxLimit: 100
 } as const
 
 export const COMMENT_ERROR_CODES = {

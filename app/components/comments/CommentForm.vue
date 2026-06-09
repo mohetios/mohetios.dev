@@ -4,7 +4,11 @@ import {
   type CommentFormState
 } from '~~/shared/validation/comment-form'
 import { COMMENT_ERROR_CODES } from '~~/shared/constants/comments'
-import { getGraphqlErrorCode, getGraphqlErrorMessage } from '~/utils/graphql-error'
+import {
+  getGraphqlErrorCode,
+  getGraphqlErrorMessage,
+  getGraphqlHttpStatus
+} from '~/utils/graphql-error'
 
 type Props = {
   targetType: 'BLOG_POST'
@@ -77,6 +81,28 @@ function resolveSubmitError(error: unknown) {
 
   if (code && commentErrorMessages.value[code]) {
     return commentErrorMessages.value[code]
+  }
+
+  if (getGraphqlHttpStatus(error) === 429) {
+    return t('comments.validation.rateLimitGraph')
+  }
+
+  const message = getGraphqlErrorMessage(error, '').toLowerCase()
+
+  if (message.includes('too many replies')) {
+    return t('comments.validation.rateLimitReply')
+  }
+
+  if (message.includes('too many comments from this email')) {
+    return t('comments.validation.rateLimitEmail')
+  }
+
+  if (message.includes('too many comments')) {
+    return t('comments.validation.rateLimitIp')
+  }
+
+  if (message.includes('too many requests')) {
+    return t('comments.validation.rateLimitGraph')
   }
 
   return getGraphqlErrorMessage(error, t('comments.error'))

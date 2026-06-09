@@ -4,9 +4,15 @@ import {
   getPrerenderContentRoutes,
   supportedLocales
 } from './app/utils/content'
+import { API_GRAPH_RATE_LIMITER, REQUEST_SIZE_LIMIT_BYTES } from './shared/constants/security'
 
 const isDev = process.env.NODE_ENV !== 'production'
 const isProduction = process.env.NODE_ENV === 'production'
+
+const graphApiRateLimiter = {
+  ...API_GRAPH_RATE_LIMITER,
+  ...(isProduction ? { ipHeader: 'CF-Connecting-IP' as const } : {})
+}
 
 const siteUrl = 'https://mohetios.dev'
 
@@ -72,6 +78,32 @@ function getContentRoutes() {
 
 const prerenderRoutes = [...getContentRoutes(), '/robots.txt', '/sitemap.xml']
 
+const contentSecurityPolicy = {
+  'default-src': ["'self'"],
+  'base-uri': ["'self'"],
+  'font-src': ["'self'", 'data:'],
+  'form-action': ["'self'"],
+  'frame-ancestors': ["'none'"],
+  'img-src': ["'self'", 'data:', 'blob:', 'https:'],
+  'object-src': ["'none'"],
+  'script-src': [
+    "'self'",
+    "'unsafe-inline'",
+    'https://challenges.cloudflare.com',
+    ...(isDev ? ["'unsafe-eval'"] : [])
+  ],
+  'script-src-attr': ["'none'"],
+  'style-src': ["'self'", "'unsafe-inline'"],
+  'connect-src': [
+    "'self'",
+    'https://challenges.cloudflare.com',
+    ...(isDev ? ['ws:', 'wss:'] : [])
+  ],
+  'frame-src': ['https://challenges.cloudflare.com'],
+  'worker-src': ["'self'", 'blob:'],
+  'manifest-src': ["'self'"]
+}
+
 export default defineNuxtConfig({
   components: {
     dirs: [
@@ -92,7 +124,8 @@ export default defineNuxtConfig({
     '@nuxtjs/robots',
     '@nuxtjs/turnstile',
     'nuxt-graphql-client',
-    '@vite-pwa/nuxt'
+    '@vite-pwa/nuxt',
+    'nuxt-security'
   ],
 
   devtools: {
@@ -198,13 +231,74 @@ export default defineNuxtConfig({
     }
   },
 
+  security: {
+    nonce: false,
+    headers: {
+      crossOriginEmbedderPolicy: false,
+      contentSecurityPolicy,
+      referrerPolicy: 'strict-origin-when-cross-origin',
+      xFrameOptions: 'DENY',
+      xContentTypeOptions: 'nosniff',
+      permissionsPolicy: {
+        camera: [],
+        microphone: [],
+        geolocation: [],
+        payment: [],
+        usb: [],
+        fullscreen: ['self']
+      }
+    },
+    requestSizeLimiter: {
+      maxRequestSizeInBytes: REQUEST_SIZE_LIMIT_BYTES
+    },
+    rateLimiter: false,
+    corsHandler: false,
+    csrf: false,
+    xssValidator: false,
+    allowedMethodsRestricter: {
+      methods: ['GET', 'HEAD', 'POST', 'OPTIONS']
+    },
+    hidePoweredBy: true
+  },
+
   routeRules: {
     ...localizedHtmlRouteRules,
     ...localizedClientAuthRouteRules,
     ...localizedAuthRedirectRouteRules,
 
-    '/dashboard': { ssr: true, prerender: false },
-    '/dashboard/**': { ssr: true, prerender: false },
+    '/dashboard': {
+      ssr: true,
+      prerender: false,
+      security: {
+        headers: {
+          xFrameOptions: 'DENY'
+        }
+      }
+    },
+    '/dashboard/**': {
+      ssr: true,
+      prerender: false,
+      security: {
+        headers: {
+          xFrameOptions: 'DENY'
+        }
+      }
+    },
+
+    '/graph': {
+      security: {
+        rateLimiter: graphApiRateLimiter,
+        requestSizeLimiter: {
+          maxRequestSizeInBytes: REQUEST_SIZE_LIMIT_BYTES
+        }
+      }
+    },
+
+    '/api/**': {
+      security: {
+        rateLimiter: graphApiRateLimiter
+      }
+    },
 
     ...localizedSsrRouteRules,
 

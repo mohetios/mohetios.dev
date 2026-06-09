@@ -1,9 +1,15 @@
 import { and, count, eq, gte, isNull } from 'drizzle-orm'
 import { GraphQLError } from 'graphql'
 
-import { COMMENT_ERROR_CODES, COMMENT_LIMITS } from '../../shared/constants/comments'
+import { COMMENT_ERROR_CODES } from '../../shared/constants/comments'
+import { PUBLIC_MUTATION_RATE_LIMITS } from '../../shared/constants/security'
 import type { AppDb } from '../models/client'
 import { comments } from '../models/schema'
+import {
+  getRateLimitWindowStart,
+  isRateLimitExceeded,
+  throwRateLimitGraphQLError
+} from './security'
 
 type RateLimitInput = {
   ipHash: string
@@ -11,36 +17,46 @@ type RateLimitInput = {
   depth: number
 }
 
+const commentRateLimits = PUBLIC_MUTATION_RATE_LIMITS.createComment
+
 export async function enforceCommentRateLimit(db: AppDb, input: RateLimitInput) {
   const now = Date.now()
-  const { rateLimit } = COMMENT_LIMITS
-
-  const ipWindowStart = now - rateLimit.commentsPerIpWindowMs
-  const emailWindowStart = now - rateLimit.commentsPerEmailWindowMs
-  const replyWindowStart = now - rateLimit.repliesPerIpWindowMs
 
   const [ipCountRow] = await db
     .select({ value: count() })
     .from(comments)
-    .where(and(eq(comments.ipHash, input.ipHash), gte(comments.createdAt, ipWindowStart)))
+    .where(
+      and(
+        eq(comments.ipHash, input.ipHash),
+        gte(comments.createdAt, getRateLimitWindowStart(now, commentRateLimits.commentsPerIp))
+      )
+    )
 
-  if ((ipCountRow?.value ?? 0) >= rateLimit.commentsPerIpMax) {
-    throw new GraphQLError('Too many comments. Please try again later.', {
-      extensions: { code: COMMENT_ERROR_CODES.RATE_LIMIT_IP }
-    })
+  if (isRateLimitExceeded(ipCountRow?.value ?? 0, commentRateLimits.commentsPerIp)) {
+    throwRateLimitGraphQLError(
+      'Too many comments. Please try again later.',
+      COMMENT_ERROR_CODES.RATE_LIMIT_IP
+    )
   }
 
   const [emailCountRow] = await db
     .select({ value: count() })
     .from(comments)
     .where(
-      and(eq(comments.authorEmailHash, input.emailHash), gte(comments.createdAt, emailWindowStart))
+      and(
+        eq(comments.authorEmailHash, input.emailHash),
+        gte(
+          comments.createdAt,
+          getRateLimitWindowStart(now, commentRateLimits.commentsPerEmail)
+        )
+      )
     )
 
-  if ((emailCountRow?.value ?? 0) >= rateLimit.commentsPerEmailMax) {
-    throw new GraphQLError('Too many comments from this email. Please try again later.', {
-      extensions: { code: COMMENT_ERROR_CODES.RATE_LIMIT_EMAIL }
-    })
+  if (isRateLimitExceeded(emailCountRow?.value ?? 0, commentRateLimits.commentsPerEmail)) {
+    throwRateLimitGraphQLError(
+      'Too many comments from this email. Please try again later.',
+      COMMENT_ERROR_CODES.RATE_LIMIT_EMAIL
+    )
   }
 
   if (input.depth === 1) {
@@ -51,14 +67,18 @@ export async function enforceCommentRateLimit(db: AppDb, input: RateLimitInput) 
         and(
           eq(comments.ipHash, input.ipHash),
           eq(comments.depth, 1),
-          gte(comments.createdAt, replyWindowStart)
+          gte(
+            comments.createdAt,
+            getRateLimitWindowStart(now, commentRateLimits.repliesPerIp)
+          )
         )
       )
 
-    if ((replyCountRow?.value ?? 0) >= rateLimit.repliesPerIpMax) {
-      throw new GraphQLError('Too many replies. Please try again later.', {
-        extensions: { code: COMMENT_ERROR_CODES.RATE_LIMIT_REPLY }
-      })
+    if (isRateLimitExceeded(replyCountRow?.value ?? 0, commentRateLimits.repliesPerIp)) {
+      throwRateLimitGraphQLError(
+        'Too many replies. Please try again later.',
+        COMMENT_ERROR_CODES.RATE_LIMIT_REPLY
+      )
     }
   }
 }

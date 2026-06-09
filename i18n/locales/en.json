@@ -854,9 +854,10 @@
       "htmlNotAllowed": "HTML is not allowed in comments.",
       "maxLinks": "Comments may include at most 2 links.",
       "turnstile": "Please complete the verification check.",
-      "rateLimitIp": "You have sent too many comments. Please try again later.",
-      "rateLimitEmail": "Too many comments from this email address. Please try again later.",
-      "rateLimitReply": "You have sent too many replies. Please try again later."
+      "rateLimitIp": "You can post up to 2 comments every 5 minutes. Please wait and try again.",
+      "rateLimitEmail": "You can post up to 3 comments every 12 hours with this email. Please try again later.",
+      "rateLimitReply": "You can post 1 reply every 5 minutes. Please wait and try again.",
+      "rateLimitGraph": "Too many requests right now. Please wait a few minutes and try again."
     }
   },
   "contact": {
