@@ -107,7 +107,10 @@ const contentSecurityPolicy = {
   ],
   'frame-src': [CLOUDFLARE_CSP_ORIGINS.turnstile],
   'worker-src': ["'self'", 'blob:'],
-  'manifest-src': ["'self'"]
+  'manifest-src': ["'self'"],
+  // Turnstile challenge iframes set their own trusted-types policy; keep ours off.
+  'trusted-types': false as const,
+  'require-trusted-types-for': false as const
 }
 
 export default defineNuxtConfig({
@@ -239,8 +242,19 @@ export default defineNuxtConfig({
 
   security: {
     nonce: false,
+    // Host allowlists work better than SRI hashes for Turnstile + @nuxt/scripts on prerendered pages.
+    sri: false,
+    ssg: {
+      meta: true,
+      hashScripts: false,
+      hashStyles: false,
+      nitroHeaders: true,
+      exportToPresets: true
+    },
     headers: {
       crossOriginEmbedderPolicy: false,
+      crossOriginOpenerPolicy: 'unsafe-none',
+      crossOriginResourcePolicy: 'same-site',
       contentSecurityPolicy,
       referrerPolicy: 'strict-origin-when-cross-origin',
       xFrameOptions: 'DENY',
