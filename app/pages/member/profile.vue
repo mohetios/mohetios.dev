@@ -10,9 +10,10 @@ definePageMeta({
   requiredPermission: 'profile:view'
 })
 
-useMohetSeo({
+useMohetiosSeo({
   title: () => t('profile.title'),
-  description: () => t('profile.description')
+  description: () => t('profile.description'),
+  noindex: true
 })
 
 onMounted(async () => {

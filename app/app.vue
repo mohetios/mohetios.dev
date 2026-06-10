@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import * as locales from '@nuxt/ui/locale'
+import { normalizeSiteUrl, resolveSeoImageUrl } from '~/utils/seo'
 
 const { locale, loadLocaleMessages, t } = useI18n()
+const siteUrl = normalizeSiteUrl(String(useRuntimeConfig().public.siteUrl))
 const route = useRoute()
 const localeCookie = useCookie<typeof locale.value | null>('mohetios_locale', {
   path: '/',
@@ -55,14 +57,18 @@ useHead({
   }
 })
 
+const siteTitle = computed(() => `${t('site.name')} : ${t('site.tagline')}`)
+
 useSeoMeta({
-  title: () => t('site.name'),
+  title: siteTitle,
   description: () => t('site.description'),
-  ogTitle: () => t('site.name'),
+  ogTitle: siteTitle,
   ogDescription: () => t('site.description'),
-  ogSiteName: 'Mohetios.dev',
+  ogSiteName: () => t('site.name'),
   ogType: 'website',
-  twitterCard: 'summary'
+  ogImage: () => resolveSeoImageUrl(undefined, siteUrl),
+  twitterCard: 'summary_large_image',
+  twitterImage: () => resolveSeoImageUrl(undefined, siteUrl)
 })
 </script>
 

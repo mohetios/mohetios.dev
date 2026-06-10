@@ -507,6 +507,65 @@ Inspect `velite.config.ts` before changing content schemas or collection pattern
 
 Do not do expensive markdown parsing at request time if Velite/build-time output can serve the page.
 
+## Writing Voice (Mohetios)
+
+Reference article: `content/en/blog/building-small-email-client-cloudflare-workers.md` — treat it as the canonical voice model for Mohetios editorial content (about, contact, blog, lab notes).
+
+When drafting or revising user-facing prose in `content/` or aligned i18n copy, match this voice. Do not flatten it into generic SaaS marketing, resume brochure tone, or stiff technical manual prose.
+
+### Core stance
+
+- Write as **Mohetios** — first person, observational, honest, calm.
+- Prefer **thinking out loud** over announcing credentials.
+- Teach by **sequence**: warm the reader up, name the mental shift, then do the work.
+- State **scope early**: what this is, what it is not, where it stops on purpose.
+- Use **plain language** for ideas; use precise terms only when the reader needs them.
+
+### Rhythm and structure
+
+- Mix short paragraphs with **one-line beats** for contrast:
+
+  ```txt
+  Not Gmail.
+  Not a helpdesk.
+  Not an IMAP client.
+  ```
+
+- Open sections with a **question or observation**, not a feature list.
+- Bridge sections explicitly: “That is the map.” / “Warm-up done.” / “Once that lands…”
+- Use `txt` blocks for simple before/after or step order when a diagram would be heavy.
+- Use tables for **practical reference** (costs, capabilities, checklist), not decoration.
+- End with a **single clear idea** restated — not a hype CTA.
+
+### Sentence habits
+
+- Prefer: “I like…”, “For me…”, “The part I care about…”, “That changes the shape of the problem.”
+- Name trade-offs and limits honestly: “This article stops earlier — on purpose.”
+- Avoid filler: “leverage”, “synergy”, “cutting-edge”, “passionate about”, “world-class”.
+- Avoid corporate resume stacking (“15+ years delivering innovative solutions…”).
+- Contractions are fine in English when they sound natural.
+
+### Technical editorial content
+
+- One **mental model** per section before code or config.
+- Introduce jargon once, in context; do not assume the reader lives in Cloudflare docs.
+- Use real project examples (`hi@mohetios.dev`, Mohetios workers) when grounding abstractions.
+- Comments in tutorial code explain **why**, not what the syntax already shows.
+
+### Persian (`content/fa/`)
+
+- Match the **same voice and pacing**, not a literal word-for-word translation.
+- Keep first-person, calm, editorial Persian — not formal bureaucratic Farsi or marketing slogans.
+- Preserve RTL-friendly structure; short lines and fragment beats work well in Persian too.
+- Technical terms may stay in English when that is normal in Iranian dev writing (GraphQL, Worker, Cloudflare).
+
+### Do not
+
+- Rewrite the user’s natural storytelling into “professional” blandness.
+- Add emoji, exclamation-heavy hype, or fake urgency.
+- Invent biography, clients, or claims not supported by existing site content.
+- Change factual contact links, names, or stack lists without instruction.
+
 ## Internationalization Rules
 
 Preserve existing locale strategy.

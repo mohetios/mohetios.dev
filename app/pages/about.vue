@@ -8,11 +8,13 @@ if (!page.value || page.value.draft) {
   throw createError({ statusCode: 404, statusMessage: 'About page not found', fatal: true })
 }
 
-useMohetSeo({
-  title: () => `${page.value?.title} · Mohetios.dev`,
-  description: page.value.description,
-  path: () => page.value?.path,
-  image: () => page.value?.thumbnail
+useMohetiosSeo({
+  title: () => page.value?.title,
+  description: () => page.value?.description,
+  path: () => toPublicPath(page.value?.path || path.value),
+  image: () => page.value?.thumbnail,
+  locale: () => locale.value,
+  type: 'website'
 })
 </script>
 

@@ -14,9 +14,10 @@ definePageMeta({
 const { t, locale } = useI18n()
 const toast = useToast()
 
-useMohetSeo({
+useMohetiosSeo({
   title: () => t('dashboard.newsletter.title'),
-  description: () => t('dashboard.newsletter.description')
+  description: () => t('dashboard.newsletter.description'),
+  noindex: true
 })
 
 type SubscriberStatus =

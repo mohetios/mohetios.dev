@@ -15,9 +15,10 @@ definePageMeta({
 const { t } = useI18n()
 const toast = useToast()
 
-useMohetSeo({
+useMohetiosSeo({
   title: () => t('dashboard.analytics.title'),
-  description: () => t('dashboard.analytics.description')
+  description: () => t('dashboard.analytics.description'),
+  noindex: true
 })
 
 type AnalyticsTab = 'overview' | 'content' | 'search' | 'referrers' | 'performance'

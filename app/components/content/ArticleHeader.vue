@@ -13,7 +13,6 @@ const props = defineProps<{
   tags?: string[]
   backTo?: string
   backLabel?: string
-  showCopyLink?: boolean
 }>()
 
 const { locale, t } = useI18n()
@@ -42,20 +41,14 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
 <template>
   <header class="bg-default">
     <div class="mohetios-editorial-header pb-10 pt-8">
-      <div
-        v-if="backTo || showCopyLink"
-        class="mb-8 flex flex-wrap items-center justify-between gap-3"
-      >
+      <div v-if="backTo" class="mb-8">
         <NuxtLink
-          v-if="backTo"
           :to="backTo"
           class="inline-flex items-center gap-2 text-ui-sm text-muted transition-colors hover:text-highlighted"
         >
           <UIcon name="i-lucide-arrow-left" class="size-4" />
           {{ backLabel }}
         </NuxtLink>
-
-        <ContentCopyLink v-if="showCopyLink" />
       </div>
 
       <p v-if="status" class="text-ui-xs font-medium uppercase tracking-[0.2em] text-primary">

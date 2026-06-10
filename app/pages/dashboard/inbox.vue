@@ -20,9 +20,10 @@ definePageMeta({
 
 const { t } = useI18n()
 
-useMohetSeo({
+useMohetiosSeo({
   title: () => t('dashboard.inbox.title'),
-  description: () => t('dashboard.inbox.description')
+  description: () => t('dashboard.inbox.description'),
+  noindex: true
 })
 
 const route = useRoute()

@@ -34,7 +34,7 @@ const nextLocalePath = computed(() =>
     <template #left>
       <NuxtLink
         :to="localePath('/')"
-        class="site-logo-link group"
+        class="site-logo-link site-logo-link--header group min-w-0"
         :aria-label="t('site.name')"
       >
         <SiteLogo show-tagline size="header" />

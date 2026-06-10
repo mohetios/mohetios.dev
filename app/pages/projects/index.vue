@@ -12,10 +12,12 @@ const otherProjects = computed(() =>
   )
 )
 
-useMohetSeo({
-  title: () => t('content.projects.seoTitle'),
+useMohetiosSeo({
+  title: () => t('content.projects.title'),
   description: () => t('pages.projectsDescription'),
-  path: () => getLocalizedPublicPath('/projects', locale.value)
+  path: () => getLocalizedPublicPath('/projects', locale.value),
+  locale: () => locale.value,
+  type: 'website'
 })
 </script>
 

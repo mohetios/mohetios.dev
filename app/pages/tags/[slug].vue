@@ -76,17 +76,17 @@ function cardDate(item: TaggedContentItem) {
   return item.updated || item.date
 }
 
-useMohetSeo({
-  title: () => `${t('tags.titlePrefix')}${tagLabel.value} · Mohetios.dev`,
+useMohetiosSeo({
+  title: () => `${t('tags.titlePrefix')}${tagLabel.value}`,
   description: () =>
-    locale.value === 'fa'
-      ? `همه‌ی یادداشت‌های برچسب‌خورده با ${t('tags.titlePrefix')}${tagLabel.value} در Mohetios.dev.`
-      : `All notes tagged with ${t('tags.titlePrefix')}${tagLabel.value} across Mohetios.dev.`,
-  path: () => getLocalizedPublicPath(`/tags/${tagSlug.value}`, locale.value)
-})
-
-useSeoMeta({
-  robots: () => (matchedItems.value.length ? undefined : 'noindex, nofollow')
+    t('tags.seoDescription', {
+      tag: `${t('tags.titlePrefix')}${tagLabel.value}`,
+      site: t('site.name')
+    }),
+  path: () => getLocalizedPublicPath(`/tags/${tagSlug.value}`, locale.value),
+  locale: () => locale.value,
+  type: 'website',
+  noindex: () => !matchedItems.value.length
 })
 </script>
 

@@ -9,10 +9,12 @@ const activeNotes = computed(
     ).length
 )
 
-useMohetSeo({
-  title: () => t('content.lab.seoTitle'),
+useMohetiosSeo({
+  title: () => t('content.lab.title'),
   description: () => t('pages.labDescription'),
-  path: () => getLocalizedPublicPath('/lab', locale.value)
+  path: () => getLocalizedPublicPath('/lab', locale.value),
+  locale: () => locale.value,
+  type: 'website'
 })
 </script>
 

@@ -16,9 +16,10 @@ const { t, locale } = useI18n()
 const toast = useToast()
 const route = useRoute()
 
-useMohetSeo({
+useMohetiosSeo({
   title: () => t('dashboard.comments.title'),
-  description: () => t('dashboard.comments.description')
+  description: () => t('dashboard.comments.description'),
+  noindex: true
 })
 
 type CommentStatus = DashboardCommentDetail['status']

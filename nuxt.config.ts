@@ -18,7 +18,7 @@ const graphApiRateLimiter = {
   ...(isProduction ? { ipHeader: 'CF-Connecting-IP' as const } : {})
 }
 
-const siteUrl = 'https://mohetios.dev'
+const siteUrl = process.env.NUXT_PUBLIC_SITE_URL || 'https://mohetios.dev'
 
 const htmlCacheHeaders = {
   'Cache-Control': 'public, max-age=0, must-revalidate'
@@ -134,7 +134,9 @@ export default defineNuxtConfig({
     '@nuxtjs/turnstile',
     'nuxt-graphql-client',
     '@vite-pwa/nuxt',
-    'nuxt-security'
+    'nuxt-security',
+    '@stefanobartoletti/nuxt-social-share',
+    'nuxt-og-image'
   ],
 
   devtools: {
@@ -181,6 +183,12 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  vite: {
+    optimizeDeps: {
+      include: ['mermaid', 'zod']
+    }
+  },
+
   site: {
     url: siteUrl,
     name: 'Mohetios.dev'
@@ -203,6 +211,7 @@ export default defineNuxtConfig({
     cloudflareHostname: process.env.NUXT_CLOUDFLARE_HOSTNAME || 'mohetios.dev',
     enableRealAnalytics: process.env.NUXT_ENABLE_REAL_ANALYTICS || 'false',
     public: {
+      siteUrl,
       turnstile: {
         siteKey: turnstileSiteKey
       },
@@ -511,5 +520,13 @@ export default defineNuxtConfig({
 
   turnstile: {
     siteKey: turnstileSiteKey
+  },
+
+  socialShare: {
+    baseUrl: siteUrl
+  },
+
+  ogImage: {
+    zeroRuntime: true
   }
 })

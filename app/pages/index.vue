@@ -7,10 +7,12 @@ const projects = computed(() => getProjects(locale.value, 3))
 
 const featuredPost = computed(() => posts.value?.find((post) => post.thumbnail) || posts.value?.[0])
 
-useMohetSeo({
+useMohetiosSeo({
   title: () => t('site.name'),
   description: () => t('site.description'),
-  path: () => getLocalizedPublicPath('/', locale.value)
+  path: () => getLocalizedPublicPath('/', locale.value),
+  locale: () => locale.value,
+  type: 'website'
 })
 
 const workshopItems = computed(() => [
@@ -75,7 +77,7 @@ function formatDate(date?: string | Date) {
             <h1
               class="max-w-4xl text-5xl font-semibold tracking-tight text-highlighted sm:text-6xl lg:text-7xl"
             >
-              {{ t('home.hero.title') }}
+              {{ t('site.tagline') }}
             </h1>
             <p class="max-w-2xl text-lg leading-8 text-muted sm:text-xl">
               {{ t('home.hero.description') }}

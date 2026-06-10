@@ -23,9 +23,10 @@ const { t, locale } = useI18n()
 const route = useRoute()
 const toast = useToast()
 
-useMohetSeo({
+useMohetiosSeo({
   title: () => t('dashboard.leads.title'),
-  description: () => t('dashboard.leads.description')
+  description: () => t('dashboard.leads.description'),
+  noindex: true
 })
 
 const activeTab = computed(() => parseLeadTab(route.query.tab))

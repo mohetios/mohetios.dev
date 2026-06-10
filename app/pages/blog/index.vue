@@ -8,10 +8,12 @@ const tags = computed(() =>
   [...new Set(visiblePosts.value.flatMap((post) => post.tags || []))].slice(0, 12)
 )
 
-useMohetSeo({
-  title: () => t('content.blog.seoTitle'),
+useMohetiosSeo({
+  title: () => t('content.blog.title'),
   description: () => t('pages.blogDescription'),
-  path: () => getLocalizedPublicPath('/blog', locale.value)
+  path: () => getLocalizedPublicPath('/blog', locale.value),
+  locale: () => locale.value,
+  type: 'website'
 })
 </script>
 

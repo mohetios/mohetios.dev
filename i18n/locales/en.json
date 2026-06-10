@@ -8,7 +8,7 @@
     },
     "tagline": "Where ideas unfold into systems.",
     "description": "A technical notebook for software, product engineering, open-source work, and the practice of building useful systems.",
-    "footer": "Built slowly. Written honestly. Kept open."
+    "footer": "Everything in a wonderfully good way, must be."
   },
   "nav": {
     "home": "Home",
@@ -648,6 +648,7 @@
   "tags": {
     "eyebrow": "Tag",
     "titlePrefix": "#",
+    "seoDescription": "All notes tagged with {tag} across {site}.",
     "description": "{count} items across {types}.",
     "all": "All",
     "writing": "Writing",
@@ -710,8 +711,12 @@
     "share": {
       "title": "Share",
       "copyLink": "Copy link",
-      "copied": "Link copied",
-      "native": "Share"
+      "copied": "Copied",
+      "linkedin": "LinkedIn",
+      "x": "X",
+      "reddit": "Reddit",
+      "telegram": "Telegram",
+      "email": "Email"
     },
     "article": {
       "coreIdea": "Core idea",
@@ -724,7 +729,6 @@
       "metadata": "Article metadata"
     },
     "blog": {
-      "seoTitle": "Writing · Mohetios.dev",
       "eyebrow": "Writing archive",
       "title": "Writing",
       "description": "Notes on software, product engineering, architecture, and the craft of building with care.",
@@ -732,7 +736,6 @@
       "placeholder": "Featured article"
     },
     "lab": {
-      "seoTitle": "Lab · Mohetios.dev",
       "eyebrow": "Working notebook",
       "title": "Lab",
       "description": "A place for prototypes, technical experiments, research fragments, and ideas before they become polished work.",
@@ -745,7 +748,6 @@
       }
     },
     "projects": {
-      "seoTitle": "Projects · Mohetios.dev",
       "eyebrow": "Project archive",
       "title": "Projects",
       "description": "Open-source products, tools, prototypes, and systems shaped by real constraints.",
@@ -884,14 +886,14 @@
       "website": "Website",
       "websitePlaceholder": "Optional",
       "message": "Message",
-      "messagePlaceholder": "Tell me what you are building, what you need, and what kind of collaboration you have in mind.",
-      "privacyNote": "Your message goes directly to my private inbox. No newsletter, no automated marketing.",
-      "submit": "Start a conversation",
+      "messagePlaceholder": "What exists today? What is blocked? What would make the next step clearer?",
+      "privacyNote": "Your message goes straight to my private inbox. No newsletter. No automated marketing.",
+      "submit": "Send message",
       "optionalContext": "Optional context"
     },
     "success": {
       "title": "Message received.",
-      "description": "Thanks for reaching out. I will review the context and reply if there is a clear fit.",
+      "description": "Thanks for the context. I will read it carefully and reply when there is a clear fit.",
       "sendAnother": "Send another message"
     },
     "error": {
@@ -902,9 +904,9 @@
       "verificationDescription": "Please complete the verification before sending your message."
     },
     "sidebar": {
-      "label": "Open for thoughtful work",
-      "title": "Useful context helps me reply better.",
-      "description": "A clear message about the problem, product, timeline, and expected role is more useful than a generic intro."
+      "label": "Useful context first",
+      "title": "A short, specific note beats a long pitch.",
+      "description": "Tell me what exists today, what is blocked, and what kind of help would clarify the next step."
     },
     "channels": {
       "email": {
@@ -916,8 +918,8 @@
         "description": "Product engineering, frontend architecture, AI workflows, dashboards, and practical technical writing."
       },
       "response": {
-        "title": "Response style",
-        "description": "I prioritize specific messages with real context over broad or automated outreach."
+        "title": "How I reply",
+        "description": "Specific messages with real context come first. Generic outreach usually does not."
       }
     },
     "focus": {

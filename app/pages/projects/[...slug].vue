@@ -26,14 +26,16 @@ const relatedProjects = computed(() => {
     .slice(0, 2)
 })
 
-useMohetSeo({
-  title: () => `${project.value?.title} · ${t('nav.projects')} · Mohetios.dev`,
-  description: project.value.description,
-  path: () => project.value?.path,
+const { canonicalUrl: shareUrl } = useContentSeo({
+  title: () => project.value?.title,
+  description: () => project.value?.description,
+  path: () => toPublicPath(project.value?.path || path.value),
   image: () => project.value?.thumbnail,
-  type: 'article',
-  publishedTime: () => project.value?.date,
-  modifiedTime: () => project.value?.updated
+  locale: () => locale.value,
+  publishedAt: () => project.value?.date,
+  updatedAt: () => project.value?.updated,
+  tags: () => project.value?.tags || [],
+  category: () => project.value?.status || t('nav.projects')
 })
 </script>
 
@@ -64,6 +66,14 @@ useMohetSeo({
       :back-to="localePath('/projects')"
       :back-label="t('content.actions.backToProjects')"
     >
+      <template #share>
+        <ContentSocialShare
+          :title="project.title"
+          :description="project.description"
+          :url="shareUrl"
+        />
+      </template>
+
       <template #comments>
         <ContentComments
           target-type="PROJECT"

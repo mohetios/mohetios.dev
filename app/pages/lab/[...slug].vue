@@ -15,14 +15,16 @@ const tocLinks = computed(() => getTocNavLinks(note.value?.tocData))
 const showToc = computed(() => shouldShowToc(note.value?.tocData))
 const surround = computed(() => getSurround(notes.value, path.value))
 
-useMohetSeo({
-  title: () => `${note.value?.title} · ${t('badges.lab')} · Mohetios.dev`,
-  description: note.value.description,
-  path: () => note.value?.path,
+const { canonicalUrl: shareUrl } = useContentSeo({
+  title: () => note.value?.title,
+  description: () => note.value?.description,
+  path: () => toPublicPath(note.value?.path || path.value),
   image: () => note.value?.thumbnail,
-  type: 'article',
-  publishedTime: () => note.value?.date,
-  modifiedTime: () => note.value?.updated
+  locale: () => locale.value,
+  publishedAt: () => note.value?.date,
+  updatedAt: () => note.value?.updated,
+  tags: () => note.value?.tags || [],
+  category: () => note.value?.category || note.value?.status || t('badges.lab')
 })
 </script>
 
@@ -55,6 +57,14 @@ useMohetSeo({
             {{ t('content.lab.workingNote') }}
           </p>
         </div>
+      </template>
+
+      <template #share>
+        <ContentSocialShare
+          :title="note.title"
+          :description="note.description"
+          :url="shareUrl"
+        />
       </template>
 
       <template #comments>

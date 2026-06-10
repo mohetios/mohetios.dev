@@ -39,14 +39,16 @@ const readingTime = computed(() => {
 
 const articleStatus = computed(() => post.value?.category || post.value?.status || t('badges.blog'))
 
-useMohetSeo({
-  title: () => `${post.value?.title} · ${t('badges.blog')} · Mohetios.dev`,
-  description: post.value.description,
-  path: () => post.value?.path,
+const { canonicalUrl: shareUrl } = useContentSeo({
+  title: () => post.value?.title,
+  description: () => post.value?.description,
+  path: () => toPublicPath(post.value?.path || path.value),
   image: () => post.value?.thumbnail,
-  type: 'article',
-  publishedTime: () => post.value?.date,
-  modifiedTime: () => post.value?.updated
+  locale: () => locale.value,
+  publishedAt: () => post.value?.date,
+  updatedAt: () => post.value?.updated,
+  tags: () => post.value?.tags || [],
+  category: () => articleStatus.value
 })
 </script>
 
@@ -76,7 +78,6 @@ useMohetSeo({
       :tags="post.tags"
       :back-to="localePath('/blog')"
       :back-label="t('content.actions.backToBlog')"
-      show-copy-link
     />
 
     <ContentShell
@@ -87,6 +88,14 @@ useMohetSeo({
       :summary="post.summary"
       :surround="surround"
     >
+      <template #share>
+        <ContentSocialShare
+          :title="post.title"
+          :description="post.description"
+          :url="shareUrl"
+        />
+      </template>
+
       <template #comments>
         <ContentComments
           target-type="BLOG_POST"

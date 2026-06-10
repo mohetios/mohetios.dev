@@ -27,9 +27,11 @@ useDashboardPageToolbar({
 
 const { data: dashboardHome, pending: isLoading, error, refresh } = await useDashboardHome(range)
 
-useMohetSeo({
+useMohetiosSeo({
   title: () => t('dashboard.home.title'),
-  description: () => t('dashboard.home.description')
+  description: () => t('dashboard.home.description'),
+  locale: () => locale.value,
+  noindex: true
 })
 
 const summaryCards = computed<DashboardSummaryCard[]>(() => {

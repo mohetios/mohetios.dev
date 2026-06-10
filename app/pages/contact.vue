@@ -12,11 +12,13 @@ if (!page.value || page.value.draft) {
   throw createError({ statusCode: 404, statusMessage: 'Contact page not found', fatal: true })
 }
 
-useMohetSeo({
-  title: () => `${page.value?.title} · Mohetios.dev`,
-  description: page.value.description,
-  path: () => page.value?.path,
-  image: () => page.value?.thumbnail
+useMohetiosSeo({
+  title: () => page.value?.title,
+  description: () => page.value?.description,
+  path: () => toPublicPath(page.value?.path || path.value),
+  image: () => page.value?.thumbnail,
+  locale: () => locale.value,
+  type: 'website'
 })
 
 const contactTopics = computed(() => [
@@ -341,33 +343,39 @@ async function onSubmit() {
                 </UFormField>
               </div>
 
-              <div class="space-y-4 border-t border-neutral-200 pt-6 dark:border-neutral-800">
-                <NuxtTurnstile
-                  ref="turnstile"
-                  v-model="turnstileToken"
-                  :options="{
-                    action: 'contact_message',
-                    theme: 'auto',
-                    language: locale
-                  }"
-                />
+              <div class="space-y-3 border-t border-neutral-200 pt-6 dark:border-neutral-800">
+                <div
+                  class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6"
+                >
+                  <div class="contact-form__turnstile flex min-h-16 items-center">
+                    <NuxtTurnstile
+                      ref="turnstile"
+                      v-model="turnstileToken"
+                      element="span"
+                      :options="{
+                        action: 'contact_message',
+                        theme: 'auto',
+                        language: locale,
+                        appearance: 'interaction-only'
+                      }"
+                    />
+                  </div>
 
-                <p class="max-w-xl text-xs leading-6 text-neutral-500 dark:text-neutral-500">
-                  {{ t('contact.form.privacyNote') }}
-                </p>
-
-                <div class="flex justify-end">
                   <UButton
                     type="submit"
                     size="md"
                     icon="i-lucide-send"
                     :loading="isSubmitting"
-                    :disabled="!turnstileToken"
-                    class="px-5"
+                    :disabled="!turnstileToken || isSubmitting"
+                    class="w-full shrink-0 px-5 sm:w-auto sm:min-w-36"
                   >
                     {{ t('contact.form.submit') }}
                   </UButton>
                 </div>
+
+                <p class="max-w-xl text-xs leading-6 text-neutral-500 dark:text-neutral-500">
+                  {{ t('contact.form.privacyNote') }}
+                </p>
               </div>
             </UForm>
           </UCard>
@@ -444,3 +452,15 @@ async function onSubmit() {
     </UPageBody>
   </UPage>
 </template>
+
+<style scoped>
+.contact-form__turnstile :deep(> span) {
+  display: block;
+  min-height: 0;
+  line-height: 0;
+}
+
+.contact-form__turnstile :deep(iframe) {
+  display: block;
+}
+</style>

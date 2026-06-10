@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { buildCanonicalUrl, normalizeSiteUrl, resolveAbsoluteUrl, toIsoDate } from '~/utils/seo'
+
 const props = defineProps<{
   kind: 'blog' | 'lab' | 'project'
   title: string
@@ -9,24 +11,11 @@ const props = defineProps<{
   updated?: string | Date
 }>()
 
-const siteUrl = 'https://mohetios.dev'
-
-function toIsoDate(value?: string | Date) {
-  if (!value) {
-    return undefined
-  }
-
-  return new Date(value).toISOString()
-}
-
-function absoluteUrl(path: string) {
-  const normalized = path.startsWith('/') ? path : `/${path}`
-
-  return new URL(normalized, siteUrl).toString()
-}
+const { t } = useI18n()
+const siteUrl = normalizeSiteUrl(String(useRuntimeConfig().public.siteUrl))
 
 const jsonLd = computed(() => {
-  const pageUrl = absoluteUrl(props.path)
+  const pageUrl = buildCanonicalUrl(toPublicPath(props.path), siteUrl)
   const schemaType = props.kind === 'blog' ? 'BlogPosting' : 'Article'
 
   return {
@@ -34,7 +23,7 @@ const jsonLd = computed(() => {
     '@type': schemaType,
     headline: props.title,
     description: props.description,
-    image: props.image ? absoluteUrl(props.image) : undefined,
+    image: props.image ? resolveAbsoluteUrl(props.image, siteUrl) : undefined,
     datePublished: toIsoDate(props.date),
     dateModified: toIsoDate(props.updated || props.date),
     author: {
@@ -43,7 +32,7 @@ const jsonLd = computed(() => {
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Mohetios.dev'
+      name: t('site.name')
     },
     mainEntityOfPage: {
       '@type': 'WebPage',

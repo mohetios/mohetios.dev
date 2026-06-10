@@ -45,6 +45,10 @@ withDefaults(
       <article class="prose-mohetios">
         <ContentHtml :html="content" />
       </article>
+
+      <div v-if="$slots.share" class="mt-10">
+        <slot name="share" />
+      </div>
     </section>
 
     <div
