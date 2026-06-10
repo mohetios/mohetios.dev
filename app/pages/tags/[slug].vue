@@ -81,7 +81,7 @@ useMohetiosSeo({
   description: () =>
     t('tags.seoDescription', {
       tag: `${t('tags.titlePrefix')}${tagLabel.value}`,
-      site: t('site.name')
+      site: getSeoSiteName(t)
     }),
   path: () => getLocalizedPublicPath(`/tags/${tagSlug.value}`, locale.value),
   locale: () => locale.value,

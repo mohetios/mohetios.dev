@@ -41,6 +41,14 @@ export function cleanSeoDescription(value?: MaybeString, fallback = '') {
     .slice(0, 240)
 }
 
+export function getSeoSiteName(t: (key: string) => string) {
+  return `${t('site.logo.part1')}${t('site.logo.part2')}`.trim()
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 export function formatSeoTitle({
   title,
   siteName,
@@ -52,10 +60,11 @@ export function formatSeoTitle({
   tagline: string
   isHome?: boolean
 }) {
-  const pageTitle = String(title || '')
-    .replace(new RegExp(`^\\s*${siteName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*[:·|-]\\s*`, 'i'), '')
-    .replace(new RegExp(`\\s*[:·|-]\\s*${siteName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`, 'i'), '')
-    .trim()
+  const legacyNames = [siteName, 'Mohetios', 'Mohetios.dev', 'mohetios.dev'].map(escapeRegExp)
+  const legacyPrefix = new RegExp(`^\\s*(?:${legacyNames.join('|')})\\s*[:·|-]\\s*`, 'i')
+  const legacySuffix = new RegExp(`\\s*[:·|-]\\s*(?:${legacyNames.join('|')})\\s*$`, 'i')
+
+  const pageTitle = String(title || '').replace(legacyPrefix, '').replace(legacySuffix, '').trim()
 
   if (isHome || !pageTitle || pageTitle === siteName) {
     return `${siteName} : ${tagline}`

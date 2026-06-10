@@ -6,9 +6,10 @@ const labNotes = computed(() => getLabNotes(locale.value, 3))
 const projects = computed(() => getProjects(locale.value, 3))
 
 const featuredPost = computed(() => posts.value?.find((post) => post.thumbnail) || posts.value?.[0])
+const siteWordmark = computed(() => getSeoSiteName(t))
 
 useMohetiosSeo({
-  title: () => t('site.name'),
+  title: () => siteWordmark.value,
   description: () => t('site.description'),
   path: () => getLocalizedPublicPath('/', locale.value),
   locale: () => locale.value,
@@ -71,7 +72,6 @@ function formatDate(date?: string | Date) {
     <section class="px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-28">
       <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
         <div class="max-w-3xl space-y-7">
-          <UBadge color="neutral" variant="outline"> Mohetios.dev </UBadge>
 
           <div class="space-y-5">
             <h1
@@ -103,7 +103,6 @@ function formatDate(date?: string | Date) {
               <p class="text-xs font-medium uppercase tracking-widest text-muted">
                 {{ t('home.workshop.label') }}
               </p>
-              <p class="mt-2 text-lg font-semibold text-highlighted">Mohetios.dev</p>
             </div>
             <UIcon name="i-lucide-square-terminal" class="size-7 text-muted" />
           </div>

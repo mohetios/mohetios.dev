@@ -4,6 +4,7 @@ import {
   buildCanonicalUrl,
   cleanSeoDescription,
   formatSeoTitle,
+  getSeoSiteName,
   normalizePath,
   normalizeSiteUrl,
   resolveSeoImageUrl,
@@ -46,13 +47,12 @@ export function useMohetiosSeo(input: MohetiosSeoInput) {
   const { locale, locales, t } = useI18n()
 
   const siteUrl = normalizeSiteUrl(String(config.public.siteUrl))
-  const siteName = computed(() => t('site.name'))
+  const siteName = computed(() => getSeoSiteName(t))
 
-  const canonicalPath = computed(() =>
-    toPublicPath(normalizePath(toValue(input.path) || route.path))
-  )
+  const pagePath = computed(() => normalizePath(toValue(input.path) || route.path))
+  const canonicalPath = computed(() => toPublicPath(pagePath.value))
   const canonicalUrl = computed(() => buildCanonicalUrl(canonicalPath.value, siteUrl))
-  const isHome = computed(() => canonicalPath.value === '/')
+  const isHome = computed(() => stripLocalePrefix(pagePath.value) === '/')
   const title = computed(() =>
     formatSeoTitle({
       title: toValue(input.title),

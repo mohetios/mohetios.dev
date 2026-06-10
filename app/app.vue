@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as locales from '@nuxt/ui/locale'
-import { normalizeSiteUrl, resolveSeoImageUrl } from '~/utils/seo'
+import { getSeoSiteName, normalizeSiteUrl, resolveSeoImageUrl } from '~/utils/seo'
 
 const { locale, loadLocaleMessages, t } = useI18n()
 const siteUrl = normalizeSiteUrl(String(useRuntimeConfig().public.siteUrl))
@@ -57,14 +57,14 @@ useHead({
   }
 })
 
-const siteTitle = computed(() => `${t('site.name')} : ${t('site.tagline')}`)
+const siteTitle = computed(() => `${getSeoSiteName(t)} : ${t('site.tagline')}`)
 
 useSeoMeta({
   title: siteTitle,
   description: () => t('site.description'),
   ogTitle: siteTitle,
   ogDescription: () => t('site.description'),
-  ogSiteName: () => t('site.name'),
+  ogSiteName: () => getSeoSiteName(t),
   ogType: 'website',
   ogImage: () => resolveSeoImageUrl(undefined, siteUrl),
   twitterCard: 'summary_large_image',

@@ -1,5 +1,6 @@
 import type { MaybeRefOrGetter } from 'vue'
 import type { MohetiosSeoInput } from '~/composables/useMohetiosSeo'
+import { getSeoSiteName } from '~/utils/seo'
 
 export type ContentSeoInput = Omit<MohetiosSeoInput, 'type' | 'ogComponent'> & {
   category?: MaybeRefOrGetter<string | undefined>
@@ -17,7 +18,7 @@ export function useContentSeo(input: ContentSeoInput) {
           description: toValue(input.description),
           category: toValue(input.category),
           locale: toValue(input.locale),
-          siteName: t('site.name'),
+          siteName: getSeoSiteName(t),
           tagline: t('site.tagline')
         }
       } as const)
