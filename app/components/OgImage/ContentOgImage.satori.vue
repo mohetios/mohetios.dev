@@ -12,79 +12,113 @@ const props = defineProps<{
   tagline: string
 }>()
 
+// Satori only renders embedded fonts. Inter ships with nuxt-og-image; Farhang/Vazirmatn
+// are not available at OG prerender, so every locale uses the site default sans stack.
+const OG_FONT_FAMILY =
+  'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif'
+
 const isRtl = computed(() => props.locale === 'fa')
+const textAlign = computed(() => (isRtl.value ? 'right' : 'left') as 'right' | 'left')
+
 const displayDescription = computed(() =>
   String(props.description || '')
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 120)
 )
+
+const rootStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  width: '100%',
+  height: '100%',
+  padding: '64px',
+  backgroundColor: '#fcfbf8',
+  color: '#1a2b22',
+  fontFamily: OG_FONT_FAMILY
+}
+
+const headerStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: '24px'
+}
+
+const siteNameStyle = computed(() => ({
+  fontSize: '28px',
+  fontWeight: 500,
+  letterSpacing: isRtl.value ? '0' : '0.08em',
+  color: '#3f6d58',
+  textTransform: isRtl.value ? 'none' : 'uppercase',
+  fontFamily: OG_FONT_FAMILY,
+  margin: 0
+}))
+
+const categoryStyle = {
+  fontSize: '22px',
+  color: '#4d6f5d',
+  fontFamily: OG_FONT_FAMILY,
+  margin: 0,
+  padding: '8px 20px',
+  border: '1px solid #d7e4dc',
+  borderRadius: '9999px',
+  backgroundColor: 'rgba(255, 255, 255, 0.7)'
+}
+
+const titleStyle = computed(() => ({
+  fontSize: '68px',
+  lineHeight: 1.08,
+  fontWeight: 600,
+  letterSpacing: isRtl.value ? '-0.01em' : '-0.03em',
+  color: '#102018',
+  fontFamily: OG_FONT_FAMILY,
+  margin: 0,
+  textAlign: textAlign.value,
+  maxWidth: '980px'
+}))
+
+const descriptionStyle = computed(() => ({
+  fontSize: '30px',
+  lineHeight: 1.45,
+  color: '#4f6358',
+  fontFamily: OG_FONT_FAMILY,
+  margin: '32px 0 0',
+  textAlign: textAlign.value,
+  maxWidth: '900px'
+}))
+
+const taglineStyle = computed(() => ({
+  fontSize: '24px',
+  color: '#6a7f74',
+  fontFamily: OG_FONT_FAMILY,
+  margin: 0,
+  textAlign: textAlign.value
+}))
 </script>
 
 <template>
-  <div
-    class="relative flex h-full w-full flex-col justify-between overflow-hidden bg-[#fcfbf8] p-16 text-[#1a2b22]"
-    :dir="isRtl ? 'rtl' : 'ltr'"
-  >
-    <div
-      class="pointer-events-none absolute inset-0 opacity-[0.35]"
-      style="
-        background-image:
-          radial-gradient(circle at 20% 20%, rgba(34, 94, 72, 0.08), transparent 42%),
-          radial-gradient(circle at 80% 0%, rgba(34, 94, 72, 0.06), transparent 36%),
-          linear-gradient(
-            135deg,
-            rgba(34, 94, 72, 0.04) 0%,
-            rgba(34, 94, 72, 0) 45%,
-            rgba(34, 94, 72, 0.05) 100%
-          );
-      "
-    />
-    <div
-      class="pointer-events-none absolute inset-0 opacity-20"
-      style="
-        background-image: repeating-linear-gradient(
-          45deg,
-          rgba(34, 94, 72, 0.08) 0,
-          rgba(34, 94, 72, 0.08) 1px,
-          transparent 1px,
-          transparent 18px
-        );
-      "
-    />
-
-    <div class="relative z-10 flex items-center justify-between gap-6">
-      <p class="text-[28px] font-medium tracking-[0.08em] text-[#3f6d58] uppercase">
+  <div :style="rootStyle" :dir="isRtl ? 'rtl' : 'ltr'">
+    <div :style="headerStyle">
+      <p :style="siteNameStyle">
         {{ siteName }}
       </p>
-      <p
-        v-if="category"
-        class="rounded-full border border-[#d7e4dc] bg-white/70 px-5 py-2 text-[22px] text-[#4d6f5d]"
-      >
+      <p v-if="category" :style="categoryStyle">
         {{ category }}
       </p>
     </div>
 
-    <div class="relative z-10 mt-10 max-w-[980px] space-y-8">
-      <h1
-        class="text-[68px] leading-[1.08] font-semibold tracking-[-0.03em] text-[#102018]"
-        :class="isRtl ? 'text-right' : 'text-left'"
-      >
+    <div>
+      <h1 :style="titleStyle">
         {{ title }}
       </h1>
-      <p
-        v-if="displayDescription"
-        class="max-w-[900px] text-[30px] leading-[1.45] text-[#4f6358]"
-        :class="isRtl ? 'text-right' : 'text-left'"
-      >
+      <p v-if="displayDescription" :style="descriptionStyle">
         {{ displayDescription }}
       </p>
     </div>
 
-    <p
-      class="relative z-10 text-[24px] text-[#6a7f74]"
-      :class="isRtl ? 'text-right' : 'text-left'"
-    >
+    <p :style="taglineStyle">
       {{ tagline }}
     </p>
   </div>

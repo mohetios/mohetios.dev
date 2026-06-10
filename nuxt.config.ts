@@ -186,6 +186,19 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: ['mermaid', 'zod']
+    },
+    build: {
+      sourcemap: false,
+      rollupOptions: {
+        onwarn(warning, warn) {
+          // Tailwind/Nuxt CSS transforms don't emit sourcemaps; harmless when maps are off.
+          if (warning.code === 'SOURCEMAP_BROKEN') {
+            return
+          }
+
+          warn(warning)
+        }
+      }
     }
   },
 
