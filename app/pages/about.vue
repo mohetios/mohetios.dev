@@ -22,6 +22,8 @@ useMohetSeo({
 
     <UPageBody>
       <article class="mx-auto max-w-3xl">
+        <ContentCodeEnhancer />
+        <ContentMermaidEnhancer />
         <ContentHtml :html="page.content" class="prose-mohetios" />
       </article>
 

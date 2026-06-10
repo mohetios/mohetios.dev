@@ -871,6 +871,67 @@ html[lang='fa'] .prose-mohetios blockquote {
   text-align: center;
 }
 
+.prose-mohetios .mohetios-mermaid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-block: 1.75rem;
+  overflow-x: auto;
+  padding-block: 0.25rem;
+  background: transparent;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.prose-mohetios .mohetios-mermaid svg {
+  display: block;
+  flex: 0 0 auto;
+  height: auto;
+  max-width: 100%;
+  margin-inline: auto;
+  background: transparent !important;
+}
+
+.prose-mohetios .mohetios-mermaid .node rect,
+.prose-mohetios .mohetios-mermaid .node circle,
+.prose-mohetios .mohetios-mermaid .node ellipse,
+.prose-mohetios .mohetios-mermaid .node polygon {
+  fill: transparent;
+  stroke: var(--color-accent);
+  stroke-width: 1.5px;
+}
+
+.prose-mohetios .mohetios-mermaid .cluster rect {
+  fill: transparent;
+  stroke: color-mix(in oklab, var(--color-primary) 24%, transparent);
+  stroke-width: 1px;
+  stroke-dasharray: 5 4;
+}
+
+.prose-mohetios .mohetios-mermaid .node .label,
+.prose-mohetios .mohetios-mermaid .node text,
+.prose-mohetios .mohetios-mermaid .edgeLabel,
+.prose-mohetios .mohetios-mermaid .edgeLabel text,
+.prose-mohetios .mohetios-mermaid .cluster-label {
+  color: var(--color-text);
+  fill: var(--color-text);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.prose-mohetios .mohetios-mermaid .edgeLabel rect {
+  fill: transparent;
+  stroke: none;
+}
+
+html[lang='fa'] .prose-mohetios .mohetios-mermaid,
+html[dir='rtl'] .prose-mohetios .mohetios-mermaid {
+  font-family: var(--font-fa);
+}
+
 .prose-mohetios hr {
   margin-block: 3rem;
   border: 0;

@@ -1,4 +1,5 @@
 import rehypeShiki from '@shikijs/rehype'
+import { rehypeMermaidBlocks } from './velite/rehype-mermaid-blocks'
 import {
   transformerNotationDiff,
   transformerNotationErrorLevel,
@@ -117,6 +118,7 @@ export default defineConfig({
   collections: { blog, lab, projects, pages },
   markdown: {
     rehypePlugins: [
+      rehypeMermaidBlocks,
       [
         // Velite bundles rehype plugins with incompatible @types — safe at runtime.
         rehypeShiki as never,

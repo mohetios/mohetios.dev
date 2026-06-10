@@ -34,6 +34,7 @@ withDefaults(
   <UPageBody>
     <section class="mohetios-editorial-column min-w-0 py-8">
       <ContentCodeEnhancer />
+      <ContentMermaidEnhancer />
 
       <slot name="notice" />
 
