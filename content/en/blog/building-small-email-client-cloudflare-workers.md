@@ -11,21 +11,19 @@ tags:
   - serverless
 ---
 
-# Receive and Send Email on Your Domain with a Cloudflare Worker
-
 ## Opening + idea
 
 Cloudflare has a habit I have noticed over the years.
 
 They often take something that already exists, rebuild the developer experience around it, and make it feel easier to use inside the modern web ecosystem.
 
-Workers did that for serverless logic.  
-Pages did that for deployment.  
+Workers did that for serverless logic.
+Pages did that for deployment.
 D1, R2, KV, Queues, and Durable Objects all follow the same pattern in different ways.
 
 Email is starting to move in that direction too.
 
-If you have only ever *used* email — Gmail, Outlook, whatever — it can feel like a black box. Mail arrives. You read it. That is the whole experience from the outside.
+If you have only ever _used_ email — Gmail, Outlook, whatever — it can feel like a black box. Mail arrives. You read it. That is the whole experience from the outside.
 
 For your own domain, it often felt the same way for a long time: create an address, forward it to your personal inbox, done. No code. No server. Just a pipe.
 
@@ -53,7 +51,7 @@ Before:  email arrives → gets forwarded → you read it somewhere else
 After:   email arrives → your code runs → you decide what happens next
 ```
 
-Now the email does not have to be only “forwarded.”  
+Now the email does not have to be only “forwarded.”
 It can become part of your application.
 
 This article is the warm-up for that idea — not a full inbox, not Postfix, not a mail-server weekend. Just the smallest version where the shift feels real: **mail to your domain becomes an event your code can handle.**
@@ -72,9 +70,9 @@ For email, the trigger is different. Someone sends mail to your domain, and Clou
 
 That is the whole idea of this article: **one Worker file, two entry points.**
 
-| Handler | Triggered by | Used for |
-|---------|--------------|----------|
-| `email()` | Someone mailing your domain | Receive, parse, store, forward |
+| Handler   | Triggered by                   | Used for                        |
+| --------- | ------------------------------ | ------------------------------- |
+| `email()` | Someone mailing your domain    | Receive, parse, store, forward  |
 | `fetch()` | HTTP requests (curl, your app) | Send mail, list stored messages |
 
 You do not need D1, Queues, KV, or the rest of the Cloudflare stack on day one. One domain address and one Worker are enough to learn the system.
@@ -85,8 +83,8 @@ Once that lands, the rest of this note is easier to read.
 
 Before building a dashboard inbox for Mohetios, I wanted the smallest version that still feels real — the version I could understand in an afternoon before adding product layers on top.
 
-Not Gmail.  
-Not a helpdesk.  
+Not Gmail.
+Not a helpdesk.
 Not an IMAP client.
 
 Just a programmable email layer for one domain address — something small enough to trust, useful enough to keep.
@@ -100,13 +98,13 @@ Think of it as four yes/no questions. If you can answer yes to each one, the fou
 
 No dashboard yet. No GraphQL yet. No queue yet. Those come after the core feels obvious.
 
-| Capability | How you test it |
-|------------|-----------------|
+| Capability                          | How you test it                                 |
+| ----------------------------------- | ----------------------------------------------- |
 | Receive mail on `hi@yourdomain.com` | Send a real email from Gmail or another account |
-| Parse sender, subject, body | Check Worker logs after receive |
-| Send outbound mail | `curl POST /send` |
-| Store messages (optional) | Enable D1, then `GET /messages` |
-| List stored mail (optional) | `curl GET /messages` |
+| Parse sender, subject, body         | Check Worker logs after receive                 |
+| Send outbound mail                  | `curl POST /send`                               |
+| Store messages (optional)           | Enable D1, then `GET /messages`                 |
+| List stored mail (optional)         | `curl GET /messages`                            |
 
 When those four questions have answers, you have something real — even without a UI.
 
@@ -160,13 +158,13 @@ That is the map. Next: what you actually need on your machine and in Cloudflare.
 
 Nothing exotic for the first version:
 
-| Item | Why |
-|------|-----|
-| Cloudflare account | Host the Worker and email routing |
-| Domain on Cloudflare | Email Routing works at the domain level |
-| Email Routing enabled | Lets Cloudflare receive mail for your domain |
-| Node.js + Wrangler | Create and deploy the Worker locally |
-| `postal-mime` | Parse raw email into subject, body, and addresses |
+| Item                  | Why                                               |
+| --------------------- | ------------------------------------------------- |
+| Cloudflare account    | Host the Worker and email routing                 |
+| Domain on Cloudflare  | Email Routing works at the domain level           |
+| Email Routing enabled | Lets Cloudflare receive mail for your domain      |
+| Node.js + Wrangler    | Create and deploy the Worker locally              |
+| `postal-mime`         | Parse raw email into subject, body, and addresses |
 
 Optional later:
 
@@ -183,11 +181,11 @@ Pricing is the part I always want to know before I commit to a stack — not aft
 
 The good news for this tutorial: **most of the learning path is cheap or free.** The costs map cleanly to the three paths from [How data flows](#how-data-flows).
 
-| Path | What runs | Free plan | Paid plan ($5/mo minimum) |
-|------|-----------|-----------|---------------------------|
-| **Path 1 — Receive** | Email Routing + `email()` | Inbound routing is unlimited. Each Worker run counts as a request (100k/day free). | Same inbound rules. Higher CPU limits for heavier parsing. |
-| **Path 2 — Send** | `fetch()` + `env.EMAIL.send()` | Not available for arbitrary recipients. Verified destination sends are free. | 3,000 outbound emails/month included, then about $0.35 per 1,000. |
-| **Path 3 — List** | `fetch()` + D1 reads | D1 free tier is enough for a toy inbox (millions of reads/day). | Higher included D1 usage on Paid. |
+| Path                 | What runs                      | Free plan                                                                          | Paid plan ($5/mo minimum)                                         |
+| -------------------- | ------------------------------ | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| **Path 1 — Receive** | Email Routing + `email()`      | Inbound routing is unlimited. Each Worker run counts as a request (100k/day free). | Same inbound rules. Higher CPU limits for heavier parsing.        |
+| **Path 2 — Send**    | `fetch()` + `env.EMAIL.send()` | Not available for arbitrary recipients. Verified destination sends are free.       | 3,000 outbound emails/month included, then about $0.35 per 1,000. |
+| **Path 3 — List**    | `fetch()` + D1 reads           | D1 free tier is enough for a toy inbox (millions of reads/day).                    | Higher included D1 usage on Paid.                                 |
 
 A few plain-language notes:
 
@@ -272,8 +270,8 @@ That small sequencing choice saves a lot of confusion later. If receive does not
 
 Now we can write code — but still keep the first goal small.
 
-We are not building an inbox.  
-We are not designing tables.  
+We are not building an inbox.
+We are not designing tables.
 We are creating an empty Worker project and preparing the config file we will grow over the next steps.
 
 From your terminal:
@@ -348,11 +346,11 @@ Go back to Email Routing in the dashboard:
 Email Routing → Routing rules → Create address
 ```
 
-| Field | Value |
-|-------|-------|
+| Field   | Value               |
+| ------- | ------------------- |
 | Address | `hi@yourdomain.com` |
-| Action | Send to a Worker |
-| Worker | `email-worker-demo` |
+| Action  | Send to a Worker    |
+| Worker  | `email-worker-demo` |
 
 From the outside, nothing changes. People still email a normal address.
 
@@ -398,8 +396,8 @@ export default {
   async email(message, env, ctx): Promise<void> {
     // These fields are free — no parsing needed yet
     console.log('Email received')
-    console.log('From:', message.from)       // envelope sender
-    console.log('To:', message.to)           // your domain address
+    console.log('From:', message.from) // envelope sender
+    console.log('To:', message.to) // your domain address
     console.log('Subject:', message.headers.get('subject'))
 
     // forward() only works to a verified destination address in Email Routing.
@@ -523,12 +521,12 @@ export default {
     // Prefer parsed fields; fall back to envelope/headers when missing
     const subject = parsed.subject || header(message, 'subject') || '(no subject)'
     const from = parsed.from?.address || message.from
-    const text = parsed.text || ''   // plain-text body
-    const html = parsed.html || ''   // HTML body (may be empty)
+    const text = parsed.text || '' // plain-text body
+    const html = parsed.html || '' // HTML body (may be empty)
 
     console.log('From:', from)
     console.log('Subject:', subject)
-    console.log('Text:', text.slice(0, 200))  // preview — full body can be large
+    console.log('Text:', text.slice(0, 200)) // preview — full body can be large
     console.log('Attachments:', parsed.attachments?.length || 0)
 
     if (env.FORWARD_TO_EMAIL) {
@@ -550,7 +548,7 @@ It is data your code can branch on, store, or reply to.
 
 Receive and send are related, but they do not start the same way.
 
-Receive begins when someone emails your domain.  
+Receive begins when someone emails your domain.
 Send begins when **you** decide to call your Worker over HTTP.
 
 That is why curl enters the story here.
@@ -594,10 +592,10 @@ This is version 3 — receive on the left, send on the right, same Worker:
 //   fetch()  → HTTP from curl / browser / your app
 
 interface Env {
-  EMAIL?: SendEmail          // from [[send_email]] binding — undefined until configured
-  FROM_EMAIL: string         // must be an address on your onboarded sending domain
+  EMAIL?: SendEmail // from [[send_email]] binding — undefined until configured
+  FROM_EMAIL: string // must be an address on your onboarded sending domain
   FORWARD_TO_EMAIL?: string
-  ADMIN_TOKEN?: string       // simple bearer guard for demo endpoints
+  ADMIN_TOKEN?: string // simple bearer guard for demo endpoints
 }
 
 // Demo auth only — compare Authorization: Bearer <token> against env.ADMIN_TOKEN
@@ -635,7 +633,10 @@ export default {
 
       // Keep validation boring — required fields only for this demo
       if (!body.to || !body.subject || !body.text) {
-        return Response.json({ ok: false, error: 'to, subject, and text are required' }, { status: 400 })
+        return Response.json(
+          { ok: false, error: 'to, subject, and text are required' },
+          { status: 400 }
+        )
       }
 
       // env.EMAIL.send() is Cloudflare Email Sending — not SMTP, not Gmail API
@@ -643,8 +644,8 @@ export default {
         to: body.to,
         from: { email: env.FROM_EMAIL, name: 'Email Worker Demo' },
         subject: body.subject,
-        text: body.text,       // always include plain text (better deliverability)
-        html: body.html        // optional HTML version
+        text: body.text, // always include plain text (better deliverability)
+        html: body.html // optional HTML version
       })
 
       return Response.json({ ok: true, messageId: result.messageId })
@@ -734,7 +735,7 @@ If you want a minimal mailbox you can query later, D1 is the lightest place to p
 - no labels
 - no attachments yet
 
-Path 1 writes the rows when mail arrives.  
+Path 1 writes the rows when mail arrives.
 Path 3 reads them back through `GET /messages`.
 
 Create the database:
@@ -790,17 +791,19 @@ if (env.DB) {
   await env.DB.prepare(
     `INSERT INTO emails (id, from_email, from_name, to_email, subject, text_body, html_body, message_id, created_at)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-  ).bind(
-    crypto.randomUUID(),
-    parsed.from?.address || message.from,
-    parsed.from?.name || '',
-    parsed.to?.map((t) => t.address).join(', ') || message.to,  // may be multiple recipients
-    subject,
-    parsed.text || '',
-    parsed.html || '',
-    parsed.messageId || '',
-    new Date().toISOString()
-  ).run()
+  )
+    .bind(
+      crypto.randomUUID(),
+      parsed.from?.address || message.from,
+      parsed.from?.name || '',
+      parsed.to?.map((t) => t.address).join(', ') || message.to, // may be multiple recipients
+      subject,
+      parsed.text || '',
+      parsed.html || '',
+      parsed.messageId || '',
+      new Date().toISOString()
+    )
+    .run()
 }
 
 // --- Inside fetch() ---
@@ -816,7 +819,7 @@ if (request.method === 'GET' && url.pathname === '/messages') {
 
   const { results } = await env.DB.prepare(
     `SELECT id, from_email, subject, text_body, created_at
-     FROM emails ORDER BY created_at DESC LIMIT 20`  // bounded — never return whole table
+     FROM emails ORDER BY created_at DESC LIMIT 20` // bounded — never return whole table
   ).all()
 
   return Response.json({ ok: true, messages: results })
@@ -880,17 +883,19 @@ async function storeEmail(message: ForwardableEmailMessage, parsed: ParsedEmail,
   await env.DB.prepare(
     `INSERT INTO emails (id, from_email, from_name, to_email, subject, text_body, html_body, message_id, created_at)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-  ).bind(
-    crypto.randomUUID(),
-    parsed.from?.address || message.from,
-    parsed.from?.name || '',
-    parsed.to?.map((t) => t.address).join(', ') || message.to,
-    subject,
-    parsed.text || '',
-    parsed.html || '',
-    parsed.messageId || header(message, 'message-id'),
-    new Date().toISOString()
-  ).run()
+  )
+    .bind(
+      crypto.randomUUID(),
+      parsed.from?.address || message.from,
+      parsed.from?.name || '',
+      parsed.to?.map((t) => t.address).join(', ') || message.to,
+      subject,
+      parsed.text || '',
+      parsed.html || '',
+      parsed.messageId || header(message, 'message-id'),
+      new Date().toISOString()
+    )
+    .run()
 }
 
 export default {
@@ -898,7 +903,12 @@ export default {
     const raw = await new Response(message.raw).arrayBuffer()
     const parsed = await PostalMime.parse(raw)
 
-    console.log('Received:', parsed.subject || '(no subject)', 'from', parsed.from?.address || message.from)
+    console.log(
+      'Received:',
+      parsed.subject || '(no subject)',
+      'from',
+      parsed.from?.address || message.from
+    )
 
     await storeEmail(message, parsed, env)
 
@@ -928,7 +938,10 @@ export default {
       }
 
       if (!body.to || !body.subject || !body.text) {
-        return Response.json({ ok: false, error: 'to, subject, and text are required' }, { status: 400 })
+        return Response.json(
+          { ok: false, error: 'to, subject, and text are required' },
+          { status: 400 }
+        )
       }
 
       const result = await env.EMAIL.send({
@@ -990,19 +1003,19 @@ No skipping ahead. Each line proves one layer is real before the next one depend
 
 Quick reference:
 
-| Path | Action | How to test |
-|------|--------|-------------|
-| Path 1 | Receive | Send email to `hi@yourdomain.com` |
+| Path   | Action        | How to test                                             |
+| ------ | ------------- | ------------------------------------------------------- |
+| Path 1 | Receive       | Send email to `hi@yourdomain.com`                       |
 | Path 1 | Local receive | `curl` to `http://localhost:8787/cdn-cgi/handler/email` |
-| Path 2 | Send | `curl -X POST .../send` with JSON body |
-| Path 3 | List | `curl .../messages` with bearer token |
+| Path 2 | Send          | `curl -X POST .../send` with JSON body                  |
+| Path 3 | List          | `curl .../messages` with bearer token                   |
 
 ---
 
 ## What this is not
 
-You do not need Postfix.  
-You do not need a mail server.  
+You do not need Postfix.
+You do not need a mail server.
 You do not need the Gmail API on day one.
 
 This is also not:
@@ -1027,7 +1040,7 @@ A later version could add:
 - attachments in R2
 - labels, search, spam scoring
 
-Those are product decisions.  
+Those are product decisions.
 This article is only the first layer: making email an event your code can handle.
 
 ## Closing
@@ -1040,8 +1053,8 @@ You end up with:
 - one Worker (`email()` for receive, `fetch()` for send/list)
 - three paths — receive, send, list — each testable on its own
 
-Small enough to understand.  
-Useful enough to build on.  
+Small enough to understand.
+Useful enough to build on.
 Clear enough to turn into a real product later.
 
 Once the three paths work, the rest is mostly product design — dashboard, history, labels, notifications. That can wait.
@@ -1050,7 +1063,7 @@ For now, I only want the data flow to be clear.
 
 ## Source notes
 
-Cloudflare documentation and Mohetios code used while reviewing this note:
+Cloudflare documentation  code used while reviewing this note:
 
 - Email Service overview: https://developers.cloudflare.com/email-service/
 - Email handler (`email()`, `forward()`, `reply()`): https://developers.cloudflare.com/email-service/api/route-emails/email-handler/
@@ -1062,9 +1075,3 @@ Cloudflare documentation and Mohetios code used while reviewing this note:
 - D1 pricing: https://developers.cloudflare.com/d1/platform/pricing/
 - D1 migrations: https://developers.cloudflare.com/d1/reference/migrations/
 
-Mohetios production references in this repo (reviewed June 2026):
-
-- `workers/email` — inbound only: `PostalMime.parse()`, D1 insert, queue notification, `ctx.waitUntil(message.forward(...))` for backup forward
-- `workers/system` — outbound only: queue consumer, `EmailMessage` + `mimetext`, `env.EMAIL.send()` via `send_email` binding in `wrangler.jsonc`
-
-This tutorial keeps receive + send in one Worker for learning. The production split above is the pattern Mohetios uses once queues and a dashboard enter the picture.
