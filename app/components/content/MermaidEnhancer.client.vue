@@ -1,17 +1,15 @@
 <script setup lang="ts">
-import {
-  normalizeMermaidDiagrams,
-  renderMermaidDiagrams,
-  resetMermaidNodes
-} from '~/utils/mermaid'
-
 const route = useRoute()
 
 let mediaQuery: MediaQueryList | null = null
 let themeObserver: MutationObserver | null = null
 let resizeObserver: ResizeObserver | null = null
 
-function observeProseColumns() {
+async function loadMermaidUtils() {
+  return import('~/utils/mermaid')
+}
+
+function observeProseColumns(normalizeMermaidDiagrams: () => void) {
   resizeObserver?.disconnect()
   resizeObserver = new ResizeObserver(() => {
     normalizeMermaidDiagrams()
@@ -31,11 +29,14 @@ async function enhance() {
     return
   }
 
+  const { normalizeMermaidDiagrams, renderMermaidDiagrams, resetMermaidNodes } =
+    await loadMermaidUtils()
+
   resetMermaidNodes(nodes)
 
   try {
     await renderMermaidDiagrams()
-    observeProseColumns()
+    observeProseColumns(normalizeMermaidDiagrams)
   } catch (error) {
     console.error('Mermaid render failed:', error)
   }

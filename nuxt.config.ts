@@ -189,6 +189,8 @@ export default defineNuxtConfig({
     },
     build: {
       sourcemap: false,
+      // Mermaid lazy-loads as a ~2 MB async chunk on content pages with diagrams only.
+      chunkSizeWarningLimit: 2048,
       rollupOptions: {
         onwarn(warning, warn) {
           // Tailwind/Nuxt CSS transforms don't emit sourcemaps; harmless when maps are off.
