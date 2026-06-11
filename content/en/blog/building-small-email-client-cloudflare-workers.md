@@ -13,15 +13,71 @@ tags:
 
 ## Opening + idea
 
-Cloudflare has a habit I have noticed over the years.
+Cloudflare and their mysterious people have a habit I have noticed over the years.
 
-They often take something that already exists, rebuild the developer experience around it, and make it feel easier to use inside the modern web ecosystem.
+They often take something that already exists, rebuild the developer experience around it, and make it feel easier, better, and more flexible than before to use inside the modern web ecosystem.
 
-Workers did that for serverless logic.
-Pages did that for deployment.
-D1, R2, KV, Queues, and Durable Objects all follow the same pattern in different ways.
+If you open the Cloudflare dashboard and land in **Workers & Pages** — sometimes grouped under **Compute** or **Compute & AI** — you are in the developer platform area. This is not just CDN settings. It is where you deploy code, attach storage, wire up AI, run live calls, and connect domain-level services like email.
 
-Email is starting to move in that direction too.
+The pattern repeats:
+
+```txt
+Take a familiar capability → expose it as a Worker binding → let your code call it directly
+```
+
+**Bindings** are the glue. You declare them in `wrangler.toml` or `wrangler.jsonc`, deploy, and read them as `env.DB`, `env.EMAIL`, `env.AI`, and so on. Inside a Worker, a binding is a direct in-process reference — not a separate HTTP API you have to authenticate on every request.
+
+If names like D1 or R2 mean nothing yet, here is the map — product on the left, what it is for in real work on the right:
+
+### Compute — where your code runs
+
+| Product | What it means in real work |
+| ------- | -------------------------- |
+| **Workers** | Serverless logic at the edge — APIs, webhooks, auth, email handlers, agents |
+| **Pages** | Deploy the frontend (Nuxt, Next, static sites) on the same network |
+| **Cron Triggers** | Run a Worker on a schedule — digests, cleanup, sync jobs |
+| **Workflows** | Durable multi-step jobs with retries — onboarding, billing, long pipelines |
+
+### Storage and coordination — where your data lives
+
+| Product | What it means in real work |
+| ------- | -------------------------- |
+| **D1** | SQLite database at the edge — users, orders, inbox rows, settings |
+| **R2** | Object storage for files — attachments, uploads, backups (S3-style, no egress fees) |
+| **KV** | Fast global key-value reads — feature flags, config, cached snapshots |
+| **Durable Objects** | One strongly consistent instance per room or user — chat, multiplayer, live state |
+| **Queues** | Background messaging — send email, process webhooks, without blocking the HTTP response |
+| **Hyperdrive** | Faster connections to Postgres or MySQL you already run somewhere else |
+
+### AI — models and agents on the same platform
+
+| Product | What it means in real work |
+| ------- | -------------------------- |
+| **Workers AI** | Run models on Cloudflare GPUs directly from a Worker — classify, summarize, generate |
+| **AI Gateway** | Proxy to OpenAI, Anthropic, and others — caching, rate limits, observability |
+| **Vectorize** | Store embeddings for semantic search and RAG |
+| **Agents SDK** | Stateful agents with WebSockets, scheduling, and email hooks — built on Durable Objects |
+
+### Realtime, media, and voice/video
+
+| Product | What it means in real work |
+| ------- | -------------------------- |
+| **Realtime** | Live voice and video on Cloudflare’s network — the suite that used to be called **Cloudflare Calls** |
+| **RealtimeKit** | High-level SDKs and UI for meetings, classrooms, and in-app calls without hand-rolling WebRTC |
+| **Realtime SFU** | Lower-level media routing when you want full control over who hears or sees what |
+| **TURN Service** | Relay for WebRTC through firewalls and bad NAT — connectivity insurance for real calls |
+| **Stream** / **Images** | Deliver and transform video and images without running your own media pipeline |
+| **Browser Rendering** | Headless browsers inside Workers — screenshots, PDFs, automation |
+
+### Email — the piece this article is about
+
+| Product | What it means in real work |
+| ------- | -------------------------- |
+| **Email Service** | Route inbound mail to a Worker, send outbound from code — routing + sending in one place |
+
+You do not need all of this on day one. Most projects start with one Worker and add bindings only when a real problem appears — "I need memory" (D1), "I need files" (R2), "I need background delivery" (Queues), "I need a model" (Workers AI).
+
+Email is one of the newer entries on that map — and a good place to see the pattern in action.
 
 If you have only ever _used_ email — Gmail, Outlook, whatever — it can feel like a black box. Mail arrives. You read it. That is the whole experience from the outside.
 
@@ -54,30 +110,40 @@ After:   email arrives → your code runs → you decide what happens next
 Now the email does not have to be only “forwarded.”
 It can become part of your application.
 
-This article is the warm-up for that idea — not a full inbox, not Postfix, not a mail-server weekend. Just the smallest version where the shift feels real: **mail to your domain becomes an event your code can handle.**
+This article is the warm-up for that idea — not a full inbox, not Postfix, not a mail-server weekend. Just the smallest version where the shift feels real:
 
-What follows is still stretching, not the heavy lift. A short Worker primer, a map of three paths, a checklist of what you need. The workout starts at Step 1.
+> mail to your domain becomes an event your code can handle.
 
 ## If you have never used a Worker
+
+The platform map at the opening is the full developer platform. **This tutorial lives in one row of it: Workers** — one file, two handlers, and only the bindings the email flow actually needs.
 
 If Workers are new to you, here is the short version — the one concept to hold before we touch any code.
 
 A **Cloudflare Worker** is a small piece of JavaScript or TypeScript that runs on Cloudflare’s network. You do not provision a server. You write a file, deploy it with Wrangler, and Cloudflare runs it when something triggers it.
 
-For a normal web API, the trigger is an HTTP request. The Worker answers through a `fetch()` handler.
+Most Workers tutorials start with HTTP: a request arrives, your `fetch()` handler runs.
 
-For email, the trigger is different. Someone sends mail to your domain, and Cloudflare calls an `email()` handler instead.
+This one adds a second entry point. Someone sends mail to your domain, and Cloudflare calls `email()` instead.
 
-That is the whole idea of this article: **one Worker file, two entry points.**
+That is the whole shape of this article: **one Worker file, two entry points.**
 
 | Handler   | Triggered by                   | Used for                        |
 | --------- | ------------------------------ | ------------------------------- |
 | `email()` | Someone mailing your domain    | Receive, parse, store, forward  |
 | `fetch()` | HTTP requests (curl, your app) | Send mail, list stored messages |
 
-You do not need D1, Queues, KV, or the rest of the Cloudflare stack on day one. One domain address and one Worker are enough to learn the system.
+**Bindings** connect this Worker to the rest of the map. You saw D1, R2, KV, Queues, Workers AI, and Email Service in that opening list. For this warm-up, you only wire up:
 
-Once that lands, the rest of this note is easier to read.
+| Binding        | From the map     | In this tutorial?                          |
+| -------------- | ---------------- | ------------------------------------------ |
+| `EMAIL`        | Email Service    | Yes — inbound routing + outbound send      |
+| `DB`           | D1               | Optional — store rows for `GET /messages`  |
+| Everything else | AI, Realtime, R2, Queues, KV… | No — not until the core email flow feels obvious |
+
+One domain address and one Worker are enough to learn the system. D1 is the only extra binding worth turning on early, and only if you want a tiny mailbox to query later.
+
+Once that lands, the rest of this note is easier to read — three paths, a checklist, then Step 1.
 
 ## What we are building
 
@@ -1014,6 +1080,8 @@ Quick reference:
 
 ## What this is not
 
+Read the title literally: **receive and send email on your domain with a Cloudflare Worker.**
+
 You do not need Postfix.
 You do not need a mail server.
 You do not need the Gmail API on day one.
@@ -1024,46 +1092,44 @@ This is also not:
 - a bulk marketing platform
 - a complete helpdesk
 
-It is a small programmable email layer for your own domain — the three paths from [How data flows](#how-data-flows), nothing more.
+What remains is the compact version from [How data flows](#how-data-flows) — **Path 1** (receive into `email()`), **Path 2** (send through `fetch()`), and **Path 3** (list from D1, if you want memory). One Worker. Nothing more.
 
-That is already useful for a personal site, contact flow, or internal tool.
+Still enough for a personal site, contact flow, or internal tool.
 
 ## What comes later
 
-For Mohetios, this Worker layer becomes the base of a private owner inbox — contact form messages and direct domain emails in one place.
+On Mohetios, those same three paths grow into a private owner inbox — contact form messages and direct domain emails in one place.
 
-A later version could add:
+Where I expect to stretch each path:
 
-- Nuxt dashboard UI
-- GraphQL over D1
-- queues for reliable outbound delivery
-- attachments in R2
-- labels, search, spam scoring
+- **Path 1** — labels, spam scoring, richer intake rules; Workers AI to classify intent and priority on arrive
+- **Path 2** — Queues so outbound delivery does not block the receive handler; AI-drafted replies before you hit send
+- **Path 3** — attachments in R2, more than the last twenty rows; Vectorize for semantic search over message history
+- **Across paths** — Nuxt dashboard UI, GraphQL over D1, AI-assisted compose in the inbox workspace
 
-Those are product decisions.
-This article is only the first layer: making email an event your code can handle.
+Those are product decisions, not tutorial requirements. This walkthrough only lays down the first layer — the same shift the title describes: mail arrives, your Worker runs, you decide what happens next.
+
+Other directions — yours, not just mine — are in the [PS](#ps).
 
 ## Closing
 
-The main idea is simple: **mail to your domain becomes an event your code can handle.**
+The title and the [flow diagram](#how-data-flows) describe the same thing: **mail to your domain becomes an event your code can handle.**
 
 You end up with:
 
 - one domain address (`hi@yourdomain.com`)
-- one Worker (`email()` for receive, `fetch()` for send/list)
-- three paths — receive, send, list — each testable on its own
+- one Worker — `email()` on Path 1, `fetch()` on Path 2 and Path 3
+- three paths — receive, send, list — each provable on its own before you add a UI
 
 Small enough to understand.
 Useful enough to build on.
 Clear enough to turn into a real product later.
 
-Once the three paths work, the rest is mostly product design — dashboard, history, labels, notifications. That can wait.
-
-For now, I only want the data flow to be clear.
+Once all three paths work, the rest is mostly product design. That can wait. For now, the data flow is what matters.
 
 ## Source notes
 
-Cloudflare documentation  code used while reviewing this note:
+Cloudflare documentation and code used while reviewing this note:
 
 - Email Service overview: https://developers.cloudflare.com/email-service/
 - Email handler (`email()`, `forward()`, `reply()`): https://developers.cloudflare.com/email-service/api/route-emails/email-handler/
@@ -1075,3 +1141,18 @@ Cloudflare documentation  code used while reviewing this note:
 - D1 pricing: https://developers.cloudflare.com/d1/platform/pricing/
 - D1 migrations: https://developers.cloudflare.com/d1/reference/migrations/
 
+## PS
+
+This walkthrough stops at the core on purpose — Path 1, Path 2, optional Path 3. One Worker. Enough to learn the system. Not the ceiling.
+
+Yours might branch on the same three paths:
+
+- auto-replies from inside `email()` — still Path 1
+- a contact form that writes to D1 — Path 1 in, Path 3 out
+- routing rules by sender, subject, or domain — Path 1
+- Workers AI to classify, summarize, or draft a reply — Path 1 or 2
+- R2 when plain-text bodies are no longer enough — Path 3
+
+I am building some of that on this site. I am curious what you would try on your domain.
+
+If you extend this walkthrough, tell me what you added first — or what you decided not to build, and why.
