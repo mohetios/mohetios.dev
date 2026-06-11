@@ -31,7 +31,7 @@ const localePath = useLocalePath()
 
   <section v-else class="w-full space-y-3">
     <div class="space-y-1.5">
-      <p class="mohetios-article-section-label text-highlighted">
+      <p class="text-ui-xs font-medium tracking-[0.14em] text-highlighted uppercase">
         {{ t('content.subscribe.project.title') }}
       </p>
       <p class="text-ui-sm text-muted">

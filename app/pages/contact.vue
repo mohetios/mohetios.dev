@@ -213,37 +213,41 @@ async function onSubmit() {
 
 <template>
   <UPage v-if="page">
-    <ContentHero :title="page.title" :description="page.description" />
+    <UPageHeader :title="page.title" :description="page.description">
+      <template #headline>
+        <UBadge color="neutral" variant="outline">
+          {{ t('content.contact.eyebrow') }}
+        </UBadge>
+      </template>
+    </UPageHeader>
 
     <UPageBody>
-      <section class="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <section class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <div class="space-y-6">
           <UCard
             :ui="{
-              root: 'rounded-2xl ring-1 ring-neutral-200/70 dark:ring-neutral-800/80',
+              root: 'rounded-2xl ring-1 ring-default',
               body: 'p-6 sm:p-8'
             }"
           >
             <ContentHtml
               :html="page.content"
-              class="prose-mohetios mb-8 border-b border-neutral-200 pb-8 dark:border-neutral-800"
+              class="prose-mohetios mb-8 max-w-none border-b border-default pb-8"
             />
 
             <div v-if="isSubmitted" class="space-y-4">
               <div
-                class="flex size-12 items-center justify-center rounded-full bg-primary-50 text-primary-600 dark:bg-primary-950/40 dark:text-primary-400"
+                class="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary"
               >
                 <UIcon name="i-lucide-check" class="size-6" />
               </div>
 
               <div class="space-y-2">
-                <h2
-                  class="text-xl font-semibold tracking-tight text-neutral-950 dark:text-neutral-50"
-                >
+                <h2 class="text-xl font-semibold tracking-tight text-highlighted">
                   {{ t('contact.success.title') }}
                 </h2>
 
-                <p class="max-w-xl text-sm leading-7 text-neutral-600 dark:text-neutral-400">
+                <p class="text-sm leading-7 text-muted">
                   {{ t('contact.success.description') }}
                 </p>
               </div>
@@ -343,11 +347,13 @@ async function onSubmit() {
                 </UFormField>
               </div>
 
-              <div class="space-y-3 border-t border-neutral-200 pt-6 dark:border-neutral-800">
+              <div class="space-y-3 border-t border-default pt-6">
                 <div
                   class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6"
                 >
-                  <div class="contact-form__turnstile flex min-h-16 items-center">
+                  <div
+                    class="flex min-h-16 items-center [&_iframe]:block [&>span]:block [&>span]:min-h-0 [&>span]:leading-none"
+                  >
                     <NuxtTurnstile
                       ref="turnstile"
                       v-model="turnstileToken"
@@ -373,7 +379,7 @@ async function onSubmit() {
                   </UButton>
                 </div>
 
-                <p class="max-w-xl text-xs leading-6 text-neutral-500 dark:text-neutral-500">
+                <p class="text-xs leading-6 text-dimmed">
                   {{ t('contact.form.privacyNote') }}
                 </p>
               </div>
@@ -384,25 +390,23 @@ async function onSubmit() {
         <aside class="space-y-5">
           <UCard
             :ui="{
-              root: 'rounded-2xl bg-neutral-50/70 ring-1 ring-neutral-200/70 dark:bg-neutral-900/40 dark:ring-neutral-800/80',
+              root: 'rounded-2xl bg-muted/30 ring-1 ring-default',
               body: 'p-6'
             }"
           >
             <div class="space-y-4">
               <div>
                 <p
-                  class="text-xs font-medium uppercase tracking-[0.2em] text-primary-600 dark:text-primary-400"
+                  class="text-xs font-medium tracking-[0.2em] text-primary uppercase"
                 >
                   {{ t('contact.sidebar.label') }}
                 </p>
 
-                <h2
-                  class="mt-2 text-lg font-semibold tracking-tight text-neutral-950 dark:text-neutral-50"
-                >
+                <h2 class="mt-2 text-lg font-semibold tracking-tight text-highlighted">
                   {{ t('contact.sidebar.title') }}
                 </h2>
 
-                <p class="mt-2 text-sm leading-7 text-neutral-600 dark:text-neutral-400">
+                <p class="mt-2 text-sm leading-7 text-muted">
                   {{ t('contact.sidebar.description') }}
                 </p>
               </div>
@@ -425,23 +429,23 @@ async function onSubmit() {
             v-for="channel in contactChannels"
             :key="channel.title"
             :ui="{
-              root: 'rounded-2xl ring-1 ring-neutral-200/70 dark:ring-neutral-800/80',
+              root: 'rounded-2xl ring-1 ring-default',
               body: 'p-5'
             }"
           >
             <div class="flex gap-4">
               <div
-                class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
+                class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted text-toned"
               >
                 <UIcon :name="channel.icon" class="size-5" />
               </div>
 
               <div>
-                <h3 class="font-medium text-neutral-950 dark:text-neutral-50">
+                <h3 class="font-medium text-highlighted">
                   {{ channel.title }}
                 </h3>
 
-                <p class="mt-1 text-sm leading-6 text-neutral-600 dark:text-neutral-400">
+                <p class="mt-1 text-sm leading-6 text-muted">
                   {{ channel.description }}
                 </p>
               </div>
@@ -452,15 +456,3 @@ async function onSubmit() {
     </UPageBody>
   </UPage>
 </template>
-
-<style scoped>
-.contact-form__turnstile :deep(> span) {
-  display: block;
-  min-height: 0;
-  line-height: 0;
-}
-
-.contact-form__turnstile :deep(iframe) {
-  display: block;
-}
-</style>

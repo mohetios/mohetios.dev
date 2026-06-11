@@ -42,6 +42,27 @@ export default withNuxt()
     ]
   })
   .onResolved(scopeConfigsToCodeFiles)
+  .override('nuxt/typescript/rules', {
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          args: 'all',
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+          ignoreRestSiblings: true
+        }
+      ]
+    }
+  })
+  .override('nuxt/vue/rules', {
+    rules: {
+      'vue/no-unused-components': 'error',
+      'vue/no-unused-vars': 'error'
+    }
+  })
   .append(
     ...markdown.configs.recommended.map((config) => ({
       ...config,

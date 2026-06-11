@@ -188,7 +188,7 @@ async function onSubmit() {
 </script>
 
 <template>
-  <div class="comment-form">
+  <div class="comment-form [&_input]:text-ui-sm [&_input]:leading-(--text-ui-sm--line-height) [&_textarea]:text-ui-sm [&_textarea]:leading-(--text-ui-sm--line-height)">
     <p v-if="submitState === 'success'" class="text-ui-sm text-highlighted">
       {{ t('comments.success') }}
     </p>
@@ -260,7 +260,9 @@ async function onSubmit() {
             {{ t('comments.privacyNote') }}
           </p>
 
-          <div class="comment-form__turnstile shrink-0">
+          <div
+            class="shrink-0 [&_iframe]:block [&>span]:block [&>span]:min-h-0 [&>span]:leading-none"
+          >
             <NuxtTurnstile
               ref="turnstile"
               v-model="turnstileToken"
@@ -277,21 +279,3 @@ async function onSubmit() {
     </UForm>
   </div>
 </template>
-
-<style scoped>
-.comment-form :deep(textarea),
-.comment-form :deep(input) {
-  font-size: var(--text-ui-sm);
-  line-height: var(--text-ui-sm--line-height);
-}
-
-.comment-form__turnstile :deep(> span) {
-  display: block;
-  min-height: 0;
-  line-height: 0;
-}
-
-.comment-form__turnstile :deep(iframe) {
-  display: block;
-}
-</style>

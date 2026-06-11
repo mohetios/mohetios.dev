@@ -40,7 +40,7 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
 
 <template>
   <header>
-    <div class="mohetios-editorial-column pt-6 pb-8 sm:pt-8">
+    <div class="w-full min-w-0 pt-6 pb-8 sm:pt-8">
       <div v-if="backTo" class="mb-6">
         <NuxtLink
           :to="backTo"
@@ -51,11 +51,16 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
         </NuxtLink>
       </div>
 
-      <p v-if="status" class="mohetios-article-section-label text-primary">
+      <p
+        v-if="status"
+        class="text-ui-xs font-medium tracking-[0.14em] text-primary uppercase"
+      >
         {{ status }}
       </p>
 
-      <h1 class="mohetios-article-title mt-2 text-balance text-highlighted">
+      <h1
+        class="mt-2 text-balance text-[clamp(1.75rem,3.5vw,2.25rem)] font-[650] leading-(--mohetios-heading-leading) tracking-(--mohetios-heading-tracking) text-highlighted"
+      >
         {{ title }}
       </h1>
 

@@ -55,6 +55,8 @@ const { canonicalUrl: shareUrl } = useContentSeo({
       :title="project.title"
       :description="project.description"
       :thumbnail="project.thumbnail"
+      :back-to="localePath('/projects')"
+      :back-label="t('content.actions.backToProjects')"
     />
 
     <ContentShell
@@ -63,8 +65,6 @@ const { canonicalUrl: shareUrl } = useContentSeo({
       :toc-links="tocLinks"
       :show-toc="showToc"
       :surround="surround"
-      :back-to="localePath('/projects')"
-      :back-label="t('content.actions.backToProjects')"
     >
       <template #share>
         <ContentSocialShare
@@ -84,10 +84,10 @@ const { canonicalUrl: shareUrl } = useContentSeo({
 
       <template #related>
         <section v-if="relatedProjects.length" class="space-y-3">
-          <p class="mohetios-article-section-label">
+          <p class="text-ui-xs font-medium tracking-[0.14em] text-muted uppercase">
             {{ t('content.related') }}
           </p>
-          <div class="mohetios-content-footer-list">
+          <div class="flex flex-col gap-1">
             <ContentList
               v-for="related in relatedProjects"
               :key="related.id"

@@ -26,7 +26,8 @@ const props = withDefaults(
   }
 )
 
-const { containerRef, height: measuredHeight } = useChartContainerHeight(props.minHeight)
+const chartContainer = useChartContainerHeight(props.minHeight)
+const measuredHeight = chartContainer.height
 
 const chartData = computed(() => toAudienceChartRows(props.points))
 const categories = computed(() => getAudienceCategories(props.metric))
@@ -54,7 +55,7 @@ const yFormatter = (value: number) => formatChartNumber(value)
       <slot name="empty" />
     </div>
 
-    <div v-else ref="containerRef" class="absolute inset-0 overflow-hidden">
+    <div v-else :ref="chartContainer.containerRef" class="absolute inset-0 overflow-hidden">
       <ClientOnly>
         <AreaChart
           :data="chartData"

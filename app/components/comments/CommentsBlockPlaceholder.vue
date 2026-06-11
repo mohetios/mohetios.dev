@@ -4,7 +4,7 @@ const { t } = useI18n()
 
 <template>
   <section
-    class="comments-section min-w-0 w-full"
+    class="flex min-w-0 w-full flex-col gap-6"
     aria-busy="true"
     :aria-label="t('comments.loading')"
   >
@@ -28,11 +28,3 @@ const { t } = useI18n()
     </div>
   </section>
 </template>
-
-<style scoped>
-.comments-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-</style>

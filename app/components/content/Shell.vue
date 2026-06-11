@@ -32,7 +32,7 @@ withDefaults(
 
 <template>
   <UPageBody :ui="{ base: 'mt-0 space-y-0 pb-20' }">
-    <div class="mohetios-editorial-column min-w-0">
+    <div class="w-full min-w-0">
       <section class="py-6 sm:py-8">
         <ContentCodeEnhancer />
         <LazyContentMermaidEnhancer />
@@ -43,7 +43,7 @@ withDefaults(
 
         <ContentToc v-if="showToc" class="mb-6" :title="$t('content.toc')" :links="tocLinks" />
 
-        <article class="prose-mohetios">
+        <article class="prose-mohetios max-w-none">
           <ContentHtml :html="content" />
         </article>
 
@@ -54,7 +54,7 @@ withDefaults(
 
       <div
         v-if="backTo || surround?.some(Boolean) || $slots.related || kind || $slots.comments"
-        class="mohetios-article-tail"
+        class="mt-6 flex flex-col gap-8 pt-6 pb-2 [&_.comments-section]:mt-0"
       >
         <slot name="comments" />
 
@@ -72,7 +72,7 @@ withDefaults(
           </UButton>
 
           <section v-if="surround?.some(Boolean)" class="space-y-3">
-            <p class="mohetios-article-section-label">
+            <p class="text-ui-xs font-medium tracking-[0.14em] text-muted uppercase">
               {{ $t('content.article.continueReading') }}
             </p>
             <ContentSurround :surround="surround || []" />

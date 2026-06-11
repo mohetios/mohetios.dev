@@ -68,7 +68,6 @@ export function useMohetiosSeo(input: MohetiosSeoInput) {
   const seoType = computed(() => toValue(input.type) || 'website')
   const noindex = computed(() => Boolean(toValue(input.noindex)))
   const tags = computed(() => toValue(input.tags) || [])
-  const ogComponent = computed(() => toValue(input.ogComponent))
 
   const staticOgComponent = toValue(input.ogComponent)
 

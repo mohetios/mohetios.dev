@@ -59,7 +59,7 @@ onBeforeUnmount(() => {
 
 <template>
   <section class="space-y-3">
-    <p class="mohetios-article-section-label">
+    <p class="text-ui-xs font-medium tracking-[0.14em] text-muted uppercase">
       {{ t('content.share.title') }}
     </p>
 

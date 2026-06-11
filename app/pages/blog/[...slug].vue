@@ -106,10 +106,10 @@ const { canonicalUrl: shareUrl } = useContentSeo({
 
       <template #related>
         <section v-if="relatedPosts.length" class="space-y-3">
-          <p class="mohetios-article-section-label">
+          <p class="text-ui-xs font-medium tracking-[0.14em] text-muted uppercase">
             {{ t('content.article.relatedPosts') }}
           </p>
-          <div class="mohetios-content-footer-list">
+          <div class="flex flex-col gap-1">
             <ContentList
               v-for="related in relatedPosts"
               :key="related.id || related.path"

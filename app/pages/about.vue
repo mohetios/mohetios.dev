@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 const path = computed(() => `/${locale.value}/about`)
 const legacyPath = computed(() => `/${locale.value}/pages/about`)
 const page = computed(() => getPage(path.value) || getPage(legacyPath.value))
@@ -20,16 +20,20 @@ useMohetiosSeo({
 
 <template>
   <UPage v-if="page">
-    <ContentHero :title="page.title" :description="page.description" />
+    <UPageHeader :title="page.title" :description="page.description">
+      <template #headline>
+        <UBadge color="neutral" variant="outline">
+          {{ t('content.about.eyebrow') }}
+        </UBadge>
+      </template>
+    </UPageHeader>
 
     <UPageBody>
-      <article class="mx-auto max-w-3xl">
-        <ContentCodeEnhancer />
-        <ContentMermaidEnhancer />
-        <ContentHtml :html="page.content" class="prose-mohetios" />
-      </article>
+      <ContentCodeEnhancer />
+      <ContentMermaidEnhancer />
+      <ContentHtml :html="page.content" class="prose-mohetios max-w-none" />
 
-      <section class="mx-auto mt-10 max-w-3xl">
+      <section class="mt-10">
         <NewsletterSubscribe source="about" />
       </section>
     </UPageBody>

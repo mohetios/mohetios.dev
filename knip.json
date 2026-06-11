@@ -1,0 +1,45 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "nuxt": {
+    "entry": [
+      "app.config.ts",
+      "app/app.{vue,jsx,tsx}",
+      "app/error.{vue,jsx,tsx}",
+      "app/layouts/**/*.{vue,jsx,tsx}",
+      "app/middleware/**/*.ts",
+      "app/pages/**/*.{vue,jsx,tsx}",
+      "app/plugins/**/*.ts",
+      "server/api/**/*.ts",
+      "server/middleware/**/*.ts",
+      "server/plugins/**/*.ts",
+      "server/routes/**/*.ts",
+      "server/tasks/**/*.ts"
+    ]
+  },
+  "entry": [
+    "app/sw.ts",
+    "velite.config.ts",
+    "workers/email/src/index.ts",
+    "workers/system/src/index.ts"
+  ],
+  "project": [
+    "app/**/*.{ts,vue,tsx,jsx}",
+    "server/**/*.ts",
+    "shared/**/*.ts",
+    "workers/**/*.ts",
+    "scripts/**/*.{ts,mjs,js}",
+    "velite/**/*.{ts,mjs,js}",
+    "velite.config.ts"
+  ],
+  "ignore": ["content/**", "migrations/**", "public/**"],
+  "ignoreDependencies": [
+    "nitro-cloudflare-dev",
+    "vue-tsc",
+    "@iconify-json/lucide",
+    "@graphql-tools/schema",
+    "graphql-request",
+    "jose",
+    "shiki"
+  ],
+  "ignoreBinaries": ["wrangler"]
+}

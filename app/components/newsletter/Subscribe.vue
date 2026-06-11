@@ -157,7 +157,7 @@ async function onSubmit() {
 <template>
   <section v-if="plain" class="w-full space-y-3">
     <div class="space-y-1.5">
-      <p class="mohetios-article-section-label text-highlighted">
+      <p class="text-ui-xs font-medium tracking-[0.14em] text-highlighted uppercase">
         {{ resolvedTitle }}
       </p>
       <p class="text-ui-sm text-muted">
@@ -197,11 +197,13 @@ async function onSubmit() {
       </p>
 
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <p class="text-ui-xs text-muted sm:max-w-[70%]">
+        <p class="min-w-0 flex-1 text-ui-xs text-muted">
           {{ consentText }}
         </p>
 
-        <div class="newsletter-turnstile flex shrink-0 items-center justify-end">
+        <div
+          class="flex shrink-0 items-center justify-end [&_iframe]:block [&>span]:block [&>span]:min-h-0 [&>span]:leading-none"
+        >
           <NuxtTurnstile
             ref="turnstile"
             v-model="turnstileToken"
@@ -222,7 +224,7 @@ async function onSubmit() {
     v-else
     variant="subtle"
     :ui="{
-      root: 'w-full rounded-2xl ring-1 ring-neutral-200/70 dark:ring-neutral-800/80',
+      root: 'w-full rounded-2xl ring-1 ring-default',
       body: compact ? 'p-4 sm:p-5' : 'p-5 sm:p-6'
     }"
   >
@@ -279,11 +281,13 @@ async function onSubmit() {
         </p>
 
         <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <p class="text-ui-xs text-muted sm:max-w-[70%]">
+          <p class="min-w-0 flex-1 text-ui-xs text-muted">
             {{ consentText }}
           </p>
 
-          <div class="newsletter-turnstile flex shrink-0 items-center justify-end">
+          <div
+            class="flex shrink-0 items-center justify-end [&_iframe]:block [&>span]:block [&>span]:min-h-0 [&>span]:leading-none"
+          >
             <NuxtTurnstile
               ref="turnstile"
               v-model="turnstileToken"
@@ -301,15 +305,3 @@ async function onSubmit() {
     </div>
   </UCard>
 </template>
-
-<style scoped>
-.newsletter-turnstile :deep(> span) {
-  display: block;
-  min-height: 0;
-  line-height: 0;
-}
-
-.newsletter-turnstile :deep(iframe) {
-  display: block;
-}
-</style>

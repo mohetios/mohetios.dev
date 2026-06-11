@@ -143,6 +143,15 @@ export default defineNuxtConfig({
     enabled: isDev
   },
 
+  typescript: {
+    tsConfig: {
+      compilerOptions: {
+        noUnusedLocals: true,
+        noUnusedParameters: true
+      }
+    }
+  },
+
   app: {
     head: {
       titleTemplate: '%s',

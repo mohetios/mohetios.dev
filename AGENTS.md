@@ -578,7 +578,40 @@ Preserve existing locale strategy.
 
 ## Styling Rules
 
-Use Nuxt UI and Tailwind CSS.
+Use Nuxt UI and Tailwind CSS. **Tailwind utilities are the default styling layer for all Vue components.**
+
+### Tailwind-first (required)
+
+- Put layout, spacing, typography, color, borders, and responsive behavior in component `class` attributes using Tailwind utilities.
+- Use Nuxt UI component `ui` props and theme tokens (`text-ui-sm`, `text-muted`, `text-highlighted`, `border-default`, etc.) before inventing custom class names.
+- Prefer logical properties (`ps-`, `pe-`, `ms-`, `me-`, `border-s`, `text-start`) for RTL-safe layouts.
+- Public pages use **site shell width** — CSS classes in `app/assets/css/main.css`, constants in `shared/constants/layout.ts`:
+  - `.site-shell` / `PUBLIC_SITE_SHELL_CLASS` — `72rem` + gutters (default layout, header, footer; Nuxt UI `--ui-container` matches this)
+  - `.viewport-bleed` / `PUBLIC_VIEWPORT_BLEED_CLASS` — immersive heroes only
+  - Prose typography cap lives in `.prose-mohetios`; public pages pass `max-w-none` when content should use the full shell
+- Do **not** put Tailwind width utilities in TS string constants; Tailwind may not scan them. Use these CSS classes.
+- Do not add page-level `max-w-*` except `max-w-none` on prose and small UI widgets.
+- Reuse `@theme` tokens from `app/assets/css/main.css` via Tailwind arbitrary values when needed (for example `leading-(--mohetios-heading-leading)`).
+- Match surrounding component patterns; do not introduce parallel BEM-style class systems in Vue files.
+
+### Allowed global CSS (`app/assets/css/main.css` only)
+
+Keep custom CSS in `main.css` only when Tailwind cannot express it cleanly:
+
+- `@import`, `@theme`, and design-token CSS variables (`:root`, `.dark`)
+- global document resets (`html`, `body`, `#__nuxt`)
+- Velite-rendered markdown prose (`.prose-mohetios` and descendants)
+- third-party embed overrides that require `:deep()` or descendant selectors (Turnstile, Shiki, Mermaid inside prose)
+- JS-driven effects that rely on CSS custom properties (for example hero parallax variables)
+
+Do **not** add new component-specific class blocks to `main.css` when equivalent Tailwind utilities exist.
+
+### Avoid in components
+
+- `<style scoped>` blocks for layout/spacing/typography that Tailwind can handle
+- duplicate utility classes in CSS that mirror Tailwind (`display: flex`, `gap`, `padding`, etc.)
+- hardcoded hex colors in components when theme tokens exist
+- inline `style=""` except for dynamic values set at runtime
 
 Prefer:
 

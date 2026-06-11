@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { PUBLIC_SITE_SHELL_CLASS } from '~~/shared/constants/layout'
+
 const { t } = useI18n()
 
 const features = [
@@ -22,8 +24,8 @@ const pageCopy = computed(() => ({
   <div class="flex min-h-svh flex-col">
     <SiteHeader />
 
-    <main class="flex flex-1 items-center px-4 py-10 sm:py-12">
-      <div class="mx-auto w-full max-w-6xl">
+    <main :class="[PUBLIC_SITE_SHELL_CLASS, 'flex flex-1 items-center py-10 sm:py-12']">
+      <div class="w-full">
         <div
           class="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-16 xl:gap-20"
         >
@@ -35,7 +37,7 @@ const pageCopy = computed(() => ({
               <h1 class="text-2xl font-semibold tracking-normal text-highlighted sm:text-3xl">
                 {{ pageCopy.title }}
               </h1>
-              <p class="max-w-lg text-sm leading-7 text-muted sm:text-base">
+              <p class="text-sm leading-7 text-pretty text-muted sm:text-base">
                 {{ pageCopy.description }}
               </p>
             </div>
@@ -45,12 +47,12 @@ const pageCopy = computed(() => ({
                 <p class="text-sm font-medium text-highlighted">
                   {{ t('site.tagline') }}
                 </p>
-                <p class="max-w-lg text-sm leading-6 text-muted">
+                <p class="text-sm leading-6 text-pretty text-muted">
                   {{ t('site.description') }}
                 </p>
               </div>
 
-              <ul class="hidden max-w-lg space-y-4 sm:block">
+              <ul class="hidden space-y-4 sm:block">
                 <li v-for="feature in features" :key="feature.key" class="flex gap-3">
                   <UIcon :name="feature.icon" class="mt-0.5 size-4 shrink-0 text-primary" />
                   <div class="space-y-1">

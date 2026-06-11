@@ -40,7 +40,13 @@ const { canonicalUrl: shareUrl } = useContentSeo({
       :updated="note.updated"
     />
 
-    <ContentHero :title="note.title" :description="note.description" :thumbnail="note.thumbnail" />
+    <ContentHero
+      :title="note.title"
+      :description="note.description"
+      :thumbnail="note.thumbnail"
+      :back-to="localePath('/lab')"
+      :back-label="t('content.actions.backToLab')"
+    />
 
     <ContentShell
       kind="lab"
@@ -48,8 +54,6 @@ const { canonicalUrl: shareUrl } = useContentSeo({
       :toc-links="tocLinks"
       :show-toc="showToc"
       :surround="surround"
-      :back-to="localePath('/lab')"
-      :back-label="t('content.actions.backToLab')"
     >
       <template #notice>
         <p class="mb-6 text-ui-sm text-muted">

@@ -68,18 +68,15 @@ function formatDate(date?: string | Date) {
 </script>
 
 <template>
-  <div>
-    <section class="px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-28">
-      <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
-        <div class="max-w-3xl space-y-7">
-
+  <UPage>
+    <UPageBody :ui="{ base: 'space-y-12 pb-16 sm:space-y-16' }">
+      <section class="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+        <div class="space-y-7">
           <div class="space-y-5">
-            <h1
-              class="max-w-4xl text-5xl font-semibold tracking-tight text-highlighted sm:text-6xl lg:text-7xl"
-            >
+            <h1 class="text-5xl font-semibold tracking-tight text-balance text-highlighted sm:text-6xl lg:text-7xl">
               {{ t('site.tagline') }}
             </h1>
-            <p class="max-w-2xl text-lg leading-8 text-muted sm:text-xl">
+            <p class="text-lg leading-8 text-pretty text-muted sm:text-xl">
               {{ t('home.hero.description') }}
             </p>
           </div>
@@ -122,14 +119,10 @@ function formatDate(date?: string | Date) {
             {{ t('home.workshop.footer') }}
           </p>
         </aside>
-      </div>
-    </section>
+      </section>
 
-    <section v-if="featuredPost" class="px-4 pb-12 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-6xl">
-        <article
-          class="grid overflow-hidden rounded-2xl border border-default bg-default md:grid-cols-2"
-        >
+      <section v-if="featuredPost">
+        <article class="grid overflow-hidden rounded-2xl border border-default bg-default md:grid-cols-2">
           <div v-if="featuredPost.thumbnail" class="bg-muted">
             <NuxtImg
               :src="featuredPost.thumbnail"
@@ -196,64 +189,72 @@ function formatDate(date?: string | Date) {
             </UButton>
           </div>
         </article>
-      </div>
-    </section>
+      </section>
 
-    <UPageSection
-      :title="t('home.tracks.title')"
-      :description="t('home.tracks.description')"
-      :ui="{ container: 'py-12 sm:py-16' }"
-    >
-      <UPageGrid>
-        <UPageCard
-          v-for="track in trackCards"
-          :key="track.title"
-          :title="track.title"
-          :description="track.description"
-          :to="track.to"
-          variant="subtle"
-        >
-          <template #leading>
-            <div
-              class="flex size-10 items-center justify-center rounded-xl border border-default bg-default"
-            >
-              <UIcon :name="track.icon" class="size-5 text-muted" />
-            </div>
-          </template>
+      <section class="space-y-5">
+        <div>
+          <h2 class="text-2xl font-semibold tracking-tight text-highlighted">
+            {{ t('home.tracks.title') }}
+          </h2>
+          <p class="mt-2 text-sm leading-6 text-muted">
+            {{ t('home.tracks.description') }}
+          </p>
+        </div>
 
-          <template #footer>
-            <span class="inline-flex items-center gap-2 text-sm font-medium text-highlighted">
-              {{ track.label }}
-              <UIcon name="i-lucide-arrow-right" class="size-4" />
-            </span>
-          </template>
-        </UPageCard>
-      </UPageGrid>
-    </UPageSection>
+        <UPageGrid>
+          <UPageCard
+            v-for="track in trackCards"
+            :key="track.title"
+            :title="track.title"
+            :description="track.description"
+            :to="track.to"
+            variant="subtle"
+          >
+            <template #leading>
+              <div
+                class="flex size-10 items-center justify-center rounded-xl border border-default bg-default"
+              >
+                <UIcon :name="track.icon" class="size-5 text-muted" />
+              </div>
+            </template>
 
-    <UPageSection
-      :title="t('sections.latestWriting')"
-      :description="t('sections.latestWritingDescription')"
-      :ui="{ container: 'py-12 sm:py-16' }"
-    >
-      <UPageGrid v-if="posts?.length">
-        <ContentCard
-          v-for="post in posts"
-          :key="post.id"
-          :title="post.title"
-          :description="post.description"
-          :to="toPublicPath(post.path)"
-          :date="post.date"
-          :badge="t('badges.blog')"
-          :tags="post.tags"
-          :thumbnail="post.thumbnail"
-        />
-      </UPageGrid>
-      <UiEmpty v-else :title="t('empty.blogTitle')" :description="t('empty.blogDescription')" />
-    </UPageSection>
+            <template #footer>
+              <span class="inline-flex items-center gap-2 text-sm font-medium text-highlighted">
+                {{ track.label }}
+                <UIcon name="i-lucide-arrow-right" class="size-4" />
+              </span>
+            </template>
+          </UPageCard>
+        </UPageGrid>
+      </section>
 
-    <section class="px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-      <div class="mx-auto grid max-w-6xl gap-8 lg:grid-cols-2">
+      <section class="space-y-5">
+        <div>
+          <h2 class="text-2xl font-semibold tracking-tight text-highlighted">
+            {{ t('sections.latestWriting') }}
+          </h2>
+          <p class="mt-2 text-sm leading-6 text-muted">
+            {{ t('sections.latestWritingDescription') }}
+          </p>
+        </div>
+
+        <UPageGrid v-if="posts?.length">
+          <ContentCard
+            v-for="post in posts"
+            :key="post.id"
+            :title="post.title"
+            :description="post.description"
+            :to="toPublicPath(post.path)"
+            :date="post.date"
+            :badge="t('badges.blog')"
+            :tags="post.tags"
+            :thumbnail="post.thumbnail"
+          />
+        </UPageGrid>
+        <UiEmpty v-else :title="t('empty.blogTitle')" :description="t('empty.blogDescription')" />
+      </section>
+
+      <section class="grid gap-8 lg:grid-cols-2">
         <div class="space-y-5">
           <div>
             <h2 class="text-2xl font-semibold tracking-tight text-highlighted">
@@ -315,16 +316,14 @@ function formatDate(date?: string | Date) {
             :description="t('empty.projectsDescription')"
           />
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-      <div class="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+      <section class="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
         <div>
-          <h2 class="text-3xl font-semibold tracking-tight text-highlighted">
+          <h2 class="text-2xl font-semibold tracking-tight text-highlighted">
             {{ t('sections.principles') }}
           </h2>
-          <p class="mt-4 max-w-md text-base leading-8 text-muted">
+          <p class="mt-2 text-sm leading-6 text-muted">
             {{ t('sections.principlesDescription') }}
           </p>
         </div>
@@ -343,39 +342,35 @@ function formatDate(date?: string | Date) {
             </p>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="px-4 py-16 sm:px-6 lg:px-8">
-      <div
-        class="mx-auto max-w-6xl rounded-2xl border border-default bg-muted/30 p-6 sm:p-8 lg:p-10"
-      >
-        <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div class="max-w-2xl">
-            <h2 class="text-3xl font-semibold tracking-tight text-highlighted">
-              {{ t('home.cta.title') }}
-            </h2>
-            <p class="mt-3 text-base leading-7 text-muted">
-              {{ t('home.cta.description') }}
-            </p>
-          </div>
+      <section>
+        <div class="rounded-2xl border border-default bg-muted/30 p-6 sm:p-8 lg:p-10">
+          <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h2 class="text-2xl font-semibold tracking-tight text-highlighted">
+                {{ t('home.cta.title') }}
+              </h2>
+              <p class="mt-2 text-sm leading-6 text-muted">
+                {{ t('home.cta.description') }}
+              </p>
+            </div>
 
-          <div class="flex flex-col gap-3 sm:flex-row">
-            <UButton :to="localePath('/blog')" trailing-icon="i-lucide-arrow-right">
-              {{ t('nav.blog') }}
-            </UButton>
-            <UButton :to="localePath('/projects')" color="neutral" variant="subtle">
-              {{ t('nav.projects') }}
-            </UButton>
+            <div class="flex flex-col gap-3 sm:flex-row">
+              <UButton :to="localePath('/blog')" trailing-icon="i-lucide-arrow-right">
+                {{ t('nav.blog') }}
+              </UButton>
+              <UButton :to="localePath('/projects')" color="neutral" variant="subtle">
+                {{ t('nav.projects') }}
+              </UButton>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="px-4 pb-16 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-6xl">
+      <section>
         <NewsletterSubscribe source="home" />
-      </div>
-    </section>
-  </div>
+      </section>
+    </UPageBody>
+  </UPage>
 </template>

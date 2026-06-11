@@ -50,9 +50,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="comments-section min-w-0 w-full">
+  <section class="comments-section flex min-w-0 w-full flex-col gap-5">
     <header class="space-y-1.5">
-      <h2 class="mohetios-article-section-label text-highlighted">
+      <h2 class="text-ui-xs font-medium tracking-[0.14em] text-highlighted uppercase">
         {{ t('comments.title') }}
       </h2>
       <p class="text-ui-sm text-muted">
@@ -60,16 +60,14 @@ onMounted(() => {
       </p>
     </header>
 
-    <div class="comments-section__composer">
-      <CommentsCommentForm
-        :target-type="targetType"
-        :target-path="targetPath"
-        :target-title="targetTitle"
-      />
-    </div>
+    <CommentsCommentForm
+      :target-type="targetType"
+      :target-path="targetPath"
+      :target-title="targetTitle"
+    />
 
-    <div v-if="!loadError" class="comments-section__list">
-      <div class="comments-section__list-header">
+    <div v-if="!loadError" class="flex flex-col gap-3">
+      <div class="flex items-center justify-between gap-3">
         <h3 class="text-ui-sm font-medium text-highlighted">
           {{ t('comments.publishedComments') }}
         </h3>
@@ -103,24 +101,3 @@ onMounted(() => {
     </p>
   </section>
 </template>
-
-<style scoped>
-.comments-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.comments-section__list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.comments-section__list-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-</style>

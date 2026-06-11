@@ -1,8 +1,41 @@
 <script setup lang="ts">
 import { dashboardPanelBodyUi } from '~/utils/dashboard-ui'
 
-const { t } = useI18n()
+const { t, locale, loadLocaleMessages } = useI18n()
 const { groups, searchTerm } = useDashboardSearch()
+
+const localeCookie = useCookie<typeof locale.value | null>('mohetios_locale', {
+  path: '/',
+  sameSite: 'lax'
+})
+const isApplyingPanelLocale = ref(false)
+
+const savedPanelLocale = computed(() =>
+  supportedLocales.find((code) => code === localeCookie.value)
+)
+
+watchEffect(() => {
+  if (savedPanelLocale.value && locale.value !== savedPanelLocale.value) {
+    void applyPanelLocale(savedPanelLocale.value)
+  }
+})
+
+watch(locale, (value) => {
+  if (!isApplyingPanelLocale.value) {
+    localeCookie.value = value
+  }
+})
+
+async function applyPanelLocale(value: typeof locale.value) {
+  isApplyingPanelLocale.value = true
+
+  try {
+    await loadLocaleMessages(value)
+    locale.value = value
+  } finally {
+    isApplyingPanelLocale.value = false
+  }
+}
 </script>
 
 <template>

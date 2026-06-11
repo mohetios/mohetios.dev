@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { PUBLIC_SITE_SHELL_CLASS } from '~~/shared/constants/layout'
+
 const { locale, locales, t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
@@ -28,13 +30,14 @@ const nextLocalePath = computed(() =>
     :to="localePath('/')"
     mode="slideover"
     :ui="{
-      root: 'border-b border-default bg-default/90 backdrop-blur'
+      root: 'border-b border-default bg-default/90 backdrop-blur',
+      container: `${PUBLIC_SITE_SHELL_CLASS} flex h-full items-center justify-between gap-3`
     }"
   >
     <template #left>
       <NuxtLink
         :to="localePath('/')"
-        class="site-logo-link site-logo-link--header group min-w-0"
+        class="group/logo inline-flex min-w-0 items-center text-inherit no-underline"
         :aria-label="t('site.name')"
       >
         <SiteLogo show-tagline size="header" />

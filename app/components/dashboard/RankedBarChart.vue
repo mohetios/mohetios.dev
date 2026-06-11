@@ -28,7 +28,8 @@ const props = withDefaults(
   }
 )
 
-const { containerRef, height: measuredHeight } = useChartContainerHeight(props.minHeight)
+const chartContainer = useChartContainerHeight(props.minHeight)
+const measuredHeight = chartContainer.height
 
 const visibleItems = computed(() => props.items.slice(0, props.maxItems ?? 8))
 
@@ -66,7 +67,7 @@ const yFormatter = (value: number) =>
       <slot name="empty" />
     </div>
 
-    <div v-else ref="containerRef" class="absolute inset-0 overflow-hidden">
+    <div v-else :ref="chartContainer.containerRef" class="absolute inset-0 overflow-hidden">
       <ClientOnly>
         <BarChart
           :data="chartData"

@@ -146,7 +146,7 @@ useMohetiosSeo({
               </h2>
               <p
                 v-if="featuredItem.description"
-                class="mt-4 max-w-3xl text-sm leading-7 text-muted"
+                class="mt-4 text-sm leading-7 text-pretty text-muted"
               >
                 {{ featuredItem.description }}
               </p>

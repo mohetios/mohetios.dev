@@ -88,7 +88,7 @@ function isActive(path: string) {
       >
         <NuxtLink
           to="/dashboard"
-          class="site-logo-link min-w-0"
+          class="group/logo inline-flex min-w-0 items-center text-inherit no-underline"
           :class="collapsed ? 'justify-center' : ''"
           :aria-label="`${t('site.name')} ${t('dashboard.title')}`"
         >

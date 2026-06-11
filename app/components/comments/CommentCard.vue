@@ -34,7 +34,9 @@ function toggleReply(commentId: string) {
 </script>
 
 <template>
-  <article class="comment-card">
+  <article
+    class="flex flex-col gap-2 py-3 [&+&]:border-t [&+&]:border-default/65"
+  >
     <header class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
       <p class="text-ui-sm font-medium text-highlighted">
         {{ comment.authorName }}
@@ -44,15 +46,19 @@ function toggleReply(commentId: string) {
       </time>
     </header>
 
-    <p class="comment-card__body text-reader-sm text-default">
+    <p class="whitespace-pre-wrap text-reader-sm text-default">
       {{ comment.body }}
     </p>
 
-    <button type="button" class="comment-card__reply" @click="toggleReply(comment.id)">
+    <button
+      type="button"
+      class="self-start text-ui-sm font-medium text-muted transition-colors duration-150 hover:text-primary"
+      @click="toggleReply(comment.id)"
+    >
       {{ replyingTo === comment.id ? t('comments.cancelReply') : t('comments.replyAction') }}
     </button>
 
-    <div v-if="replyingTo === comment.id" class="comment-card__reply-form">
+    <div v-if="replyingTo === comment.id" class="pt-2">
       <CommentsCommentForm
         compact
         :target-type="targetType"
@@ -63,8 +69,15 @@ function toggleReply(commentId: string) {
       />
     </div>
 
-    <div v-if="comment.replies?.length" class="comment-card__replies">
-      <article v-for="reply in comment.replies" :key="reply.id" class="comment-card__reply-item">
+    <div
+      v-if="comment.replies?.length"
+      class="mt-1 flex flex-col gap-3 border-s border-default/75 ps-4"
+    >
+      <article
+        v-for="reply in comment.replies"
+        :key="reply.id"
+        class="flex flex-col gap-1.5"
+      >
         <header class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
           <p class="text-ui-sm font-medium text-highlighted">
             {{ reply.authorName }}
@@ -81,52 +94,3 @@ function toggleReply(commentId: string) {
     </div>
   </article>
 </template>
-
-<style scoped>
-.comment-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding-block: 0.75rem;
-}
-
-.comment-card + .comment-card {
-  border-top: 1px solid color-mix(in oklab, var(--ui-border) 65%, transparent);
-}
-
-.comment-card__body {
-  white-space: pre-wrap;
-}
-
-.comment-card__reply {
-  align-self: flex-start;
-  font-size: var(--text-ui-sm);
-  line-height: var(--text-ui-sm--line-height);
-  font-weight: 500;
-  color: var(--ui-text-muted);
-  transition: color 0.15s ease;
-}
-
-.comment-card__reply:hover {
-  color: var(--ui-primary);
-}
-
-.comment-card__reply-form {
-  padding-top: 0.5rem;
-}
-
-.comment-card__replies {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 0.25rem;
-  padding-inline-start: 1rem;
-  border-inline-start: 1px solid color-mix(in oklab, var(--ui-border) 75%, transparent);
-}
-
-.comment-card__reply-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
-}
-</style>

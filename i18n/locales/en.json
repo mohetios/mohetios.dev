@@ -754,6 +754,12 @@
       "featured": "Featured projects",
       "featuredDescription": "The main projects currently shaping my public work.",
       "archive": "Project archive"
+    },
+    "about": {
+      "eyebrow": "Background"
+    },
+    "contact": {
+      "eyebrow": "Direct line"
     }
   },
   "home": {
