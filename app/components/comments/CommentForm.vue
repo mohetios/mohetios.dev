@@ -78,6 +78,10 @@ const commentErrorMessages = computed(
   })
 )
 
+const fieldUi = {
+  label: 'text-ui-sm font-medium text-muted'
+}
+
 function resolveSubmitError(error: unknown) {
   const code = getGraphqlErrorCode(error)
 
@@ -185,37 +189,25 @@ async function onSubmit() {
 
 <template>
   <div class="comment-form">
-    <div
-      v-if="submitState === 'success'"
-      class="flex items-start gap-2.5 rounded-lg bg-success/10 px-3 py-2.5"
-    >
-      <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 text-success" />
-      <p class="text-sm leading-6 text-highlighted">
-        {{ t('comments.success') }}
-      </p>
-    </div>
+    <p v-if="submitState === 'success'" class="text-ui-sm text-highlighted">
+      {{ t('comments.success') }}
+    </p>
 
-    <UForm
-      v-else
-      :schema="schema"
-      :state="state"
-      class="space-y-3"
-      @submit="onSubmit"
-    >
+    <UForm v-else :schema="schema" :state="state" class="space-y-3" @submit="onSubmit">
       <UFormField
         :label="parentId ? t('comments.replyLabel') : t('comments.commentLabel')"
         name="body"
         required
         class="w-full"
-        :ui="{ label: compact ? 'text-xs font-medium' : undefined }"
+        :ui="fieldUi"
       >
         <UTextarea
           v-model="state.body"
-          class="w-full"
-          :rows="compact ? 3 : 5"
-          :size="compact ? 'sm' : 'md'"
+          class="w-full text-reader-sm"
+          :rows="compact ? 3 : 4"
+          size="sm"
           autoresize
-          :maxrows="compact ? 8 : 12"
+          :maxrows="compact ? 8 : 10"
           :placeholder="bodyPlaceholder"
           :disabled="isSubmitting"
         />
@@ -223,7 +215,7 @@ async function onSubmit() {
 
       <div class="flex flex-col gap-2.5">
         <div class="flex flex-col gap-2 sm:flex-row sm:items-end">
-          <UFormField name="authorName" required class="min-w-0 flex-1">
+          <UFormField name="authorName" required class="min-w-0 flex-1" :ui="fieldUi">
             <UInput
               v-model="state.authorName"
               class="w-full"
@@ -234,7 +226,7 @@ async function onSubmit() {
             />
           </UFormField>
 
-          <UFormField name="authorEmail" required class="min-w-0 flex-1">
+          <UFormField name="authorEmail" required class="min-w-0 flex-1" :ui="fieldUi">
             <UInput
               v-model="state.authorEmail"
               class="w-full"
@@ -259,17 +251,12 @@ async function onSubmit() {
           </UButton>
         </div>
 
-        <UAlert
-          v-if="formError"
-          color="error"
-          variant="soft"
-          icon="i-lucide-circle-alert"
-          :title="formError"
-          :ui="{ root: 'p-2.5', title: 'text-xs' }"
-        />
+        <p v-if="formError" class="text-ui-xs text-error">
+          {{ formError }}
+        </p>
 
         <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <p class="text-xs leading-5 text-muted">
+          <p class="text-ui-xs text-muted">
             {{ t('comments.privacyNote') }}
           </p>
 
@@ -292,8 +279,10 @@ async function onSubmit() {
 </template>
 
 <style scoped>
-.comment-form :deep(textarea) {
-  width: 100%;
+.comment-form :deep(textarea),
+.comment-form :deep(input) {
+  font-size: var(--text-ui-sm);
+  line-height: var(--text-ui-sm--line-height);
 }
 
 .comment-form__turnstile :deep(> span) {

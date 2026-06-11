@@ -39,9 +39,9 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
 </script>
 
 <template>
-  <header class="bg-default">
-    <div class="mohetios-editorial-header pb-10 pt-8">
-      <div v-if="backTo" class="mb-8">
+  <header>
+    <div class="mohetios-editorial-column pt-6 pb-8 sm:pt-8">
+      <div v-if="backTo" class="mb-6">
         <NuxtLink
           :to="backTo"
           class="inline-flex items-center gap-2 text-ui-sm text-muted transition-colors hover:text-highlighted"
@@ -51,25 +51,20 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
         </NuxtLink>
       </div>
 
-      <p v-if="status" class="text-ui-xs font-medium uppercase tracking-[0.2em] text-primary">
+      <p v-if="status" class="mohetios-article-section-label text-primary">
         {{ status }}
       </p>
 
-      <h1
-        class="mt-3 break-words text-balance text-3xl font-semibold tracking-tight text-highlighted sm:text-4xl lg:text-[2.5rem] lg:leading-[1.12]"
-      >
+      <h1 class="mohetios-article-title mt-2 text-balance text-highlighted">
         {{ title }}
       </h1>
 
-      <p
-        v-if="description"
-        class="mt-4 text-pretty text-reader-base leading-8 text-muted sm:text-reader-lg"
-      >
+      <p v-if="description" class="mt-3 text-pretty text-reader-base text-muted">
         {{ description }}
       </p>
 
       <div
-        class="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-ui-sm text-muted"
+        class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-ui-sm text-muted"
         role="group"
         :aria-label="t('content.article.metadata')"
       >
@@ -99,21 +94,21 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
         </template>
       </div>
 
-      <ContentTags v-if="tags?.length" class="mt-5" :tags="tags" size="sm" />
-    </div>
+      <ContentTags v-if="tags?.length" class="mt-4" :tags="tags" size="sm" />
 
-    <figure v-if="thumbnail" class="mohetios-editorial-hero pb-10">
-      <img
-        :src="thumbnail"
-        :alt="imageAlt"
-        class="w-full rounded-2xl border border-default object-cover"
-        loading="eager"
-        fetchpriority="high"
-        decoding="async"
-      />
-      <figcaption v-if="thumbnailCredit" class="mt-3 text-center text-ui-xs leading-6 text-muted">
-        {{ thumbnailCredit }}
-      </figcaption>
-    </figure>
+      <figure v-if="thumbnail" class="mt-6">
+        <img
+          :src="thumbnail"
+          :alt="imageAlt"
+          class="w-full rounded-xl object-cover"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+        <figcaption v-if="thumbnailCredit" class="mt-2 text-center text-ui-xs text-muted">
+          {{ thumbnailCredit }}
+        </figcaption>
+      </figure>
+    </div>
   </header>
 </template>

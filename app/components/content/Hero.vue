@@ -60,7 +60,7 @@ onBeforeUnmount(() => {
   <header
     ref="heroRef"
     class="content-hero"
-    :class="hasImage ? 'content-hero--immersive' : 'content-hero--compact'"
+    :class="hasImage ? 'content-hero--immersive' : 'content-hero--compact mohetios-editorial-column'"
   >
     <div v-if="hasImage" class="content-hero__backdrop" aria-hidden="true">
       <div class="content-hero__image-wrap">
@@ -76,12 +76,15 @@ onBeforeUnmount(() => {
       <div class="content-hero__scrim" />
     </div>
 
-    <div class="content-hero__content">
-      <h1 class="content-hero__title content-hero-title">
+    <div class="content-hero__content" :class="{ 'mohetios-editorial-column': hasImage }">
+      <h1
+        class="content-hero-title text-balance text-highlighted"
+        :class="hasImage ? 'content-hero__title' : 'mohetios-article-title'"
+      >
         {{ title }}
       </h1>
 
-      <p v-if="description" class="content-hero__description">
+      <p v-if="description" class="content-hero__description text-reader-base text-muted">
         {{ description }}
       </p>
     </div>

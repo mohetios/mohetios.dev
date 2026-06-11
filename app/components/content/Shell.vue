@@ -31,55 +31,57 @@ withDefaults(
 </script>
 
 <template>
-  <UPageBody>
-    <section class="mohetios-editorial-column min-w-0 py-8">
-      <ContentCodeEnhancer />
-      <LazyContentMermaidEnhancer />
+  <UPageBody :ui="{ base: 'mt-0 space-y-0 pb-20' }">
+    <div class="mohetios-editorial-column min-w-0">
+      <section class="py-6 sm:py-8">
+        <ContentCodeEnhancer />
+        <LazyContentMermaidEnhancer />
 
-      <slot name="notice" />
+        <slot name="notice" />
 
-      <ContentArticleSummary v-if="summary?.length" :items="summary" class="mb-8" />
+        <ContentArticleSummary v-if="summary?.length" :items="summary" class="mb-6" />
 
-      <ContentToc v-if="showToc" class="mb-8" :title="$t('content.toc')" :links="tocLinks" />
+        <ContentToc v-if="showToc" class="mb-6" :title="$t('content.toc')" :links="tocLinks" />
 
-      <article class="prose-mohetios">
-        <ContentHtml :html="content" />
-      </article>
+        <article class="prose-mohetios">
+          <ContentHtml :html="content" />
+        </article>
 
-      <div v-if="$slots.share" class="mt-10">
-        <slot name="share" />
-      </div>
-    </section>
+        <div v-if="$slots.share" class="mt-8">
+          <slot name="share" />
+        </div>
+      </section>
 
-    <div
-      v-if="backTo || surround?.some(Boolean) || $slots.related || kind || $slots.comments"
-      class="mohetios-article-tail"
-    >
-      <slot name="comments" />
+      <div
+        v-if="backTo || surround?.some(Boolean) || $slots.related || kind || $slots.comments"
+        class="mohetios-article-tail"
+      >
+        <slot name="comments" />
 
-      <div class="mohetios-editorial-column min-w-0 space-y-10">
-        <UButton
-          v-if="backTo"
-          :to="backTo"
-          color="neutral"
-          variant="ghost"
-          icon="i-lucide-arrow-left"
-        >
-          {{ backLabel }}
-        </UButton>
+        <div class="space-y-8">
+          <UButton
+            v-if="backTo"
+            :to="backTo"
+            color="neutral"
+            variant="ghost"
+            size="sm"
+            icon="i-lucide-arrow-left"
+            :ui="{ label: 'text-ui-sm' }"
+          >
+            {{ backLabel }}
+          </UButton>
 
-        <section v-if="surround?.some(Boolean)" class="space-y-4">
-          <p class="mohetios-article-section-label">
-            {{ $t('content.article.continueReading') }}
-          </p>
-          <ContentSurround :surround="surround || []" />
-        </section>
+          <section v-if="surround?.some(Boolean)" class="space-y-3">
+            <p class="mohetios-article-section-label">
+              {{ $t('content.article.continueReading') }}
+            </p>
+            <ContentSurround :surround="surround || []" />
+          </section>
 
-        <slot name="related" />
+          <slot name="related" />
 
-        <section v-if="kind">
-          <ContentSubscribe :kind="kind" plain />
-        </section>
+          <ContentSubscribe v-if="kind" :kind="kind" plain />
+        </div>
       </div>
     </div>
   </UPageBody>

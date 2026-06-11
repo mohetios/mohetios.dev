@@ -25,6 +25,10 @@ const networkLabels: Record<SocialNetwork, string> = {
   email: 'content.share.email'
 }
 
+const buttonUi = {
+  label: 'text-ui-sm'
+}
+
 async function copyLink() {
   if (!props.url || !import.meta.client) {
     return
@@ -70,7 +74,7 @@ onBeforeUnmount(() => {
         :styled="false"
         class="inline-flex"
       >
-        <UButton color="neutral" variant="soft" size="sm">
+        <UButton color="neutral" variant="soft" size="sm" :ui="buttonUi">
           {{ t(networkLabels[network]) }}
         </UButton>
       </SocialShare>
@@ -81,6 +85,7 @@ onBeforeUnmount(() => {
         variant="outline"
         size="sm"
         icon="i-lucide-link"
+        :ui="buttonUi"
         @click="copyLink"
       >
         {{ copied ? t('content.share.copied') : t('content.share.copyLink') }}

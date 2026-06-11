@@ -105,7 +105,7 @@ const { canonicalUrl: shareUrl } = useContentSeo({
       </template>
 
       <template #related>
-        <section v-if="relatedPosts.length" class="space-y-4">
+        <section v-if="relatedPosts.length" class="space-y-3">
           <p class="mohetios-article-section-label">
             {{ t('content.article.relatedPosts') }}
           </p>

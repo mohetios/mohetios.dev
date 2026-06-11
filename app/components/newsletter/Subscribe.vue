@@ -155,93 +155,74 @@ async function onSubmit() {
 </script>
 
 <template>
-  <section
-    v-if="plain"
-    class="rounded-xl bg-muted/20 px-4 py-4 sm:px-5 sm:py-5"
-  >
-    <div :class="compact ? 'space-y-3' : 'space-y-4'">
-      <div>
-        <p
-          :class="
-            compact
-              ? 'text-sm font-medium text-highlighted'
-              : 'text-base font-semibold tracking-tight text-highlighted'
-          "
-        >
-          {{ resolvedTitle }}
-        </p>
-        <p class="mt-1.5 text-sm leading-6 text-muted">
-          {{ resolvedDescription }}
-        </p>
-      </div>
-
-      <div v-if="isComplete" class="flex items-start gap-3 rounded-lg bg-success/10 px-3 py-3">
-        <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 text-success" />
-        <div class="min-w-0 space-y-2">
-          <p class="text-sm leading-6 text-highlighted">
-            {{ statusMessage }}
-          </p>
-          <p class="text-xs leading-5 text-muted">
-            {{ t('newsletter.privacyNote') }}
-          </p>
-        </div>
-      </div>
-
-      <form v-else class="space-y-3" @submit.prevent="onSubmit">
-        <UFieldGroup class="w-full">
-          <UInput
-            v-model="email"
-            class="min-w-0 flex-1"
-            size="md"
-            type="email"
-            autocomplete="email"
-            :placeholder="t('newsletter.emailLabel')"
-            :disabled="isSubmitting"
-          />
-          <UButton
-            type="submit"
-            color="primary"
-            size="md"
-            icon="i-lucide-mail-plus"
-            :loading="isSubmitting"
-            :disabled="isSubmitting"
-          >
-            {{ isSubmitting ? t('newsletter.submitting') : t('newsletter.submit') }}
-          </UButton>
-        </UFieldGroup>
-
-        <p v-if="submitState === 'error'" class="text-xs text-error">
-          {{ statusMessage }}
-        </p>
-
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <p class="text-xs leading-5 text-muted sm:max-w-[70%]">
-            {{ consentText }}
-          </p>
-
-          <div class="newsletter-turnstile flex shrink-0 items-center justify-end sm:justify-end">
-            <NuxtTurnstile
-              ref="turnstile"
-              v-model="turnstileToken"
-              element="span"
-              :options="{
-                action: 'newsletter_subscribe',
-                theme: 'auto',
-                language: locale,
-                appearance: 'interaction-only'
-              }"
-            />
-          </div>
-        </div>
-      </form>
+  <section v-if="plain" class="w-full space-y-3">
+    <div class="space-y-1.5">
+      <p class="mohetios-article-section-label text-highlighted">
+        {{ resolvedTitle }}
+      </p>
+      <p class="text-ui-sm text-muted">
+        {{ resolvedDescription }}
+      </p>
     </div>
+
+    <p v-if="isComplete" class="text-ui-sm text-highlighted">
+      {{ statusMessage }}
+    </p>
+
+    <form v-else class="space-y-2.5" @submit.prevent="onSubmit">
+      <UFieldGroup class="w-full">
+        <UInput
+          v-model="email"
+          class="min-w-0 flex-1"
+          size="sm"
+          type="email"
+          autocomplete="email"
+          :placeholder="t('newsletter.emailLabel')"
+          :disabled="isSubmitting"
+        />
+        <UButton
+          type="submit"
+          color="primary"
+          size="sm"
+          icon="i-lucide-mail-plus"
+          :loading="isSubmitting"
+          :disabled="isSubmitting"
+        >
+          {{ isSubmitting ? t('newsletter.submitting') : t('newsletter.submit') }}
+        </UButton>
+      </UFieldGroup>
+
+      <p v-if="submitState === 'error'" class="text-ui-xs text-error">
+        {{ statusMessage }}
+      </p>
+
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <p class="text-ui-xs text-muted sm:max-w-[70%]">
+          {{ consentText }}
+        </p>
+
+        <div class="newsletter-turnstile flex shrink-0 items-center justify-end">
+          <NuxtTurnstile
+            ref="turnstile"
+            v-model="turnstileToken"
+            element="span"
+            :options="{
+              action: 'newsletter_subscribe',
+              theme: 'auto',
+              language: locale,
+              appearance: 'interaction-only'
+            }"
+          />
+        </div>
+      </div>
+    </form>
   </section>
 
   <UCard
     v-else
     variant="subtle"
     :ui="{
-      root: 'rounded-2xl ring-1 ring-neutral-200/70 dark:ring-neutral-800/80',
+      root: 'w-full rounded-2xl ring-1 ring-neutral-200/70 dark:ring-neutral-800/80',
       body: compact ? 'p-4 sm:p-5' : 'p-5 sm:p-6'
     }"
   >
@@ -250,27 +231,24 @@ async function onSubmit() {
         <p
           :class="
             compact
-              ? 'text-sm font-medium text-highlighted'
-              : 'text-base font-semibold tracking-tight text-highlighted'
+              ? 'text-ui-sm font-medium text-highlighted'
+              : 'text-ui-lg font-semibold tracking-tight text-highlighted'
           "
         >
           {{ resolvedTitle }}
         </p>
-        <p class="mt-1.5 text-sm leading-6 text-muted">
+        <p class="mt-1.5 text-ui-sm text-muted">
           {{ resolvedDescription }}
         </p>
       </div>
 
-      <div v-if="isComplete" class="flex items-start gap-3 rounded-xl bg-success/10 px-3 py-3">
-        <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 text-success" />
-        <div class="min-w-0 space-y-2">
-          <p class="text-sm leading-6 text-highlighted">
-            {{ statusMessage }}
-          </p>
-          <p class="text-xs leading-5 text-muted">
-            {{ t('newsletter.privacyNote') }}
-          </p>
-        </div>
+      <div v-if="isComplete" class="space-y-1.5">
+        <p class="text-ui-sm text-highlighted">
+          {{ statusMessage }}
+        </p>
+        <p class="text-ui-xs text-muted">
+          {{ t('newsletter.privacyNote') }}
+        </p>
       </div>
 
       <form v-else class="space-y-3" @submit.prevent="onSubmit">
@@ -278,7 +256,7 @@ async function onSubmit() {
           <UInput
             v-model="email"
             class="min-w-0 flex-1"
-            size="md"
+            :size="compact ? 'sm' : 'md'"
             type="email"
             autocomplete="email"
             :placeholder="t('newsletter.emailLabel')"
@@ -287,7 +265,7 @@ async function onSubmit() {
           <UButton
             type="submit"
             color="primary"
-            size="md"
+            :size="compact ? 'sm' : 'md'"
             icon="i-lucide-mail-plus"
             :loading="isSubmitting"
             :disabled="isSubmitting"
@@ -296,16 +274,16 @@ async function onSubmit() {
           </UButton>
         </UFieldGroup>
 
-        <p v-if="submitState === 'error'" class="text-xs text-error">
+        <p v-if="submitState === 'error'" class="text-ui-xs text-error">
           {{ statusMessage }}
         </p>
 
         <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <p class="text-xs leading-5 text-muted sm:max-w-[70%]">
+          <p class="text-ui-xs text-muted sm:max-w-[70%]">
             {{ consentText }}
           </p>
 
-          <div class="newsletter-turnstile flex shrink-0 items-center justify-end sm:justify-end">
+          <div class="newsletter-turnstile flex shrink-0 items-center justify-end">
             <NuxtTurnstile
               ref="turnstile"
               v-model="turnstileToken"

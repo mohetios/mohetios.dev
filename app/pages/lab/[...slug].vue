@@ -52,11 +52,9 @@ const { canonicalUrl: shareUrl } = useContentSeo({
       :back-label="t('content.actions.backToLab')"
     >
       <template #notice>
-        <div class="mb-8 rounded-xl bg-muted/25 px-5 py-4 sm:px-6 sm:py-5">
-          <p class="text-ui-sm leading-6 text-muted">
-            {{ t('content.lab.workingNote') }}
-          </p>
-        </div>
+        <p class="mb-6 text-ui-sm text-muted">
+          {{ t('content.lab.workingNote') }}
+        </p>
       </template>
 
       <template #share>

@@ -8,12 +8,8 @@ defineProps<{
 </script>
 
 <template>
-  <nav
-    v-if="links.length"
-    class="max-w-full overflow-x-auto rounded-xl border border-default bg-muted/20 p-5 sm:p-6"
-    :aria-label="title"
-  >
-    <p v-if="title" class="mohetios-article-section-label mb-4">
+  <nav v-if="links.length" class="space-y-3" :aria-label="title">
+    <p v-if="title" class="mohetios-article-section-label">
       {{ title }}
     </p>
     <ContentTocList :links="links" ordered />

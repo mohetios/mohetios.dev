@@ -11,6 +11,7 @@ const localePath = useLocalePath()
 <template>
   <NewsletterSubscribe
     v-if="kind === 'blog'"
+    class="w-full"
     compact
     :plain="plain"
     source="blog_post"
@@ -20,6 +21,7 @@ const localePath = useLocalePath()
 
   <NewsletterSubscribe
     v-else-if="kind === 'lab'"
+    class="w-full"
     compact
     :plain="plain"
     source="lab_post"
@@ -27,20 +29,24 @@ const localePath = useLocalePath()
     :description="t('content.subscribe.lab.description')"
   />
 
-  <UCard v-else variant="subtle">
-    <div class="space-y-3">
-      <div>
-        <p class="text-ui-sm font-medium text-highlighted">
-          {{ t('content.subscribe.project.title') }}
-        </p>
-        <p class="mt-2 text-ui-sm leading-6 text-muted">
-          {{ t('content.subscribe.project.description') }}
-        </p>
-      </div>
-
-      <UButton :to="localePath('/contact')" color="primary" variant="soft" icon="i-lucide-mail">
-        {{ t('content.subscribe.project.action') }}
-      </UButton>
+  <section v-else class="w-full space-y-3">
+    <div class="space-y-1.5">
+      <p class="mohetios-article-section-label text-highlighted">
+        {{ t('content.subscribe.project.title') }}
+      </p>
+      <p class="text-ui-sm text-muted">
+        {{ t('content.subscribe.project.description') }}
+      </p>
     </div>
-  </UCard>
+
+    <UButton
+      :to="localePath('/contact')"
+      color="primary"
+      variant="soft"
+      size="sm"
+      icon="i-lucide-mail"
+    >
+      {{ t('content.subscribe.project.action') }}
+    </UButton>
+  </section>
 </template>
