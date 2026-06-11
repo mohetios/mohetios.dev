@@ -18,12 +18,18 @@
     "nuxtr.nuxt-vscode-extentions",
     "wemlion.wemlion-nuxt-helper",
     "praburangki.nuxt-snippets",
+    "meritek.nuxt-intellisense",
+    "nuxt.mdc",
     "devsense.phptools-vscode",
     "devsense.intelli-php-vscode",
     "devsense.composer-php-vscode",
     "devsense.profiler-php-vscode",
     "expo.vscode-expo-tools",
     "vscjava.vscode-gradle",
-    "wordpresstoolbox.wordpress-toolbox"
+    "wordpresstoolbox.wordpress-toolbox",
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "ms-python.debugpy",
+    "ms-python.vscode-python-envs"
   ]
 }

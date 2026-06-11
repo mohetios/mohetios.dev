@@ -6,6 +6,7 @@
 .velite/
 dist/
 .wrangler/
+.data/
 
 # Dependencies
 node_modules/
@@ -14,6 +15,16 @@ node_modules/
 # Large lockfile
 pnpm-lock.yaml
 
+# Generated GraphQL SDL (synced from server/schema.ts)
+schema.graphql
+
 # Generated migration metadata
 migrations/meta/
-migrations/meta/
+
+# Logs
+logs/
+*.log
+
+# Local env (secrets)
+.env
+.env.*
