@@ -5,10 +5,10 @@ date: 2019-01-16
 updated: 2025-12-16
 status: Stable archive
 tags:
-  - javascript
+  - interactive-video
   - html5-video
-  - interactive-media
-  - subtitles
+  - javascript
+  - branching-narrative
 repo: https://github.com/mehotkhan/BandersnatchInteractive
 website: https://mehotkhan.github.io/BandersnatchInteractive/
 featured: true

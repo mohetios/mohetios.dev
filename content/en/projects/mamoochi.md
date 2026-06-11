@@ -9,7 +9,7 @@ tags:
   - nuxt
   - vue
   - cloudflare
-  - framework
+  - open-source
 repo: https://github.com/bagche/mamoochi
 website: https://mamoochi.bagche.app/
 featured: true

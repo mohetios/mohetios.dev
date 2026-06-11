@@ -3,6 +3,12 @@ title: Introduction to WASM
 date: 2025-04-27
 thumbnail: /content/web-assembly-logo.webp
 description: 'WebAssembly (WASM) is an open standard that enables the execution of optimized binary code in JavaScript environments. Its primary goal is to enhance the speed and efficiency of web applications, but it can also be run in other environments.'
+tags:
+  - tutorial
+  - webassembly
+  - tinygo
+  - go
+  - wasm
 toc: true
 intro: false
 comments: true
@@ -66,7 +72,7 @@ tinygo version
 
 You should see something like:
 
-```
+```txt
 go version go1.21.5
 tinygo version 0.31.0
 ```

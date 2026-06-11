@@ -5,10 +5,10 @@ date: 2019-01-16
 updated: 2025-12-16
 status: Exploring
 tags:
-  - interactive-media
-  - javascript
+  - interactive-video
   - html5-video
   - state-machines
+  - javascript
 ---
 
 Bandersnatch Interactive looks like a video player, but the useful mental model is a state machine.

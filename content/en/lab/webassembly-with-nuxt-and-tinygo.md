@@ -9,7 +9,7 @@ tags:
   - tinygo
   - nuxt
   - go
-  - frontend
+  - wasm
 ---
 
 The WebAssembly thread starts from a teaching question: how small can the first useful WASM example be?

@@ -6,8 +6,8 @@ description: 'Notes on the JAMstack model: prerendered markup, CDN delivery, API
 tags:
   - books
   - jamstack
-  - frontend
-  - architecture
+  - static-sites
+  - web-architecture
 ---
 
 ## Reading Notes

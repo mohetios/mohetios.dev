@@ -6,10 +6,9 @@ updated: 2024-03-07
 status: Archive
 tags:
   - vue
-  - calendar
-  - persian
-  - date-ui
-  - frontend
+  - persian-calendar
+  - jalali
+  - date-picker
 repo: https://github.com/mehotkhan/zcalendar
 website: https://mehotkhan.github.io/zcalendar/
 ---

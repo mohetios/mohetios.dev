@@ -57,7 +57,7 @@ withDefaults(
     >
       <slot name="comments" />
 
-      <div class="mohetios-site-column min-w-0 space-y-10">
+      <div class="mohetios-editorial-column min-w-0 space-y-10">
         <UButton
           v-if="backTo"
           :to="backTo"

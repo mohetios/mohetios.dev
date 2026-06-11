@@ -4,9 +4,9 @@ title: What Is Mohetios?
 description: A note on the name, the persona, and the workshop behind Mohetios.dev.
 date: 2026-05-27
 tags:
-  - identity
-  - workshop
-  - notes
+  - mohetios
+  - engineering-notes
+  - personal-brand
 ---
 
 Mohetios is a builder persona, a personal workshop, and a name for the way I think through systems.

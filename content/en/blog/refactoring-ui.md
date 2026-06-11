@@ -6,8 +6,8 @@ description: Notes on Adam Wathan and Steve Schoger's tactical UI design guide f
 tags:
   - books
   - ui-design
-  - product-design
   - frontend
+  - product-design
 ---
 
 ## Reading Notes

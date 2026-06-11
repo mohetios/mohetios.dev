@@ -9,7 +9,7 @@ tags:
   - jamstack
   - decap-cms
   - cloudflare-pages
-  - static-site
+  - static-blog
 repo: https://github.com/mehotkhan/totoro
 website: https://totoro.alizemani.ir/
 ---

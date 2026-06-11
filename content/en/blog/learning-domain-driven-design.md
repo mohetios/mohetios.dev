@@ -6,8 +6,8 @@ description: Notes on Vlad Khononov's practical guide to aligning software archi
 tags:
   - books
   - domain-driven-design
-  - architecture
-  - product-engineering
+  - software-architecture
+  - bounded-contexts
 ---
 
 ## Reading Notes

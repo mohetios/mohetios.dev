@@ -5,12 +5,11 @@ date: 2025-10-23
 updated: 2026-05-14
 status: Active
 tags:
-  - ai
   - travel
   - offline-first
   - react-native
-  - cloudflare
-  - product
+  - ai
+  - expo
 repo: https://github.com/mehotkhan/safarnak.app
 website: https://safarnak.app
 featured: true

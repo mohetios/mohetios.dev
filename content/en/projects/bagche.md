@@ -7,9 +7,9 @@ status: Review
 tags:
   - nuxt
   - vue
+  - p2p-commerce
+  - jamstack
   - cloudflare
-  - commerce
-  - product
 repo: https://github.com/bagche/mamoochi
 website: https://mamoochi.bagche.app/
 ---

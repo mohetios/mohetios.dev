@@ -5,11 +5,11 @@ date: 2024-08-19
 updated: 2025-04-29
 status: Exploring
 tags:
-  - privacy
   - cloudflare-workers
+  - privacy
   - telegram
   - durable-objects
-  - security
+  - encryption
 ---
 
 Anonymous messaging is easy to describe and difficult to make responsible.

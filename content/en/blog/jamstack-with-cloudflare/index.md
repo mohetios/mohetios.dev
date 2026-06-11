@@ -3,6 +3,12 @@ title: 'Jamstack with Cloudflare: Modern Web Development (Part One)'
 description: 'In the first part of this educational series, you will get acquainted with the Jamstack architecture and powerful tools like Cloudflare Pages, Nuxt.js, and the Cloudflare serverless ecosystem. From the history of the web to building fast, secure, and scalable applications, this article guides you step by step towards creating professional projects. With project-based tutorials, you will be ready to build web applications that stand out in the world of technology.  '
 date: 2025-04-28
 thumbnail: /content/jamstack-with-cloudflare-intro.webp
+tags:
+  - tutorial
+  - jamstack
+  - cloudflare-pages
+  - nuxt
+  - serverless
 toc: true
 intro: true
 cat: tuts

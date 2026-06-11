@@ -12,8 +12,8 @@
     "gql:schema": "node scripts/sync-graphql-schema.mjs",
     "preview": "wrangler pages dev dist",
     "deploy": "wrangler pages deploy dist",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint app server shared workers scripts velite content",
+    "lint:fix": "eslint app server shared workers scripts velite content --fix",
     "lint:vue": "node scripts/lint-vue-files.mjs",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
@@ -64,6 +64,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "4.20260610.1",
+    "@eslint/markdown": "^8.0.2",
     "@nuxt/eslint": "^1.16.0",
     "@types/hast": "^3.0.4",
     "@types/node": "^25.9.2",

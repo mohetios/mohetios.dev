@@ -6,8 +6,9 @@ updated: 2021-12-20
 status: Stable archive
 tags:
   - python
-  - persian
   - nlp
+  - persian
+  - word-cloud
   - visualization
 repo: https://github.com/mehotkhan/persian-word-cloud
 featured: true

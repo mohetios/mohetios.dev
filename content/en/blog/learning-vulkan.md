@@ -6,8 +6,8 @@ description: Notes on Parminder Singh's practical introduction to Vulkan and the
 tags:
   - books
   - vulkan
+  - gpu-programming
   - graphics
-  - rendering
 ---
 
 ## Reading Notes

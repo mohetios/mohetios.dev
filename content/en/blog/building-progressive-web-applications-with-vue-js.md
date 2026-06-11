@@ -7,6 +7,7 @@ tags:
   - books
   - vue
   - pwa
+  - service-workers
   - frontend
 ---
 

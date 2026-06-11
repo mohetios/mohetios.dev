@@ -5,9 +5,9 @@ thumbnail: /content/The-Practitioners-Guide-To-Graph-Data.webp
 description: Notes on applying graph thinking and graph technologies to relationship-heavy data problems.
 tags:
   - books
-  - graph-data
-  - databases
-  - data-engineering
+  - graph-databases
+  - neo4j
+  - data-modeling
 ---
 
 ## Reading Notes

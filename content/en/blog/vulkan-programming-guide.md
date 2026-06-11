@@ -6,8 +6,8 @@ description: Notes on Graham Sellers and John Kessenich's guide to Vulkan, expli
 tags:
   - books
   - vulkan
-  - graphics
-  - gpu
+  - gpu-programming
+  - graphics-api
 ---
 
 ## Reading Notes

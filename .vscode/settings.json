@@ -1,11 +1,11 @@
 {
   // ── Project identity ──────────────────────────────────────────────
   "eslint.useFlatConfig": true,
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "vue"],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "markdown"],
   "eslint.workingDirectories": [{ "mode": "auto" }],
   "eslint.run": "onSave",
   "eslint.lintTask.enable": false,
-  "eslint.probe": ["javascript", "javascriptreact", "typescript", "typescriptreact", "vue"],
+  "eslint.probe": ["javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "markdown"],
 
   // ── Formatting (Prettier owns format; ESLint owns fix-on-save) ──
   "editor.formatOnSave": false,

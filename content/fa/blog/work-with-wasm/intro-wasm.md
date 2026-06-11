@@ -3,6 +3,12 @@ title: آشنایی با WASM
 date: 2023-09-12T16:33:46.294Z
 thumbnail: /content/web-assembly-logo.webp
 description: 'وب‌اسمبلی (WebAssembly) یک استاندارد باز است که امکان اجرای کدهای باینری بهینه را در محیط‌های جاوا اسکریپت فراهم می‌کند. هدف اصلی آن افزایش سرعت و کارایی برنامه‌های وب است، اما می‌توان آن را در محیط‌های دیگر نیز اجرا کرد.'
+tags:
+  - آموزش
+  - webassembly
+  - tinygo
+  - go
+  - wasm
 
 toc: true
 intro: false
@@ -67,7 +73,7 @@ tinygo version
 
 خروجی باید چیزی شبیه این باشه:
 
-```
+```txt
 go version go1.21.5
 tinygo version 0.31.0
 ```

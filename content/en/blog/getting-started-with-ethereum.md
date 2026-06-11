@@ -8,6 +8,7 @@ tags:
   - ethereum
   - blockchain
   - solidity
+  - smart-contracts
 ---
 
 ## Reading Notes

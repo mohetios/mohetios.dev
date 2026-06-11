@@ -5,11 +5,10 @@ date: 2020-08-18
 updated: 2020-08-20
 status: Archive
 tags:
-  - konar-studio
   - iot
   - arduino
-  - esp01
-  - c-plus-plus
+  - esp8266
+  - embedded-systems
 ---
 
 Konar Studio was not only a web front page. It also held small hardware experiments where the useful question was physical: can a cheap board sense, signal, or react well enough to become part of an installation or prototype?

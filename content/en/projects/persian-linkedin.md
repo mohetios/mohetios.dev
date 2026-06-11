@@ -9,7 +9,7 @@ tags:
   - persian
   - rtl
   - typography
-  - javascript
+  - linkedin
 repo: https://github.com/mehotkhan/persian-linkedin
 ---
 

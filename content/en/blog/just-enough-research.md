@@ -5,7 +5,7 @@ thumbnail: /content/just-enough-research.webp
 description: Notes on Erika Hall's compact guide to using research to reduce product risk and make better design decisions.
 tags:
   - books
-  - research
+  - user-research
   - product-design
   - ux
 ---

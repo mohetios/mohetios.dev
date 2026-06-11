@@ -5,11 +5,11 @@ date: 2024-08-19
 updated: 2025-04-29
 status: Prototype
 tags:
-  - typescript
+  - cloudflare-workers
   - telegram
   - privacy
-  - cloudflare-workers
   - durable-objects
+  - anonymous-messaging
 repo: https://github.com/mehotkhan/Nekonymous
 website: https://nekonymous.alizemani.ir/
 ---

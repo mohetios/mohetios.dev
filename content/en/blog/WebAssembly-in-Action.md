@@ -7,6 +7,11 @@ description: WebAssembly in Action introduces the WebAssembly stack and walks
   of a module, HTML basics, JavaScript Promises, and the WebAssembly JavaScript
   API.
 date: 2023-09-01T16:33:46.294Z
+tags:
+  - books
+  - webassembly
+  - wasm
+  - browser-performance
 
 toc: false
 intro: false

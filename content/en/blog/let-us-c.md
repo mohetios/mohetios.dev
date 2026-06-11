@@ -5,9 +5,8 @@ thumbnail: /content/let-us-c-cover.webp
 description: Notes on Yashavant Kanetkar's long-running C programming guide and its role as a practice-heavy route through the language.
 tags:
   - books
-  - c
-  - programming
-  - fundamentals
+  - c-programming
+  - programming-fundamentals
 ---
 
 ## Reading Notes

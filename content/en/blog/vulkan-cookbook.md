@@ -6,7 +6,7 @@ description: Notes on Pawel Lapinski's recipe-based Vulkan book for solving prac
 tags:
   - books
   - vulkan
-  - graphics
+  - gpu-programming
   - rendering
 ---
 

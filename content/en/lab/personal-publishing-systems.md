@@ -5,11 +5,11 @@ date: 2019-10-07
 updated: 2026-05-28
 status: Active
 tags:
-  - publishing
-  - nuxt
   - jamstack
-  - cloudflare-pages
+  - nuxt
   - content-systems
+  - cloudflare-pages
+  - static-sites
 ---
 
 The recurring project is not "make a website." It is building a personal publishing system that stays useful after the first design fades.

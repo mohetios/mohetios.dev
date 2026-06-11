@@ -6,9 +6,8 @@ updated: 2024-10-18
 status: Private review
 tags:
   - nostr
-  - protocols
-  - cloudflare
-  - relay
+  - cloudflare-workers
+  - decentralized-protocols
   - typescript
 ---
 

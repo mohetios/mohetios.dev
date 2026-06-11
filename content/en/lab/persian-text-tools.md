@@ -8,7 +8,7 @@ tags:
   - persian
   - rtl
   - typography
-  - tooling
+  - i18n
 ---
 
 Persian text support often fails in small ways before it fails completely.

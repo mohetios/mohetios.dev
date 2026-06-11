@@ -4,11 +4,11 @@ description: A beginner-friendly walkthrough — route domain mail to a Worker, 
 date: 2026-06-08
 thumbnail: /content/cloudflare-email-worker-intro.webp
 tags:
-  - cloudflare
-  - workers
-  - email
+  - cloudflare-workers
+  - email-routing
   - d1
   - serverless
+  - tutorial
 ---
 
 ## Opening + idea
@@ -1127,20 +1127,6 @@ Clear enough to turn into a real product later.
 
 Once all three paths work, the rest is mostly product design. That can wait. For now, the data flow is what matters.
 
-## Source notes
-
-Cloudflare documentation and code used while reviewing this note:
-
-- Email Service overview: https://developers.cloudflare.com/email-service/
-- Email handler (`email()`, `forward()`, `reply()`): https://developers.cloudflare.com/email-service/api/route-emails/email-handler/
-- Email Sending Workers API: https://developers.cloudflare.com/email-service/api/send-emails/workers-api/
-- Local routing development: https://developers.cloudflare.com/email-service/local-development/routing/
-- Local sending development: https://developers.cloudflare.com/email-service/local-development/sending/
-- Email Service pricing: https://developers.cloudflare.com/email-service/platform/pricing/
-- Workers pricing: https://developers.cloudflare.com/workers/platform/pricing/
-- D1 pricing: https://developers.cloudflare.com/d1/platform/pricing/
-- D1 migrations: https://developers.cloudflare.com/d1/reference/migrations/
-
 ## PS
 
 This walkthrough stops at the core on purpose — Path 1, Path 2, optional Path 3. One Worker. Enough to learn the system. Not the ceiling.
@@ -1156,3 +1142,62 @@ Yours might branch on the same three paths:
 I am building some of that on this site. I am curious what you would try on your domain.
 
 If you extend this walkthrough, tell me what you added first — or what you decided not to build, and why.
+
+## Source notes
+
+I wrote and checked this walkthrough against the docs below. Prices and dashboard labels change — treat these as starting points, not gospel.
+
+### Platform and Workers
+
+| Topic | Link |
+| ----- | ---- |
+| Developer platform overview | https://developers.cloudflare.com/learning-paths/workers/devplat/intro-to-devplat/ |
+| Workers docs | https://developers.cloudflare.com/workers/ |
+| Runtime bindings (`env.DB`, `env.EMAIL`, …) | https://developers.cloudflare.com/workers/runtime-apis/bindings/ |
+| Wrangler configuration (`wrangler.toml` / `wrangler.jsonc`) | https://developers.cloudflare.com/workers/wrangler/configuration/ |
+| Wrangler secrets (`ADMIN_TOKEN`) | https://developers.cloudflare.com/workers/wrangler/commands/#secret |
+| Workers pricing | https://developers.cloudflare.com/workers/platform/pricing/ |
+
+### Email Service — Path 1 (receive) and Path 2 (send)
+
+| Topic | Link |
+| ----- | ---- |
+| Email Service overview | https://developers.cloudflare.com/email-service/ |
+| Route your first email (dashboard setup) | https://developers.cloudflare.com/email-service/get-started/route-emails/ |
+| Send your first email (outbound enablement) | https://developers.cloudflare.com/email-service/get-started/send-emails/ |
+| Email handler — `email()`, `forward()`, `reply()` | https://developers.cloudflare.com/email-service/api/route-emails/email-handler/ |
+| Email Sending Workers API — `env.EMAIL.send()` | https://developers.cloudflare.com/email-service/api/send-emails/workers-api/ |
+| Local inbound routing (`wrangler dev` + simulator) | https://developers.cloudflare.com/email-service/local-development/routing/ |
+| Local outbound sending (`remote = true`) | https://developers.cloudflare.com/email-service/local-development/sending/ |
+| Observability (confirm real send vs dashboard “dropped”) | https://developers.cloudflare.com/email-service/observability/ |
+| Email Service pricing | https://developers.cloudflare.com/email-service/platform/pricing/ |
+
+### D1 — Path 3 (list, optional)
+
+| Topic | Link |
+| ----- | ---- |
+| D1 overview | https://developers.cloudflare.com/d1/ |
+| Wrangler D1 commands (`d1 create`, `migrations apply`) | https://developers.cloudflare.com/workers/wrangler/commands/#d1 |
+| D1 migrations | https://developers.cloudflare.com/d1/reference/migrations/ |
+| D1 pricing | https://developers.cloudflare.com/d1/platform/pricing/ |
+
+### Parsing and third-party tooling
+
+| Topic | Link |
+| ----- | ---- |
+| `postal-mime` (npm) | https://www.npmjs.com/package/postal-mime |
+| `postal-mime` source | https://github.com/postalsys/postal-mime |
+
+### Wider platform — from the opening map
+
+These are not required for this tutorial, but they are the natural next reads if you stretch Paths 1–3 into a real product:
+
+| Topic | Link |
+| ----- | ---- |
+| Queues (async outbound delivery) | https://developers.cloudflare.com/queues/ |
+| R2 (attachments and file storage) | https://developers.cloudflare.com/r2/ |
+| Workers AI | https://developers.cloudflare.com/workers-ai/ |
+| Vectorize (semantic search over mail history) | https://developers.cloudflare.com/vectorize/ |
+| Agents SDK (stateful agents, email hooks) | https://developers.cloudflare.com/agents/ |
+| Realtime (voice/video — formerly Cloudflare Calls) | https://developers.cloudflare.com/realtime/ |
+| Choose a storage product (D1 vs KV vs R2 vs …) | https://developers.cloudflare.com/workers/platform/storage-options/ |

@@ -7,9 +7,9 @@ status: Exploring
 tags:
   - offline-first
   - p2p
-  - sync
+  - local-first
   - product-architecture
-  - cloudflare
+  - sync
 ---
 
 Offline-first and peer-to-peer systems begin with the same uncomfortable question: what should still work when the center is unavailable?

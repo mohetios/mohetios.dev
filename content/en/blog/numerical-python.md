@@ -6,8 +6,8 @@ description: Notes on using Python, NumPy, SciPy, and Matplotlib for scientific 
 tags:
   - books
   - python
+  - numpy
   - scientific-computing
-  - data-analysis
 ---
 
 ## Reading Notes

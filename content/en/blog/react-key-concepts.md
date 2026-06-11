@@ -6,8 +6,8 @@ description: Notes on Maximilian Schwarzmuller's guide to React's core mental mo
 tags:
   - books
   - react
-  - frontend
   - javascript
+  - frontend
 ---
 
 ## Reading Notes

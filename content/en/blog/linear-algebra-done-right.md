@@ -5,8 +5,8 @@ thumbnail: /content/linear-algebra-done-right-cover.webp
 description: Notes on Sheldon Axler's linear algebra book and the value of understanding vector spaces, linear maps, eigenvalues, and structure.
 tags:
   - books
-  - math
   - linear-algebra
+  - mathematics
   - physics
 ---
 

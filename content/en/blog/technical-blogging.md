@@ -5,9 +5,9 @@ thumbnail: /content/technical-blogging.webp
 description: Notes on Antonio Cangiano's guide to building a focused technical blog and turning expertise into a durable online presence.
 tags:
   - books
-  - blogging
-  - writing
   - technical-writing
+  - blogging
+  - content-strategy
 ---
 
 ## Reading Notes

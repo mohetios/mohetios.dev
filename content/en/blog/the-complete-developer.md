@@ -7,7 +7,8 @@ tags:
   - books
   - full-stack
   - typescript
-  - web-development
+  - react
+  - nextjs
 ---
 
 ## Reading Notes
