@@ -4,6 +4,8 @@ query DashboardHome($range: AnalyticsRange!) {
       inboxUnread
       needsReply
       leads
+      newsletterSubscribers
+      pendingComments
       visits
       pageViews
       searchClicks
@@ -26,19 +28,6 @@ query DashboardHome($range: AnalyticsRange!) {
       subject
       preview
       createdAt
-    }
-
-    contentPulse {
-      publishedCount
-      draftCount
-      latestItems {
-        id
-        title
-        slug
-        section
-        status
-        updatedAt
-      }
     }
 
     readerSignals {

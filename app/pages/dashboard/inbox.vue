@@ -72,6 +72,8 @@ const isTrashConfirmOpen = ref(false)
 const isDeleteForeverConfirmOpen = ref(false)
 const isTrashActionPending = ref(false)
 const isDeleteForeverPending = ref(false)
+const pendingTrashMessageId = ref<string | null>(null)
+const pendingDeleteForeverMessageId = ref<string | null>(null)
 
 type InboxPushActionMessage = {
   type: 'inbox-action'
@@ -255,17 +257,20 @@ function getInboxErrorMessage(error: unknown) {
 
 function inboxQueryFromRoute(overrides: Record<string, string | undefined> = {}) {
   const query: Record<string, string> = {}
+  const removedKeys = new Set(
+    Object.entries(overrides)
+      .filter(([, value]) => value === undefined)
+      .map(([key]) => key)
+  )
 
   for (const [key, value] of Object.entries(route.query)) {
-    if (typeof value === 'string') {
+    if (typeof value === 'string' && !removedKeys.has(key)) {
       query[key] = value
     }
   }
 
   for (const [key, value] of Object.entries(overrides)) {
-    if (value === undefined) {
-      delete query[key]
-    } else {
+    if (value !== undefined) {
       query[key] = value
     }
   }
@@ -329,6 +334,7 @@ function closeConversation() {
 async function loadInbox() {
   try {
     await withDashboardRefresh(isRefreshing, () => refreshInbox())
+    await refreshNuxtData('dashboard:nav-counts')
 
     if (inboxLoadError.value) {
       throw inboxLoadError.value
@@ -346,11 +352,11 @@ async function loadInbox() {
   }
 }
 
-async function updateSelectedStatus(status: InboxWorkspaceStatus) {
-  if (!selectedMessage.value) return
+async function updateMessageStatus(id: string, status: InboxWorkspaceStatus) {
+  selectMessage(id)
 
   try {
-    await updateStatus(selectedMessage.value.id, status)
+    await updateStatus(id, status)
 
     toast.add({
       color: 'success',
@@ -364,6 +370,11 @@ async function updateSelectedStatus(status: InboxWorkspaceStatus) {
       title: getInboxErrorMessage(error)
     })
   }
+}
+
+function updateSelectedStatus(status: InboxWorkspaceStatus) {
+  if (!selectedMessage.value) return
+  return updateMessageStatus(selectedMessage.value.id, status)
 }
 
 function archiveSelected() {
@@ -385,8 +396,14 @@ function markSelectedRead() {
 async function convertSelectedToLead() {
   if (!selectedMessage.value) return
 
+  return convertMessageToLead(selectedMessage.value.id)
+}
+
+async function convertMessageToLead(id: string) {
+  selectMessage(id)
+
   try {
-    await updateKind(selectedMessage.value.id, 'LEAD')
+    await updateKind(id, 'LEAD')
 
     toast.add({
       color: 'success',
@@ -406,20 +423,32 @@ function requestMoveToTrash() {
   if (!selectedMessage.value) return
 
   if (selectedHasReplies.value) {
+    pendingTrashMessageId.value = selectedMessage.value.id
     isTrashConfirmOpen.value = true
     return
   }
 
-  return trashSelected()
+  return trashMessageById(selectedMessage.value.id)
 }
 
-async function trashSelected() {
-  if (!selectedMessage.value) return
+function requestMoveMessageToTrash(id: string) {
+  selectMessage(id)
+  pendingTrashMessageId.value = id
+  isTrashConfirmOpen.value = true
+}
+
+function cancelMoveToTrash() {
+  isTrashConfirmOpen.value = false
+  pendingTrashMessageId.value = null
+}
+
+async function trashMessageById(id: string) {
+  selectMessage(id)
 
   isTrashActionPending.value = true
 
   try {
-    await trashMessage(selectedMessage.value.id)
+    await trashMessage(id)
 
     toast.add({
       color: 'success',
@@ -428,6 +457,7 @@ async function trashSelected() {
     })
 
     isTrashConfirmOpen.value = false
+    pendingTrashMessageId.value = null
     closeConversation()
     await refreshInbox()
   } catch (error) {
@@ -441,11 +471,25 @@ async function trashSelected() {
   }
 }
 
+function trashSelected() {
+  const id = pendingTrashMessageId.value || selectedMessage.value?.id
+
+  if (!id) return
+
+  return trashMessageById(id)
+}
+
 async function restoreSelected() {
   if (!selectedMessage.value) return
 
+  return restoreMessageById(selectedMessage.value.id)
+}
+
+async function restoreMessageById(id: string) {
+  selectMessage(id)
+
   try {
-    await restoreMessage(selectedMessage.value.id)
+    await restoreMessage(id)
 
     toast.add({
       color: 'success',
@@ -467,16 +511,28 @@ async function restoreSelected() {
 function requestDeleteForever() {
   if (!selectedMessage.value) return
 
+  pendingDeleteForeverMessageId.value = selectedMessage.value.id
   isDeleteForeverConfirmOpen.value = true
 }
 
-async function deleteSelectedForever() {
-  if (!selectedMessage.value) return
+function requestDeleteMessageForever(id: string) {
+  selectMessage(id)
+  pendingDeleteForeverMessageId.value = id
+  isDeleteForeverConfirmOpen.value = true
+}
+
+function cancelDeleteForever() {
+  isDeleteForeverConfirmOpen.value = false
+  pendingDeleteForeverMessageId.value = null
+}
+
+async function deleteMessageForeverById(id: string) {
+  selectMessage(id)
 
   isDeleteForeverPending.value = true
 
   try {
-    await deleteMessageForever(selectedMessage.value.id)
+    await deleteMessageForever(id)
 
     toast.add({
       color: 'success',
@@ -485,6 +541,7 @@ async function deleteSelectedForever() {
     })
 
     isDeleteForeverConfirmOpen.value = false
+    pendingDeleteForeverMessageId.value = null
     closeConversation()
     await refreshInbox()
   } catch (error) {
@@ -496,6 +553,14 @@ async function deleteSelectedForever() {
   } finally {
     isDeleteForeverPending.value = false
   }
+}
+
+function deleteSelectedForever() {
+  const id = pendingDeleteForeverMessageId.value || selectedMessage.value?.id
+
+  if (!id) return
+
+  return deleteMessageForeverById(id)
 }
 
 async function sendReply() {
@@ -527,6 +592,11 @@ async function sendReply() {
   } finally {
     isSendingReply.value = false
   }
+}
+
+function replyToMessage(id: string) {
+  selectMessage(id)
+  composerMode.value = 'reply'
 }
 
 function isInboxPushActionMessage(value: unknown): value is InboxPushActionMessage {
@@ -614,6 +684,15 @@ onBeforeUnmount(() => {
       @select-tab="selectTab"
       @update:unread-only="setUnreadOnly"
       @select-message="selectMessage"
+      @reply-message="replyToMessage"
+      @mark-message-read="updateMessageStatus($event, 'OPEN')"
+      @mark-message-done="updateMessageStatus($event, 'REPLIED')"
+      @archive-message="updateMessageStatus($event, 'ARCHIVED')"
+      @spam-message="updateMessageStatus($event, 'SPAM')"
+      @convert-message-to-lead="convertMessageToLead"
+      @move-message-to-trash="requestMoveMessageToTrash"
+      @restore-message="restoreMessageById"
+      @delete-message-forever="requestDeleteMessageForever"
     />
 
     <DashboardInboxConversation
@@ -666,7 +745,7 @@ onBeforeUnmount(() => {
       :confirm-label="t('dashboard.inbox.confirmTrash.confirm')"
       :loading="isTrashActionPending"
       @confirm="trashSelected"
-      @cancel="isTrashConfirmOpen = false"
+      @cancel="cancelMoveToTrash"
     />
 
     <DashboardInboxConfirm
@@ -677,7 +756,7 @@ onBeforeUnmount(() => {
       destructive
       :loading="isDeleteForeverPending"
       @confirm="deleteSelectedForever"
-      @cancel="isDeleteForeverConfirmOpen = false"
+      @cancel="cancelDeleteForever"
     />
   </DashboardWorkspacePage>
 </template>

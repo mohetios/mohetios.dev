@@ -91,7 +91,7 @@ async function handleRefresh() {
 
         <UButton
           v-bind="toolbarButton"
-          :disabled="runtime.isRefreshing.value"
+          :disabled="runtime.isRefreshing.value || !runtime.refreshHandler"
           :aria-label="t(preset.refreshLabelKey)"
           @click="handleRefresh"
         >

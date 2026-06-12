@@ -78,7 +78,7 @@ export function useDashboardPageToolbar(options: {
 
   runtime.refreshHandler = options.onRefresh
 
-  watch(
+  const stopPageRefreshingWatch = watch(
     pageRefreshing,
     (value) => {
       if (runtime.isRefreshing.value !== value) {
@@ -88,9 +88,19 @@ export function useDashboardPageToolbar(options: {
     { immediate: true }
   )
 
-  watch(runtime.isRefreshing, (value) => {
+  const stopRuntimeRefreshingWatch = watch(runtime.isRefreshing, (value) => {
     if (pageRefreshing.value !== value) {
       pageRefreshing.value = value
+    }
+  })
+
+  onBeforeUnmount(() => {
+    stopPageRefreshingWatch()
+    stopRuntimeRefreshingWatch()
+
+    if (runtime.refreshHandler === options.onRefresh) {
+      runtime.refreshHandler = null
+      runtime.isRefreshing.value = false
     }
   })
 }

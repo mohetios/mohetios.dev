@@ -122,11 +122,15 @@
       "summary": {
         "inboxUnread": "خوانده‌نشده",
         "inboxUnreadHelper": "پیام‌هایی که هنوز بررسی نشده‌اند",
-        "needsReply": "نیاز به پاسخ",
-        "needsReplyHelper": "گفتگوهای باز در انتظار اقدام",
-        "leads": "سرنخ‌ها",
-        "leadsHelper": "پیام‌های همکاری یا کار احتمالی",
-        "visitors": "بازدیدکننده",
+      "needsReply": "نیاز به پاسخ",
+      "needsReplyHelper": "گفتگوهای باز در انتظار اقدام",
+      "leads": "سرنخ‌ها",
+      "leadsHelper": "پیام‌های همکاری یا کار احتمالی",
+      "newsletterSubscribers": "خبرنامه",
+      "newsletterSubscribersHelper": "مشترکان فعال فهرست",
+      "pendingComments": "نظرات در انتظار",
+      "pendingCommentsHelper": "نظراتی که منتظر بررسی هستند",
+      "visitors": "بازدیدکننده",
         "visitorsHelper": "مخاطب از Cloudflare Analytics ({range})",
         "pageViews": "بازدید صفحه",
         "pageViewsHelper": "فعالیت صفحه از Cloudflare Analytics ({range})"
@@ -141,11 +145,6 @@
         "needsReply": "نیاز به پاسخ",
         "replied": "پاسخ داده شده",
         "lead": "سرنخ"
-      },
-      "contentPulse": {
-        "published": "منتشر شده",
-        "drafts": "پیش‌نویس",
-        "empty": "آمار محتوا پس از اتصال نمایش داده می‌شود."
       },
       "readerSignals": {
         "empty": "هنوز سیگنال خواننده‌ای نیست."
@@ -252,7 +251,6 @@
       "audienceHelper": "کل بازدیدکنندگان در {range}",
       "visitors": "بازدیدکنندگان",
       "inboxPreview": "پیش‌نمایش صندوق ورودی",
-      "contentPulse": "نبض محتوا",
       "readerSignals": "سیگنال‌های خواننده",
       "referrers": "ارجاع‌دهنده‌ها",
       "countries": "کشورها",

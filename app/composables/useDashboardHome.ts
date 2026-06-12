@@ -1,5 +1,4 @@
-import type { AnalyticsRange } from '#gql'
-import type { DashboardHomeQuery } from '#gql'
+import type { AnalyticsRange, DashboardHomeQuery } from '#gql'
 
 import { DEFAULT_DASHBOARD_RANGE } from '~~/shared/constants/dashboard-range'
 
@@ -11,6 +10,8 @@ function createDefaultDashboardHome(): DashboardHome {
       inboxUnread: 0,
       needsReply: 0,
       leads: 0,
+      newsletterSubscribers: 0,
+      pendingComments: 0,
       visits: 0,
       pageViews: 0,
       searchClicks: 0,
@@ -18,11 +19,6 @@ function createDefaultDashboardHome(): DashboardHome {
     },
     audienceTrend: [],
     inboxPreview: [],
-    contentPulse: {
-      publishedCount: 0,
-      draftCount: 0,
-      latestItems: []
-    },
     readerSignals: [],
     systemHealth: [],
     recentActivity: [],

@@ -1,0 +1,6 @@
+query DashboardNavCounts {
+  dashboardNavCounts {
+    inboxUnread
+    pendingComments
+  }
+}

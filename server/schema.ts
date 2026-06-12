@@ -5,6 +5,7 @@ export const typeDefs = /* GraphQL */ `
     inboxWorkspace(input: InboxWorkspaceInput): InboxWorkspace!
     leadsWorkspace(input: LeadsWorkspaceInput): LeadsWorkspace!
     dashboardHome(range: AnalyticsRange = LAST_7_DAYS): DashboardHome!
+    dashboardNavCounts: DashboardNavCounts!
     analyticsDashboard(range: AnalyticsRange!): AnalyticsDashboard!
     newsletterSubscribers(input: NewsletterSubscribersFilterInput): NewsletterSubscribersConnection!
     publicComments(targetType: CommentTargetType!, targetPath: String!): [PublicComment!]!
@@ -303,6 +304,8 @@ export const typeDefs = /* GraphQL */ `
     inboxUnread: Int!
     needsReply: Int!
     leads: Int!
+    newsletterSubscribers: Int!
+    pendingComments: Int!
     visits: Int!
     pageViews: Int!
     searchClicks: Int!
@@ -325,21 +328,6 @@ export const typeDefs = /* GraphQL */ `
     subject: String!
     preview: String!
     createdAt: Float!
-  }
-
-  type DashboardContentItem {
-    id: ID!
-    title: String!
-    slug: String!
-    section: String!
-    status: String!
-    updatedAt: Float!
-  }
-
-  type DashboardContentPulse {
-    publishedCount: Int!
-    draftCount: Int!
-    latestItems: [DashboardContentItem!]!
   }
 
   type DashboardReaderSignal {
@@ -377,11 +365,15 @@ export const typeDefs = /* GraphQL */ `
     summary: DashboardSummary!
     audienceTrend: [DashboardAudiencePoint!]!
     inboxPreview: [DashboardInboxPreviewItem!]!
-    contentPulse: DashboardContentPulse!
     readerSignals: [DashboardReaderSignal!]!
     systemHealth: [DashboardSystemHealthItem!]!
     recentActivity: [DashboardActivityItem!]!
     quickLinks: [DashboardQuickLink!]!
+  }
+
+  type DashboardNavCounts {
+    inboxUnread: Int!
+    pendingComments: Int!
   }
 
   enum AnalyticsRange {

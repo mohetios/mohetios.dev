@@ -55,6 +55,22 @@ const summaryCards = computed<DashboardSummaryCard[]>(() => {
       to: '/dashboard/inbox'
     },
     {
+      key: 'newsletterSubscribers',
+      label: t('dashboard.home.summary.newsletterSubscribers'),
+      value: summary.newsletterSubscribers,
+      icon: 'i-lucide-mail-plus',
+      helper: t('dashboard.home.summary.newsletterSubscribersHelper'),
+      to: '/dashboard/newsletter'
+    },
+    {
+      key: 'pendingComments',
+      label: t('dashboard.home.summary.pendingComments'),
+      value: summary.pendingComments,
+      icon: 'i-lucide-message-square',
+      helper: t('dashboard.home.summary.pendingCommentsHelper'),
+      to: '/dashboard/comments'
+    },
+    {
       key: 'visitors',
       label: t('dashboard.home.summary.visitors'),
       value: summary.visits,
@@ -96,6 +112,8 @@ const hasDashboardHomeData = computed(() => {
     summary.inboxUnread > 0 ||
     summary.needsReply > 0 ||
     summary.leads > 0 ||
+    summary.newsletterSubscribers > 0 ||
+    summary.pendingComments > 0 ||
     summary.visits > 0 ||
     summary.pageViews > 0 ||
     dashboardHome.value.audienceTrend.length > 0 ||
@@ -138,6 +156,7 @@ function formatActivityTime(timestamp: number) {
 async function refreshDashboard() {
   try {
     await withDashboardRefresh(isRefreshing, () => refresh())
+    await refreshNuxtData('dashboard:nav-counts')
 
     toast.add({
       color: 'success',
@@ -180,9 +199,9 @@ watch(error, (currentError) => {
       </div>
     </section>
 
-    <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
       <template v-if="isInitialDashboardLoading">
-        <UCard v-for="index in 4" :key="index" variant="outline" :ui="dashboardCardUi">
+        <UCard v-for="index in 6" :key="index" variant="outline" :ui="dashboardCardUi">
           <USkeleton class="h-[6.75rem] w-full" />
         </UCard>
       </template>
@@ -253,11 +272,7 @@ watch(error, (currentError) => {
       />
     </section>
 
-    <section class="grid items-stretch gap-4 lg:grid-cols-2 xl:grid-cols-3">
-      <DashboardPulse
-        :content-pulse="dashboardHome.contentPulse"
-        :loading="isInitialDashboardLoading"
-      />
+    <section class="grid items-stretch gap-4 lg:grid-cols-2">
       <DashboardSignals
         :signals="dashboardHome.readerSignals"
         :loading="isInitialDashboardLoading"

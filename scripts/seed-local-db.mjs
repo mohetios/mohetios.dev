@@ -179,6 +179,8 @@ async function buildSeedSql(ownerId, passwordHash, passwordSalt) {
   }
 
   const newsletterNames = ['Ada Lovelace', 'Grace Hopper', 'Linus Torvalds', 'Local Reader']
+  const newsletterStatuses = ['subscribed', 'subscribed', 'pending', 'unsubscribed']
+
   for (const [index, name] of newsletterNames.entries()) {
     const id = createId()
     const email = `${name.toLowerCase().replace(/[^a-z]+/g, '.')}@example.com`
@@ -194,7 +196,7 @@ async function buildSeedSql(ownerId, passwordHash, passwordSalt) {
       ${sqlString(email)},
       ${sqlString(email)},
       ${sqlString(name)},
-      ${sqlString(pick(['subscribed', 'subscribed', 'pending', 'unsubscribed']))},
+      ${sqlString(newsletterStatuses[index] ?? 'subscribed')},
       'seed_script',
       ${sqlString(pick(['en', 'fa']))},
       NULL,
@@ -223,6 +225,7 @@ async function buildSeedSql(ownerId, passwordHash, passwordSalt) {
     'Small correction: the D1 batch limit changed in a recent release.',
     'This helped me wire up my own inbox prototype over the weekend.'
   ]
+  const commentStatuses = ['APPROVED', 'PENDING', 'PENDING', 'SPAM']
 
   const topLevelCommentIds = []
 
@@ -233,7 +236,7 @@ async function buildSeedSql(ownerId, passwordHash, passwordSalt) {
     const authorEmail = `comment${index + 1}@example.com`
     const emailHash = await hashEmail(authorEmail)
     const createdAt = daysAgo(index)
-    const status = pick(['PENDING', 'APPROVED', 'APPROVED', 'SPAM'])
+    const status = commentStatuses[index] ?? 'PENDING'
 
     statements.push(`INSERT INTO comments (
       id, target_type, target_path, target_title, parent_id, depth,

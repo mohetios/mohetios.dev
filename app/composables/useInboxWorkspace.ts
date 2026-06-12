@@ -159,6 +159,8 @@ export function useInboxWorkspace(input: {
       asyncData.data.value = updateMessageStatus(asyncData.data.value, id, status)
     }
 
+    await refreshNuxtData('dashboard:nav-counts')
+
     return result.updateInboxMessageStatus
   }
 
@@ -176,6 +178,7 @@ export function useInboxWorkspace(input: {
     const result = await GqlReplyToInboxMessage({ input: { inboxMessageId, bodyText } })
 
     await asyncData.refresh()
+    await refreshNuxtData('dashboard:nav-counts')
 
     return result.replyToInboxMessage
   }
@@ -183,18 +186,21 @@ export function useInboxWorkspace(input: {
   async function trashMessage(id: string) {
     const result = await GqlTrashInboxMessage({ id })
     await asyncData.refresh()
+    await refreshNuxtData('dashboard:nav-counts')
     return result.trashInboxMessage
   }
 
   async function restoreMessage(id: string) {
     const result = await GqlRestoreInboxMessage({ id })
     await asyncData.refresh()
+    await refreshNuxtData('dashboard:nav-counts')
     return result.restoreInboxMessage
   }
 
   async function deleteMessageForever(id: string) {
     const result = await GqlDeleteInboxMessageForever({ id })
     await asyncData.refresh()
+    await refreshNuxtData('dashboard:nav-counts')
     return result.deleteInboxMessageForever
   }
 

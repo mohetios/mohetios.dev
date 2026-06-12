@@ -2,7 +2,7 @@
   "site": {
     "name": "Mohetios.dev",
     "logo": {
-      "part1": "mohet",
+      "part1": "Mohet",
       "part2": "ios",
       "tld": ""
     },
@@ -122,11 +122,15 @@
       "summary": {
         "inboxUnread": "Unread",
         "inboxUnreadHelper": "Messages not reviewed yet",
-        "needsReply": "Needs reply",
-        "needsReplyHelper": "Open conversations waiting for action",
-        "leads": "Leads",
-        "leadsHelper": "Potential work or collaboration messages",
-        "visitors": "Visitors",
+      "needsReply": "Needs reply",
+      "needsReplyHelper": "Open conversations waiting for action",
+      "leads": "Leads",
+      "leadsHelper": "Potential work or collaboration messages",
+      "newsletterSubscribers": "Newsletter",
+      "newsletterSubscribersHelper": "Active subscribers on the list",
+      "pendingComments": "Pending comments",
+      "pendingCommentsHelper": "Comments waiting for moderation",
+      "visitors": "Visitors",
         "visitorsHelper": "Audience from Cloudflare Analytics ({range})",
         "pageViews": "Page views",
         "pageViewsHelper": "Page activity from Cloudflare Analytics ({range})"
@@ -141,11 +145,6 @@
         "needsReply": "Needs reply",
         "replied": "Replied",
         "lead": "Lead"
-      },
-      "contentPulse": {
-        "published": "Published",
-        "drafts": "Drafts",
-        "empty": "Content metrics will appear when connected."
       },
       "readerSignals": {
         "empty": "No reader signals yet."
@@ -252,7 +251,6 @@
       "audienceHelper": "Total visitors in {range}",
       "visitors": "Visitors",
       "inboxPreview": "Inbox Preview",
-      "contentPulse": "Content Pulse",
       "readerSignals": "Reader Signals",
       "referrers": "Referrers",
       "countries": "Countries",

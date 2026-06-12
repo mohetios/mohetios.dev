@@ -1,6 +1,6 @@
 import { and, desc, eq, inArray, isNull, sql } from 'drizzle-orm'
 
-import { adminNotifications, inboxMessages } from '../models/schema'
+import { adminNotifications, comments, inboxMessages, newsletterSubscribers } from '../models/schema'
 import type { GraphQLContext } from '../routes/graph'
 import { requirePermission } from '../utils/auth'
 import {
@@ -60,8 +60,15 @@ export async function dashboardHome(
 
   const activeOnly = isNull(inboxMessages.trashedAt)
 
-  const [unreadRows, needsReplyRows, leadRows, inboxPreviewRows, notificationRows] =
-    await Promise.all([
+  const [
+    unreadRows,
+    needsReplyRows,
+    leadRows,
+    newsletterRows,
+    pendingCommentRows,
+    inboxPreviewRows,
+    notificationRows
+  ] = await Promise.all([
       db
         .select({ count: sql<number>`count(*)` })
         .from(inboxMessages)
@@ -78,6 +85,16 @@ export async function dashboardHome(
         .where(and(activeOnly, eq(inboxMessages.kind, 'LEAD'))),
 
       db
+        .select({ count: sql<number>`count(*)` })
+        .from(newsletterSubscribers)
+        .where(eq(newsletterSubscribers.status, 'subscribed')),
+
+      db
+        .select({ count: sql<number>`count(*)` })
+        .from(comments)
+        .where(eq(comments.status, 'PENDING')),
+
+      db
         .select()
         .from(inboxMessages)
         .where(activeOnly)
@@ -90,6 +107,8 @@ export async function dashboardHome(
   const inboxUnread = Number(unreadRows[0]?.count || 0)
   const needsReply = Number(needsReplyRows[0]?.count || 0)
   const leads = Number(leadRows[0]?.count || 0)
+  const newsletterSubscriberCount = Number(newsletterRows[0]?.count || 0)
+  const pendingComments = Number(pendingCommentRows[0]?.count || 0)
 
   const analytics = await getCachedCloudflareAnalytics(context.event, range)
   const audienceTrend = analytics.trend
@@ -131,6 +150,8 @@ export async function dashboardHome(
       inboxUnread,
       needsReply,
       leads,
+      newsletterSubscribers: newsletterSubscriberCount,
+      pendingComments,
       visits,
       pageViews,
       searchClicks: 0,
@@ -140,12 +161,6 @@ export async function dashboardHome(
     audienceTrend,
 
     inboxPreview,
-
-    contentPulse: {
-      publishedCount: 0,
-      draftCount: 0,
-      latestItems: []
-    },
 
     readerSignals: [
       {
@@ -161,10 +176,10 @@ export async function dashboardHome(
         icon: 'i-lucide-user-plus'
       },
       {
-        label: 'Search pull',
-        value: '0',
-        helper: 'Search Console not connected yet',
-        icon: 'i-lucide-search'
+        label: 'Comments',
+        value: String(pendingComments),
+        helper: 'Comments waiting for moderation',
+        icon: 'i-lucide-message-square'
       }
     ],
 
@@ -182,10 +197,13 @@ export async function dashboardHome(
         helper: analytics.dataSourceDescription
       },
       {
-        key: 'content',
-        label: 'Content',
-        status: 'pending',
-        helper: 'Content metrics are not connected to the dashboard yet'
+        key: 'comments',
+        label: 'Comments',
+        status: pendingComments > 0 ? 'pending' : 'ok',
+        helper:
+          pendingComments > 0
+            ? 'Some comments are waiting for moderation'
+            : 'No pending comments'
       }
     ],
 
@@ -207,11 +225,18 @@ export async function dashboardHome(
         to: '/dashboard/leads'
       },
       {
-        key: 'content',
-        label: 'Content workspace',
-        description: 'Review writing and publishing pipeline',
-        icon: 'i-lucide-file-text',
-        to: '/blog'
+        key: 'newsletter',
+        label: 'Newsletter',
+        description: 'Review subscribers and list status',
+        icon: 'i-lucide-mail-plus',
+        to: '/dashboard/newsletter'
+      },
+      {
+        key: 'comments',
+        label: 'Comments',
+        description: 'Moderate pending article comments',
+        icon: 'i-lucide-message-square',
+        to: '/dashboard/comments'
       },
       {
         key: 'system',

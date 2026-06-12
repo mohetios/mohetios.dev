@@ -169,6 +169,7 @@ async function runMutation(action: () => Promise<unknown>, successKey: string) {
   try {
     await action()
     await refresh()
+    await refreshNuxtData('dashboard:nav-counts')
     syncSelectedComment()
     toast.add({
       color: 'success',
@@ -306,6 +307,7 @@ const columns = computed<TableColumn<CommentRow>[]>(() => [
 async function refreshComments() {
   try {
     await withDashboardRefresh(isRefreshing, () => refresh())
+    await refreshNuxtData('dashboard:nav-counts')
     syncSelectedComment()
     toast.add({
       color: 'success',

@@ -19,6 +19,15 @@ const emit = defineEmits<{
   'select-tab': [tab: InboxTabKey]
   'update:unread-only': [value: boolean]
   'select-message': [id: string]
+  'reply-message': [id: string]
+  'mark-message-read': [id: string]
+  'mark-message-done': [id: string]
+  'archive-message': [id: string]
+  'spam-message': [id: string]
+  'convert-message-to-lead': [id: string]
+  'move-message-to-trash': [id: string]
+  'restore-message': [id: string]
+  'delete-message-forever': [id: string]
 }>()
 
 const { t } = useI18n()
@@ -76,6 +85,15 @@ const { t } = useI18n()
           :message="message"
           :selected="selectedMessageId === message.id"
           @select="emit('select-message', message.id)"
+          @reply="emit('reply-message', message.id)"
+          @mark-read="emit('mark-message-read', message.id)"
+          @mark-done="emit('mark-message-done', message.id)"
+          @archive="emit('archive-message', message.id)"
+          @spam="emit('spam-message', message.id)"
+          @convert-to-lead="emit('convert-message-to-lead', message.id)"
+          @move-to-trash="emit('move-message-to-trash', message.id)"
+          @restore="emit('restore-message', message.id)"
+          @delete-forever="emit('delete-message-forever', message.id)"
         />
       </div>
     </div>

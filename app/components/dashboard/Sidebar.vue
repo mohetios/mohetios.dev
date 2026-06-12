@@ -1,12 +1,31 @@
 <script setup lang="ts">
 const { t } = useI18n()
+const brandName = computed(() => getSeoSiteName(t))
 const route = useRoute()
 
 type DashboardNavItem = {
   label: string
   icon: string
   to: string
+  count?: number
 }
+
+const auth = useAuth()
+auth.restoreToken()
+
+const { data: navCounts, refresh: refreshNavCounts } = await useAsyncData(
+  'dashboard:nav-counts',
+  async () => {
+    const result = await GqlDashboardNavCounts()
+    return result.dashboardNavCounts
+  },
+  {
+    default: () => ({
+      inboxUnread: 0,
+      pendingComments: 0
+    })
+  }
+)
 
 const navItems = computed<DashboardNavItem[]>(() => [
   {
@@ -17,7 +36,8 @@ const navItems = computed<DashboardNavItem[]>(() => [
   {
     label: t('dashboard.nav.inbox'),
     icon: 'i-lucide-inbox',
-    to: '/dashboard/inbox'
+    to: '/dashboard/inbox',
+    count: navCounts.value.inboxUnread
   },
   {
     label: t('dashboard.nav.leads'),
@@ -32,7 +52,8 @@ const navItems = computed<DashboardNavItem[]>(() => [
   {
     label: t('dashboard.nav.comments'),
     icon: 'i-lucide-message-square',
-    to: '/dashboard/comments'
+    to: '/dashboard/comments',
+    count: navCounts.value.pendingComments
   },
   // {
   //   label: t('dashboard.nav.content'),
@@ -62,6 +83,13 @@ function stripLocale(path: string) {
 
 const currentPath = computed(() => stripLocale(route.path))
 
+watch(
+  () => route.fullPath,
+  () => {
+    refreshNavCounts().catch(() => undefined)
+  }
+)
+
 function isActive(path: string) {
   if (path === '/dashboard') {
     return currentPath.value === '/dashboard'
@@ -90,13 +118,13 @@ function isActive(path: string) {
           to="/dashboard"
           class="group/logo inline-flex min-w-0 items-center text-inherit no-underline"
           :class="collapsed ? 'justify-center' : ''"
-          :aria-label="`${t('site.name')} ${t('dashboard.title')}`"
+          :aria-label="`${brandName} ${t('dashboard.title')}`"
         >
           <span
             v-if="collapsed"
             class="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-base font-bold text-primary"
           >
-            {{ t('site.logo.part1').charAt(0) }}
+            {{ brandName.charAt(0) }}
           </span>
           <SiteLogo
             v-else
@@ -114,7 +142,7 @@ function isActive(path: string) {
           v-for="item in navItems"
           :key="item.to"
           :to="item.to"
-          class="group flex min-h-10 items-center rounded-xl px-3 py-2 text-sm transition"
+          class="group relative flex min-h-10 items-center rounded-xl px-3 py-2 text-sm transition"
           :class="[
             isActive(item.to)
               ? 'bg-primary/10 text-primary'
@@ -132,6 +160,18 @@ function isActive(path: string) {
             <span v-if="!collapsed" class="truncate font-medium">
               {{ item.label }}
             </span>
+          </span>
+          <span
+            v-if="!collapsed && item.count != null && item.count > 0"
+            class="ms-auto inline-flex min-w-5 items-center justify-center rounded-full bg-primary/10 px-1.5 text-xs font-medium tabular-nums text-primary"
+          >
+            {{ item.count > 99 ? '99+' : item.count }}
+          </span>
+          <span
+            v-else-if="collapsed && item.count != null && item.count > 0"
+            class="absolute -me-1 -mt-1 ms-5 flex min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-medium leading-4 tabular-nums text-inverted"
+          >
+            {{ item.count > 9 ? '9+' : item.count }}
           </span>
         </NuxtLink>
       </nav>
