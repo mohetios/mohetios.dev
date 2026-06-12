@@ -39,52 +39,57 @@ const summaryCards = computed<DashboardSummaryCard[]>(() => {
 
   return [
     {
-      key: 'inboxUnread',
-      label: t('dashboard.home.summary.inboxUnread'),
-      value: summary.inboxUnread,
-      icon: 'i-lucide-mail',
-      helper: t('dashboard.home.summary.inboxUnreadHelper'),
-      to: '/dashboard/inbox'
-    },
-    {
-      key: 'needsReply',
-      label: t('dashboard.home.summary.needsReply'),
+      key: 'inbox',
+      label: t('dashboard.home.summary.inbox'),
       value: summary.needsReply,
-      icon: 'i-lucide-reply',
+      valueLabel: t('dashboard.home.summary.needsReply'),
+      icon: 'i-lucide-mail',
       helper: t('dashboard.home.summary.needsReplyHelper'),
-      to: '/dashboard/inbox'
+      to: '/dashboard/inbox',
+      stats: [
+        {
+          label: t('dashboard.home.summary.inboxUnread'),
+          value: summary.inboxUnread
+        }
+      ]
     },
     {
-      key: 'newsletterSubscribers',
-      label: t('dashboard.home.summary.newsletterSubscribers'),
-      value: summary.newsletterSubscribers,
-      icon: 'i-lucide-mail-plus',
-      helper: t('dashboard.home.summary.newsletterSubscribersHelper'),
-      to: '/dashboard/newsletter'
-    },
-    {
-      key: 'pendingComments',
-      label: t('dashboard.home.summary.pendingComments'),
-      value: summary.pendingComments,
-      icon: 'i-lucide-message-square',
-      helper: t('dashboard.home.summary.pendingCommentsHelper'),
-      to: '/dashboard/comments'
-    },
-    {
-      key: 'visitors',
-      label: t('dashboard.home.summary.visitors'),
-      value: summary.visits,
+      key: 'leads',
+      label: t('dashboard.home.summary.leads'),
+      value: summary.leads,
       icon: 'i-lucide-users',
-      helper: t('dashboard.home.summary.visitorsHelper', { range: rangeLabel.value }),
-      to: '/dashboard/analytics'
+      helper: t('dashboard.home.summary.leadsHelper'),
+      to: '/dashboard/leads'
     },
     {
-      key: 'pageViews',
-      label: t('dashboard.home.summary.pageViews'),
-      value: summary.pageViews,
+      key: 'audience',
+      label: t('dashboard.home.summary.audience'),
+      value: summary.visits,
+      valueLabel: t('dashboard.home.summary.visitors'),
       icon: 'i-lucide-chart-line',
-      helper: t('dashboard.home.summary.pageViewsHelper', { range: rangeLabel.value }),
-      to: '/dashboard/analytics'
+      helper: t('dashboard.home.summary.visitorsHelper', { range: rangeLabel.value }),
+      to: '/dashboard/analytics',
+      stats: [
+        {
+          label: t('dashboard.home.summary.pageViews'),
+          value: summary.pageViews
+        }
+      ]
+    },
+    {
+      key: 'community',
+      label: t('dashboard.home.summary.community'),
+      value: summary.newsletterSubscribers,
+      valueLabel: t('dashboard.home.summary.newsletterSubscribers'),
+      icon: 'i-lucide-message-square',
+      helper: t('dashboard.home.summary.newsletterSubscribersHelper'),
+      to: '/dashboard/newsletter',
+      stats: [
+        {
+          label: t('dashboard.home.summary.pendingComments'),
+          value: summary.pendingComments
+        }
+      ]
     }
   ]
 })
@@ -199,9 +204,9 @@ watch(error, (currentError) => {
       </div>
     </section>
 
-    <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       <template v-if="isInitialDashboardLoading">
-        <UCard v-for="index in 6" :key="index" variant="outline" :ui="dashboardCardUi">
+        <UCard v-for="index in 4" :key="index" variant="outline" :ui="dashboardCardUi">
           <USkeleton class="h-[6.75rem] w-full" />
         </UCard>
       </template>
