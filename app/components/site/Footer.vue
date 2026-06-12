@@ -57,6 +57,12 @@ const footerSections = computed<FooterSection[]>(() => [
         to: 'https://x.com/ZemaniAli',
         icon: 'i-lucide-twitter',
         external: true
+      },
+      {
+        label: 'Medium',
+        to: 'https://medium.com/@mohetios',
+        icon: 'i-lucide-book-open-text',
+        external: true
       }
     ]
   }

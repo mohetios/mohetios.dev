@@ -1,6 +1,6 @@
 ---
 title: Persian LinkedIn
-description: A browser extension that improves LinkedIn readability for Persian users with RTL fixes and font controls.
+description: A project note on a browser extension that improved Persian readability on LinkedIn through RTL fixes and font controls.
 date: 2017-12-07
 updated: 2018-01-03
 status: Stable archive
@@ -13,28 +13,53 @@ tags:
 repo: https://github.com/mehotkhan/persian-linkedin
 ---
 
-Persian LinkedIn is a small browser extension for a very specific irritation: Persian text inside LinkedIn can render technically correct while still feeling uncomfortable to read.
+Persian LinkedIn is a small browser extension for a very specific irritation: Persian text inside LinkedIn can render technically correctly while still feeling uncomfortable to read.
 
-The extension adds right-to-left treatment for LinkedIn posts and gives users font choices. It was forked from the Persian Twitter extension idea, then adapted to the LinkedIn surface.
+The extension was adapted from the Persian Twitter extension idea. Its job was narrow: improve right-to-left treatment and give Persian readers better font choices on a product that was not designed around them.
 
 Repository:
 
 - [mehotkhan/persian-linkedin](https://github.com/mehotkhan/persian-linkedin)
 
-## Why It Matters
+## Why It Exists
 
-Localization is usually discussed as translation, but Persian interfaces often fail at a lower layer: direction, line rhythm, font selection, and mixed-language text.
+Localization is often discussed as translation, but Persian web UX often breaks one layer lower.
 
-Persian LinkedIn is not a large product, but it is a good example of localized tooling as repair work. The extension does not ask LinkedIn to become a Persian-first product. It changes the browser surface just enough to make the existing product more usable.
+Direction is wrong.  
+Line rhythm feels off.  
+The default font is hard to read.  
+Mixed Persian-English text becomes awkward.
 
-## Design Notes
+Persian LinkedIn exists as repair work. It does not ask LinkedIn to become a Persian-first product. It changes the browser surface just enough to make the existing product more readable.
 
-- Browser extensions can patch third-party UX without waiting for platform support.
-- RTL fixes need to be scoped carefully so they do not corrupt mixed Persian-English content.
-- Font selection is a product feature when the default font makes reading feel wrong.
-- Small tools like this are useful signals for bigger design systems: language support has to start in layout, not only in copy.
+## What It Explores
 
-## Next Tasks
+The project explores browser extensions as small local tools for language support.
+
+That kind of tool is not glamorous, but it is practical. A browser extension can patch a third-party interface for a specific reading community without waiting for the platform to prioritize the issue.
+
+## How It Works
+
+At a high level, the extension applies scoped RTL and typography changes to LinkedIn pages. The careful part is scope: a fix that helps Persian text can damage mixed-language content if selectors or direction rules are too broad.
+
+The useful engineering questions are:
+
+- where should the extension apply RTL behavior?
+- which text surfaces need font controls?
+- how should mixed Persian-English content remain readable?
+- what breaks when the third-party DOM changes?
+
+## What I Learned
+
+Small tools can reveal large product assumptions.
+
+Persian LinkedIn is not a big project, but it points to a durable lesson: language support starts in layout, not only in copy. Typography and direction are part of usability.
+
+## Current Status
+
+Stable archive. The project should be treated as a historical extension unless it is reviewed against the current LinkedIn DOM.
+
+## Next Steps
 
 - [ ] Review whether the extension still works on the current LinkedIn DOM.
 - [ ] Add before/after screenshots from the archived repository.

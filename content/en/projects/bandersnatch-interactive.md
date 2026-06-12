@@ -1,6 +1,6 @@
 ---
 title: Bandersnatch Interactive
-description: 'A browser-based HTML5 video player that restores the interactive structure of Black Mirror: Bandersnatch from a local video file.'
+description: A project note on an archived HTML5 video experiment - exploring branching playback, local files, and browser state machines.
 date: 2019-01-16
 updated: 2025-12-16
 status: Stable archive
@@ -14,30 +14,58 @@ website: https://mehotkhan.github.io/BandersnatchInteractive/
 featured: true
 ---
 
-Bandersnatch Interactive is a small browser project with a narrow job: take the long local video file for _Black Mirror: Bandersnatch_ and make it playable as an interactive experience in the browser.
+Bandersnatch Interactive is an old open-source browser experiment for playing an interactive story from a local video file. It was built around _Black Mirror: Bandersnatch_, but it is not an official Netflix product, a clone of Netflix, or a content distribution project.
 
-The project sits on top of the native HTML5 video element. Instead of streaming or repackaging the media, it asks the viewer to drag the local video file into the page, then uses segment timing, keyboard controls, fullscreen mode, and choice overlays to move through the branching structure.
-
-That constraint is what makes the project interesting. It treats the browser as a playback runtime rather than a media host. The application does not need a backend, account system, or upload flow; it only needs to coordinate time, state, input, subtitles, and transitions without breaking immersion.
+The narrow idea was this: if the viewer already has the long local video file, can a browser page restore the branching structure with simple web primitives?
 
 Repository:
 
 - [mehotkhan/BandersnatchInteractive](https://github.com/mehotkhan/BandersnatchInteractive)
 - [Interactive demo](https://mehotkhan.github.io/BandersnatchInteractive/)
 
-Engineering notes:
+## Why It Exists
 
-- Local file playback keeps the tool lightweight and avoids hosting the source media.
-- Segment navigation turns a linear video file into an interactive graph.
-- Keyboard controls make testing and replaying branches much faster.
-- Multi-language subtitle support matters because the interaction layer should not assume one audience.
-- Browser codec behavior is part of the product surface, not just an implementation detail.
+Interactive video is often described as a media problem, but the useful part of this experiment was closer to product state.
 
-The repository became one of my most visible open-source experiments because it solved a very specific media problem with simple web primitives.
+A linear file has time.  
+A branching story has choices.  
+The player has to map one to the other without owning the media.
 
-## Next Tasks
+That constraint made the project small enough to build and interesting enough to remember.
+
+## What It Explores
+
+The project treats branching playback as a state machine in the browser.
+
+Each choice changes which segment should play next. The player watches current time, shows overlays at decision points, handles keyboard input, moves between segments, and tries to keep the viewer inside the story instead of exposing the mechanics.
+
+The local-file constraint matters. The app does not upload or host the source video. The browser becomes the runtime, and the interaction layer sits beside the user's own file.
+
+## How It Works
+
+The implementation sits on top of the native HTML5 video element:
+
+- drag a local video file into the page,
+- use a timing map to identify story segments,
+- show choice overlays at the right moments,
+- seek to the next segment after a decision,
+- support keyboard shortcuts, fullscreen playback, and subtitles.
+
+There is no backend and no account system. The hard part is coordination: time, input, subtitles, fullscreen behavior, browser codec support, and the story graph all have to agree.
+
+## What I Learned
+
+The durable lesson is that interactivity does not always need a large platform. Sometimes it needs a careful model of state.
+
+The project also made browser media feel less abstract. Codec behavior, local-file permissions, subtitle timing, and fullscreen UX are not side details. For this kind of tool, they are the product surface.
+
+## Current Status
+
+Stable archive. It remains useful as a small record of interactive-video thinking, but it should be treated as a historical experiment rather than an actively maintained media product.
+
+## Next Steps
 
 - [ ] Preserve the timing-map design in a separate lab note.
 - [ ] Add screenshots of the choice overlay and local-file flow.
 - [ ] Document what changed in browser media APIs since the original release.
-- [ ] Decide whether the project should remain archived or receive a maintenance pass.
+- [ ] Decide whether the project should remain archived or receive a small maintenance pass.

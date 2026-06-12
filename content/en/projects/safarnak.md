@@ -1,6 +1,6 @@
 ---
 title: Safarnak
-description: An offline-first travel companion built with Expo React Native, Cloudflare Workers, GraphQL, Drizzle, and shared TypeScript types.
+description: A project note on Safarnak - a forkable AI trip workspace built around editable plans, offline usefulness, and shared TypeScript contracts.
 date: 2025-10-23
 updated: 2026-05-14
 status: Active
@@ -15,37 +15,60 @@ website: https://safarnak.app
 featured: true
 ---
 
-Safarnak is a full-stack travel companion shaped around a practical constraint: trips are planned on unstable networks, across devices, and over many small sessions. The product needs to keep context available locally while still syncing to an edge backend when the network is available.
+Safarnak is a forkable AI trip workspace.
 
-The current architecture uses Expo React Native for the app, Cloudflare Workers for the backend, GraphQL Yoga for the API surface, D1 and Drizzle for structured data, and Cloudflare storage primitives such as KV, R2, Vectorize, and Durable Objects where they fit the workflow.
-
-The important design choice is that the data model is not treated as a remote-only concern. Safarnak keeps a shared schema between server and client code so local cached data can be queried and reasoned about instead of becoming a loose shadow of the API.
+The core loop is simple: create a trip, edit it, share it, fork it, and personalize it. The product is not trying to become a full social network for travel. It is trying to make travel planning feel more like a reusable workspace than a disposable chat or static itinerary.
 
 Repository:
 
 - [mehotkhan/safarnak.app](https://github.com/mehotkhan/safarnak.app)
 - [safarnak.app](https://safarnak.app)
 
-That makes the project useful as both a product experiment and a technical reference:
+## Why It Exists
 
-- How much of a travel app can stay useful while offline?
-- Where should AI assistance enter the workflow without hiding the plan from the user?
-- Can the same TypeScript and GraphQL contracts keep a mobile client and edge backend aligned?
-- What belongs in durable sync, and what should remain a temporary planning artifact?
+Trips are planned in fragments.
 
-Current notes for the project:
+A note in one app.  
+A map pin somewhere else.  
+A message from a friend.  
+A half-useful AI answer.  
+A budget constraint that changes everything.
 
-- Keep the workspace inspectable and editable.
-- Treat AI output as draft material, not hidden truth.
-- Make planning artifacts easy to reuse.
-- Build for mobile first without making the core workflow heavy.
-- Keep bilingual English and Persian support as a first-order product constraint.
+Safarnak exists because those fragments should be editable, inspectable, and reusable. A good trip plan should survive unstable networks, many small sessions, and the moment when someone says, "Can I use your plan and change it for myself?"
 
-## Next Tasks
+## What It Explores
+
+The product explores travel planning as a workspace:
+
+- AI output as draft material, not hidden truth,
+- itineraries that can be forked and personalized,
+- local-first behavior for unstable travel contexts,
+- bilingual English and Persian support as a product constraint,
+- shared contracts between mobile app and edge backend.
+
+The useful question is not "Can AI generate a trip?" That part is easy to demo. The harder question is whether the generated material can become a plan people understand, edit, carry, and reuse.
+
+## How It Works
+
+The current architecture uses Expo React Native for the app, Cloudflare Workers for the backend, GraphQL Yoga for the API surface, D1 and Drizzle for structured data, and shared TypeScript contracts to keep client and server aligned.
+
+Cloudflare storage primitives such as KV, R2, Vectorize, and Durable Objects are used only where they fit the workflow. The product should stay small enough that the planning loop remains visible.
+
+The important design choice is that data is not treated as remote-only. Local cached state should be queryable and understandable, not a loose shadow of the API.
+
+## What I Learned
+
+AI planning products need editing more than magic.
+
+If the output cannot be inspected, changed, reused, or corrected, it becomes another disposable answer. Safarnak is useful because it keeps the plan as the product artifact and treats AI as one way to shape it.
+
+## Current Status
+
+Active. The product and technical foundation are still being refined, especially around public workflow, offline behavior, and how much of the system should be shown before the first stable product flow is ready.
+
+## Next Steps
 
 - [ ] Document the app/server package boundaries.
 - [ ] Add a short note on the GraphQL schema and shared TypeScript types.
 - [ ] Capture the offline cache and sync model in a lab note.
 - [ ] Add public screenshots when the first stable product flow is ready.
-
-This page will collect public design notes, implementation decisions, and release milestones as the project develops.

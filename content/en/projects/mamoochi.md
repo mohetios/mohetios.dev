@@ -1,6 +1,6 @@
 ---
 title: Mamoochi
-description: An open-source Jamstack framework from the Bagche organization for building Nuxt, Vue, and Cloudflare-friendly content systems.
+description: A project note on Mamoochi - an open-source Jamstack framework for Nuxt, Vue, and Cloudflare-friendly content systems.
 date: 2024-10-31
 updated: 2025-05-19
 status: Active archive
@@ -15,36 +15,57 @@ website: https://mamoochi.bagche.app/
 featured: true
 ---
 
-Mamoochi is an open-source Jamstack framework from the Bagche organization.
+Mamoochi is an open-source Jamstack framework from the Bagche workspace. It sits between a starter template and a product platform: more opinionated than a blank Nuxt project, but still small enough to inspect.
 
-The project sits in the same family as Totoro and Mohetios.dev: small content systems that prefer static output, Git-friendly structure, and deployment paths that do not require a heavy server. Mamoochi pushes that idea toward a reusable framework rather than a single website.
+The project belongs to the same family as Totoro and Mohetios.dev. All three care about content, public pages, Git-friendly structure, and deployment paths that do not require a heavy server. Mamoochi pushes that pattern toward reuse.
 
 Repository:
 
 - [bagche/mamoochi](https://github.com/bagche/mamoochi)
 - [mamoochi.bagche.app](https://mamoochi.bagche.app/)
 
-## What It Is For
+## Why It Exists
 
-Mamoochi is useful as a foundation for content-heavy products that need the Jamstack shape:
+A content system is usually built twice.
 
-- Nuxt and Vue for the application layer.
-- Cloudflare-friendly deployment.
-- A content model that can stay close to the repository.
-- A framework boundary that can be reused across Bagche projects.
-- Enough structure for a product team without turning the site into a monolith.
+First as a website.  
+Then again as a pattern.
 
-The important part is the framework ambition. A starter helps one project begin. A framework tries to preserve decisions across projects: layout conventions, content rules, deployment assumptions, and the editing workflow.
+Mamoochi is the second version of that instinct: take the decisions that keep repeating across small publishing and product sites, and make them explicit enough that another project can start from them.
 
-## Why It Matters
+## What It Explores
+
+The project explores how much structure a Jamstack framework should provide before it becomes too rigid.
+
+It cares about:
+
+- Nuxt and Vue as the application layer,
+- static or edge-friendly output,
+- content that stays close to the repository,
+- deployment assumptions that work well on Cloudflare,
+- project conventions that can be reused across Bagche surfaces.
+
+The framework ambition is the interesting part. A starter helps one project begin. A framework tries to preserve decisions across projects: layout conventions, content rules, routing shape, deployment assumptions, and editing workflow.
+
+## How It Works
+
+Mamoochi keeps the architecture close to the web stack rather than hiding it behind a large CMS. Nuxt handles routing and rendering. Vue handles the component surface. Cloudflare-friendly deployment keeps the runtime small.
+
+That shape makes the project useful for content-heavy products that need a public face and a practical editing workflow without a database-backed application at the center.
+
+## What I Learned
 
 Open-source publishing frameworks are small infrastructure bets. They encode what the maintainer believes a site should need and what it should avoid.
 
-Mamoochi appears to continue a long-running pattern in this workspace: build practical web foundations, keep them inspectable, and make the deployment story simple enough that writing and product iteration remain the center of the work.
+Mamoochi is useful because it makes those beliefs visible: keep the source inspectable, keep the deployment path simple, and let writing or product iteration remain the center of the work.
 
-## Next Tasks
+## Current Status
+
+Active archive. The repository remains part of the Bagche technical story, but this page should avoid implying a large product ecosystem until the public framework API and usage story are clearer.
+
+## Next Steps
 
 - [ ] Document the framework API and expected project structure.
 - [ ] Add a comparison with Totoro and Mohetios.dev.
 - [ ] Capture the Cloudflare deployment assumptions.
-- [ ] Decide whether Mamoochi should become the main Bagche technical story or stay one project inside the Bagche workspace.
+- [ ] Decide whether Mamoochi is the main Bagche technical story or one project inside the workspace.
