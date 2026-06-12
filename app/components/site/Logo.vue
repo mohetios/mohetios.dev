@@ -14,6 +14,8 @@ const props = withDefaults(
 
 const { t, te } = useI18n()
 
+const logoParts = computed(() => getLogoParts(t))
+
 const showTld = computed(() => te('site.logo.tld') && Boolean(t('site.logo.tld')))
 
 const rootClass = computed(() => {
@@ -103,8 +105,8 @@ const taglineClass = computed(() => {
       class="inline-flex items-baseline tracking-[-0.045em] whitespace-nowrap rtl:font-fa rtl:tracking-normal"
       aria-hidden="true"
     >
-      <span :class="part1Class">{{ t('site.logo.part1') }}</span>
-      <span :class="part2Class">{{ t('site.logo.part2') }}</span>
+      <span :class="part1Class">{{ logoParts.part1 }}</span>
+      <span :class="part2Class">{{ logoParts.part2 }}</span>
       <span v-if="showTld" :class="tldClass">
         <span class="text-(--color-gold)">.</span>{{ t('site.logo.tld') }}
       </span>

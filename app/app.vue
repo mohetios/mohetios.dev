@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as locales from '@nuxt/ui/locale'
-import { getSeoSiteName, normalizeSiteUrl, resolveSeoImageUrl } from '~/utils/seo'
+import { formatSeoTitle, getSeoSiteName, normalizeSiteUrl, resolveSeoImageUrl } from '~/utils/seo'
 
 const { locale, t } = useI18n()
 const siteUrl = normalizeSiteUrl(String(useRuntimeConfig().public.siteUrl))
@@ -18,7 +18,13 @@ useHead({
   }
 })
 
-const siteTitle = computed(() => `${getSeoSiteName(t)} : ${t('site.tagline')}`)
+const siteTitle = computed(() =>
+  formatSeoTitle({
+    siteName: getSeoSiteName(t),
+    tagline: t('site.tagline'),
+    isHome: true
+  })
+)
 
 useSeoMeta({
   title: siteTitle,

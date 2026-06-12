@@ -12,7 +12,7 @@ import {
 } from '~/utils/seo'
 
 export type MohetiosSeoInput = {
-  title: MaybeRefOrGetter<string | undefined>
+  title?: MaybeRefOrGetter<string | undefined>
   description?: MaybeRefOrGetter<string | undefined>
   path?: MaybeRefOrGetter<string | undefined>
   image?: MaybeRefOrGetter<string | undefined>

@@ -6,10 +6,7 @@ const labNotes = computed(() => getLabNotes(locale.value, 3))
 const projects = computed(() => getProjects(locale.value, 3))
 
 const featuredPost = computed(() => posts.value?.find((post) => post.thumbnail) || posts.value?.[0])
-const siteWordmark = computed(() => getSeoSiteName(t))
-
 useMohetiosSeo({
-  title: () => siteWordmark.value,
   description: () => t('site.description'),
   path: () => getLocalizedPublicPath('/', locale.value),
   locale: () => locale.value,

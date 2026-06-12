@@ -2,6 +2,10 @@ export type MaybeString = string | null | undefined
 
 export const DEFAULT_OG_IMAGE_PATH = '/content/physics.webp'
 
+function isLatinWordmark(value: string) {
+  return /^[a-z0-9]+$/i.test(value)
+}
+
 export function normalizeSiteUrl(siteUrl: string) {
   return siteUrl.replace(/\/$/, '')
 }
@@ -41,12 +45,41 @@ export function cleanSeoDescription(value?: MaybeString, fallback = '') {
     .slice(0, 240)
 }
 
-export function getSeoSiteName(t: (key: string) => string) {
-  return `${t('site.logo.part1')}${t('site.logo.part2')}`.trim()
+function formatLatinWordmark(wordmark: string) {
+  const lower = wordmark.toLowerCase()
+  return lower.charAt(0).toUpperCase() + lower.slice(1)
 }
 
-function escapeRegExp(value: string) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+/** SEO brand name from i18n logo parts — Latin wordmarks become Mohetios, not mohetios. */
+export function getSeoSiteName(t: (key: string) => string) {
+  const wordmark = `${t('site.logo.part1')}${t('site.logo.part2')}`.trim()
+
+  if (!wordmark) {
+    return t('site.name').replace(/\.dev$/i, '').trim()
+  }
+
+  if (isLatinWordmark(wordmark)) {
+    return formatLatinWordmark(wordmark)
+  }
+
+  return wordmark
+}
+
+/** Logo wordmark parts — Latin locales show Mohet + ios while FA keeps i18n glyphs. */
+export function getLogoParts(t: (key: string) => string) {
+  const part1 = t('site.logo.part1')
+  const part2 = t('site.logo.part2')
+  const wordmark = `${part1}${part2}`.trim()
+
+  if (isLatinWordmark(wordmark)) {
+    const display = formatLatinWordmark(wordmark)
+    return {
+      part1: display.slice(0, part1.length),
+      part2: display.slice(part1.length)
+    }
+  }
+
+  return { part1, part2 }
 }
 
 export function formatSeoTitle({
@@ -60,11 +93,7 @@ export function formatSeoTitle({
   tagline: string
   isHome?: boolean
 }) {
-  const legacyNames = [siteName, 'Mohetios', 'Mohetios.dev', 'mohetios.dev'].map(escapeRegExp)
-  const legacyPrefix = new RegExp(`^\\s*(?:${legacyNames.join('|')})\\s*[:·|-]\\s*`, 'i')
-  const legacySuffix = new RegExp(`\\s*[:·|-]\\s*(?:${legacyNames.join('|')})\\s*$`, 'i')
-
-  const pageTitle = String(title || '').replace(legacyPrefix, '').replace(legacySuffix, '').trim()
+  const pageTitle = String(title || '').trim()
 
   if (isHome || !pageTitle || pageTitle === siteName) {
     return `${siteName} : ${tagline}`

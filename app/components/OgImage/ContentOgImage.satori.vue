@@ -51,7 +51,7 @@ const siteNameStyle = computed(() => ({
   fontWeight: 500,
   letterSpacing: isRtl.value ? '0' : '0.08em',
   color: '#3f6d58',
-  textTransform: isRtl.value ? 'none' : 'uppercase',
+  textTransform: 'none',
   fontFamily: OG_FONT_FAMILY,
   margin: 0
 }))
