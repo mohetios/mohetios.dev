@@ -9,6 +9,8 @@ const props = withDefaults(
     networks?: SocialNetwork[]
   }>(),
   {
+    description: undefined,
+    url: undefined,
     networks: () => ['linkedin', 'x', 'reddit', 'telegram', 'email']
   }
 )

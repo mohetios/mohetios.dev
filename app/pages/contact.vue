@@ -150,7 +150,8 @@ async function createContactMessage(input: {
 
     throw new Error(
       gqlError?.message ||
-        (error instanceof Error ? error.message : 'Contact message request failed')
+        (error instanceof Error ? error.message : 'Contact message request failed'),
+      { cause: error }
     )
   }
 }

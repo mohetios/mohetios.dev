@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { CommentTargetType } from '~~/shared/constants/comments'
+
 type PublicComment = {
   id: string
   authorName: string
@@ -6,8 +8,6 @@ type PublicComment = {
   createdAt: number
   replies?: PublicComment[]
 }
-
-import type { CommentTargetType } from '~~/shared/constants/comments'
 
 type Props = {
   targetType: CommentTargetType
