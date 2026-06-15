@@ -28,7 +28,7 @@ const networkLabels: Record<SocialNetwork, string> = {
 }
 
 const buttonUi = {
-  label: 'text-ui-sm'
+  label: 'text-base'
 }
 
 async function copyLink() {
@@ -61,7 +61,7 @@ onBeforeUnmount(() => {
 
 <template>
   <section class="space-y-3">
-    <p class="text-ui-xs font-medium tracking-[0.14em] text-muted uppercase">
+    <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
       {{ t('content.share.title') }}
     </p>
 

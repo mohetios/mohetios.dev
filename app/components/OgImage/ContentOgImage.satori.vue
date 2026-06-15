@@ -12,7 +12,7 @@ const props = defineProps<{
   tagline: string
 }>()
 
-// Satori only renders embedded fonts. Inter ships with nuxt-og-image; Farhang/Vazirmatn
+// Satori only renders embedded fonts. Inter ships with nuxt-og-image; Farhang is not
 // are not available at OG prerender, so every locale uses the site default sans stack.
 const OG_FONT_FAMILY =
   'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif'

@@ -28,7 +28,7 @@ const showUpdated = computed(
 </script>
 
 <template>
-  <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-ui-sm text-muted">
+  <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-base text-muted">
     <UBadge v-if="status" color="neutral" variant="outline" size="sm">
       {{ status }}
     </UBadge>

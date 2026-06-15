@@ -233,7 +233,7 @@ async function onSubmit() {
           >
             <ContentHtml
               :html="page.content"
-              class="prose-mohetios mb-8 border-b border-default pb-8"
+              class="prose prose-lg mb-8 border-b border-default pb-8"
             />
 
             <div v-if="isSubmitted" class="space-y-4">

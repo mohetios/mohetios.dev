@@ -31,10 +31,10 @@ const localePath = useLocalePath()
 
   <section v-else class="w-full space-y-3">
     <div class="space-y-1.5">
-      <p class="text-ui-xs font-medium tracking-[0.14em] text-highlighted uppercase">
+      <p class="text-sm font-medium tracking-[0.14em] text-highlighted uppercase">
         {{ t('content.subscribe.project.title') }}
       </p>
-      <p class="text-ui-sm text-muted">
+      <p class="text-base text-muted">
         {{ t('content.subscribe.project.description') }}
       </p>
     </div>

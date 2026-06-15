@@ -15,7 +15,7 @@ function observeProseColumns(normalizeMermaidDiagrams: () => void) {
     normalizeMermaidDiagrams()
   })
 
-  document.querySelectorAll<HTMLElement>('.prose-mohetios').forEach((prose) => {
+  document.querySelectorAll<HTMLElement>('.prose').forEach((prose) => {
     resizeObserver?.observe(prose)
   })
 }
@@ -23,7 +23,7 @@ function observeProseColumns(normalizeMermaidDiagrams: () => void) {
 async function enhance() {
   await nextTick()
 
-  const nodes = document.querySelectorAll<HTMLElement>('.prose-mohetios .mohetios-mermaid')
+  const nodes = document.querySelectorAll<HTMLElement>('.prose .mohetios-mermaid')
 
   if (!nodes.length) {
     return

@@ -13,7 +13,7 @@ function getCodeText(pre: HTMLElement) {
 }
 
 function enhance() {
-  const blocks = document.querySelectorAll<HTMLElement>('.prose-mohetios pre.shiki')
+  const blocks = document.querySelectorAll<HTMLElement>('.prose pre.shiki')
 
   blocks.forEach((pre) => {
     if (pre.dataset.mohetiosCodeEnhanced === 'true') {
@@ -32,7 +32,7 @@ function enhance() {
       'bg-default/80',
       'px-2.5',
       'py-1',
-      'text-xs',
+      'text-sm',
       'font-medium',
       'text-muted',
       'backdrop-blur',

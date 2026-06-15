@@ -45,7 +45,7 @@ function getThemeColors() {
 }
 
 function getProseWidth(container: HTMLElement) {
-  const prose = container.closest('.prose-mohetios')
+  const prose = container.closest('.prose')
   return prose?.clientWidth ?? DIAGRAM_FALLBACK_WIDTH
 }
 
@@ -86,7 +86,7 @@ export function normalizeMermaidDiagram(container: HTMLElement) {
 }
 
 export function normalizeMermaidDiagrams(root: ParentNode = document) {
-  root.querySelectorAll<HTMLElement>('.prose-mohetios .mohetios-mermaid').forEach((container) => {
+  root.querySelectorAll<HTMLElement>('.prose .mohetios-mermaid').forEach((container) => {
     if (container.querySelector('svg')) {
       normalizeMermaidDiagram(container)
     }
@@ -212,7 +212,7 @@ export function resetMermaidNodes(nodes: Iterable<HTMLElement>) {
 }
 
 export async function renderMermaidDiagrams(root: ParentNode = document) {
-  const nodes = root.querySelectorAll<HTMLElement>('.prose-mohetios .mohetios-mermaid')
+  const nodes = root.querySelectorAll<HTMLElement>('.prose .mohetios-mermaid')
 
   if (!nodes.length) {
     return

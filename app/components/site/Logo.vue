@@ -83,7 +83,7 @@ const tldClass = computed(() => {
 
 const taglineClass = computed(() => {
   if (props.size === 'footer') {
-    return 'mt-0.5 block max-w-none text-ui-sm font-[450] leading-(--text-ui-sm--line-height) tracking-[-0.01em] text-muted rtl:font-fa rtl:tracking-normal'
+    return 'mt-0.5 block max-w-none text-sm font-[450] tracking-[-0.01em] text-muted rtl:tracking-normal'
   }
 
   if (props.size === 'dashboard') {
@@ -94,7 +94,7 @@ const taglineClass = computed(() => {
     'hidden max-w-56 text-[0.78rem] font-[450] leading-[1.35] tracking-[-0.01em] text-muted',
     'xl:inline',
     'before:inline-block before:me-3 before:h-4 before:w-px before:-translate-y-px before:bg-[color-mix(in_oklab,var(--ui-border)_88%,transparent)] before:align-middle before:content-[\'\']',
-    'rtl:font-fa rtl:leading-[1.45] rtl:tracking-normal'
+    'rtl:leading-[1.45] rtl:tracking-normal'
   ].join(' ')
 })
 </script>
@@ -102,7 +102,7 @@ const taglineClass = computed(() => {
 <template>
   <span :class="rootClass">
     <span
-      class="inline-flex items-baseline tracking-[-0.045em] whitespace-nowrap rtl:font-fa rtl:tracking-normal"
+      class="inline-flex items-baseline tracking-[-0.045em] whitespace-nowrap rtl:tracking-normal"
       aria-hidden="true"
     >
       <span :class="part1Class">{{ logoParts.part1 }}</span>

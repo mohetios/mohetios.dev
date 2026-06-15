@@ -70,10 +70,10 @@ function formatDate(date?: string | Date) {
       <section class="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
         <div class="space-y-7">
           <div class="space-y-5">
-            <h1 class="text-5xl font-semibold tracking-tight text-balance text-highlighted sm:text-6xl lg:text-7xl">
+            <h1 class="text-4xl font-semibold tracking-tight text-balance text-highlighted sm:text-5xl">
               {{ t('site.tagline') }}
             </h1>
-            <p class="text-lg leading-8 text-pretty text-muted sm:text-xl">
+            <p class="text-xl text-pretty text-muted">
               {{ t('home.hero.description') }}
             </p>
           </div>
@@ -94,7 +94,7 @@ function formatDate(date?: string | Date) {
         <aside class="rounded-2xl border border-default bg-muted/30 p-5 sm:p-6">
           <div class="flex items-center justify-between gap-4 border-b border-default pb-4">
             <div>
-              <p class="text-xs font-medium uppercase tracking-widest text-muted">
+              <p class="text-sm font-medium uppercase tracking-widest text-muted">
                 {{ t('home.workshop.label') }}
               </p>
             </div>
@@ -108,11 +108,11 @@ function formatDate(date?: string | Date) {
               class="flex items-center gap-3 rounded-xl border border-default bg-default px-4 py-3"
             >
               <span class="size-2 rounded-full bg-primary" />
-              <span class="text-sm font-medium text-highlighted">{{ item }}</span>
+              <span class="text-base font-medium text-highlighted">{{ item }}</span>
             </div>
           </div>
 
-          <p class="border-t border-default pt-4 text-sm leading-6 text-muted">
+          <p class="border-t border-default pt-4 text-base text-muted">
             {{ t('home.workshop.footer') }}
           </p>
         </aside>
@@ -133,7 +133,7 @@ function formatDate(date?: string | Date) {
           </div>
           <div
             v-else
-            class="flex aspect-[4/3] min-h-64 w-full flex-col items-center justify-center gap-4 bg-muted/40 p-8 text-sm font-medium uppercase tracking-widest text-muted md:aspect-auto md:h-full"
+            class="flex aspect-[4/3] min-h-64 w-full flex-col items-center justify-center gap-4 bg-muted/40 p-8 text-base font-medium uppercase tracking-widest text-muted md:aspect-auto md:h-full"
           >
             <div
               class="grid size-16 place-items-center rounded-full border border-default bg-default/70"
@@ -148,7 +148,7 @@ function formatDate(date?: string | Date) {
               <UBadge color="neutral" variant="outline">
                 {{ t('home.featured.label') }}
               </UBadge>
-              <time v-if="featuredPost.date" class="text-xs text-muted">
+              <time v-if="featuredPost.date" class="text-sm text-muted">
                 {{ formatDate(featuredPost.date) }}
               </time>
             </div>
@@ -158,7 +158,7 @@ function formatDate(date?: string | Date) {
                 {{ featuredPost.title }}
               </NuxtLink>
             </h2>
-            <p class="mt-4 text-base leading-8 text-muted">
+            <p class="mt-4 text-lg text-muted">
               {{ featuredPost.description }}
             </p>
 
@@ -190,10 +190,10 @@ function formatDate(date?: string | Date) {
 
       <section class="space-y-5">
         <div>
-          <h2 class="text-2xl font-semibold tracking-tight text-highlighted">
+          <h2 class="text-3xl font-semibold tracking-tight text-highlighted">
             {{ t('home.tracks.title') }}
           </h2>
-          <p class="mt-2 text-sm leading-6 text-muted">
+          <p class="mt-2 text-base text-muted">
             {{ t('home.tracks.description') }}
           </p>
         </div>
@@ -216,7 +216,7 @@ function formatDate(date?: string | Date) {
             </template>
 
             <template #footer>
-              <span class="inline-flex items-center gap-2 text-sm font-medium text-highlighted">
+              <span class="inline-flex items-center gap-2 text-base font-medium text-highlighted">
                 {{ track.label }}
                 <UIcon name="i-lucide-arrow-right" class="size-4" />
               </span>
@@ -227,10 +227,10 @@ function formatDate(date?: string | Date) {
 
       <section class="space-y-5">
         <div>
-          <h2 class="text-2xl font-semibold tracking-tight text-highlighted">
+          <h2 class="text-3xl font-semibold tracking-tight text-highlighted">
             {{ t('sections.latestWriting') }}
           </h2>
-          <p class="mt-2 text-sm leading-6 text-muted">
+          <p class="mt-2 text-base text-muted">
             {{ t('sections.latestWritingDescription') }}
           </p>
         </div>
@@ -254,10 +254,10 @@ function formatDate(date?: string | Date) {
       <section class="grid gap-8 lg:grid-cols-2">
         <div class="space-y-5">
           <div>
-            <h2 class="text-2xl font-semibold tracking-tight text-highlighted">
+            <h2 class="text-3xl font-semibold tracking-tight text-highlighted">
               {{ t('sections.labNotes') }}
             </h2>
-            <p class="mt-2 text-sm leading-6 text-muted">
+            <p class="mt-2 text-base text-muted">
               {{ t('sections.labNotesDescription') }}
             </p>
           </div>
@@ -285,10 +285,10 @@ function formatDate(date?: string | Date) {
 
         <div class="space-y-5">
           <div>
-            <h2 class="text-2xl font-semibold tracking-tight text-highlighted">
+            <h2 class="text-3xl font-semibold tracking-tight text-highlighted">
               {{ t('sections.featuredProjects') }}
             </h2>
-            <p class="mt-2 text-sm leading-6 text-muted">
+            <p class="mt-2 text-base text-muted">
               {{ t('sections.featuredProjectsDescription') }}
             </p>
           </div>
@@ -317,10 +317,10 @@ function formatDate(date?: string | Date) {
 
       <section class="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
         <div>
-          <h2 class="text-2xl font-semibold tracking-tight text-highlighted">
+          <h2 class="text-3xl font-semibold tracking-tight text-highlighted">
             {{ t('sections.principles') }}
           </h2>
-          <p class="mt-2 text-sm leading-6 text-muted">
+          <p class="mt-2 text-base text-muted">
             {{ t('sections.principlesDescription') }}
           </p>
         </div>
@@ -331,10 +331,10 @@ function formatDate(date?: string | Date) {
             :key="principle"
             class="grid gap-4 rounded-2xl border border-default bg-muted/20 p-5 sm:grid-cols-[3rem_1fr]"
           >
-            <div class="text-sm font-semibold text-muted">
+            <div class="text-base font-semibold text-muted">
               {{ String(index + 1).padStart(2, '0') }}
             </div>
-            <p class="text-sm leading-7 text-muted">
+            <p class="text-base text-muted">
               {{ principle }}
             </p>
           </div>
@@ -345,10 +345,10 @@ function formatDate(date?: string | Date) {
         <div class="rounded-2xl border border-default bg-muted/30 p-6 sm:p-8 lg:p-10">
           <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div>
-              <h2 class="text-2xl font-semibold tracking-tight text-highlighted">
+              <h2 class="text-3xl font-semibold tracking-tight text-highlighted">
                 {{ t('home.cta.title') }}
               </h2>
-              <p class="mt-2 text-sm leading-6 text-muted">
+              <p class="mt-2 text-base text-muted">
                 {{ t('home.cta.description') }}
               </p>
             </div>

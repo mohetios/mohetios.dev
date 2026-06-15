@@ -11,10 +11,10 @@ const hasItems = computed(() => Boolean(props.items?.length))
 
 <template>
   <aside v-if="hasItems" class="space-y-3" :aria-label="heading">
-    <p class="text-ui-xs font-medium tracking-[0.14em] text-muted uppercase">
+    <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
       {{ heading }}
     </p>
-    <ul class="space-y-2 text-reader-sm text-muted">
+    <ul class="space-y-2 text-base text-muted">
       <li v-for="(item, index) in items" :key="index">
         {{ item }}
       </li>

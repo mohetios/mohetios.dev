@@ -38,21 +38,21 @@ function toggleReply(commentId: string) {
     class="flex flex-col gap-2 py-3 [&+&]:border-t [&+&]:border-default/65"
   >
     <header class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-      <p class="text-ui-sm font-medium text-highlighted">
+      <p class="text-base font-medium text-highlighted">
         {{ comment.authorName }}
       </p>
-      <time class="text-ui-xs text-muted" :datetime="new Date(comment.createdAt).toISOString()">
+      <time class="text-sm text-muted" :datetime="new Date(comment.createdAt).toISOString()">
         {{ formatDate(comment.createdAt) }}
       </time>
     </header>
 
-    <p class="whitespace-pre-wrap text-reader-sm text-default">
+    <p class="whitespace-pre-wrap text-base text-default">
       {{ comment.body }}
     </p>
 
     <button
       type="button"
-      class="self-start text-ui-sm font-medium text-muted transition-colors duration-150 hover:text-primary"
+      class="self-start text-base font-medium text-muted transition-colors duration-150 hover:text-primary"
       @click="toggleReply(comment.id)"
     >
       {{ replyingTo === comment.id ? t('comments.cancelReply') : t('comments.replyAction') }}
@@ -79,15 +79,15 @@ function toggleReply(commentId: string) {
         class="flex flex-col gap-1.5"
       >
         <header class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-          <p class="text-ui-sm font-medium text-highlighted">
+          <p class="text-base font-medium text-highlighted">
             {{ reply.authorName }}
           </p>
-          <time class="text-ui-xs text-muted" :datetime="new Date(reply.createdAt).toISOString()">
+          <time class="text-sm text-muted" :datetime="new Date(reply.createdAt).toISOString()">
             {{ formatDate(reply.createdAt) }}
           </time>
         </header>
 
-        <p class="whitespace-pre-wrap text-reader-sm text-default">
+        <p class="whitespace-pre-wrap text-base text-default">
           {{ reply.body }}
         </p>
       </article>

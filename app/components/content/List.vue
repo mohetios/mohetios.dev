@@ -23,13 +23,13 @@ const publicTo = computed(() => toPublicPath(props.to))
     class="group block py-2.5 no-underline transition-colors duration-150"
   >
     <p
-      class="text-reader-sm font-medium leading-(--text-reader-sm--line-height) text-highlighted transition-colors duration-150 group-hover:text-primary"
+      class="text-base font-medium text-highlighted transition-colors duration-150 group-hover:text-primary"
     >
       {{ title }}
     </p>
     <p
       v-if="description"
-      class="mt-1 text-ui-sm leading-(--text-ui-sm--line-height) text-muted"
+      class="mt-1 text-base text-muted"
     >
       {{ description }}
     </p>
@@ -49,10 +49,10 @@ const publicTo = computed(() => toPublicPath(props.to))
       </div>
     </template>
 
-    <h3 class="text-ui-base font-semibold tracking-tight text-highlighted">
+    <h3 class="text-base font-semibold tracking-tight text-highlighted">
       {{ title }}
     </h3>
-    <p v-if="description" class="mt-2 text-ui-sm leading-6 text-muted">
+    <p v-if="description" class="mt-2 text-base leading-6 text-muted">
       {{ description }}
     </p>
 

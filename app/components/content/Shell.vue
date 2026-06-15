@@ -45,7 +45,7 @@ withDefaults(
 
           <ContentToc v-if="showToc" :title="$t('content.toc')" :links="tocLinks" />
 
-          <article class="prose-mohetios max-w-none">
+          <article class="prose prose-lg max-w-none">
             <ContentHtml :html="content" />
           </article>
 
@@ -66,13 +66,13 @@ withDefaults(
               variant="ghost"
               size="sm"
               icon="i-lucide-arrow-left"
-              :ui="{ label: 'text-ui-sm' }"
+              :ui="{ label: 'text-base' }"
             >
               {{ backLabel }}
             </UButton>
 
             <section v-if="surround?.some(Boolean)" class="space-y-3">
-              <p class="text-ui-xs font-medium tracking-[0.14em] text-muted uppercase">
+              <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
                 {{ $t('content.article.continueReading') }}
               </p>
               <ContentSurround :surround="surround || []" />

@@ -79,7 +79,7 @@ const commentErrorMessages = computed(
 )
 
 const fieldUi = {
-  label: 'text-ui-sm font-medium text-muted'
+  label: 'text-base font-medium text-muted'
 }
 
 function resolveSubmitError(error: unknown) {
@@ -188,8 +188,8 @@ async function onSubmit() {
 </script>
 
 <template>
-  <div class="comment-form [&_input]:text-ui-sm [&_input]:leading-(--text-ui-sm--line-height) [&_textarea]:text-ui-sm [&_textarea]:leading-(--text-ui-sm--line-height)">
-    <p v-if="submitState === 'success'" class="text-ui-sm text-highlighted">
+  <div class="comment-form [&_input]:text-base [&_textarea]:text-base">
+    <p v-if="submitState === 'success'" class="text-base text-highlighted">
       {{ t('comments.success') }}
     </p>
 
@@ -203,7 +203,7 @@ async function onSubmit() {
       >
         <UTextarea
           v-model="state.body"
-          class="w-full text-reader-sm"
+          class="w-full text-base"
           :rows="compact ? 3 : 4"
           size="sm"
           autoresize
@@ -251,12 +251,12 @@ async function onSubmit() {
           </UButton>
         </div>
 
-        <p v-if="formError" class="text-ui-xs text-error">
+        <p v-if="formError" class="text-sm text-error">
           {{ formError }}
         </p>
 
         <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <p class="text-ui-xs text-muted">
+          <p class="text-sm text-muted">
             {{ t('comments.privacyNote') }}
           </p>
 

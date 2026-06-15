@@ -34,7 +34,7 @@ useMohetiosSeo({
       <div :class="[PUBLIC_ARTICLE_READING_CLASS, 'flex flex-col gap-10']">
         <ContentCodeEnhancer />
         <ContentMermaidEnhancer />
-        <ContentHtml :html="page.content" class="prose-mohetios max-w-none" />
+        <ContentHtml :html="page.content" class="prose prose-lg max-w-none" />
 
         <NewsletterSubscribe source="about" />
       </div>

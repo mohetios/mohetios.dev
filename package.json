@@ -67,6 +67,7 @@
     "@cloudflare/workers-types": "4.20260610.1",
     "@eslint/markdown": "^8.0.2",
     "@nuxt/eslint": "^1.16.0",
+    "@tailwindcss/typography": "^0.5.20",
     "@types/hast": "^3.0.4",
     "@types/node": "^25.9.2",
     "concurrently": "^10.0.3",

@@ -71,7 +71,7 @@ const footerSections = computed<FooterSection[]>(() => [
 
 <template>
   <footer
-    class="relative overflow-hidden bg-(--color-surface) text-(--color-text) after:pointer-events-none after:absolute after:inset-0 after:opacity-74 after:content-[''] after:bg-[linear-gradient(180deg,var(--color-surface)_0%,transparent_44%),radial-gradient(circle_at_12%_88%,color-mix(in_oklab,var(--color-pattern-green)_64%,transparent)_0,transparent_34%),radial-gradient(circle_at_88%_82%,color-mix(in_oklab,var(--color-pattern-blue)_62%,transparent)_0,transparent_32%)] dark:after:opacity-[0.42]"
+    class="relative overflow-hidden bg-(--color-surface) text-highlighted after:pointer-events-none after:absolute after:inset-0 after:opacity-74 after:content-[''] after:bg-[linear-gradient(180deg,var(--color-surface)_0%,transparent_44%),radial-gradient(circle_at_12%_88%,color-mix(in_oklab,var(--color-pattern-green)_64%,transparent)_0,transparent_34%),radial-gradient(circle_at_88%_82%,color-mix(in_oklab,var(--color-pattern-blue)_62%,transparent)_0,transparent_32%)] dark:after:opacity-[0.42]"
   >
     <div :class="[PUBLIC_SITE_SHELL_CLASS, 'relative z-[2]']">
       <div
@@ -80,7 +80,7 @@ const footerSections = computed<FooterSection[]>(() => [
         <section class="min-w-0" :aria-label="t('site.name')">
           <NuxtLink
             :to="localePath('/')"
-            class="group/logo inline-flex items-center gap-[0.85rem] text-(--color-text) no-underline"
+            class="group/logo inline-flex items-center gap-[0.85rem] text-highlighted no-underline"
             :aria-label="t('site.name')"
           >
             <img
@@ -94,7 +94,7 @@ const footerSections = computed<FooterSection[]>(() => [
             <SiteLogo show-tagline size="footer" />
           </NuxtLink>
 
-          <p class="mt-6 text-pretty text-reader-base leading-(--text-reader-base--line-height) text-(--color-muted)">
+          <p class="mt-6 text-pretty text-base text-muted">
             {{ t('site.description') }}
           </p>
 
@@ -114,7 +114,7 @@ const footerSections = computed<FooterSection[]>(() => [
         >
           <section v-for="section in footerSections" :key="section.title">
             <h2
-              class="text-ui-xs font-bold tracking-[0.12em] text-(--color-text) uppercase rtl:tracking-normal"
+              class="text-xs font-bold tracking-[0.12em] text-highlighted uppercase rtl:tracking-normal"
             >
               {{ section.title }}
             </h2>
@@ -122,7 +122,7 @@ const footerSections = computed<FooterSection[]>(() => [
               <li v-for="link in section.links" :key="link.to">
                 <NuxtLink
                   :to="link.to"
-                  class="inline-flex items-center gap-[0.45rem] text-ui-base font-medium leading-(--text-ui-base--line-height) text-(--color-muted) no-underline transition-[color,transform] duration-[160ms] hover:-translate-y-px hover:text-(--color-primary) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-primary)"
+                  class="inline-flex items-center gap-[0.45rem] text-sm font-medium text-muted no-underline transition-[color,transform] duration-[160ms] hover:-translate-y-px hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
                   :target="link.external ? '_blank' : undefined"
                   :rel="link.external ? 'noopener noreferrer' : undefined"
                 >
@@ -137,7 +137,7 @@ const footerSections = computed<FooterSection[]>(() => [
       </div>
 
       <div
-        class="flex flex-col justify-between gap-4 border-t border-default py-5 pb-8 text-ui-sm leading-(--text-ui-sm--line-height) text-(--color-muted) sm:flex-row"
+        class="flex flex-col justify-between gap-4 border-t border-default py-5 pb-8 text-sm text-muted sm:flex-row"
       >
         <p>{{ t('site.footer') }}</p>
         <p>© {{ currentYear }} {{ t('site.name') }}</p>

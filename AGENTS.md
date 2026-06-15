@@ -583,15 +583,15 @@ Use Nuxt UI and Tailwind CSS. **Tailwind utilities are the default styling layer
 ### Tailwind-first (required)
 
 - Put layout, spacing, typography, color, borders, and responsive behavior in component `class` attributes using Tailwind utilities.
-- Use Nuxt UI component `ui` props and theme tokens (`text-ui-sm`, `text-muted`, `text-highlighted`, `border-default`, etc.) before inventing custom class names.
+- Use Nuxt UI component `ui` props and theme tokens (`text-sm`, `text-muted`, `text-highlighted`, `border-default`, etc.) before inventing custom class names.
 - Prefer logical properties (`ps-`, `pe-`, `ms-`, `me-`, `border-s`, `text-start`) for RTL-safe layouts.
 - Public pages use **site shell width** — CSS classes in `app/assets/css/main.css`, constants in `shared/constants/layout.ts`:
   - `.site-shell` / `PUBLIC_SITE_SHELL_CLASS` — `72rem` + gutters (default layout, header, footer; Nuxt UI `--ui-container` matches this)
-  - `.viewport-bleed` / `PUBLIC_VIEWPORT_BLEED_CLASS` — immersive heroes only
-  - Prose typography cap lives in `.prose-mohetios`; public pages pass `max-w-none` when content should use the full shell
+  - `.article-reading-column` / `PUBLIC_ARTICLE_READING_CLASS` — centered article column (`46rem`)
+  - Prose typography uses Tailwind `@tailwindcss/typography` (`prose`); public pages pass `max-w-none` when content should use the full shell
 - Do **not** put Tailwind width utilities in TS string constants; Tailwind may not scan them. Use these CSS classes.
 - Do not add page-level `max-w-*` except `max-w-none` on prose and small UI widgets.
-- Reuse `@theme` tokens from `app/assets/css/main.css` via Tailwind arbitrary values when needed (for example `leading-(--mohetios-heading-leading)`).
+- Reuse `@theme` font tokens from `app/assets/css/main.css` when needed; prefer standard Tailwind `text-*` utilities for sizing
 - Match surrounding component patterns; do not introduce parallel BEM-style class systems in Vue files.
 
 ### Allowed global CSS (`app/assets/css/main.css` only)
@@ -600,9 +600,9 @@ Keep custom CSS in `main.css` only when Tailwind cannot express it cleanly:
 
 - `@import`, `@theme`, and design-token CSS variables (`:root`, `.dark`)
 - global document resets (`html`, `body`, `#__nuxt`)
-- Velite-rendered markdown prose (`.prose-mohetios` and descendants)
+- Velite-rendered markdown prose (`.prose` and descendants; embed overrides in `prose-embeds.css`)
 - third-party embed overrides that require `:deep()` or descendant selectors (Turnstile, Shiki, Mermaid inside prose)
-- JS-driven effects that rely on CSS custom properties (for example hero parallax variables)
+- JS-driven effects that rely on CSS custom properties when Tailwind cannot express the runtime value
 
 Do **not** add new component-specific class blocks to `main.css` when equivalent Tailwind utilities exist.
 

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { estimateReadingTimeFromHtml } from '~/utils/content-reading-time'
+
 const route = useRoute()
 const { locale, t } = useI18n()
 const localePath = useLocalePath()
@@ -14,6 +16,15 @@ const visibleProjects = computed(() => getProjects(locale.value))
 const surround = computed(() => getSurround(visibleProjects.value, path.value))
 const tocLinks = computed(() => getTocNavLinks(project.value?.tocData))
 const showToc = computed(() => shouldShowToc(project.value?.tocData))
+
+const readingTime = computed(() => {
+  if (project.value?.readingTime) {
+    return project.value.readingTime
+  }
+
+  const minutes = estimateReadingTimeFromHtml(project.value?.content)
+  return t('content.meta.readingTimeValue', { count: minutes })
+})
 const relatedProjects = computed(() => {
   const currentTags = new Set(project.value?.tags || [])
 
@@ -51,10 +62,18 @@ const { canonicalUrl: shareUrl } = useContentSeo({
       :updated="project.updated"
     />
 
-    <ContentHero
+    <ContentArticleHeader
       :title="project.title"
       :description="project.description"
       :thumbnail="project.thumbnail"
+      :thumbnail-alt="project.thumbnailAlt || project.title"
+      :thumbnail-credit="project.thumbnailCredit"
+      :date="project.date"
+      :updated="project.updated"
+      :author="project.author"
+      :reading-time="readingTime"
+      :status="project.status"
+      :tags="project.tags"
       :back-to="localePath('/projects')"
       :back-label="t('content.actions.backToProjects')"
     />
@@ -84,7 +103,7 @@ const { canonicalUrl: shareUrl } = useContentSeo({
 
       <template #related>
         <section v-if="relatedProjects.length" class="space-y-3">
-          <p class="text-ui-xs font-medium tracking-[0.14em] text-muted uppercase">
+          <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
             {{ t('content.related') }}
           </p>
           <div class="flex flex-col gap-1">

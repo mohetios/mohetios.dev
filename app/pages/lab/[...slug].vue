@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { estimateReadingTimeFromHtml } from '~/utils/content-reading-time'
+
 const route = useRoute()
 const { locale, t } = useI18n()
 const localePath = useLocalePath()
@@ -14,6 +16,17 @@ const notes = computed(() => getLabNotes(locale.value))
 const tocLinks = computed(() => getTocNavLinks(note.value?.tocData))
 const showToc = computed(() => shouldShowToc(note.value?.tocData))
 const surround = computed(() => getSurround(notes.value, path.value))
+
+const readingTime = computed(() => {
+  if (note.value?.readingTime) {
+    return note.value.readingTime
+  }
+
+  const minutes = estimateReadingTimeFromHtml(note.value?.content)
+  return t('content.meta.readingTimeValue', { count: minutes })
+})
+
+const articleStatus = computed(() => note.value?.category || note.value?.status || t('badges.lab'))
 
 const { canonicalUrl: shareUrl } = useContentSeo({
   title: () => note.value?.title,
@@ -40,10 +53,18 @@ const { canonicalUrl: shareUrl } = useContentSeo({
       :updated="note.updated"
     />
 
-    <ContentHero
+    <ContentArticleHeader
       :title="note.title"
       :description="note.description"
       :thumbnail="note.thumbnail"
+      :thumbnail-alt="note.thumbnailAlt || note.title"
+      :thumbnail-credit="note.thumbnailCredit"
+      :date="note.date"
+      :updated="note.updated"
+      :author="note.author || 'Ali Zemani'"
+      :reading-time="readingTime"
+      :status="articleStatus"
+      :tags="note.tags"
       :back-to="localePath('/lab')"
       :back-label="t('content.actions.backToLab')"
     />
@@ -56,7 +77,7 @@ const { canonicalUrl: shareUrl } = useContentSeo({
       :surround="surround"
     >
       <template #notice>
-        <p class="mb-6 text-ui-sm text-muted">
+        <p class="mb-6 text-base text-muted">
           {{ t('content.lab.workingNote') }}
         </p>
       </template>
