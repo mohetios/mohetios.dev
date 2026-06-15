@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { TocItem } from '~/utils/content'
-import { PUBLIC_ARTICLE_READING_CLASS } from '~~/shared/constants/layout'
 
 type SurroundItem = {
   title: string
@@ -38,7 +37,7 @@ withDefaults(
         <ContentCodeEnhancer />
         <LazyContentMermaidEnhancer />
 
-        <div :class="[PUBLIC_ARTICLE_READING_CLASS, 'flex flex-col gap-8']">
+        <div class="article-reading-column flex flex-col gap-8">
           <slot name="notice" />
 
           <ContentArticleSummary v-if="summary?.length" :items="summary" />

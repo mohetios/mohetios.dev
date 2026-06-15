@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { PUBLIC_ARTICLE_READING_CLASS } from '~~/shared/constants/layout'
-
 const props = defineProps<{
   title: string
   description?: string
@@ -42,7 +40,7 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
 
 <template>
   <header>
-    <div :class="[PUBLIC_ARTICLE_READING_CLASS, 'min-w-0 pt-6 pb-8 sm:pt-8']">
+    <div class="article-reading-column min-w-0 pt-6 pb-8 sm:pt-8">
       <div v-if="backTo" class="mb-6">
         <NuxtLink
           :to="backTo"

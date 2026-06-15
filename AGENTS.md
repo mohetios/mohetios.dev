@@ -585,9 +585,9 @@ Use Nuxt UI and Tailwind CSS. **Tailwind utilities are the default styling layer
 - Put layout, spacing, typography, color, borders, and responsive behavior in component `class` attributes using Tailwind utilities.
 - Use Nuxt UI component `ui` props and theme tokens (`text-sm`, `text-muted`, `text-highlighted`, `border-default`, etc.) before inventing custom class names.
 - Prefer logical properties (`ps-`, `pe-`, `ms-`, `me-`, `border-s`, `text-start`) for RTL-safe layouts.
-- Public pages use **site shell width** — CSS classes in `app/assets/css/main.css`, constants in `shared/constants/layout.ts`:
-  - `.site-shell` / `PUBLIC_SITE_SHELL_CLASS` — `72rem` + gutters (default layout, header, footer; Nuxt UI `--ui-container` matches this)
-  - `.article-reading-column` / `PUBLIC_ARTICLE_READING_CLASS` — centered article column (`46rem`)
+- Public pages use **site shell width** — CSS classes in `app/assets/css/main.css`:
+  - `.site-shell` — `72rem` + gutters (default layout, header, footer; Nuxt UI `--ui-container` matches this)
+  - `.article-reading-column` — centered article column (`46rem`)
   - Prose typography uses Tailwind `@tailwindcss/typography` (`prose`); public pages pass `max-w-none` when content should use the full shell
 - Do **not** put Tailwind width utilities in TS string constants; Tailwind may not scan them. Use these CSS classes.
 - Do not add page-level `max-w-*` except `max-w-none` on prose and small UI widgets.

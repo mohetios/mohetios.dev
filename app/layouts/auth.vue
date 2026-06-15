@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { PUBLIC_SITE_SHELL_CLASS } from '~~/shared/constants/layout'
-
 const { t } = useI18n()
 
 const features = [
@@ -24,7 +22,7 @@ const pageCopy = computed(() => ({
   <div class="flex min-h-svh flex-col">
     <SiteHeader />
 
-    <main :class="[PUBLIC_SITE_SHELL_CLASS, 'flex flex-1 items-center py-10 sm:py-12']">
+    <main class="site-shell flex flex-1 items-center py-10 sm:py-12">
       <div class="w-full">
         <div
           class="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-16 xl:gap-20"

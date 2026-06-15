@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { PUBLIC_SITE_SHELL_CLASS } from '~~/shared/constants/layout'
-
 interface FooterLink {
   label: string
   to: string
@@ -73,7 +71,7 @@ const footerSections = computed<FooterSection[]>(() => [
   <footer
     class="relative overflow-hidden bg-(--color-surface) text-highlighted after:pointer-events-none after:absolute after:inset-0 after:opacity-74 after:content-[''] after:bg-[linear-gradient(180deg,var(--color-surface)_0%,transparent_44%),radial-gradient(circle_at_12%_88%,color-mix(in_oklab,var(--color-pattern-green)_64%,transparent)_0,transparent_34%),radial-gradient(circle_at_88%_82%,color-mix(in_oklab,var(--color-pattern-blue)_62%,transparent)_0,transparent_32%)] dark:after:opacity-[0.42]"
   >
-    <div :class="[PUBLIC_SITE_SHELL_CLASS, 'relative z-[2]']">
+    <div class="site-shell relative z-[2]">
       <div
         class="grid gap-12 pt-16 pb-[3.25rem] md:grid-cols-[minmax(0,1.1fr)_minmax(20rem,0.9fr)] md:items-start"
       >
