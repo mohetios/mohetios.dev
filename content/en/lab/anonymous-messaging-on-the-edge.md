@@ -1,346 +1,253 @@
 ---
-title: Anonymous Messaging on the Edge  
-description: Notes from Nekonymous on building a responsible anonymous Telegram relay with Cloudflare Workers, Durable Objects, encrypted storage, and abuse controls.  
-date: 2024-08-19  
-updated: 2026-06-12  
-status: Refining  
+title: "Lab Note: Nekonymous as a Small Anonymous Relay"
+description: A technical and product note on Nekonymous, a Persian-first hosted anonymous Telegram relay built with Cloudflare Workers, KV, SQLite-backed Durable Objects, and an honest privacy boundary.
+date: 2024-08-19
+updated: 2026-06-15
+status: Refining
 tags:
-- cloudflare-workers 
-- privacy
-- telegram
-- durable-objects
-- encryption
-- edge-architecture
-- product-ethics
+  - cloudflare-workers
+  - privacy
+  - telegram
+  - durable-objects
+  - encryption
+  - edge-architecture
+  - product-ethics
 ---
 
+## Question
 
-Anonymous messaging is easy to explain and difficult to design responsibly.
+How can I build a small anonymous messaging tool without pretending it solves every privacy problem?
 
-The product shape is familiar: one person receives a private link, another person opens it, sends a message, and the message reaches the recipient without exposing the sender’s Telegram username.
+That was the useful question behind Nekonymous.
 
-That sounds simple.
+Not: how do I make a Telegram bot?
 
-The real system begins after that first message.
+Not: how do I make the strongest possible security claim?
 
-How do replies work?  
-How do blocks work?  
-How do you prevent self-messages?  
-How do you keep enough state to route a conversation without turning anonymity into a tracking machine?  
-How do you explain the privacy boundary honestly?
+Not: how do I build a full messaging platform?
 
-Nekonymous is my attempt to explore those questions as a small, practical, edge-native product.
+The sharper question is smaller and more practical: can a hosted relay reduce user-visible identity leakage, keep message bodies out of plaintext storage, and still stay simple enough to operate?
 
-Project repository:
+Nekonymous is my current answer to that question.
 
+Project references:
+
+- [Nekonymous project page](/projects/nekonymous)
 - [mehotkhan/Nekonymous](https://github.com/mehotkhan/Nekonymous)
-    
 
-## The Product Shape
+## Context
 
-Nekonymous is a Persian-first anonymous messaging bot for Telegram.
+Anonymous messaging has a familiar product shape.
 
-A user starts the bot and receives a personal link. Anyone who opens that link can send a message to the owner of the link. The recipient reads the message from their bot inbox and can reply, block, unblock, or assign a private nickname to that sender.
+A person gets a link. Someone else opens it. A message arrives without a visible name.
 
-The important detail is that anonymity is not only one-way.
+That shape is easy to understand, especially in a Telegram-heavy user culture. The friction is low. People already know how to start a bot, send text, send media, and read replies. For a Persian-first project, Telegram is a practical surface.
 
-The first sender does not expose their Telegram username to the recipient. The recipient can reply without turning the conversation into a normal visible Telegram chat. Both sides interact through the bot, and the system routes the conversation using internal references rather than visible identities.
+But anonymous messaging also carries risk.
 
-That is the product promise.
+Distance can help someone speak honestly. The same distance can help someone behave badly. The system needs recipient controls, block flows, pause mode, rate limits, and a careful explanation of what anonymity means.
 
-But the engineering promise needs to be more careful.
+That last part matters most.
 
-This is not magic.  
-This is not “no state.”  
-This is not a claim that the system knows nothing.
+If the interface says "anonymous" and the architecture quietly depends on Telegram, an operator, runtime secrets, and routing metadata, then the product has to explain the boundary. Otherwise the UI teaches the wrong mental model.
 
-Anonymous messaging still needs identifiers. It needs a recipient link. It needs a way to connect a reply to the original sender. It needs a way to know whether the recipient blocked that sender. It needs callback references for inline actions. It needs enough metadata to keep the interaction useful and safe.
+## Product Boundary
 
-The privacy goal is not to remove all state.
+Nekonymous is a social/privacy tool, not only a bot.
 
-The goal is to keep state scoped, encrypted where appropriate, short-lived where possible, and separated from unnecessary identity.
+The bot is the interface. The product is the relay.
 
-## The Honest Privacy Boundary
+Each user gets a personal Telegram deep link. A sender opens that link and writes a message. The recipient reads pending messages from `/inbox`. The recipient can reply through the bot, block or unblock the sender, pause new link-based messages, and add a private nickname for repeat senders.
+
+The system deliberately stops before becoming several other things:
+
+Not a social network.
+
+Not a helpdesk.
+
+Not a full encrypted messenger.
+
+Not a moderation platform.
+
+Not a complex app with a separate frontend.
+
+That boundary keeps the implementation honest. It also makes the abuse and privacy questions easier to review because the state surface stays small.
+
+## Privacy Boundary
 
 Nekonymous is a hosted anonymous relay.
 
-That sentence matters.
+It is not end-to-end encrypted.
 
-The recipient does not see the sender’s Telegram username. The sender does not need to reveal themselves to start a conversation. Message bodies are encrypted at rest inside the application storage. Inline actions use opaque references instead of visible sender IDs.
+The bot protects against one important product-level leak: senders and recipients do not see each other's Telegram username through the normal bot UI. Message bodies are encrypted before they are stored in KV or Durable Object storage. A storage-only attacker with access to KV and DO rows, but without `APP_SECURE_KEY`, cannot decrypt message bodies. After `/inbox` delivery, the plaintext payload is cleared from KV. Only encrypted connection metadata remains so reply, block, and nickname callbacks can continue to work.
 
-But this is not full end-to-end encryption.
+That is useful.
 
-The operator controls the infrastructure, the bot token, and the application secret. With that access, the operator can map internal records and decrypt stored payloads. Telegram itself is also part of the transport boundary because this is a Telegram bot, not a custom encrypted messaging client.
+It is also limited.
 
-That is why the right promise is not:
+Telegram still receives the original messages because this is a Telegram bot. The Worker sees plaintext while processing a message. A Cloudflare or operator account that can change Worker code or access runtime secrets can compromise future messages. An operator with `APP_SECURE_KEY` plus stored `ticketId` and ciphertext can decrypt stored conversations. Some metadata is intentionally plaintext: user records, public link UUID maps, block lists, paused state, private nickname maps, and active draft state.
 
-> No one can ever know anything.
+For me, the honest security goal is:
 
-The right promise is closer to:
+> Minimize stored plaintext and user-visible identity leakage while keeping the relay fast and operationally simple.
 
-> The recipient does not receive the sender’s Telegram identity, message bodies are protected inside the application storage, and the system is designed to minimize unnecessary exposure while keeping enough state for replies, blocking, and safety.
+That sentence is less exciting than a vague privacy promise. It is also much safer.
 
-For an anonymous product, that distinction is not a detail. It is the product.
+## Architecture
 
-Overpromising privacy creates danger. Under-designing abuse controls creates danger too. Responsible anonymity sits between these two mistakes.
+The architecture is intentionally small.
 
-## Architecture as Product Design
+```txt
+Telegram
+  -> POST /bot on one Cloudflare Worker
+  -> Grammy handlers
+  -> KV for profiles, link maps, stats, encrypted blobs
+  -> one SQLite-backed Durable Object inbox per recipient
+  -> recipient reads through /inbox
+```
 
-Nekonymous runs as a Cloudflare Worker.
+The Worker is the only HTTP entry. It serves the small public pages and receives the Telegram webhook. Grammy handles `/start`, `/inbox`, settings, incoming messages, and inline callbacks. KV stores user records, UUID-to-user maps, approximate stats, and opaque AES-GCM ciphertext under `conversation:{conversationId}`. A recipient's inbox lives in a Durable Object addressed by their Telegram user ID.
 
-The Worker receives Telegram webhook updates, creates or loads the bot runtime, handles commands and callbacks, talks to KV for profile and encrypted conversation records, and talks to a Durable Object inbox for recipient-specific ordering.
+There is no SPA, no D1, no Queue, and no second Worker in Nekonymous.
 
-The core shape is compact:
+That is not because those tools are bad. D1 and Queues are useful in the right system. They are not needed for this one yet. Adding them would create more operational surface without improving the central relay promise.
 
-- one edge Worker for the HTTP surface and Telegram webhook
-    
-- Grammy for the Telegram bot runtime
-    
-- Cloudflare KV for user records, link maps, encrypted conversation blobs, and stats
-    
-- one SQLite Durable Object inbox per recipient
-    
-- Web Crypto with HKDF-SHA-256 and AES-256-GCM for message tickets and ciphertext
-    
-- Telegram inline callbacks for reply, block, unblock, and nickname actions
-    
+The main design rule is simple: each kind of state should live where its consistency needs make sense.
 
-This split is deliberate.
+User profile state can tolerate KV's eventual consistency. Inbox ordering cannot. Message bodies should be encrypted wherever they rest. Callback refs should be short, opaque, and scoped to the recipient's inbox.
 
-KV is useful for global reads, profile records, UUID-to-user maps, encrypted conversation blobs, and small counters. But KV is eventually consistent, so it is not the right place to depend on strict inbox ordering.
+## Why Durable Objects
 
-The Durable Object is the coordination point.
+The inbox is the one place where ordering and coordination matter.
 
-Each recipient gets a Durable Object instance keyed by their Telegram ID. That object owns the pending inbox queue. It serializes enqueue and delivery operations. It stores a small SQLite table of inbox entries with the reference, ticket ID, conversation ID, ciphertext while pending, delivery state, and creation time.
+KV is a bad authority for that. It is eventually consistent, and an inbox should not depend on racing full-record rewrites when two people send messages near the same time.
 
-This is the part I like most in the architecture: the storage model follows the product boundary.
+So Nekonymous uses one SQLite-backed Durable Object per recipient.
 
-User state lives in KV.  
-Inbox ordering lives in the recipient’s Durable Object.  
-Message content is encrypted.  
-Callback handles are short opaque references.  
-The recipient’s inbox is not treated as a global database problem.
+The object is addressed like this in the Worker:
 
-That makes the system easier to reason about.
+```txt
+INBOX_DO.idFromName(recipientTelegramId)
+```
+
+Inside that object, a small SQLite table stores inbox entries:
+
+| Field | Purpose |
+| --- | --- |
+| `ref` | short callback reference for reply, block, unblock, nickname |
+| `ticket_id` | random 256-bit ticket used as HKDF salt |
+| `conversation_id` | derived KV key suffix |
+| `ciphertext` | encrypted payload copy while pending |
+| `delivered` | pending or delivered state |
+| `created_at` | ordering and pruning |
+
+The inbox is capped at 50 rows. Before rejecting a new message, the DO prunes old delivered callback refs. If all 50 rows are still pending, the sender gets the inbox-full message and the newly written KV ciphertext is removed.
+
+That cap is product design as much as storage design. Anonymous systems need bounded failure modes.
+
+## Why KV
+
+KV is used where its shape fits.
+
+`user:{telegramId}` stores the user profile, display name, personal UUID, block list, pause state, private nickname map, and active draft. `userUUIDtoId:{uuid}` maps a public link token to the owner Telegram ID. `conversation:{conversationId}` stores opaque AES-GCM ciphertext as text, not JSON. Stats are stored as daily and running counters, and they are approximate.
+
+The approximate part is intentional. KV read-modify-write counters can lose increments under concurrency. For a public homepage counter, that is acceptable. For billing, audit, or exact product analytics, it would not be.
+
+This is the pattern:
+
+```txt
+KV: simple lookup records and encrypted blobs
+DO: recipient inbox ordering
+Worker: validation, crypto, Telegram routing
+```
+
+That is enough for the current product.
 
 ## Message Lifecycle
 
-A message starts when a visitor opens someone’s link.
+The lifecycle is short, but each step has a reason.
 
-The bot validates the link token, resolves the owner, checks whether the visitor is not messaging themselves, checks whether they are blocked, checks whether the recipient has paused new messages, and then opens a draft conversation.
+1. A user runs `/start` and receives a personal Telegram link.
+2. A sender opens `/start {uuid}` from that link.
+3. The system validates the link shape, resolves the owner, rejects self-message attempts, checks block status, and checks paused state.
+4. The sender composes a message.
+5. Server-side checks run again before accepting the message.
+6. Unsupported payloads are rejected before encryption.
+7. A conversation object is created with connection metadata and payload.
+8. The system creates a fresh random 256-bit `ticketId`.
+9. HKDF derives the AES key and `conversationId` from `APP_SECURE_KEY` and the ticket.
+10. AES-GCM encrypts the conversation JSON with a random 12-byte IV.
+11. The ciphertext is saved to KV and copied into the recipient Durable Object inbox.
+12. The recipient sees a pending count and later runs `/inbox`.
+13. Pending DO rows are decrypted and delivered through Telegram.
+14. The sender receives a best-effort seen notification.
+15. KV is re-encrypted with the same connection metadata but an empty payload.
+16. The DO row is marked delivered and its ciphertext is set to `NULL`.
+17. Reply, block, unblock, and nickname callbacks continue using `ref`, `ticketId`, and `conversationId`.
 
-When the visitor sends text or media, the app builds a conversation payload and encrypts it. The encrypted blob is written to KV under a derived conversation key. A copy of the ciphertext is also inserted into the recipient’s Durable Object inbox so it can be delivered later in order.
+The important detail is step 15.
 
-If the recipient’s inbox is full, the system rejects the message and deletes the KV blob to avoid orphaned encrypted records.
+After delivery, the system still needs routing metadata. It does not need the message body in storage. Separating payload from connection metadata keeps the relay useful without keeping more plaintext-equivalent data than needed.
 
-When the recipient runs `/inbox`, the Durable Object returns pending entries. The Worker decrypts each pending message, sends it to the recipient through Telegram, then changes the storage state:
+## Security Decisions
 
-- the KV record is re-encrypted with the message payload cleared
-    
-- the Durable Object row is marked as delivered
-    
-- the ciphertext copy in the Durable Object is cleared
-    
-- the callback reference remains so reply/block/nickname actions can still resolve the conversation
-    
+The crypto design is ticket-based.
 
-That lifecycle is important.
+Each accepted message gets a fresh random ticket generated with `crypto.getRandomValues(32)`. The ticket is not a password. It is used as the HKDF salt with `APP_SECURE_KEY` as input key material.
 
-A delivered message should not need to keep its body inside multiple stores forever. But the system still needs enough connection metadata to let the recipient reply, block, or label the sender later.
+HKDF info labels separate the derived values:
 
-So the design separates payload from routing metadata.
+| Derived value | Label |
+| --- | --- |
+| AES key | `nekonymous:aes:v1` |
+| Conversation ID | `nekonymous:conversation:v1` |
+| Sender alias | `nekonymous:label:v1:{senderId}` |
 
-That is the kind of small privacy decision that matters in anonymous systems.
+AES-GCM uses a 12-byte random IV per encryption. The stored ciphertext format is:
 
-## Controls Are Core Product Logic
+```txt
+{iv_base64url}.{ciphertext_base64url}
+```
 
-Anonymous messaging without abuse controls is not a privacy product. It is a liability.
+`APP_SECURE_KEY` must have at least 32 bytes of entropy in production. The implementation uses the Web Crypto API, not Node `crypto`, which keeps it compatible with Cloudflare Workers.
 
-Nekonymous treats controls as part of the core product, not as admin features to add later.
+Callback authorization is also part of the security model. When a user clicks reply, block, unblock, or nickname, the handler resolves the short `ref` in that user's inbox DO, loads the encrypted conversation from KV, decrypts it with the stored ticket, and verifies that `conversation.connection.to` matches the current Telegram user.
 
-The current control model includes:
+The callback is not trusted just because the button exists.
 
-- self-message prevention
-    
-- recipient block lists
-    
-- unblock flow
-    
-- pause/resume inbox setting
-    
-- per-user send/link rate limits
-    
-- inbox queue cap
-    
-- webhook secret verification
-    
-- callback authorization
-    
-- account deletion
-    
-- destructive operator cleanup
-    
-- no logging of secrets, ticket IDs, decrypted payloads, or tokens
-    
-- private nicknames that live only on the recipient profile
-    
+## Tradeoffs
 
-Some of these controls are technical. Some are social. Some are both.
+The system keeps some tradeoffs on purpose.
 
-Blocking is not just a database update. It gives the recipient agency.
+KV profile updates are read-modify-write and eventually consistent. For this small bot, that is acceptable. If settings and block edits became highly concurrent, a stronger authority would be needed.
 
-Pause mode is not just a setting. It lets the recipient stop new link-based messages without breaking existing reply threads.
+Stats are approximate. They are public product counters, not exact accounting.
 
-Callback authorization is not just security hygiene. It prevents someone from acting on a reply/block reference that does not belong to them.
+Encrypted connection metadata remains after delivery so callbacks can work. Removing it would require a different reply/block/nickname index.
 
-The lesson is simple: in an anonymous product, abuse controls are not moderation polish. They are part of the privacy model.
+Old delivered callback refs can expire when the 50-row inbox cap prunes them. That is acceptable because the inbox needs a bounded shape.
 
-## The Metadata Problem
+Telegram remains part of the trust boundary. This cannot be fixed inside a Telegram bot.
 
-The hardest design question is not whether the system should store data. It must store some data.
+Operator trust remains part of the model. This cannot be honestly described away.
 
-The harder question is: what data deserves to exist?
+## What I Would Improve Next
 
-There are different classes of state:
+The next improvements are practical, not architectural theater.
 
-- public link token
-    
-- Telegram user ID
-    
-- recipient profile
-    
-- block list
-    
-- current draft
-    
-- encrypted conversation blob
-    
-- pending inbox entry
-    
-- callback reference
-    
-- reply connection metadata
-    
-- nickname alias
-    
-- rate-limit timestamp
-    
-- aggregate stats
-    
+- Make the bot username fully configuration-driven everywhere.
+- Finish production social metadata for the public pages.
+- Add better abuse controls without collecting unnecessary identity.
+- Write self-hosting notes that explain `APP_SECURE_KEY`, Telegram webhook setup, KV, and Durable Object migrations.
+- Improve observability without logging message bodies, ticket IDs, Telegram tokens, or runtime secrets.
+- Consider D1 or a stronger DO-based data model only if usage grows enough to justify it.
 
-Each one needs a reason.
+The system should earn complexity before it receives it.
 
-Some state exists to route messages.  
-Some exists to protect the recipient.  
-Some exists to prevent abuse.  
-Some exists only for the product experience.  
-Some should expire.  
-Some should be cleared after delivery.  
-Some should never be logged.
+## Closing
 
-This project became interesting when I stopped thinking about storage as implementation detail and started thinking about it as a set of product promises.
+Anonymous tools should be designed with explicit boundaries, not vague promises.
 
-Every stored field says something about the system.
+For Nekonymous, that means the privacy model is part of the product. The architecture is small because the claim is small. The storage model is bounded because the risk is real. The copy should say what the system protects and what it does not.
 
-## Why The Edge Fits
-
-Nekonymous is small, but it has a shape that fits edge infrastructure well.
-
-Telegram webhook requests need a fast acknowledgement. The app should not block the hot path on unnecessary work. The Worker can respond to Telegram quickly, while non-critical work like stats updates can be deferred.
-
-Recipient inbox ordering needs a stateful coordination point, but not a full server or central database for every operation. Durable Objects provide a natural model: one actor-like object per recipient inbox.
-
-Message content needs storage, but not every read needs strong ordering. KV works for user records, encrypted blobs, and read-heavy lookup paths, while the Durable Object handles the serialized queue.
-
-This is a good example of how edge architecture should not mean “put everything everywhere.”
-
-It means choosing where each kind of state belongs.
-
-## What I Learned
-
-The main lesson from Nekonymous is that privacy is not a single feature.
-
-It is a chain of small decisions:
-
-- what the recipient can see
-    
-- what the sender can assume
-    
-- what the operator can technically access
-    
-- what is encrypted
-    
-- what is only pseudonymous
-    
-- what is cleared after delivery
-    
-- what is needed for safety
-    
-- what is never logged
-    
-- what is explained to users without exaggeration
-    
-
-Anonymous messaging makes those decisions visible.
-
-It forces the architecture and the ethics of the interaction to be designed together.
-
-That is why this project belongs in the lab. It is not only a Telegram bot. It is a small study in product boundaries, storage design, abuse control, and honest privacy language.
-
-## Open Questions
-
-There are still important questions to keep refining:
-
-- How long should reply metadata live?
-    
-- Should delivered callback references expire after a fixed window?
-    
-- Should encrypted KV conversation records use explicit TTLs?
-    
-- How should abuse reports work without exposing more identity than necessary?
-    
-- What should the recipient know about repeated anonymous senders?
-    
-- Should nicknames remain purely local, or should they support export/delete tools?
-    
-- What should be deleted immediately when an account is removed?
-    
-- How should the public privacy page explain hosted relay limitations clearly?
-    
-- How should media messages be handled differently from text?
-    
-- Where is the right line between safety metadata and unnecessary retention?
-    
-
-These questions are not secondary.
-
-For this kind of product, they are the real design work.
-
-## Next Checklist
-
--  Rewrite the public privacy page with a clear “hosted relay, not full E2E” explanation.
-    
--  Add a diagram for send, inbox delivery, reply, block, and nickname flows.
-    
--  Document which fields are identity, pseudonym, routing metadata, ciphertext, or safety state.
-    
--  Add lifecycle notes for every stored key and Durable Object row.
-    
--  Decide TTL rules for delivered conversations and callback references.
-    
--  Add a safer abuse-report flow without exposing unnecessary sender identity.
-    
--  Add tests around self-message prevention, block/unblock, pause mode, inbox cap, and callback authorization.
-    
--  Review media payload handling and retention separately from text messages.
-    
--  Improve README language so privacy guarantees and product promises are separated.
-    
--  Publish a short technical case study on using Durable Objects as recipient-scoped inbox actors.
-    
-
-Nekonymous started as a small anonymous messaging bot.
-
-The deeper version is more interesting:
-
-a responsible anonymous relay, built on the edge, where privacy, routing, storage, and abuse controls have to be designed as one system.
+That is the lesson I want to keep from this project.

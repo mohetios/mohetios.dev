@@ -1,75 +1,125 @@
 ---
-title: نکونیموس
-description: یادداشت پروژه‌ای درباره Nekonymous؛ تجربه پیام‌رسانی anonymous و Persian-first روی Telegram با Cloudflare Workers و Durable Objects.
+title: نِکونیموس
+description: نکونیموس یک ربات پیام ناشناس فارسی‌محور برای تلگرام است که با Cloudflare Workers، KV و Durable Objects ساخته شده و مدل حریم خصوصی آن با مرزهای روشن توضیح داده می‌شود.
 date: 2024-08-19
-updated: 2025-04-29
-status: پروتوتایپ
+updated: 2026-06-15
+status: نسخه MVP
 tags:
-  - cloudflare-workers
   - telegram
+  - cloudflare-workers
   - privacy
-  - durable-objects
   - anonymous-messaging
+  - durable-objects
+  - serverless
 repo: https://github.com/mehotkhan/Nekonymous
 website: https://nekonymous.alizemani.ir/
 ---
 
-Nekonymous یک تجربه پیام‌رسانی anonymous و Persian-first برای Telegram است. کاربر bot را start می‌کند، یک link اختصاصی می‌گیرد، و آن را با دیگران share می‌کند. کسانی که link را باز می‌کنند می‌توانند بدون آشکار شدن identity تلگرامی‌شان برای recipient پیام بفرستند.
+نِکونیموس یک bot پیام ناشناس فارسی‌محور برای Telegram است.
 
-جذابیت پروژه فقط ناشناس بودن پیام‌ها نیست. بخش سخت‌تر، مرز محصولی anonymity است: reply، block، abuse control، routing state، encryption at rest، و اینکه recipient دقیقاً چه چیزی باید بداند.
+کاربر bot را start می‌کند، یک لینک شخصی تلگرامی می‌گیرد، و آن را هر جایی که می‌خواهد منتشر می‌کند. کسی که لینک را باز می‌کند می‌تواند بدون دیدن username تلگرام صاحب لینک، برای او پیام بفرستد. صاحب لینک پیام‌ها را از `/inbox` می‌خواند، از داخل خود bot پاسخ می‌دهد، اگر لازم شد فرستنده را block می‌کند، دریافت پیام‌های جدید را pause می‌کند، و برای فرستنده‌های تکراری nickname خصوصی می‌گذارد.
+
+این شکل قابل دیدن محصول است.
+
+بخش مهم‌تر، مرزی است که دور همین محصول کشیده می‌شود. پیام ناشناس می‌تواند مفید باشد، چون برای حرف‌هایی که در یک چت معمولی گفته نمی‌شوند فضا درست می‌کند. همان‌قدر هم می‌تواند خطرناک باشد، چون فاصله و ناشناس‌بودن ممکن است سوءاستفاده را آسان‌تر کند. نِکونیموس را به‌عنوان یک ابزار کوچک اجتماعی و privacy ساختم؛ ابزاری که مرزهایش را روشن می‌گوید و با ادعای مبهم امنیتی خودش را بزرگ‌تر از چیزی که هست نشان نمی‌دهد.
 
 Repository:
 
 - [mehotkhan/Nekonymous](https://github.com/mehotkhan/Nekonymous)
 - [nekonymous.alizemani.ir](https://nekonymous.alizemani.ir/)
 
-## چرا وجود دارد
+یادداشت‌های مرتبط:
 
-Anonymous messaging از بیرون ساده به نظر می‌رسد.
+- [یادداشت Lab درباره پیام ناشناس روی edge](/fa/lab/anonymous-messaging-on-the-edge)
+- [پیش‌نویس مقاله فارسی: چرا Nekonymous را ساختم](/fa/blog/why-i-built-nekonymous)
 
-یک نفر می‌فرستد.  
-یک نفر می‌گیرد.  
-نامی نشان داده نمی‌شود.
+## معرفی کوتاه
 
-اما یک relay واقعی باید سؤال‌های دقیق‌تری را جواب بدهد. recipient می‌تواند reply کند؟ sender قابل block شدن است؟ اگر link سوءاستفاده شد چه می‌شود؟ کدام identifierها برای routing لازم‌اند و کدام‌ها نباید وارد سطح محصول شوند؟
+از بیرون، ابزار پیام ناشناس ساده به نظر می‌رسد.
 
-Nekonymous راه کوچکی بود برای بررسی این سؤال‌ها در یک سطح آشنا برای کاربر ایرانی: Telegram.
+یک نفر لینک می‌گیرد.
 
-## چه چیزی را بررسی می‌کند
+یک نفر پیام می‌فرستد.
 
-پروژه anonymous messaging را به‌عنوان یک hosted relay بررسی می‌کند، نه یک سیستم کامل end-to-end encrypted messaging.
+نامی نمایش داده نمی‌شود.
 
-این تفاوت مهم است. messageها می‌توانند در storage رمز شوند و worker می‌تواند با دقت آن‌ها را handle کند، اما سیستم همچنان باید Telegram webhook را پردازش کند، پیام‌ها را route کند، و state کافی برای قابل استفاده بودن bot نگه دارد. قول‌های privacy باید دقیق و صادق بمانند.
+اما محصول واقعی از همان‌جا شروع می‌شود. گیرنده چطور پاسخ بدهد بدون اینکه هویتش تبدیل به یک چت معمولی شود؟ اگر لینک شلوغ شد چه کند؟ block چطور باید کار کند؟ پیام‌های تکراری را چطور بشناسد، بدون اینکه هویت تلگرامی طرف مقابل را در UI ببیند؟ چه مقدار state برای routing لازم است، و کدام بخش‌ها نباید وارد سطح قابل مشاهده محصول شوند؟
 
-## چطور کار می‌کند
+نِکونیموس جواب کوچک من به همین سؤال‌هاست.
 
-پیاده‌سازی از Cloudflare Workers به‌عنوان edge runtime و Durable Objects برای state هماهنگ‌شده پیرامون user یا conversation استفاده می‌کند. Telegram webhook وارد Worker می‌شود، Worker traffic مورد انتظار را validate می‌کند، و flow bot تصمیم می‌گیرد link بسازد، پیام relay کند، reply را route کند، یا کنترل‌های recipient را اعمال کند.
+## چرا این پروژه را ساختم؟
 
-در سطح کلی، سیستم باید این چیزها را مدیریت کند:
+برای من مسئله فقط ساختن یک Telegram bot نبود. مسئله این بود که یک فضای کوچک برای ارتباط ناشناس بسازم که هم کاربردی باشد، هم درباره privacy اغراق نکند.
 
-- linkهای عمومی اختصاصی،
-- پیام‌های inbound anonymous،
-- flow پاسخ از سمت recipient،
-- block کردن sender،
-- محدودیت‌های abuse،
-- storage رمز‌شده پیام،
-- validation webhook.
+در جامعه فارسی، Telegram هنوز یک سطح ارتباطی آشنا و کم‌اصطکاک است. اگر کسی بخواهد سریع یک لینک بگذارد و پیام بگیرد، ساختن یک app جداگانه معمولاً بیش از حد سنگین است. bot تلگرام شروع خوبی می‌دهد، اما مرز اعتماد را هم عوض می‌کند: Telegram همچنان بخشی از مسیر است و نباید از این واقعیت فرار کرد.
 
-صفحه عمومی باید در همین سطح بماند. قانون‌های دقیق anti-abuse و جزئیات حساس پیاده‌سازی لازم نیست منتشر شوند.
+پس پروژه را به شکل یک hosted anonymous relay نگه داشتم. نه شبکه اجتماعی. نه helpdesk. نه پلتفرم کامل privacy. فقط یک رله پیام ناشناس با معماری کوچک، کنترل‌های مشخص، و ادعای محدود.
 
-## چه چیزی یاد گرفتم
+## امکانات اصلی
 
-قابلیت‌های privacy پیش از اینکه فنی باشند، محصولی‌اند.
+- لینک شخصی Telegram برای هر کاربر.
+- دریافت پیام ناشناس از طریق bot.
+- خواندن پیام‌های pending با `/inbox`.
+- پاسخ ناشناس در هر دو جهت.
+- block و unblock برای گیرنده.
+- pause برای متوقف کردن پیام‌های جدید لینک‌محور.
+- nickname خصوصی برای فرستنده‌های تکراری.
+- ذخیره‌سازی رمز‌شده payload پیام‌ها.
 
-اگر UI به کاربر وعده‌ای قوی‌تر از چیزی بدهد که سیستم واقعاً می‌تواند ثابت کند، محصول گمراه‌کننده می‌شود. Nekonymous یادآوری خوبی است که guaranteeها باید دقیق نام‌گذاری شوند: anonymous بودن برای recipient همان قول anonymous بودن برای همه systemها نیست.
+## معماری در یک نگاه
+
+شکل سیستم عمدی کوچک نگه داشته شده:
+
+```txt
+Telegram
+  -> Cloudflare Worker
+  -> Grammy bot handlers
+  -> Cloudflare KV
+  -> Durable Object inbox + SQLite برای هر گیرنده
+```
+
+یک Cloudflare Worker کل ورودی HTTP و webhook تلگرام را مدیریت می‌کند. Grammy فرمان‌ها و callbackها را handle می‌کند. KV برای profile کاربرها، map لینک‌های UUID، stats تقریبی، و blobهای رمزنگاری‌شده conversation استفاده می‌شود. برای inbox، هر گیرنده یک Durable Object جدا دارد که روی SQLite یک جدول کوچک از پیام‌های pending و referenceهای callback نگه می‌دارد.
+
+در این پروژه SPA وجود ندارد. D1 وجود ندارد. Queue وجود ندارد. Worker دوم هم وجود ندارد. این‌ها حذف تصادفی نیستند. برای این مرحله، کوچک بودن معماری خودش یک تصمیم امنیتی و عملیاتی است: مسیر webhook ساده‌تر می‌ماند، storage boundaryها قابل توضیح‌تر می‌شوند، و review کردن رفتار سیستم راحت‌تر است.
+
+## مدل حریم خصوصی
+
+نِکونیموس یک رله پیام ناشناس میزبانی‌شده است. end-to-end encrypted نیست.
+
+در UI خود bot، فرستنده و گیرنده username تلگرام همدیگر را نمی‌بینند. بدنه پیام قبل از ذخیره‌شدن در KV یا Durable Object storage رمزنگاری می‌شود. مهاجمِ فقط دارای دسترسی به storage، اگر `APP_SECURE_KEY` را نداشته باشد، نمی‌تواند بدنه پیام‌ها را decrypt کند. بعد از تحویل `/inbox`، payload پیام از KV پاک می‌شود و فقط metadata رمزنگاری‌شده connection باقی می‌ماند تا reply، block، و nickname هنوز بتوانند کار کنند.
+
+محدودیت‌ها هم باید به همان وضوح گفته شوند.
+
+Telegram پیام اولیه را دریافت می‌کند، چون این پروژه یک Telegram bot است. Worker هنگام پردازش پیام، plaintext را می‌بیند. حساب Cloudflare یا اپراتوری که بتواند کد Worker را تغییر دهد یا به secretهای runtime برسد، می‌تواند پیام‌های آینده را به خطر بیندازد. اپراتوری که `APP_SECURE_KEY` و `ticketId` و ciphertext ذخیره‌شده را با هم داشته باشد، از نظر فنی می‌تواند conversation ذخیره‌شده را decrypt کند. بخشی از metadata هم عمداً plaintext است: user recordها، map لینک UUID، block list، وضعیت pause، nickname map خصوصی، و draft فعال.
+
+هدف صادقانه امنیتی این است:
+
+> کم کردن plaintext ذخیره‌شده و کاهش نشت هویت قابل مشاهده برای کاربر، بدون سنگین کردن relay و بدون پیچیده کردن عملیات.
+
+## تصمیم‌های مهم
+
+معماری Worker-first انتخاب شد چون webhook تلگرام باید سریع و قابل پیش‌بینی handle شود.
+
+KV برای recordهای ساده و blobهای رمزنگاری‌شده کافی است، چون profile، link map، و stats تقریبی به ordering قوی inbox نیاز ندارند.
+
+Durable Object برای inbox هر گیرنده انتخاب شد چون ordering پیام‌ها، محدودیت ظرفیت، و delivery به یک نقطه هماهنگی قوی‌تر از KV نیاز دارند.
+
+payload پیام‌ها با Web Crypto، HKDF-SHA-256، و AES-256-GCM در storage رمزنگاری می‌شوند. برای هر پیام پذیرفته‌شده یک ticket ID تصادفی ۲۵۶ بیتی ساخته می‌شود. labelهای جدا در HKDF برای AES key، conversation ID، و sender alias استفاده می‌شوند.
+
+inbox سقف ۵۰ row دارد. قبل از رد کردن پیام جدید، referenceهای delivered قدیمی prune می‌شوند. اگر هر ۵۰ row هنوز pending باشند، فرستنده پیام inbox-full می‌گیرد و ciphertext تازه‌نوشته‌شده از KV حذف می‌شود.
+
+copy محصول هم فارسی‌محور مانده، چون مخاطب اصلی همین سطح استفاده است؛ نه یک SaaS عمومی و بی‌چهره.
 
 ## وضعیت فعلی
 
-پروتوتایپ. پروژه به‌عنوان تجربه‌ای در privacy، bot UX، و edge state ارزش دارد، اما نباید مثل یک secure messaging platform کامل معرفی شود.
+نِکونیموس یک MVP تمیز است. جریان اصلی کار می‌کند: لینک شخصی، ارسال ناشناس، inbox، پاسخ ناشناس، block، pause، nickname خصوصی، ذخیره‌سازی رمز‌شده، و reset حساب.
 
-## قدم‌های بعدی
+این پروژه نباید مثل یک secure messaging platform کامل معرفی شود. ارزش دقیق‌ترش این است: یک anonymous relay کوچک و privacy-aware با مرزهای روشن و معماری edge ساده.
 
-- [ ] مستند کردن boundaryهای Durable Object در سطح عمومی و غیرحساس.
-- [ ] نوشتن checklist کوتاه abuse-control برای anonymous messaging.
-- [ ] اضافه کردن یادداشت deploy برای Telegram webhook روی Cloudflare Workers.
-- [ ] تصمیم درباره اینکه کدام جزئیات encryption به lab note جدا تبدیل شود.
+## این پروژه چه چیزی از کار من نشان می‌دهد؟
+
+نِکونیموس بیشتر از تعداد featureها، product thinking را نشان می‌دهد.
+
+نشان می‌دهد چطور می‌شود یک وعده privacy را دقیق نام‌گذاری کرد، یک سیستم edge را کوچک نگه داشت، state eventually consistent را از inbox ordered جدا کرد، در Worker runtime از Web Crypto استفاده کرد، و درباره محدودیت‌های امنیتی بدون مبهم‌گویی حرف زد.
+
+برای من بخش مهم همین است: پروژه بزرگ‌تر از چیزی که هست نشان داده نشود، اما تصمیم‌های پشت آن آن‌قدر روشن باشند که بتوان بررسی‌شان کرد.
