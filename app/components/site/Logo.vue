@@ -83,7 +83,7 @@ const tldClass = computed(() => {
 
 const taglineClass = computed(() => {
   if (props.size === 'footer') {
-    return 'mt-0.5 block max-w-none text-[0.875rem] font-[450] leading-[1.35] tracking-[-0.01em] text-muted rtl:font-fa rtl:leading-[1.45] rtl:tracking-normal'
+    return 'mt-0.5 block max-w-none text-ui-sm font-[450] leading-(--text-ui-sm--line-height) tracking-[-0.01em] text-muted rtl:font-fa rtl:tracking-normal'
   }
 
   if (props.size === 'dashboard') {

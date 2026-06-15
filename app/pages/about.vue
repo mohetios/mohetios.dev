@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { PUBLIC_ARTICLE_READING_CLASS } from '~~/shared/constants/layout'
+
 const { locale, t } = useI18n()
 const path = computed(() => `/${locale.value}/about`)
 const legacyPath = computed(() => `/${locale.value}/pages/about`)
@@ -29,13 +31,13 @@ useMohetiosSeo({
     </UPageHeader>
 
     <UPageBody>
-      <ContentCodeEnhancer />
-      <ContentMermaidEnhancer />
-      <ContentHtml :html="page.content" class="prose-mohetios max-w-none" />
+      <div :class="[PUBLIC_ARTICLE_READING_CLASS, 'flex flex-col gap-10']">
+        <ContentCodeEnhancer />
+        <ContentMermaidEnhancer />
+        <ContentHtml :html="page.content" class="prose-mohetios max-w-none" />
 
-      <section class="mt-10">
         <NewsletterSubscribe source="about" />
-      </section>
+      </div>
     </UPageBody>
   </UPage>
 </template>

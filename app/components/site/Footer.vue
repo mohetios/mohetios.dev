@@ -94,7 +94,7 @@ const footerSections = computed<FooterSection[]>(() => [
             <SiteLogo show-tagline size="footer" />
           </NuxtLink>
 
-          <p class="mt-6 text-[0.98rem] leading-[1.8] text-pretty text-(--color-muted)">
+          <p class="mt-6 text-pretty text-reader-base leading-(--text-reader-base--line-height) text-(--color-muted)">
             {{ t('site.description') }}
           </p>
 
@@ -114,7 +114,7 @@ const footerSections = computed<FooterSection[]>(() => [
         >
           <section v-for="section in footerSections" :key="section.title">
             <h2
-              class="text-xs font-bold tracking-[0.12em] text-(--color-text) uppercase rtl:tracking-normal"
+              class="text-ui-xs font-bold tracking-[0.12em] text-(--color-text) uppercase rtl:tracking-normal"
             >
               {{ section.title }}
             </h2>
@@ -122,7 +122,7 @@ const footerSections = computed<FooterSection[]>(() => [
               <li v-for="link in section.links" :key="link.to">
                 <NuxtLink
                   :to="link.to"
-                  class="inline-flex items-center gap-[0.45rem] text-[0.925rem] font-medium text-(--color-muted) no-underline transition-[color,transform] duration-[160ms] hover:-translate-y-px hover:text-(--color-primary) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-primary)"
+                  class="inline-flex items-center gap-[0.45rem] text-ui-base font-medium leading-(--text-ui-base--line-height) text-(--color-muted) no-underline transition-[color,transform] duration-[160ms] hover:-translate-y-px hover:text-(--color-primary) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-primary)"
                   :target="link.external ? '_blank' : undefined"
                   :rel="link.external ? 'noopener noreferrer' : undefined"
                 >
@@ -137,7 +137,7 @@ const footerSections = computed<FooterSection[]>(() => [
       </div>
 
       <div
-        class="flex flex-col justify-between gap-4 border-t border-default py-5 pb-8 text-[0.875rem] text-(--color-muted) sm:flex-row"
+        class="flex flex-col justify-between gap-4 border-t border-default py-5 pb-8 text-ui-sm leading-(--text-ui-sm--line-height) text-(--color-muted) sm:flex-row"
       >
         <p>{{ t('site.footer') }}</p>
         <p>© {{ currentYear }} {{ t('site.name') }}</p>

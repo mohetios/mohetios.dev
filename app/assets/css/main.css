@@ -68,10 +68,19 @@
   --ui-text-toned: color-mix(in oklab, var(--color-text) 78%, var(--color-muted));
   --ui-text-highlighted: var(--color-text);
 
-  --mohetios-reading-width: 56rem;
   --mohetios-site-width: 72rem;
-  --mohetios-reading-size: var(--text-reader-base);
-  --mohetios-reading-leading: var(--text-reader-base--line-height);
+  --mohetios-reading-width: 46rem;
+  --mohetios-article-wide-width: 64rem;
+
+  /* Persian: multiply EN type tokens by this on html[lang='fa'] / dir=rtl. */
+  --mohetios-fa-type-scale: 1.11;
+
+  --article-font-size-en: clamp(1.0625rem, 0.25vw + 1rem, 1.125rem);
+  --article-line-height-en: 1.75;
+  --article-line-height-fa: 1.9;
+
+  --mohetios-reading-size: var(--article-font-size-en);
+  --mohetios-reading-leading: var(--article-line-height-en);
   --mohetios-reading-tracking: -0.003em;
 
   --mohetios-heading-leading: 1.15;
@@ -117,12 +126,6 @@
   --ui-text-highlighted: var(--color-text);
 }
 
-@media (min-width: 768px) {
-  :root {
-    --mohetios-reading-size: 1.125rem;
-  }
-}
-
 html,
 body,
 #__nuxt {
@@ -157,12 +160,62 @@ pre {
 
 html[lang='fa'],
 html[dir='rtl'] {
-  --mohetios-reading-leading: 1.95;
+  /*
+   * Persian type scale — EN @theme tokens × --mohetios-fa-type-scale (1.11).
+   * One knob for UI, reader, code, article prose, and html base size.
+   */
+  --text-ui-xs: calc(0.75rem * var(--mohetios-fa-type-scale));
+  --text-ui-xs--line-height: calc(1rem * var(--mohetios-fa-type-scale));
+  --text-ui-sm: calc(0.8125rem * var(--mohetios-fa-type-scale));
+  --text-ui-sm--line-height: calc(1.25rem * var(--mohetios-fa-type-scale));
+  --text-ui-base: calc(0.875rem * var(--mohetios-fa-type-scale));
+  --text-ui-base--line-height: calc(1.375rem * var(--mohetios-fa-type-scale));
+  --text-ui-lg: calc(1rem * var(--mohetios-fa-type-scale));
+  --text-ui-lg--line-height: calc(1.5rem * var(--mohetios-fa-type-scale));
+
+  --text-reader-sm: calc(0.9375rem * var(--mohetios-fa-type-scale));
+  --text-reader-sm--line-height: 1.8;
+  --text-reader-base: calc(1rem * var(--mohetios-fa-type-scale));
+  --text-reader-base--line-height: 1.85;
+  --text-reader-lg: calc(1.125rem * var(--mohetios-fa-type-scale));
+  --text-reader-lg--line-height: 1.9;
+  --text-reader-lead: calc(1.25rem * var(--mohetios-fa-type-scale));
+  --text-reader-lead--line-height: 1.85;
+
+  --text-code-sm: calc(0.8125rem * var(--mohetios-fa-type-scale));
+  --text-code-sm--line-height: 1.8;
+  --text-code-base: calc(0.875rem * var(--mohetios-fa-type-scale));
+  --text-code-base--line-height: 1.85;
+
+  --article-font-size-fa: clamp(
+    calc(1.0625rem * var(--mohetios-fa-type-scale)),
+    calc((0.25vw + 1rem) * var(--mohetios-fa-type-scale)),
+    calc(1.125rem * var(--mohetios-fa-type-scale))
+  );
+  --ui-font-size-fa: calc(1rem * var(--mohetios-fa-type-scale));
+  --ui-line-height-fa: 1.75;
+
+  --mohetios-code-size: calc(0.875rem * var(--mohetios-fa-type-scale));
+  --mohetios-hero-title-size: clamp(
+    calc(2.25rem * var(--mohetios-fa-type-scale)),
+    calc(6vw * var(--mohetios-fa-type-scale)),
+    calc(3.75rem * var(--mohetios-fa-type-scale))
+  );
+  --mohetios-hero-description-size: clamp(
+    calc(1.0625rem * var(--mohetios-fa-type-scale)),
+    calc(2vw * var(--mohetios-fa-type-scale)),
+    calc(1.25rem * var(--mohetios-fa-type-scale))
+  );
+
+  --mohetios-reading-size: var(--article-font-size-fa);
+  --mohetios-reading-leading: var(--article-line-height-fa);
   --mohetios-reading-tracking: 0;
   --mohetios-heading-tracking: -0.012em;
   --mohetios-heading-leading: 1.22;
 
   font-family: var(--font-fa);
+  font-size: var(--ui-font-size-fa);
+  line-height: var(--ui-line-height-fa);
 }
 
 [dir='rtl'] body {
@@ -202,12 +255,20 @@ html[dir='rtl'] {
   transform: translateX(-50%);
 }
 
+.article-reading-column {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--mohetios-reading-width);
+  margin-inline: auto;
+}
+
 .prose-mohetios {
   width: 100%;
   max-width: var(--mohetios-reading-width);
+  margin-inline: auto;
   min-width: 0;
-  font-size: var(--text-reader-base);
-  line-height: var(--text-reader-base--line-height);
+  font-size: var(--mohetios-reading-size);
+  line-height: var(--mohetios-reading-leading);
   letter-spacing: var(--mohetios-reading-tracking);
   color: var(--ui-text);
   overflow-wrap: anywhere;
@@ -238,9 +299,21 @@ html[dir='rtl'] {
 
 .prose-mohetios .lead,
 .prose-mohetios > p:first-child {
-  font-size: var(--text-reader-lg);
-  line-height: var(--text-reader-lg--line-height);
+  font-size: clamp(1.125rem, 0.3vw + 1.05rem, 1.25rem);
+  line-height: 1.8;
   color: var(--ui-text-toned);
+}
+
+html[lang='fa'] .prose-mohetios .lead,
+html[lang='fa'] .prose-mohetios > p:first-child,
+html[dir='rtl'] .prose-mohetios .lead,
+html[dir='rtl'] .prose-mohetios > p:first-child {
+  font-size: clamp(
+    calc(1.125rem * var(--mohetios-fa-type-scale)),
+    calc((0.3vw + 1.05rem) * var(--mohetios-fa-type-scale)),
+    calc(1.25rem * var(--mohetios-fa-type-scale))
+  );
+  line-height: 1.9;
 }
 
 .prose-mohetios strong {
@@ -675,15 +748,20 @@ html[dir='rtl'] .prose-mohetios h4 {
   font-weight: 600;
 }
 
-html[lang='fa'] .prose-mohetios p,
-html[dir='rtl'] .prose-mohetios p {
-  line-height: var(--mohetios-reading-leading);
+html[lang='fa'] .prose-mohetios > * + *,
+html[dir='rtl'] .prose-mohetios > * + * {
+  margin-top: 1.4em;
 }
 
-@media (min-width: 640px) {
-  .prose-mohetios {
-    font-size: var(--text-reader-lg);
-    line-height: var(--text-reader-lg--line-height);
+@media (min-width: 40rem) {
+  .prose-mohetios :is(pre, table, figure, .mohetios-mermaid) {
+    --mohetios-prose-breakout: min(
+      calc((var(--mohetios-article-wide-width) - var(--mohetios-reading-width)) / 2),
+      calc((100vw - var(--mohetios-reading-width)) / 2 - 1rem)
+    );
+    max-width: var(--mohetios-article-wide-width);
+    width: calc(100% + 2 * var(--mohetios-prose-breakout));
+    margin-inline: calc(-1 * var(--mohetios-prose-breakout));
   }
 }
 

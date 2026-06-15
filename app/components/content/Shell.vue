@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { TocItem } from '~/utils/content'
+import { PUBLIC_ARTICLE_READING_CLASS } from '~~/shared/constants/layout'
 
 type SurroundItem = {
   title: string
@@ -37,52 +38,52 @@ withDefaults(
         <ContentCodeEnhancer />
         <LazyContentMermaidEnhancer />
 
-        <slot name="notice" />
+        <div :class="[PUBLIC_ARTICLE_READING_CLASS, 'flex flex-col gap-8']">
+          <slot name="notice" />
 
-        <ContentArticleSummary v-if="summary?.length" :items="summary" class="mb-6" />
+          <ContentArticleSummary v-if="summary?.length" :items="summary" />
 
-        <ContentToc v-if="showToc" class="mb-6" :title="$t('content.toc')" :links="tocLinks" />
+          <ContentToc v-if="showToc" :title="$t('content.toc')" :links="tocLinks" />
 
-        <article class="prose-mohetios max-w-none">
-          <ContentHtml :html="content" />
-        </article>
+          <article class="prose-mohetios max-w-none">
+            <ContentHtml :html="content" />
+          </article>
 
-        <div v-if="$slots.share" class="mt-8">
-          <slot name="share" />
+          <div v-if="$slots.share">
+            <slot name="share" />
+          </div>
+
+          <div
+            v-if="backTo || surround?.some(Boolean) || $slots.related || kind || $slots.comments"
+            class="flex flex-col gap-8 border-t border-default pt-8 [&_.comments-section]:mt-0"
+          >
+            <slot name="comments" />
+
+            <UButton
+              v-if="backTo"
+              :to="backTo"
+              color="neutral"
+              variant="ghost"
+              size="sm"
+              icon="i-lucide-arrow-left"
+              :ui="{ label: 'text-ui-sm' }"
+            >
+              {{ backLabel }}
+            </UButton>
+
+            <section v-if="surround?.some(Boolean)" class="space-y-3">
+              <p class="text-ui-xs font-medium tracking-[0.14em] text-muted uppercase">
+                {{ $t('content.article.continueReading') }}
+              </p>
+              <ContentSurround :surround="surround || []" />
+            </section>
+
+            <slot name="related" />
+
+            <ContentSubscribe v-if="kind" :kind="kind" plain />
+          </div>
         </div>
       </section>
-
-      <div
-        v-if="backTo || surround?.some(Boolean) || $slots.related || kind || $slots.comments"
-        class="mt-6 flex flex-col gap-8 pt-6 pb-2 [&_.comments-section]:mt-0"
-      >
-        <slot name="comments" />
-
-        <div class="space-y-8">
-          <UButton
-            v-if="backTo"
-            :to="backTo"
-            color="neutral"
-            variant="ghost"
-            size="sm"
-            icon="i-lucide-arrow-left"
-            :ui="{ label: 'text-ui-sm' }"
-          >
-            {{ backLabel }}
-          </UButton>
-
-          <section v-if="surround?.some(Boolean)" class="space-y-3">
-            <p class="text-ui-xs font-medium tracking-[0.14em] text-muted uppercase">
-              {{ $t('content.article.continueReading') }}
-            </p>
-            <ContentSurround :surround="surround || []" />
-          </section>
-
-          <slot name="related" />
-
-          <ContentSubscribe v-if="kind" :kind="kind" plain />
-        </div>
-      </div>
     </div>
   </UPageBody>
 </template>

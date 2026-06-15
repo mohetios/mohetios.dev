@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PUBLIC_VIEWPORT_BLEED_CLASS } from '~~/shared/constants/layout'
+import { PUBLIC_ARTICLE_READING_CLASS, PUBLIC_VIEWPORT_BLEED_CLASS } from '~~/shared/constants/layout'
 
 const props = defineProps<{
   title: string
@@ -96,7 +96,7 @@ onBeforeUnmount(() => {
 
     <div
       class="relative z-[1] w-full"
-      :class="hasImage ? ['site-shell py-1'] : []"
+      :class="hasImage ? ['site-shell py-1'] : [PUBLIC_ARTICLE_READING_CLASS]"
     >
       <div v-if="backTo" class="mb-6 text-start">
         <NuxtLink
