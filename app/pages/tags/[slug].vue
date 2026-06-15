@@ -125,7 +125,7 @@ useMohetiosSeo({
           </div>
 
           <section v-if="featuredItem" class="space-y-4">
-            <p class="text-xs font-medium uppercase tracking-widest text-muted">
+            <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
               {{ t('tags.latest') }}
             </p>
             <article class="rounded-lg border border-default bg-default p-6 sm:p-7">
@@ -139,14 +139,14 @@ useMohetiosSeo({
                   :status="featuredItem.status"
                 />
               </div>
-              <h2 class="text-2xl font-semibold tracking-tight text-highlighted sm:text-3xl">
+              <h2 class="text-3xl font-semibold tracking-tight text-highlighted sm:text-4xl">
                 <NuxtLink :to="toPublicPath(featuredItem.path)" class="hover:underline">
                   {{ featuredItem.title }}
                 </NuxtLink>
               </h2>
               <p
                 v-if="featuredItem.description"
-                class="mt-4 text-sm leading-7 text-pretty text-muted"
+                class="mt-4 text-base leading-7 text-pretty text-muted"
               >
                 {{ featuredItem.description }}
               </p>
@@ -155,9 +155,9 @@ useMohetiosSeo({
           </section>
 
           <section v-if="remainingItems.length" class="space-y-4">
-            <h2 class="text-xl font-semibold tracking-tight text-highlighted">
+            <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
               {{ t('tags.results') }}
-            </h2>
+            </p>
             <div class="grid gap-4 md:grid-cols-2">
               <article
                 v-for="item in remainingItems"
@@ -170,15 +170,15 @@ useMohetiosSeo({
                   </UBadge>
                   <ContentMeta :date="cardDate(item)" :status="item.status" />
                 </div>
-                <h3 class="text-lg font-semibold tracking-tight text-highlighted">
+                <h3 class="text-base font-semibold tracking-tight text-highlighted">
                   <NuxtLink :to="toPublicPath(item.path)" class="hover:underline">
                     {{ item.title }}
                   </NuxtLink>
                 </h3>
-                <p v-if="item.description" class="mt-2 line-clamp-3 text-sm leading-6 text-muted">
+                <p v-if="item.description" class="mt-2 line-clamp-3 text-base leading-7 text-muted">
                   {{ item.description }}
                 </p>
-                <ContentTags class="mt-4" :tags="item.tags" size="xs" />
+                <ContentTags class="mt-4" :tags="item.tags" size="sm" />
               </article>
             </div>
           </section>
@@ -199,10 +199,10 @@ useMohetiosSeo({
         <aside class="space-y-5 lg:sticky lg:top-24 lg:self-start">
           <UCard variant="subtle">
             <div class="space-y-4">
-              <h2 class="text-sm font-semibold tracking-tight text-highlighted">
+              <h2 class="text-sm font-medium tracking-[0.14em] text-highlighted uppercase">
                 {{ t('tags.counts') }}
               </h2>
-              <dl class="space-y-2 text-sm">
+              <dl class="space-y-2 text-base">
                 <div
                   v-for="tab in tabs.slice(1)"
                   :key="tab.type"
@@ -217,7 +217,7 @@ useMohetiosSeo({
 
           <UCard v-if="relatedTags.length" variant="subtle">
             <div class="space-y-4">
-              <h2 class="text-sm font-semibold tracking-tight text-highlighted">
+              <h2 class="text-sm font-medium tracking-[0.14em] text-highlighted uppercase">
                 {{ t('tags.related') }}
               </h2>
               <div class="flex flex-wrap gap-2">

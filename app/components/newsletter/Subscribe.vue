@@ -157,15 +157,15 @@ async function onSubmit() {
 <template>
   <section v-if="plain" class="w-full space-y-3">
     <div class="space-y-1.5">
-      <p class="text-xs font-medium tracking-[0.14em] text-highlighted uppercase">
+      <p class="text-sm font-medium tracking-[0.14em] text-highlighted uppercase">
         {{ resolvedTitle }}
       </p>
-      <p class="text-sm text-muted">
+      <p class="text-base text-muted">
         {{ resolvedDescription }}
       </p>
     </div>
 
-    <p v-if="isComplete" class="text-sm text-highlighted">
+    <p v-if="isComplete" class="text-base text-highlighted">
       {{ statusMessage }}
     </p>
 
@@ -192,12 +192,12 @@ async function onSubmit() {
         </UButton>
       </UFieldGroup>
 
-      <p v-if="submitState === 'error'" class="text-xs text-error">
+      <p v-if="submitState === 'error'" class="text-sm text-error">
         {{ statusMessage }}
       </p>
 
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <p class="min-w-0 flex-1 text-xs text-muted">
+        <p class="min-w-0 flex-1 text-sm text-muted">
           {{ consentText }}
         </p>
 
@@ -239,16 +239,16 @@ async function onSubmit() {
         >
           {{ resolvedTitle }}
         </p>
-        <p class="mt-1.5 text-sm text-muted">
+        <p class="mt-1.5 text-base text-muted">
           {{ resolvedDescription }}
         </p>
       </div>
 
       <div v-if="isComplete" class="space-y-1.5">
-        <p class="text-sm text-highlighted">
+        <p class="text-base text-highlighted">
           {{ statusMessage }}
         </p>
-        <p class="text-xs text-muted">
+        <p class="text-sm text-muted">
           {{ t('newsletter.privacyNote') }}
         </p>
       </div>
@@ -276,12 +276,12 @@ async function onSubmit() {
           </UButton>
         </UFieldGroup>
 
-        <p v-if="submitState === 'error'" class="text-xs text-error">
+        <p v-if="submitState === 'error'" class="text-sm text-error">
           {{ statusMessage }}
         </p>
 
         <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <p class="min-w-0 flex-1 text-xs text-muted">
+          <p class="min-w-0 flex-1 text-sm text-muted">
             {{ consentText }}
           </p>
 

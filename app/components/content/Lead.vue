@@ -30,7 +30,7 @@ const publicTo = computed(() => toPublicPath(props.to))
     />
     <div
       v-else
-      class="flex aspect-[4/3] min-h-64 w-full flex-col items-center justify-center gap-4 bg-muted/40 p-8 text-sm font-medium uppercase tracking-widest text-muted md:aspect-auto md:h-full"
+      class="flex aspect-[4/3] min-h-64 w-full flex-col items-center justify-center gap-4 bg-muted/40 p-8 text-base font-medium uppercase tracking-[0.14em] text-muted md:aspect-auto md:h-full"
     >
       <div class="grid size-16 place-items-center rounded-full border border-default bg-default/70">
         <UIcon name="i-lucide-image" class="size-7 text-muted" />
@@ -42,12 +42,12 @@ const publicTo = computed(() => toPublicPath(props.to))
       <UBadge v-if="badge" color="neutral" variant="outline" class="mb-5 w-fit">
         {{ badge }}
       </UBadge>
-      <h2 class="text-2xl font-semibold tracking-tight text-highlighted sm:text-3xl">
+      <h2 class="text-3xl font-semibold tracking-tight text-highlighted sm:text-4xl">
         <NuxtLink :to="publicTo" class="hover:underline">
           {{ title }}
         </NuxtLink>
       </h2>
-      <p v-if="description" class="mt-4 text-base leading-7 text-muted sm:text-lg">
+      <p v-if="description" class="mt-4 text-pretty text-lg text-muted">
         {{ description }}
       </p>
       <div class="mt-5 space-y-4">

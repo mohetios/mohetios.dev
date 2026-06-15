@@ -52,7 +52,7 @@ const publicTo = computed(() => toPublicPath(props.to))
     <h3 class="text-base font-semibold tracking-tight text-highlighted">
       {{ title }}
     </h3>
-    <p v-if="description" class="mt-2 text-base leading-6 text-muted">
+    <p v-if="description" class="mt-2 text-base leading-7 text-muted">
       {{ description }}
     </p>
 

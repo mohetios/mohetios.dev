@@ -20,7 +20,7 @@ const { t } = useI18n()
       class="group flex min-w-0 flex-col gap-1 py-2 no-underline transition-colors duration-150"
     >
       <span
-        class="inline-flex items-center gap-1.5 text-sm font-medium tracking-[0.12em] text-muted uppercase"
+        class="inline-flex items-center gap-1.5 text-sm font-medium tracking-[0.14em] text-muted uppercase"
       >
         <UIcon name="i-lucide-arrow-left" class="size-3.5" />
         {{ t('content.article.previous') }}
@@ -39,7 +39,7 @@ const { t } = useI18n()
       class="group flex min-w-0 flex-col gap-1 py-2 no-underline transition-colors duration-150 sm:items-end sm:text-end"
     >
       <span
-        class="inline-flex items-center gap-1.5 text-sm font-medium tracking-[0.12em] text-muted uppercase sm:justify-end"
+        class="inline-flex items-center gap-1.5 text-sm font-medium tracking-[0.14em] text-muted uppercase sm:justify-end"
       >
         {{ t('content.article.next') }}
         <UIcon name="i-lucide-arrow-right" class="size-3.5" />

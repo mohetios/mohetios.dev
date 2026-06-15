@@ -12,21 +12,59 @@
     'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji';
   --font-fa: Farhang, 'Noto Sans Arabic', Tahoma, Arial, sans-serif;
   --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  /* Mohetios brand — mapped in app.config.ts as primary / secondary / neutral */
+  --color-mohet-50: #f0f4f8;
+  --color-mohet-100: #dde7ef;
+  --color-mohet-200: #b8c9d9;
+  --color-mohet-300: #7ea8ca;
+  --color-mohet-400: #5c81a3;
+  --color-mohet-500: #3d6689;
+  --color-mohet-600: #1e4265;
+  --color-mohet-700: #183552;
+  --color-mohet-800: #122840;
+  --color-mohet-900: #0c1b2e;
+  --color-mohet-950: #060f1a;
+
+  --color-mohet-accent-50: #f2f6f4;
+  --color-mohet-accent-100: #e0ebe4;
+  --color-mohet-accent-200: #c2d7c9;
+  --color-mohet-accent-300: #9bb8a4;
+  --color-mohet-accent-400: #6d9179;
+  --color-mohet-accent-500: #486a56;
+  --color-mohet-accent-600: #3a5545;
+  --color-mohet-accent-700: #2f4438;
+  --color-mohet-accent-800: #25362d;
+  --color-mohet-accent-900: #1c2923;
+  --color-mohet-accent-950: #0f1612;
+
+  --color-mohet-neutral-50: #f7f8f9;
+  --color-mohet-neutral-100: #eef1f4;
+  --color-mohet-neutral-200: #dde3e8;
+  --color-mohet-neutral-300: #c4cdd6;
+  --color-mohet-neutral-400: #9aa8b5;
+  --color-mohet-neutral-500: #66727d;
+  --color-mohet-neutral-600: #4f5a66;
+  --color-mohet-neutral-700: #3d4752;
+  --color-mohet-neutral-800: #223244;
+  --color-mohet-neutral-900: #1a2835;
+  --color-mohet-neutral-950: #0f1823;
 }
 
 :root {
   --color-bg: #fcfbf8;
   --color-surface: #ffffff;
-  --color-text: #223244;
-  --color-muted: #66727d;
-  --color-primary: #1e4265;
-  --color-accent: #486a56;
+  --color-text: var(--ui-color-neutral-800);
+  --color-muted: var(--ui-color-neutral-500);
+  --color-primary: var(--ui-color-primary-600);
+  --color-accent: var(--ui-color-secondary-500);
   --color-gold: #c6a15b;
   --color-pattern-blue: #dde8f0;
   --color-pattern-green: #e4ece5;
   --color-pattern-tint: #dde8f0;
 
-  --ui-primary: var(--color-primary);
+  --ui-primary: var(--ui-color-primary-600);
+  --ui-secondary: var(--ui-color-secondary-500);
   --ui-bg: var(--color-bg);
   --ui-bg-muted: color-mix(in oklab, var(--color-pattern-green) 58%, var(--color-bg));
   --ui-bg-elevated: var(--color-surface);
@@ -44,7 +82,7 @@
   --mohetios-reading-width: 46rem;
   --mohetios-article-wide-width: 64rem;
 
-  --mohetios-fa-scale: 1.15;
+  --mohetios-fa-scale: 1.03;
 
   --ui-container: var(--mohetios-site-width);
 }
@@ -55,14 +93,15 @@
   --color-surface: #172433;
   --color-text: #eef3f7;
   --color-muted: #a9b6c2;
-  --color-primary: #7ea8ca;
-  --color-accent: #93b09a;
+  --color-primary: var(--ui-color-primary-300);
+  --color-accent: var(--ui-color-secondary-400);
   --color-gold: #d2b06d;
   --color-pattern-blue: #2a3947;
   --color-pattern-green: #2a3947;
   --color-pattern-tint: #2a3947;
 
-  --ui-primary: var(--color-primary);
+  --ui-primary: var(--ui-color-primary-300);
+  --ui-secondary: var(--ui-color-secondary-400);
   --ui-bg: var(--color-bg);
   --ui-bg-muted: color-mix(in oklab, var(--color-pattern-tint) 68%, var(--color-bg));
   --ui-bg-elevated: var(--color-surface);
@@ -109,12 +148,12 @@ pre {
   cursor: pointer;
 }
 
-html[lang='fa'],
+html[lang^='fa'],
 html[dir='rtl'] {
   font-family: var(--font-fa);
 }
 
-html[lang='fa'] {
+html[lang^='fa'] {
   font-size: calc(100% * var(--mohetios-fa-scale));
   /* Scale inherited line-height with the same factor (1.5 × scale ≈ browser/Tailwind body default). */
   line-height: calc(1.5 * var(--mohetios-fa-scale));

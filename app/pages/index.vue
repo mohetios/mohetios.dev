@@ -73,7 +73,7 @@ function formatDate(date?: string | Date) {
             <h1 class="text-4xl font-semibold tracking-tight text-balance text-highlighted sm:text-5xl">
               {{ t('site.tagline') }}
             </h1>
-            <p class="text-xl text-pretty text-muted">
+            <p class="text-lg text-pretty text-muted">
               {{ t('home.hero.description') }}
             </p>
           </div>
@@ -94,7 +94,7 @@ function formatDate(date?: string | Date) {
         <aside class="rounded-2xl border border-default bg-muted/30 p-5 sm:p-6">
           <div class="flex items-center justify-between gap-4 border-b border-default pb-4">
             <div>
-              <p class="text-sm font-medium uppercase tracking-widest text-muted">
+              <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
                 {{ t('home.workshop.label') }}
               </p>
             </div>
@@ -133,7 +133,7 @@ function formatDate(date?: string | Date) {
           </div>
           <div
             v-else
-            class="flex aspect-[4/3] min-h-64 w-full flex-col items-center justify-center gap-4 bg-muted/40 p-8 text-base font-medium uppercase tracking-widest text-muted md:aspect-auto md:h-full"
+            class="flex aspect-[4/3] min-h-64 w-full flex-col items-center justify-center gap-4 bg-muted/40 p-8 text-base font-medium uppercase tracking-[0.14em] text-muted md:aspect-auto md:h-full"
           >
             <div
               class="grid size-16 place-items-center rounded-full border border-default bg-default/70"
@@ -148,7 +148,7 @@ function formatDate(date?: string | Date) {
               <UBadge color="neutral" variant="outline">
                 {{ t('home.featured.label') }}
               </UBadge>
-              <time v-if="featuredPost.date" class="text-sm text-muted">
+              <time v-if="featuredPost.date" class="text-base text-muted">
                 {{ formatDate(featuredPost.date) }}
               </time>
             </div>

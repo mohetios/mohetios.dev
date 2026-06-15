@@ -42,23 +42,35 @@ const nextLocalePath = computed(() =>
       </NuxtLink>
     </template>
 
-    <UNavigationMenu :items="navigation" variant="link" class="hidden lg:flex" />
+    <UNavigationMenu
+      :items="navigation"
+      variant="link"
+      class="hidden text-sm lg:flex"
+    />
 
     <template #right>
-      <UButton
-        v-if="nextLocale && nextLocalePath"
-        :to="nextLocalePath"
-        color="neutral"
-        variant="ghost"
-        icon="i-lucide-languages"
-        :label="nextLocale.code.toUpperCase()"
-        class="cursor-pointer"
-      />
-      <UColorModeButton />
+      <div class="flex items-center gap-0.5">
+        <UButton
+          v-if="nextLocale && nextLocalePath"
+          :to="nextLocalePath"
+          color="neutral"
+          variant="ghost"
+          size="sm"
+          icon="i-lucide-languages"
+          :label="nextLocale.code.toUpperCase()"
+          class="cursor-pointer"
+        />
+        <UColorModeButton color="neutral" variant="ghost" size="sm" />
+      </div>
     </template>
 
     <template #body>
-      <UNavigationMenu :items="navigation" orientation="vertical" variant="link" class="-mx-2" />
+      <UNavigationMenu
+        :items="navigation"
+        orientation="vertical"
+        variant="link"
+        class="-mx-2 text-sm"
+      />
     </template>
   </UHeader>
 </template>

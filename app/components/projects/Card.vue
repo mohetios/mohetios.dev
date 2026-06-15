@@ -27,10 +27,10 @@ const publicTo = computed(() => toPublicPath(props.to))
       <ContentMeta :date="date" :updated="updated" :status="status" />
     </template>
 
-    <h3 class="text-xl font-semibold tracking-tight text-highlighted">
+    <h3 class="text-base font-semibold tracking-tight text-highlighted">
       {{ title }}
     </h3>
-    <p v-if="description" class="mt-3 text-sm leading-7 text-muted">
+    <p v-if="description" class="mt-3 text-base leading-7 text-muted">
       {{ description }}
     </p>
 

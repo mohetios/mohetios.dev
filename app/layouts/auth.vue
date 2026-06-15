@@ -29,23 +29,23 @@ const pageCopy = computed(() => ({
         >
           <section class="space-y-8">
             <div class="space-y-3">
-              <p class="text-sm font-medium text-primary">
+              <p class="text-sm font-medium tracking-[0.14em] text-primary uppercase">
                 {{ pageCopy.eyebrow }}
               </p>
-              <h1 class="text-2xl font-semibold tracking-normal text-highlighted sm:text-3xl">
+              <h1 class="text-4xl font-semibold tracking-tight text-balance text-highlighted sm:text-5xl">
                 {{ pageCopy.title }}
               </h1>
-              <p class="text-sm leading-7 text-pretty text-muted sm:text-base">
+              <p class="text-lg text-pretty leading-7 text-muted">
                 {{ pageCopy.description }}
               </p>
             </div>
 
             <div class="hidden space-y-6 border-t border-default pt-8 lg:block">
               <div class="space-y-2">
-                <p class="text-sm font-medium text-highlighted">
+                <p class="text-base font-medium text-highlighted">
                   {{ t('site.tagline') }}
                 </p>
-                <p class="text-sm leading-6 text-pretty text-muted">
+                <p class="text-base leading-7 text-pretty text-muted">
                   {{ t('site.description') }}
                 </p>
               </div>
@@ -54,17 +54,17 @@ const pageCopy = computed(() => ({
                 <li v-for="feature in features" :key="feature.key" class="flex gap-3">
                   <UIcon :name="feature.icon" class="mt-0.5 size-4 shrink-0 text-primary" />
                   <div class="space-y-1">
-                    <p class="text-sm font-medium text-highlighted">
+                    <p class="text-base font-medium text-highlighted">
                       {{ t(`auth.layout.features.${feature.key}.title`) }}
                     </p>
-                    <p class="text-sm leading-6 text-muted">
+                    <p class="text-base leading-7 text-muted">
                       {{ t(`auth.layout.features.${feature.key}.description`) }}
                     </p>
                   </div>
                 </li>
               </ul>
 
-              <p class="text-xs leading-5 text-muted">
+              <p class="text-sm leading-6 text-muted">
                 {{ t('auth.layout.note') }}
               </p>
             </div>

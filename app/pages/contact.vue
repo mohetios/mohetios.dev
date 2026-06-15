@@ -102,6 +102,24 @@ const focusAreas = computed(() => [
   t('contact.focus.technicalWriting')
 ])
 
+const cardUi = {
+  root: 'min-w-0 max-w-full rounded-2xl ring-1 ring-default',
+  body: 'min-w-0 p-6 sm:p-8'
+}
+
+const sidebarIntroCardUi = {
+  root: 'min-w-0 max-w-full overflow-hidden rounded-2xl bg-muted/30 ring-1 ring-default',
+  body: 'min-w-0 p-6'
+}
+
+const sidebarCardUi = {
+  root: 'min-w-0 max-w-full overflow-hidden rounded-2xl ring-1 ring-default',
+  body: 'min-w-0 p-5'
+}
+
+const sidebarBadgeClass =
+  'max-w-full whitespace-normal rounded-full text-start leading-snug h-auto py-1'
+
 function getContactErrorMessage(error: unknown) {
   if (!error || typeof error !== 'object') {
     return t('contact.error.description')
@@ -223,14 +241,9 @@ async function onSubmit() {
     </UPageHeader>
 
     <UPageBody>
-      <section class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
-        <div class="space-y-6">
-          <UCard
-            :ui="{
-              root: 'rounded-2xl ring-1 ring-default',
-              body: 'p-6 sm:p-8'
-            }"
-          >
+      <section class="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]">
+        <div class="min-w-0 space-y-6">
+          <UCard :ui="cardUi">
             <ContentHtml
               :html="page.content"
               class="prose prose-lg mb-8 border-b border-default pb-8"
@@ -244,11 +257,11 @@ async function onSubmit() {
               </div>
 
               <div class="space-y-2">
-                <h2 class="text-xl font-semibold tracking-tight text-highlighted">
+                <h2 class="text-lg font-semibold tracking-tight text-highlighted">
                   {{ t('contact.success.title') }}
                 </h2>
 
-                <p class="text-sm leading-7 text-muted">
+                <p class="text-base leading-7 text-muted">
                   {{ t('contact.success.description') }}
                 </p>
               </div>
@@ -380,7 +393,7 @@ async function onSubmit() {
                   </UButton>
                 </div>
 
-                <p class="text-xs leading-6 text-dimmed">
+                <p class="text-sm leading-6 text-dimmed">
                   {{ t('contact.form.privacyNote') }}
                 </p>
               </div>
@@ -388,37 +401,34 @@ async function onSubmit() {
           </UCard>
         </div>
 
-        <aside class="space-y-5">
-          <UCard
-            :ui="{
-              root: 'rounded-2xl bg-muted/30 ring-1 ring-default',
-              body: 'p-6'
-            }"
-          >
-            <div class="space-y-4">
-              <div>
+        <aside class="min-w-0 w-full max-w-full space-y-5 lg:sticky lg:top-20 lg:z-[1] lg:self-start">
+          <UCard :ui="sidebarIntroCardUi">
+            <div class="min-w-0 space-y-4">
+              <div class="min-w-0">
                 <p
-                  class="text-xs font-medium tracking-[0.2em] text-primary uppercase"
+                  class="text-pretty text-sm font-medium tracking-[0.14em] text-primary uppercase break-words rtl:tracking-normal"
                 >
                   {{ t('contact.sidebar.label') }}
                 </p>
 
-                <h2 class="mt-2 text-lg font-semibold tracking-tight text-highlighted">
+                <h2
+                  class="mt-2 text-pretty text-lg font-semibold tracking-tight text-highlighted break-words"
+                >
                   {{ t('contact.sidebar.title') }}
                 </h2>
 
-                <p class="mt-2 text-sm leading-7 text-muted">
+                <p class="mt-2 text-pretty text-base leading-7 text-muted break-words">
                   {{ t('contact.sidebar.description') }}
                 </p>
               </div>
 
-              <div class="flex flex-wrap gap-2">
+              <div class="flex min-w-0 flex-wrap gap-2">
                 <UBadge
                   v-for="item in focusAreas"
                   :key="item"
                   variant="soft"
                   color="neutral"
-                  class="rounded-full"
+                  :class="sidebarBadgeClass"
                 >
                   {{ item }}
                 </UBadge>
@@ -426,27 +436,20 @@ async function onSubmit() {
             </div>
           </UCard>
 
-          <UCard
-            v-for="channel in contactChannels"
-            :key="channel.title"
-            :ui="{
-              root: 'rounded-2xl ring-1 ring-default',
-              body: 'p-5'
-            }"
-          >
-            <div class="flex gap-4">
+          <UCard v-for="channel in contactChannels" :key="channel.title" :ui="sidebarCardUi">
+            <div class="flex min-w-0 gap-3">
               <div
                 class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted text-toned"
               >
                 <UIcon :name="channel.icon" class="size-5" />
               </div>
 
-              <div>
-                <h3 class="font-medium text-highlighted">
+              <div class="min-w-0 flex-1">
+                <h3 class="text-pretty text-base font-semibold tracking-tight text-highlighted break-words">
                   {{ channel.title }}
                 </h3>
 
-                <p class="mt-1 text-sm leading-6 text-muted">
+                <p class="mt-1 text-pretty text-base leading-7 text-muted break-words">
                   {{ channel.description }}
                 </p>
               </div>

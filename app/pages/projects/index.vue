@@ -39,10 +39,10 @@ useMohetiosSeo({
         <section>
           <div class="mb-5 flex items-end justify-between gap-4">
             <div>
-              <h2 class="text-2xl font-semibold tracking-tight text-highlighted">
+              <h2 class="text-3xl font-semibold tracking-tight text-highlighted">
                 {{ t('content.projects.featured') }}
               </h2>
-              <p class="mt-2 text-sm text-muted">
+              <p class="mt-2 text-base text-muted">
                 {{ t('content.projects.featuredDescription') }}
               </p>
             </div>
@@ -68,7 +68,7 @@ useMohetiosSeo({
         </section>
 
         <section v-if="otherProjects.length">
-          <h2 class="mb-5 text-2xl font-semibold tracking-tight text-highlighted">
+          <h2 class="mb-5 text-3xl font-semibold tracking-tight text-highlighted">
             {{ t('content.projects.archive') }}
           </h2>
           <UPageGrid>

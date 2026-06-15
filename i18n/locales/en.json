@@ -936,5 +936,22 @@
       "dashboards": "Dashboards",
       "technicalWriting": "Technical writing"
     }
+  },
+  "about": {
+    "sidebar": {
+      "label": "Around the site",
+      "title": "Where to go next",
+      "description": "Writing, Lab, and Projects are the three main tracks on Mohetios.dev — each shows a different stage of the work."
+    },
+    "latestWriting": {
+      "title": "Latest writing",
+      "description": "Recent essays and engineering notes from the notebook."
+    },
+    "contactCta": {
+      "title": "Say hello",
+      "description": "Questions, collaboration, or a specific project context — the contact page is the direct line.",
+      "action": "Open contact"
+    },
+    "explore": "Explore"
   }
 }

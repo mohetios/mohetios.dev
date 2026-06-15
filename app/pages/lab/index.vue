@@ -31,23 +31,23 @@ useMohetiosSeo({
     <UPageBody>
       <div class="mb-8 grid gap-4 rounded-2xl border border-default bg-muted/30 p-5 sm:grid-cols-3">
         <div>
-          <p class="text-xs font-medium uppercase tracking-widest text-muted">
+          <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
             {{ t('content.lab.stats.notes') }}
           </p>
-          <p class="mt-2 text-2xl font-semibold text-highlighted">
+          <p class="mt-2 text-3xl font-semibold text-highlighted">
             {{ visibleNotes.length }}
           </p>
         </div>
         <div>
-          <p class="text-xs font-medium uppercase tracking-widest text-muted">
+          <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
             {{ t('content.lab.stats.active') }}
           </p>
-          <p class="mt-2 text-2xl font-semibold text-highlighted">
+          <p class="mt-2 text-3xl font-semibold text-highlighted">
             {{ activeNotes }}
           </p>
         </div>
         <div>
-          <p class="text-xs font-medium uppercase tracking-widest text-muted">
+          <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
             {{ t('content.lab.stats.latest') }}
           </p>
           <ContentMeta class="mt-3" :date="latestUpdate" />

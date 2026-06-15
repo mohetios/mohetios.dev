@@ -36,7 +36,7 @@ const publicTo = computed(() => toPublicPath(props.to))
         <UBadge v-if="badge" color="neutral" variant="outline">
           {{ badge }}
         </UBadge>
-        <time v-if="date" class="text-sm text-muted">
+        <time v-if="date" class="text-base text-muted">
           {{
             new Date(date).toLocaleDateString(locale, {
               year: 'numeric',

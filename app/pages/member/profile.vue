@@ -45,7 +45,7 @@ const roleColor = computed(() => {
   <UPage>
     <UPageHeader :title="t('profile.title')" :description="t('profile.description')">
       <template #headline>
-        <p class="text-sm font-medium text-primary">
+        <p class="text-sm font-medium tracking-[0.14em] text-primary uppercase">
           {{ t('profile.eyebrow') }}
         </p>
       </template>
@@ -63,11 +63,11 @@ const roleColor = computed(() => {
               <UAvatar :alt="auth.user.value?.username || 'Member'" size="lg" icon="i-lucide-user" />
 
               <div>
-                <p class="text-sm text-muted">
+                <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
                   {{ t('profile.fields.username') }}
                 </p>
 
-                <h2 class="mt-1 text-xl font-semibold text-highlighted">
+                <h2 class="mt-1 text-lg font-semibold text-highlighted">
                   {{ auth.user.value?.username || '—' }}
                 </h2>
               </div>
@@ -85,21 +85,21 @@ const roleColor = computed(() => {
 
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="rounded-xl border border-default bg-muted/30 p-4">
-              <p class="text-xs font-medium uppercase tracking-wide text-muted">
+              <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
                 {{ t('profile.fields.role') }}
               </p>
 
-              <p class="mt-2 text-sm font-medium text-highlighted">
+              <p class="mt-2 text-base font-medium text-highlighted">
                 {{ auth.user.value?.role || 'GUEST' }}
               </p>
             </div>
 
             <div class="rounded-xl border border-default bg-muted/30 p-4">
-              <p class="text-xs font-medium uppercase tracking-wide text-muted">
+              <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
                 {{ t('profile.status') }}
               </p>
 
-              <p class="mt-2 text-sm font-medium text-highlighted">
+              <p class="mt-2 text-base font-medium text-highlighted">
                 {{
                   auth.isAuthenticated.value ? t('auth.status.authenticated') : t('auth.status.guest')
                 }}

@@ -29,16 +29,16 @@ function dismiss() {
     >
       <div class="space-y-3">
         <div>
-          <p class="text-sm font-medium text-highlighted">Install Mohetios</p>
+          <p class="text-base font-medium text-highlighted">Install Mohetios</p>
 
-          <p class="mt-1 text-sm leading-6 text-muted">
+          <p class="mt-1 text-base leading-7 text-muted">
             Keep the dashboard close and receive admin notifications faster.
           </p>
         </div>
 
         <p
           v-if="isIOS && !isInstallable"
-          class="rounded-lg bg-muted p-3 text-xs leading-6 text-toned"
+          class="rounded-lg bg-muted p-3 text-sm leading-6 text-toned"
         >
           On iPhone or iPad, open Safari, tap Share, then choose “Add to Home Screen”.
         </p>
