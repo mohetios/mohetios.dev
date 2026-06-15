@@ -1,6 +1,7 @@
 ---
 title: نِکونیموس
 description: نکونیموس یک ربات پیام ناشناس فارسی‌محور برای تلگرام است که با Cloudflare Workers، KV و Durable Objects ساخته شده و مدل حریم خصوصی آن با مرزهای روشن توضیح داده می‌شود.
+thumbnail: /content/nekonymous-cover.webp
 date: 2024-08-19
 updated: 2026-06-15
 status: نسخه MVP

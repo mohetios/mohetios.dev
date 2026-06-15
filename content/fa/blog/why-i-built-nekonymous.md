@@ -1,9 +1,9 @@
 ---
-title: "Nekonymous: پیام ناشناس، معماری کوچک، و ادعای حریم خصوصی صادقانه"
+title: 'Nekonymous: پیام ناشناس، معماری کوچک، و ادعای حریم خصوصی صادقانه'
 description: یادداشتی درباره ساخت Nekonymous؛ یک ربات پیام ناشناس فارسی‌محور با معماری کوچک، ذخیره‌سازی رمز‌شده و ادعای حریم خصوصی صادقانه.
+thumbnail: /content/nekonymous-cover.webp
 date: 2026-06-15
 updated: 2026-06-15
-status: Draft
 tags:
   - telegram
   - cloudflare-workers

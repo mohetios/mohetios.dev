@@ -1,6 +1,7 @@
 ---
 title: نِکونیموس به‌عنوان یک anonymous relay کوچک
 description: یادداشت فنی و محصولی درباره نِکونیموس؛ یک رله پیام ناشناس فارسی‌محور برای Telegram با Cloudflare Workers، KV، Durable Objects مبتنی بر SQLite، و مرز حریم خصوصی صادقانه.
+thumbnail: /content/nekonymous-cover.webp
 date: 2024-08-19
 updated: 2026-06-15
 status: Refining

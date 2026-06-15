@@ -1,6 +1,7 @@
 ---
 title: "Lab Note: Nekonymous as a Small Anonymous Relay"
 description: A technical and product note on Nekonymous, a Persian-first hosted anonymous Telegram relay built with Cloudflare Workers, KV, SQLite-backed Durable Objects, and an honest privacy boundary.
+thumbnail: /content/nekonymous-cover.webp
 date: 2024-08-19
 updated: 2026-06-15
 status: Refining

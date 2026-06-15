@@ -1,6 +1,7 @@
 ---
 title: Nekonymous
 description: Nekonymous is a Persian-first anonymous Telegram messaging bot built with Cloudflare Workers, KV, and SQLite-backed Durable Objects, with an honest hosted-relay privacy model.
+thumbnail: /content/nekonymous-cover.webp
 date: 2024-08-19
 updated: 2026-06-15
 status: MVP
