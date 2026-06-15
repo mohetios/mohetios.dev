@@ -73,14 +73,10 @@
   --mohetios-article-wide-width: 64rem;
 
   /* Persian: multiply EN type tokens by this on html[lang='fa'] / dir=rtl. */
-  --mohetios-fa-type-scale: 1.11;
+  --mohetios-fa-type-scale: 1.06;
 
-  --article-font-size-en: clamp(1.0625rem, 0.25vw + 1rem, 1.125rem);
-  --article-line-height-en: 1.75;
-  --article-line-height-fa: 1.9;
-
-  --mohetios-reading-size: var(--article-font-size-en);
-  --mohetios-reading-leading: var(--article-line-height-en);
+  --mohetios-reading-size: var(--text-reader-base);
+  --mohetios-reading-leading: var(--text-reader-base--line-height);
   --mohetios-reading-tracking: -0.003em;
 
   --mohetios-heading-leading: 1.15;
@@ -161,8 +157,8 @@ pre {
 html[lang='fa'],
 html[dir='rtl'] {
   /*
-   * Persian type scale — EN @theme tokens × --mohetios-fa-type-scale (1.11).
-   * One knob for UI, reader, code, article prose, and html base size.
+   * Persian type scale — EN @theme tokens × --mohetios-fa-type-scale (1.06).
+   * Prose body uses --text-reader-base (no separate article clamp).
    */
   --text-ui-xs: calc(0.75rem * var(--mohetios-fa-type-scale));
   --text-ui-xs--line-height: calc(1rem * var(--mohetios-fa-type-scale));
@@ -187,11 +183,6 @@ html[dir='rtl'] {
   --text-code-base: calc(0.875rem * var(--mohetios-fa-type-scale));
   --text-code-base--line-height: 1.85;
 
-  --article-font-size-fa: clamp(
-    calc(1.0625rem * var(--mohetios-fa-type-scale)),
-    calc((0.25vw + 1rem) * var(--mohetios-fa-type-scale)),
-    calc(1.125rem * var(--mohetios-fa-type-scale))
-  );
   --ui-font-size-fa: calc(1rem * var(--mohetios-fa-type-scale));
   --ui-line-height-fa: 1.75;
 
@@ -201,14 +192,10 @@ html[dir='rtl'] {
     calc(6vw * var(--mohetios-fa-type-scale)),
     calc(3.75rem * var(--mohetios-fa-type-scale))
   );
-  --mohetios-hero-description-size: clamp(
-    calc(1.0625rem * var(--mohetios-fa-type-scale)),
-    calc(2vw * var(--mohetios-fa-type-scale)),
-    calc(1.25rem * var(--mohetios-fa-type-scale))
-  );
+  --mohetios-hero-description-size: calc(1.0625rem * var(--mohetios-fa-type-scale));
 
-  --mohetios-reading-size: var(--article-font-size-fa);
-  --mohetios-reading-leading: var(--article-line-height-fa);
+  --mohetios-reading-size: var(--text-reader-base);
+  --mohetios-reading-leading: var(--text-reader-base--line-height);
   --mohetios-reading-tracking: 0;
   --mohetios-heading-tracking: -0.012em;
   --mohetios-heading-leading: 1.22;
@@ -299,21 +286,9 @@ html[dir='rtl'] {
 
 .prose-mohetios .lead,
 .prose-mohetios > p:first-child {
-  font-size: clamp(1.125rem, 0.3vw + 1.05rem, 1.25rem);
-  line-height: 1.8;
+  font-size: var(--text-reader-lg);
+  line-height: var(--text-reader-lg--line-height);
   color: var(--ui-text-toned);
-}
-
-html[lang='fa'] .prose-mohetios .lead,
-html[lang='fa'] .prose-mohetios > p:first-child,
-html[dir='rtl'] .prose-mohetios .lead,
-html[dir='rtl'] .prose-mohetios > p:first-child {
-  font-size: clamp(
-    calc(1.125rem * var(--mohetios-fa-type-scale)),
-    calc((0.3vw + 1.05rem) * var(--mohetios-fa-type-scale)),
-    calc(1.25rem * var(--mohetios-fa-type-scale))
-  );
-  line-height: 1.9;
 }
 
 .prose-mohetios strong {
