@@ -82,7 +82,7 @@
   --mohetios-reading-width: 46rem;
   --mohetios-article-wide-width: 64rem;
 
-  --mohetios-fa-scale: 1.03;
+  --mohetios-fa-scale: 1.08;
 
   --ui-container: var(--mohetios-site-width);
 }
@@ -157,6 +157,20 @@ html[lang^='fa'] {
   font-size: calc(100% * var(--mohetios-fa-scale));
   /* Add 40% extra line-height for Persian readability on top of the locale scale. */
   line-height: calc(1.5 * var(--mohetios-fa-scale) * 1.4);
+}
+
+/* Tailwind leading utilities set fixed line-height values and bypass html inheritance.
+   Re-scale the ones used across the app so Persian spacing applies consistently. */
+html[lang^='fa'] .leading-6 {
+  line-height: 2.1rem;
+}
+
+html[lang^='fa'] .leading-7 {
+  line-height: 2.45rem;
+}
+
+html[lang^='fa'] .leading-snug {
+  line-height: 1.925;
 }
 
 [dir='rtl'] body {
