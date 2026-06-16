@@ -1,5 +1,5 @@
 ---
-title: Nekonymous: from a small anonymous relay to a first real architecture
+title: 'Nekonymous: from a small anonymous relay to a first real architecture'
 description: A lab note about Nekonymous, a Persian-first anonymous Telegram relay moving from a compact Cloudflare Workers, KV, and Durable Objects MVP toward a first version with clearer data ownership, ticket-based message handling, structured storage, and a future compatibility matching layer.
 thumbnail: /content/nekonymous-cover.webp
 date: 2024-08-19
