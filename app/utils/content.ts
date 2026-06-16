@@ -39,6 +39,7 @@ export type BlogPost = BaseContent & {
   description: string
   date: string
   status?: string
+  featured?: boolean
   tags: string[]
   author?: string
   category?: string
@@ -55,7 +56,6 @@ export type Project = BlogPost & {
   status: string
   repo?: string
   website?: string
-  featured: boolean
 }
 
 export type Page = BaseContent
@@ -74,6 +74,7 @@ export type TaggedContentItem = {
   tagSlugs: string[]
   thumbnail?: string
   status?: string
+  featured: boolean
 }
 
 const blog = blogJson as BlogPost[]
@@ -245,7 +246,8 @@ function toTaggedContentItem(
     tags,
     tagSlugs: tags.map((tag) => normalizeTagSlug(tag)).filter(Boolean),
     thumbnail: item.thumbnail,
-    status: item.status
+    status: item.status,
+    featured: item.featured === true
   }
 }
 
@@ -269,6 +271,23 @@ export function getLabNotes(locale: string, limit?: number) {
 
 export function getLabNote(path: string) {
   return lab.find((note) => note.path === path.toLowerCase())
+}
+
+export function getHomeFeaturedItem(locale: string) {
+  const items = [
+    ...visible(blog)
+      .filter((post) => post.path.startsWith(`/${locale}/blog/`))
+      .map((post) => toTaggedContentItem(post, 'blog')),
+    ...visible(lab)
+      .filter((note) => note.path.startsWith(`/${locale}/lab/`))
+      .map((note) => toTaggedContentItem(note, 'lab')),
+    ...visible(projects)
+      .filter((project) => project.path.startsWith(`/${locale}/projects/`))
+      .map((project) => toTaggedContentItem(project, 'project'))
+  ].filter((item) => item.featured)
+  const sorted = byActivityDesc(items)
+
+  return sorted[0]
 }
 
 export function getProjects(locale: string, limit?: number) {

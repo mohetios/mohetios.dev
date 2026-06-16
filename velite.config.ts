@@ -52,6 +52,7 @@ const writing = {
   ...baseContent,
   date,
   status: s.string().optional(),
+  featured: s.boolean().default(false),
   tags: s.array(s.string()).default([]),
   author: s.string().optional(),
   category: s.string().optional(),
@@ -92,8 +93,7 @@ const projects = defineCollection({
       ...writing,
       status: s.string(),
       repo: s.string().optional(),
-      website: s.string().optional(),
-      featured: s.boolean().default(false)
+      website: s.string().optional()
     })
     .transform((data) => ({
       ...data,

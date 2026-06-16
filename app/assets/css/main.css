@@ -155,8 +155,8 @@ html[dir='rtl'] {
 
 html[lang^='fa'] {
   font-size: calc(100% * var(--mohetios-fa-scale));
-  /* Scale inherited line-height with the same factor (1.5 × scale ≈ browser/Tailwind body default). */
-  line-height: calc(1.5 * var(--mohetios-fa-scale));
+  /* Add 40% extra line-height for Persian readability on top of the locale scale. */
+  line-height: calc(1.5 * var(--mohetios-fa-scale) * 1.4);
 }
 
 [dir='rtl'] body {

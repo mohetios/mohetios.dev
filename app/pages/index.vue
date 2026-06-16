@@ -5,7 +5,14 @@ const posts = computed(() => getBlogPosts(locale.value, 3))
 const labNotes = computed(() => getLabNotes(locale.value, 3))
 const projects = computed(() => getProjects(locale.value, 3))
 
-const featuredPost = computed(() => posts.value?.find((post) => post.thumbnail) || posts.value?.[0])
+const featuredItem = computed(() => getHomeFeaturedItem(locale.value))
+const featuredBadge = computed(() => {
+  if (featuredItem.value?.type === 'project') {
+    return featuredItem.value.status || t('nav.projects')
+  }
+
+  return featuredItem.value?.type === 'lab' ? t('badges.lab') : t('badges.blog')
+})
 useMohetiosSeo({
   description: () => t('site.description'),
   path: () => getLocalizedPublicPath('/', locale.value),
@@ -118,12 +125,12 @@ function formatDate(date?: string | Date) {
         </aside>
       </section>
 
-      <section v-if="featuredPost">
+      <section v-if="featuredItem">
         <article class="grid overflow-hidden rounded-2xl border border-default bg-default md:grid-cols-2">
-          <div v-if="featuredPost.thumbnail" class="bg-muted">
+          <div v-if="featuredItem.thumbnail" class="bg-muted">
             <NuxtImg
-              :src="featuredPost.thumbnail"
-              :alt="featuredPost.title"
+              :src="featuredItem.thumbnail"
+              :alt="featuredItem.title"
               loading="eager"
               fetchpriority="high"
               class="aspect-[4/3] h-full w-full object-cover md:aspect-auto"
@@ -148,23 +155,26 @@ function formatDate(date?: string | Date) {
               <UBadge color="neutral" variant="outline">
                 {{ t('home.featured.label') }}
               </UBadge>
-              <time v-if="featuredPost.date" class="text-base text-muted">
-                {{ formatDate(featuredPost.date) }}
+              <UBadge color="neutral" variant="soft">
+                {{ featuredBadge }}
+              </UBadge>
+              <time v-if="featuredItem.updated || featuredItem.date" class="text-base text-muted">
+                {{ formatDate(featuredItem.updated || featuredItem.date) }}
               </time>
             </div>
 
             <h2 class="text-3xl font-semibold tracking-tight text-highlighted sm:text-4xl">
-              <NuxtLink :to="toPublicPath(featuredPost.path)" class="hover:underline">
-                {{ featuredPost.title }}
+              <NuxtLink :to="toPublicPath(featuredItem.path)" class="hover:underline">
+                {{ featuredItem.title }}
               </NuxtLink>
             </h2>
             <p class="mt-4 text-lg text-muted">
-              {{ featuredPost.description }}
+              {{ featuredItem.description }}
             </p>
 
-            <div v-if="featuredPost.tags?.length" class="mt-5 flex flex-wrap gap-2">
+            <div v-if="featuredItem.tags?.length" class="mt-5 flex flex-wrap gap-2">
               <NuxtLink
-                v-for="tag in featuredPost.tags"
+                v-for="tag in featuredItem.tags"
                 :key="tag"
                 :to="localePath(`/tags/${normalizeTagSlug(tag)}`)"
                 class="inline-flex"
@@ -176,7 +186,7 @@ function formatDate(date?: string | Date) {
             </div>
 
             <UButton
-              :to="toPublicPath(featuredPost.path)"
+              :to="toPublicPath(featuredItem.path)"
               color="neutral"
               variant="subtle"
               trailing-icon="i-lucide-arrow-right"
