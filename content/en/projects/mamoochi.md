@@ -11,7 +11,7 @@ tags:
   - cloudflare
   - open-source
 repo: https://github.com/bagche/mamoochi
-website: https://mamoochi.bagche.app/
+website: https://mamoochi.mohetios.dev/
 featured: true
 ---
 
@@ -22,7 +22,7 @@ The project belongs to the same family as Totoro and Mohetios.dev. All three car
 Repository:
 
 - [bagche/mamoochi](https://github.com/bagche/mamoochi)
-- [mamoochi.bagche.app](https://mamoochi.bagche.app/)
+- [mamoochi.mohetios.dev](https://mamoochi.mohetios.dev/)
 
 ## Why It Exists
 

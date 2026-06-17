@@ -11,7 +11,7 @@ tags:
   - cloudflare
   - open-source
 repo: https://github.com/bagche/mamoochi
-website: https://mamoochi.bagche.app/
+website: https://mamoochi.mohetios.dev/
 featured: true
 ---
 
@@ -22,7 +22,7 @@ Mamoochi یک فریم‌ورک Jamstack متن‌باز از فضای Bagche ا
 Repository:
 
 - [bagche/mamoochi](https://github.com/bagche/mamoochi)
-- [mamoochi.bagche.app](https://mamoochi.bagche.app/)
+- [mamoochi.mohetios.dev](https://mamoochi.mohetios.dev/)
 
 ## چرا وجود دارد
 

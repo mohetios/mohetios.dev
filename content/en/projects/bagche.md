@@ -11,7 +11,7 @@ tags:
   - jamstack
   - cloudflare
 repo: https://github.com/bagche/mamoochi
-website: https://mamoochi.bagche.app/
+website: https://mamoochi.mohetios.dev/
 ---
 
 Bagche is a small product workspace around commerce, publishing, and reusable web infrastructure. Its public shape is still narrow: a Bagche organization surface, the Mamoochi framework, and a set of ideas around lightweight commerce that should not be described too loudly before the product boundary is clear.

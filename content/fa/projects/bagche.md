@@ -11,7 +11,7 @@ tags:
   - jamstack
   - cloudflare
 repo: https://github.com/bagche/mamoochi
-website: https://mamoochi.bagche.app/
+website: https://mamoochi.mohetios.dev/
 ---
 
 باغچه یک فضای کاری کوچک برای فکر کردن به commerce، publishing، و زیرساخت وب قابل استفاده دوباره است. شکل عمومی آن هنوز محدود است: یک سطح سازمانی برای Bagche، فریم‌ورک Mamoochi، و چند ایده پیرامون commerce سبک که تا روشن شدن مرز محصول، نباید با صدای بلندتر از واقعیت توضیح داده شوند.

@@ -11,7 +11,7 @@ tags:
   - cloudflare-pages
   - static-blog
 repo: https://github.com/mehotkhan/totoro
-website: https://totoro.alizemani.ir/
+website: https://totoro.mohetios.dev/
 ---
 
 Totoro یک starter کوچک Jamstack برای publishing بود: Nuxt برای application shell، Decap CMS برای ویرایش Git-backed، و Cloudflare Pages برای deploy.
