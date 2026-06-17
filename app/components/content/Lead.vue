@@ -38,19 +38,21 @@ const publicTo = computed(() => toPublicPath(props.to))
       <span>{{ placeholder }}</span>
     </div>
 
-    <div class="flex flex-col justify-center p-6 sm:p-8">
-      <UBadge v-if="badge" color="neutral" variant="outline" class="mb-5 w-fit">
+    <div class="flex flex-col justify-center space-y-5 p-6 sm:p-8">
+      <UBadge v-if="badge" color="neutral" variant="outline" class="w-fit">
         {{ badge }}
       </UBadge>
-      <h2 class="text-3xl font-semibold tracking-tight text-highlighted sm:text-4xl">
+      <h2
+        class="text-3xl font-semibold tracking-tight text-balance leading-snug text-highlighted sm:text-4xl"
+      >
         <NuxtLink :to="publicTo" class="hover:underline">
           {{ title }}
         </NuxtLink>
       </h2>
-      <p v-if="description" class="mt-4 text-pretty text-lg text-muted">
+      <p v-if="description" class="text-lg leading-7 text-pretty text-muted">
         {{ description }}
       </p>
-      <div class="mt-5 space-y-4">
+      <div class="space-y-4">
         <ContentMeta :date="date" :updated="updated" />
         <ContentTags :tags="tags" />
       </div>
@@ -59,7 +61,7 @@ const publicTo = computed(() => toPublicPath(props.to))
         color="neutral"
         variant="subtle"
         trailing-icon="i-lucide-arrow-right"
-        class="mt-7 w-fit"
+        class="w-fit"
       >
         {{ actionLabel }}
       </UButton>

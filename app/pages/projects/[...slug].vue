@@ -103,7 +103,9 @@ const { canonicalUrl: shareUrl } = useContentSeo({
 
       <template #related>
         <section v-if="relatedProjects.length" class="space-y-3">
-          <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
+          <p
+            class="text-sm font-medium tracking-[0.14em] text-muted uppercase rtl:normal-case rtl:tracking-normal"
+          >
             {{ t('content.related') }}
           </p>
           <div class="flex flex-col gap-1">

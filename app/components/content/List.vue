@@ -27,10 +27,7 @@ const publicTo = computed(() => toPublicPath(props.to))
     >
       {{ title }}
     </p>
-    <p
-      v-if="description"
-      class="mt-1 text-base text-muted"
-    >
+    <p v-if="description" class="mt-1 text-base leading-7 text-muted">
       {{ description }}
     </p>
   </NuxtLink>

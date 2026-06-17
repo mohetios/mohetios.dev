@@ -61,7 +61,9 @@ onBeforeUnmount(() => {
 
 <template>
   <section class="space-y-3">
-    <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
+    <p
+      class="text-sm font-medium tracking-[0.14em] text-muted uppercase rtl:normal-case rtl:tracking-normal"
+    >
       {{ t('content.share.title') }}
     </p>
 

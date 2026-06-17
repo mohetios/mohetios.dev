@@ -246,7 +246,7 @@ async function onSubmit() {
           <UCard :ui="cardUi">
             <ContentHtml
               :html="page.content"
-              class="prose prose-lg mb-8 border-b border-default pb-8"
+              class="prose prose-lg mb-8 max-w-none border-b border-default pb-8"
             />
 
             <div v-if="isSubmitted" class="space-y-4">
@@ -257,7 +257,7 @@ async function onSubmit() {
               </div>
 
               <div class="space-y-2">
-                <h2 class="text-lg font-semibold tracking-tight text-highlighted">
+                <h2 class="text-lg font-semibold leading-7 tracking-tight text-highlighted">
                   {{ t('contact.success.title') }}
                 </h2>
 
@@ -406,13 +406,13 @@ async function onSubmit() {
             <div class="min-w-0 space-y-4">
               <div class="min-w-0">
                 <p
-                  class="text-pretty text-sm font-medium tracking-[0.14em] text-primary uppercase break-words rtl:tracking-normal"
+                  class="text-pretty text-sm font-medium tracking-[0.14em] text-primary uppercase break-words rtl:normal-case rtl:tracking-normal"
                 >
                   {{ t('contact.sidebar.label') }}
                 </p>
 
                 <h2
-                  class="mt-2 text-pretty text-lg font-semibold tracking-tight text-highlighted break-words"
+                  class="mt-2 text-pretty text-lg font-semibold leading-7 tracking-tight text-highlighted break-words"
                 >
                   {{ t('contact.sidebar.title') }}
                 </h2>

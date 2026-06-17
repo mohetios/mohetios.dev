@@ -36,7 +36,7 @@ const publicTo = computed(() => toPublicPath(props.to))
         <UBadge v-if="badge" color="neutral" variant="outline">
           {{ badge }}
         </UBadge>
-        <time v-if="date" class="text-base text-muted">
+        <time v-if="date" class="text-base leading-7 text-muted">
           {{
             new Date(date).toLocaleDateString(locale, {
               year: 'numeric',
@@ -57,7 +57,7 @@ const publicTo = computed(() => toPublicPath(props.to))
           class="inline-flex"
           @click.stop
         >
-          <UBadge color="neutral" variant="soft" size="sm" class="hover:bg-muted">
+          <UBadge color="neutral" variant="soft" size="md" class="hover:bg-muted">
             {{ tag }}
           </UBadge>
         </NuxtLink>

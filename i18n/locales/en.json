@@ -704,13 +704,11 @@
     "subscribe": {
       "blog": {
         "title": "Follow the notebook",
-        "description": "Occasional notes on product engineering, systems, and building in public.",
-        "placeholder": "Email address"
+        "description": "Occasional notes on product engineering, systems, and building in public."
       },
       "lab": {
         "title": "Follow lab notes",
-        "description": "Short updates from experiments, prototypes, and technical research.",
-        "placeholder": "Email address"
+        "description": "Short updates from experiments, prototypes, and technical research."
       },
       "project": {
         "title": "Interested in this work?",
@@ -790,7 +788,11 @@
     "featured": {
       "label": "Featured note",
       "placeholder": "No featured note yet",
-      "action": "Read the note"
+      "actions": {
+        "blog": "Read the article",
+        "lab": "Open lab note",
+        "project": "Open project"
+      }
     },
     "tracks": {
       "title": "Three ways to follow the work",
@@ -815,15 +817,11 @@
         "clearInterfaces": "Prefer clear interfaces, stable tools, and honest constraints.",
         "openWorkshop": "Keep the work open enough to be reviewed, forked, and improved."
       }
-    },
-    "cta": {
-      "title": "Follow the work as it takes shape.",
-      "description": "Read the notes, inspect the projects, and trace the decisions behind the systems."
     }
   },
   "newsletter": {
-    "title": "Subscribe to the newsletter",
-    "description": "Occasional notes about product engineering, Cloudflare-native systems, AI workflows, and open-source experiments.",
+    "title": "Follow the work as it takes shape.",
+    "description": "Read the notes, explore the projects, and see the decisions behind the systems. Occasional notes on product engineering, Cloudflare-native systems, AI workflows, and open-source experiments.",
     "emailLabel": "Email address",
     "consent": "I agree to receive occasional emails from Mohetios.dev. I can unsubscribe anytime.",
     "submit": "Subscribe",

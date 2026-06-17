@@ -77,7 +77,9 @@ const { canonicalUrl: shareUrl } = useContentSeo({
       :surround="surround"
     >
       <template #notice>
-        <p class="mb-6 text-base text-muted">
+        <p
+          class="rounded-xl border border-default bg-muted/30 px-4 py-3 text-base leading-7 text-muted"
+        >
           {{ t('content.lab.workingNote') }}
         </p>
       </template>

@@ -3,16 +3,16 @@ import { z } from 'zod'
 
 type Props = {
   source?: string
-  compact?: boolean
   plain?: boolean
+  sectionTitle?: boolean
   title?: string
   description?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   source: 'content_footer',
-  compact: true,
   plain: false,
+  sectionTitle: false,
   title: undefined,
   description: undefined
 })
@@ -42,6 +42,12 @@ const schema = computed(() =>
 
 const resolvedTitle = computed(() => props.title || t('newsletter.title'))
 const resolvedDescription = computed(() => props.description || t('newsletter.description'))
+
+const titleClass = computed(() =>
+  props.sectionTitle
+    ? 'text-3xl font-semibold tracking-tight text-balance leading-snug text-highlighted'
+    : 'text-base font-semibold tracking-tight leading-7 text-pretty text-highlighted'
+)
 
 const statusMessage = computed(() => {
   switch (submitState.value) {
@@ -156,16 +162,16 @@ async function onSubmit() {
 
 <template>
   <section v-if="plain" class="w-full space-y-3">
-    <div class="space-y-1.5">
-      <p class="text-sm font-medium tracking-[0.14em] text-highlighted uppercase">
+    <div class="space-y-2">
+      <component :is="sectionTitle ? 'h2' : 'p'" :class="titleClass">
         {{ resolvedTitle }}
-      </p>
-      <p class="text-base text-muted">
+      </component>
+      <p class="text-base leading-7 text-pretty text-muted">
         {{ resolvedDescription }}
       </p>
     </div>
 
-    <p v-if="isComplete" class="text-base text-highlighted">
+    <p v-if="isComplete" class="text-base leading-7 text-highlighted">
       {{ statusMessage }}
     </p>
 
@@ -192,12 +198,12 @@ async function onSubmit() {
         </UButton>
       </UFieldGroup>
 
-      <p v-if="submitState === 'error'" class="text-sm text-error">
+      <p v-if="submitState === 'error'" class="text-sm leading-6 text-error">
         {{ statusMessage }}
       </p>
 
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <p class="min-w-0 flex-1 text-sm text-muted">
+        <p class="min-w-0 flex-1 text-sm leading-6 text-muted">
           {{ consentText }}
         </p>
 
@@ -225,30 +231,24 @@ async function onSubmit() {
     variant="subtle"
     :ui="{
       root: 'w-full rounded-2xl ring-1 ring-default',
-      body: compact ? 'p-4 sm:p-5' : 'p-5 sm:p-6'
+      body: 'p-4 sm:p-5'
     }"
   >
-    <div :class="compact ? 'space-y-3' : 'space-y-4'">
-      <div>
-        <p
-          :class="
-            compact
-              ? 'text-sm font-medium text-highlighted'
-              : 'text-base font-semibold tracking-tight text-highlighted'
-          "
-        >
+    <div class="space-y-3">
+      <div class="space-y-2">
+        <component :is="sectionTitle ? 'h2' : 'p'" :class="titleClass">
           {{ resolvedTitle }}
-        </p>
-        <p class="mt-1.5 text-base text-muted">
+        </component>
+        <p class="text-base leading-7 text-pretty text-muted">
           {{ resolvedDescription }}
         </p>
       </div>
 
       <div v-if="isComplete" class="space-y-1.5">
-        <p class="text-base text-highlighted">
+        <p class="text-base leading-7 text-highlighted">
           {{ statusMessage }}
         </p>
-        <p class="text-sm text-muted">
+        <p class="text-sm leading-6 text-muted">
           {{ t('newsletter.privacyNote') }}
         </p>
       </div>
@@ -258,7 +258,7 @@ async function onSubmit() {
           <UInput
             v-model="email"
             class="min-w-0 flex-1"
-            :size="compact ? 'sm' : 'md'"
+            size="sm"
             type="email"
             autocomplete="email"
             :placeholder="t('newsletter.emailLabel')"
@@ -267,7 +267,7 @@ async function onSubmit() {
           <UButton
             type="submit"
             color="primary"
-            :size="compact ? 'sm' : 'md'"
+            size="sm"
             icon="i-lucide-mail-plus"
             :loading="isSubmitting"
             :disabled="isSubmitting"
@@ -276,12 +276,12 @@ async function onSubmit() {
           </UButton>
         </UFieldGroup>
 
-        <p v-if="submitState === 'error'" class="text-sm text-error">
+        <p v-if="submitState === 'error'" class="text-sm leading-6 text-error">
           {{ statusMessage }}
         </p>
 
         <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <p class="min-w-0 flex-1 text-sm text-muted">
+          <p class="min-w-0 flex-1 text-sm leading-6 text-muted">
             {{ consentText }}
           </p>
 

@@ -36,16 +36,14 @@ useMohetiosSeo({
 
     <UPageBody>
       <div v-if="visibleProjects.length" class="space-y-10">
-        <section>
-          <div class="mb-5 flex items-end justify-between gap-4">
-            <div>
-              <h2 class="text-3xl font-semibold tracking-tight text-highlighted">
-                {{ t('content.projects.featured') }}
-              </h2>
-              <p class="mt-2 text-base text-muted">
-                {{ t('content.projects.featuredDescription') }}
-              </p>
-            </div>
+        <section class="space-y-6">
+          <div class="space-y-2">
+            <h2 class="text-3xl font-semibold tracking-tight text-balance leading-snug text-highlighted">
+              {{ t('content.projects.featured') }}
+            </h2>
+            <p class="text-base leading-7 text-pretty text-muted">
+              {{ t('content.projects.featuredDescription') }}
+            </p>
           </div>
           <UPageGrid>
             <ProjectsCard
@@ -67,8 +65,8 @@ useMohetiosSeo({
           </UPageGrid>
         </section>
 
-        <section v-if="otherProjects.length">
-          <h2 class="mb-5 text-3xl font-semibold tracking-tight text-highlighted">
+        <section v-if="otherProjects.length" class="space-y-6">
+          <h2 class="text-3xl font-semibold tracking-tight text-balance leading-snug text-highlighted">
             {{ t('content.projects.archive') }}
           </h2>
           <UPageGrid>

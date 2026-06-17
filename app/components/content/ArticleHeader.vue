@@ -44,7 +44,7 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
       <div v-if="backTo" class="mb-6">
         <NuxtLink
           :to="backTo"
-          class="inline-flex items-center gap-2 text-base text-muted transition-colors hover:text-highlighted"
+          class="inline-flex items-center gap-2 text-base leading-7 text-muted transition-colors hover:text-highlighted"
         >
           <UIcon name="i-lucide-arrow-left" class="size-4" />
           {{ backLabel }}
@@ -53,23 +53,23 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
 
       <p
         v-if="status"
-        class="text-sm font-medium tracking-[0.14em] text-primary uppercase"
+        class="text-sm font-medium tracking-[0.14em] text-primary uppercase rtl:normal-case rtl:tracking-normal"
       >
         {{ status }}
       </p>
 
       <h1
-        class="mt-2 text-balance text-4xl font-semibold tracking-tight text-highlighted sm:text-5xl rtl:leading-[1.4]"
+        class="mt-2 text-balance text-4xl font-semibold tracking-tight leading-snug text-highlighted sm:text-5xl"
       >
         {{ title }}
       </h1>
 
-      <p v-if="description" class="mt-3 text-pretty text-lg text-muted">
+      <p v-if="description" class="mt-3 text-pretty text-lg leading-7 text-muted">
         {{ description }}
       </p>
 
       <div
-        class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-base text-muted"
+        class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-base leading-7 text-muted"
         role="group"
         :aria-label="t('content.article.metadata')"
       >
@@ -110,7 +110,7 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
           fetchpriority="high"
           decoding="async"
         />
-        <figcaption v-if="thumbnailCredit" class="mt-2 text-center text-sm text-muted">
+        <figcaption v-if="thumbnailCredit" class="mt-2 text-center text-sm leading-6 text-muted">
           {{ thumbnailCredit }}
         </figcaption>
       </figure>

@@ -16,8 +16,14 @@ export default defineAppConfig({
     },
     pageHeader: {
       slots: {
-        title: 'text-4xl font-semibold tracking-tight text-balance text-highlighted sm:text-5xl',
-        description: 'mt-3 text-lg text-pretty text-muted'
+        title: 'text-4xl font-semibold tracking-tight text-balance leading-snug text-highlighted sm:text-5xl',
+        description: 'mt-3 text-lg leading-7 text-pretty text-muted'
+      }
+    },
+    pageCard: {
+      slots: {
+        title: 'text-base font-semibold tracking-tight leading-snug text-highlighted',
+        description: 'mt-2 text-base leading-7 text-muted'
       }
     }
   }

@@ -30,27 +30,33 @@ useMohetiosSeo({
 
     <UPageBody>
       <div class="mb-8 grid gap-4 rounded-2xl border border-default bg-muted/30 p-5 sm:grid-cols-3">
-        <div>
-          <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
+        <div class="space-y-2">
+          <p
+            class="text-sm font-medium tracking-[0.14em] text-muted uppercase rtl:normal-case rtl:tracking-normal"
+          >
             {{ t('content.lab.stats.notes') }}
           </p>
-          <p class="mt-2 text-3xl font-semibold text-highlighted">
+          <p class="text-3xl font-semibold tracking-tight text-highlighted">
             {{ visibleNotes.length }}
           </p>
         </div>
-        <div>
-          <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
+        <div class="space-y-2">
+          <p
+            class="text-sm font-medium tracking-[0.14em] text-muted uppercase rtl:normal-case rtl:tracking-normal"
+          >
             {{ t('content.lab.stats.active') }}
           </p>
-          <p class="mt-2 text-3xl font-semibold text-highlighted">
+          <p class="text-3xl font-semibold tracking-tight text-highlighted">
             {{ activeNotes }}
           </p>
         </div>
-        <div>
-          <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
+        <div class="space-y-2">
+          <p
+            class="text-sm font-medium tracking-[0.14em] text-muted uppercase rtl:normal-case rtl:tracking-normal"
+          >
             {{ t('content.lab.stats.latest') }}
           </p>
-          <ContentMeta class="mt-3" :date="latestUpdate" />
+          <ContentMeta class="mt-1" :date="latestUpdate" />
         </div>
       </div>
 

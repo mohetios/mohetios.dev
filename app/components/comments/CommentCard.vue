@@ -46,13 +46,13 @@ function toggleReply(commentId: string) {
       </time>
     </header>
 
-    <p class="whitespace-pre-wrap text-base text-default">
+    <p class="whitespace-pre-wrap text-base leading-7 text-default">
       {{ comment.body }}
     </p>
 
     <button
       type="button"
-      class="self-start text-base font-medium text-muted transition-colors duration-150 hover:text-primary"
+      class="self-start text-base leading-7 font-medium text-muted transition-colors duration-150 hover:text-primary"
       @click="toggleReply(comment.id)"
     >
       {{ replyingTo === comment.id ? t('comments.cancelReply') : t('comments.replyAction') }}
@@ -87,7 +87,7 @@ function toggleReply(commentId: string) {
           </time>
         </header>
 
-        <p class="whitespace-pre-wrap text-base text-default">
+        <p class="whitespace-pre-wrap text-base leading-7 text-default">
           {{ reply.body }}
         </p>
       </article>

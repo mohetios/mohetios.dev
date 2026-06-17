@@ -92,7 +92,7 @@ const footerSections = computed<FooterSection[]>(() => [
             <SiteLogo show-tagline size="footer" />
           </NuxtLink>
 
-          <p class="mt-6 text-pretty text-base text-muted">
+          <p class="mt-6 text-pretty text-base leading-7 text-muted">
             {{ t('site.description') }}
           </p>
 
@@ -112,7 +112,7 @@ const footerSections = computed<FooterSection[]>(() => [
         >
           <section v-for="section in footerSections" :key="section.title">
             <h2
-              class="text-sm font-bold tracking-[0.14em] text-highlighted uppercase rtl:tracking-normal"
+              class="text-sm font-bold tracking-[0.14em] text-highlighted uppercase rtl:normal-case rtl:tracking-normal"
             >
               {{ section.title }}
             </h2>
@@ -120,7 +120,7 @@ const footerSections = computed<FooterSection[]>(() => [
               <li v-for="link in section.links" :key="link.to">
                 <NuxtLink
                   :to="link.to"
-                  class="inline-flex items-center gap-[0.45rem] text-base font-medium text-muted no-underline transition-[color,transform] duration-[160ms] hover:-translate-y-px hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                  class="inline-flex items-center gap-[0.45rem] text-base leading-7 font-medium text-muted no-underline transition-[color,transform] duration-[160ms] hover:-translate-y-px hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
                   :target="link.external ? '_blank' : undefined"
                   :rel="link.external ? 'noopener noreferrer' : undefined"
                 >
@@ -135,7 +135,7 @@ const footerSections = computed<FooterSection[]>(() => [
       </div>
 
       <div
-        class="flex flex-col justify-between gap-4 border-t border-default py-5 pb-8 text-base text-muted sm:flex-row"
+        class="flex flex-col justify-between gap-4 border-t border-default py-5 pb-8 text-base leading-7 text-muted sm:flex-row"
       >
         <p>{{ t('site.footer') }}</p>
         <p>© {{ currentYear }} {{ t('site.name') }}</p>

@@ -11,14 +11,14 @@ const listTag = computed(() => (props.ordered ? 'ol' : 'ul'))
 
 const listClass = computed(() => {
   if (props.ordered) {
-    return 'list-decimal space-y-2 ps-5 text-base marker:font-medium marker:text-muted'
+    return 'list-decimal space-y-2 ps-5 text-base leading-7 marker:font-medium marker:text-muted'
   }
 
   if (props.nested) {
-    return 'mt-1.5 list-disc space-y-1.5 ps-5 text-base marker:text-primary/80'
+    return 'mt-1.5 list-disc space-y-1.5 ps-5 text-base leading-7 marker:text-primary/80'
   }
 
-  return 'list-disc space-y-2 ps-5 text-base marker:text-primary/80'
+  return 'list-disc space-y-2 ps-5 text-base leading-7 marker:text-primary/80'
 })
 </script>
 

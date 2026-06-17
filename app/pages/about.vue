@@ -99,7 +99,9 @@ useMohetiosSeo({
               class="mt-8 space-y-4 border-t border-default pt-8"
             >
               <div class="space-y-2">
-                <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
+                <p
+                  class="text-sm font-medium tracking-[0.14em] text-muted uppercase rtl:normal-case rtl:tracking-normal"
+                >
                   {{ t('about.latestWriting.title') }}
                 </p>
                 <p class="text-base leading-7 text-muted">
@@ -141,13 +143,13 @@ useMohetiosSeo({
             <div class="min-w-0 space-y-4">
               <div class="min-w-0">
                 <p
-                  class="text-pretty text-sm font-medium tracking-[0.14em] text-primary uppercase break-words rtl:tracking-normal"
+                  class="text-pretty text-sm font-medium tracking-[0.14em] text-primary uppercase break-words rtl:normal-case rtl:tracking-normal"
                 >
                   {{ t('about.sidebar.label') }}
                 </p>
 
                 <h2
-                  class="mt-2 text-pretty text-lg font-semibold tracking-tight text-highlighted break-words"
+                  class="mt-2 text-pretty text-lg font-semibold leading-7 tracking-tight text-highlighted break-words"
                 >
                   {{ t('about.sidebar.title') }}
                 </h2>

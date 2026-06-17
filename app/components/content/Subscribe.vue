@@ -12,7 +12,6 @@ const localePath = useLocalePath()
   <NewsletterSubscribe
     v-if="kind === 'blog'"
     class="w-full"
-    compact
     :plain="plain"
     source="blog_post"
     :title="t('content.subscribe.blog.title')"
@@ -22,7 +21,6 @@ const localePath = useLocalePath()
   <NewsletterSubscribe
     v-else-if="kind === 'lab'"
     class="w-full"
-    compact
     :plain="plain"
     source="lab_post"
     :title="t('content.subscribe.lab.title')"
@@ -30,11 +28,11 @@ const localePath = useLocalePath()
   />
 
   <section v-else class="w-full space-y-3">
-    <div class="space-y-1.5">
-      <p class="text-sm font-medium tracking-[0.14em] text-highlighted uppercase">
+    <div class="space-y-2">
+      <p class="text-base font-semibold tracking-tight leading-7 text-pretty text-highlighted">
         {{ t('content.subscribe.project.title') }}
       </p>
-      <p class="text-base text-muted">
+      <p class="text-base leading-7 text-pretty text-muted">
         {{ t('content.subscribe.project.description') }}
       </p>
     </div>

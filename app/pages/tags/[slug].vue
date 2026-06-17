@@ -125,11 +125,13 @@ useMohetiosSeo({
           </div>
 
           <section v-if="featuredItem" class="space-y-4">
-            <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
+            <p
+              class="text-sm font-medium tracking-[0.14em] text-muted uppercase rtl:normal-case rtl:tracking-normal"
+            >
               {{ t('tags.latest') }}
             </p>
-            <article class="rounded-lg border border-default bg-default p-6 sm:p-7">
-              <div class="mb-5 flex flex-wrap items-center gap-3">
+            <article class="space-y-5 rounded-lg border border-default bg-default p-6 sm:p-7">
+              <div class="flex flex-wrap items-center gap-3">
                 <UBadge color="neutral" variant="outline">
                   {{ typeLabel(featuredItem.type) }}
                 </UBadge>
@@ -139,23 +141,27 @@ useMohetiosSeo({
                   :status="featuredItem.status"
                 />
               </div>
-              <h2 class="text-3xl font-semibold tracking-tight text-highlighted sm:text-4xl">
+              <h2
+                class="text-3xl font-semibold tracking-tight text-balance text-highlighted sm:text-4xl"
+              >
                 <NuxtLink :to="toPublicPath(featuredItem.path)" class="hover:underline">
                   {{ featuredItem.title }}
                 </NuxtLink>
               </h2>
               <p
                 v-if="featuredItem.description"
-                class="mt-4 text-base leading-7 text-pretty text-muted"
+                class="text-base leading-7 text-pretty text-muted"
               >
                 {{ featuredItem.description }}
               </p>
-              <ContentTags class="mt-5" :tags="featuredItem.tags" />
+              <ContentTags :tags="featuredItem.tags" />
             </article>
           </section>
 
           <section v-if="remainingItems.length" class="space-y-4">
-            <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
+            <p
+              class="text-sm font-medium tracking-[0.14em] text-muted uppercase rtl:normal-case rtl:tracking-normal"
+            >
               {{ t('tags.results') }}
             </p>
             <div class="grid gap-4 md:grid-cols-2">
@@ -199,10 +205,12 @@ useMohetiosSeo({
         <aside class="space-y-5 lg:sticky lg:top-24 lg:self-start">
           <UCard variant="subtle">
             <div class="space-y-4">
-              <h2 class="text-sm font-medium tracking-[0.14em] text-highlighted uppercase">
+              <h2
+                class="text-sm font-medium tracking-[0.14em] text-highlighted uppercase rtl:normal-case rtl:tracking-normal"
+              >
                 {{ t('tags.counts') }}
               </h2>
-              <dl class="space-y-2 text-base">
+              <dl class="space-y-2 text-base leading-7">
                 <div
                   v-for="tab in tabs.slice(1)"
                   :key="tab.type"
@@ -217,7 +225,9 @@ useMohetiosSeo({
 
           <UCard v-if="relatedTags.length" variant="subtle">
             <div class="space-y-4">
-              <h2 class="text-sm font-medium tracking-[0.14em] text-highlighted uppercase">
+              <h2
+                class="text-sm font-medium tracking-[0.14em] text-highlighted uppercase rtl:normal-case rtl:tracking-normal"
+              >
                 {{ t('tags.related') }}
               </h2>
               <div class="flex flex-wrap gap-2">

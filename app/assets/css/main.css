@@ -82,7 +82,9 @@
   --mohetios-reading-width: 46rem;
   --mohetios-article-wide-width: 64rem;
 
-  --mohetios-fa-scale: 1.08;
+  --mohetios-fa-scale: 1.04;
+  --mohetios-fa-leading-scale: 0.9;
+  --mohetios-fa-lh-extra: 1.4;
 
   --ui-container: var(--mohetios-site-width);
 }
@@ -154,23 +156,44 @@ html[dir='rtl'] {
 }
 
 html[lang^='fa'] {
+  --mohetios-fa-lh-5: calc(1.25rem * var(--mohetios-fa-lh-extra) * var(--mohetios-fa-leading-scale));
+  --mohetios-fa-lh-6: calc(1.5rem * var(--mohetios-fa-lh-extra) * var(--mohetios-fa-leading-scale));
+  --mohetios-fa-lh-7: calc(1.75rem * var(--mohetios-fa-lh-extra) * var(--mohetios-fa-leading-scale));
+  --mohetios-fa-lh-8: calc(2rem * var(--mohetios-fa-lh-extra) * var(--mohetios-fa-leading-scale));
+  --mohetios-fa-lh-snug: calc(1.375 * var(--mohetios-fa-lh-extra) * var(--mohetios-fa-leading-scale));
+
   font-size: calc(100% * var(--mohetios-fa-scale));
-  /* Add 40% extra line-height for Persian readability on top of the locale scale. */
-  line-height: calc(1.5 * var(--mohetios-fa-scale) * 1.4);
+  line-height: calc(1.5 * var(--mohetios-fa-scale) * 1.2 * var(--mohetios-fa-leading-scale));
 }
 
-/* Tailwind leading utilities set fixed line-height values and bypass html inheritance.
-   Re-scale the ones used across the app so Persian spacing applies consistently. */
+/* Sync common text sizes with the FA leading scale. */
+html[lang^='fa'] .text-lg {
+  line-height: var(--mohetios-fa-lh-7);
+}
+
+html[lang^='fa'] :where(.text-2xl, .text-3xl, .text-4xl, .text-5xl) {
+  line-height: var(--mohetios-fa-lh-snug);
+}
+
+/* Explicit leading-* utilities win over the text-size defaults above. */
+html[lang^='fa'] .leading-5 {
+  line-height: var(--mohetios-fa-lh-5);
+}
+
 html[lang^='fa'] .leading-6 {
-  line-height: 2.1rem;
+  line-height: var(--mohetios-fa-lh-6);
 }
 
 html[lang^='fa'] .leading-7 {
-  line-height: 2.45rem;
+  line-height: var(--mohetios-fa-lh-7);
+}
+
+html[lang^='fa'] .leading-8 {
+  line-height: var(--mohetios-fa-lh-8);
 }
 
 html[lang^='fa'] .leading-snug {
-  line-height: 1.925;
+  line-height: var(--mohetios-fa-lh-snug);
 }
 
 [dir='rtl'] body {

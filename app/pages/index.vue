@@ -13,6 +13,17 @@ const featuredBadge = computed(() => {
 
   return featuredItem.value?.type === 'lab' ? t('badges.lab') : t('badges.blog')
 })
+const featuredActionLabel = computed(() => {
+  if (featuredItem.value?.type === 'project') {
+    return t('home.featured.actions.project')
+  }
+
+  if (featuredItem.value?.type === 'lab') {
+    return t('home.featured.actions.lab')
+  }
+
+  return t('home.featured.actions.blog')
+})
 useMohetiosSeo({
   description: () => t('site.description'),
   path: () => getLocalizedPublicPath('/', locale.value),
@@ -78,17 +89,17 @@ function formatDate(date?: string | Date) {
         <div class="space-y-7">
           <div class="space-y-5">
             <h1
-              class="text-4xl font-semibold tracking-tight text-balance text-highlighted sm:text-5xl"
+              class="text-4xl font-semibold tracking-tight text-balance leading-snug text-highlighted sm:text-5xl"
             >
               {{ t('site.tagline') }}
             </h1>
-            <p class="text-lg text-pretty text-muted">
+            <p class="text-lg leading-7 text-pretty text-muted">
               {{ t('home.hero.description') }}
             </p>
           </div>
 
           <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <UButton :to="localePath('/blog')" size="lg" trailing-icon="i-lucide-arrow-right">
+            <UButton :to="localePath('/blog')" size="lg">
               {{ t('actions.readBlog') }}
             </UButton>
             <UButton :to="localePath('/lab')" color="neutral" variant="subtle" size="lg">
@@ -103,7 +114,9 @@ function formatDate(date?: string | Date) {
         <aside class="rounded-2xl border border-default bg-muted/30 p-5 sm:p-6">
           <div class="flex items-center justify-between gap-4 border-b border-default pb-4">
             <div>
-              <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
+              <p
+                class="text-sm font-medium tracking-[0.14em] text-muted uppercase rtl:normal-case rtl:tracking-normal"
+              >
                 {{ t('home.workshop.label') }}
               </p>
             </div>
@@ -117,11 +130,11 @@ function formatDate(date?: string | Date) {
               class="flex items-center gap-3 rounded-xl border border-default bg-default px-4 py-3"
             >
               <span class="size-2 rounded-full bg-primary" />
-              <span class="text-base font-medium text-highlighted">{{ item }}</span>
+              <span class="text-base leading-7 font-medium text-highlighted">{{ item }}</span>
             </div>
           </div>
 
-          <p class="border-t border-default pt-4 text-base text-muted">
+          <p class="border-t border-default pt-4 text-base leading-7 text-muted">
             {{ t('home.workshop.footer') }}
           </p>
         </aside>
@@ -129,21 +142,20 @@ function formatDate(date?: string | Date) {
 
       <section v-if="featuredItem">
         <article
-          class="grid overflow-hidden rounded-2xl border border-default bg-default md:grid-cols-[1.15fr_0.85fr]"
+          class="grid overflow-hidden rounded-2xl border border-default bg-default md:grid-cols-2"
         >
-          <div
-            v-if="featuredItem.thumbnail"
-            class="flex min-h-72 items-center bg-muted p-4 sm:min-h-80"
-          >
-            <NuxtImg
-              :src="featuredItem.thumbnail"
-              :alt="featuredItem.title"
-              loading="eager"
-              fetchpriority="high"
-              class="aspect-[4/3] h-full w-full object-contain md:aspect-auto"
-              sizes="xs:100vw md:58vw lg:660px"
-              placeholder
-            />
+          <div v-if="featuredItem.thumbnail" class="min-h-72 bg-muted sm:min-h-80">
+            <NuxtLink :to="toPublicPath(featuredItem.path)" class="block h-full">
+              <NuxtImg
+                :src="featuredItem.thumbnail"
+                :alt="featuredItem.title"
+                loading="eager"
+                fetchpriority="high"
+                class="aspect-[4/3] h-full w-full object-cover md:aspect-auto"
+                sizes="xs:100vw md:50vw lg:560px"
+                placeholder
+              />
+            </NuxtLink>
           </div>
           <div
             v-else
@@ -157,60 +169,51 @@ function formatDate(date?: string | Date) {
             <span>{{ t('home.featured.placeholder') }}</span>
           </div>
 
-          <div class="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
-            <div class="mb-5 flex flex-wrap items-center gap-3">
+          <div class="flex flex-col justify-center space-y-5 p-6 sm:p-8 lg:p-10">
+            <div class="flex flex-wrap items-center gap-3">
               <UBadge color="neutral" variant="outline">
                 {{ t('home.featured.label') }}
               </UBadge>
               <UBadge color="neutral" variant="soft">
                 {{ featuredBadge }}
               </UBadge>
-              <time v-if="featuredItem.updated || featuredItem.date" class="text-base text-muted">
+              <time
+                v-if="featuredItem.updated || featuredItem.date"
+                class="text-base leading-7 text-muted"
+              >
                 {{ formatDate(featuredItem.updated || featuredItem.date) }}
               </time>
             </div>
 
-            <h2 class="text-3xl font-semibold tracking-tight text-highlighted sm:text-4xl">
+            <h2
+              class="text-3xl font-semibold tracking-tight text-balance leading-snug text-highlighted sm:text-4xl"
+            >
               <NuxtLink :to="toPublicPath(featuredItem.path)" class="hover:underline">
                 {{ featuredItem.title }}
               </NuxtLink>
             </h2>
-            <p class="mt-4 text-lg text-muted">
+            <p class="text-lg leading-7 text-pretty text-muted">
               {{ featuredItem.description }}
             </p>
-
-            <div v-if="featuredItem.tags?.length" class="mt-5 flex flex-wrap gap-2">
-              <NuxtLink
-                v-for="tag in featuredItem.tags"
-                :key="tag"
-                :to="localePath(`/tags/${normalizeTagSlug(tag)}`)"
-                class="inline-flex"
-              >
-                <UBadge color="neutral" variant="soft" class="hover:bg-muted">
-                  {{ tag }}
-                </UBadge>
-              </NuxtLink>
-            </div>
 
             <UButton
               :to="toPublicPath(featuredItem.path)"
               color="neutral"
               variant="subtle"
-              trailing-icon="i-lucide-arrow-right"
-              class="mt-7 w-fit"
+              class="w-fit"
             >
-              {{ t('home.featured.action') }}
+              {{ featuredActionLabel }}
             </UButton>
           </div>
         </article>
       </section>
 
-      <section class="space-y-5">
-        <div>
-          <h2 class="text-3xl font-semibold tracking-tight text-highlighted">
+      <section class="space-y-6">
+        <div class="space-y-2">
+          <h2 class="text-3xl font-semibold tracking-tight text-balance leading-snug text-highlighted">
             {{ t('home.tracks.title') }}
           </h2>
-          <p class="mt-2 text-base text-muted">
+          <p class="text-base leading-7 text-pretty text-muted">
             {{ t('home.tracks.description') }}
           </p>
         </div>
@@ -225,29 +228,26 @@ function formatDate(date?: string | Date) {
             variant="subtle"
           >
             <template #leading>
-              <div
-                class="flex size-10 items-center justify-center rounded-xl border border-default bg-default"
-              >
-                <UIcon :name="track.icon" class="size-5 text-muted" />
+              <div class="flex size-12 items-center justify-center">
+                <UIcon :name="track.icon" class="size-8 text-muted" />
               </div>
             </template>
 
             <template #footer>
-              <span class="inline-flex items-center gap-2 text-base font-medium text-highlighted">
+              <span class="inline-flex text-base leading-7 font-medium text-highlighted">
                 {{ track.label }}
-                <UIcon name="i-lucide-arrow-right" class="size-4" />
               </span>
             </template>
           </UPageCard>
         </UPageGrid>
       </section>
 
-      <section class="space-y-5">
-        <div>
-          <h2 class="text-3xl font-semibold tracking-tight text-highlighted">
+      <section class="space-y-6">
+        <div class="space-y-2">
+          <h2 class="text-3xl font-semibold tracking-tight text-balance leading-snug text-highlighted">
             {{ t('sections.latestWriting') }}
           </h2>
-          <p class="mt-2 text-base text-muted">
+          <p class="text-base leading-7 text-pretty text-muted">
             {{ t('sections.latestWritingDescription') }}
           </p>
         </div>
@@ -268,18 +268,18 @@ function formatDate(date?: string | Date) {
         <UiEmpty v-else :title="t('empty.blogTitle')" :description="t('empty.blogDescription')" />
       </section>
 
-      <section class="grid gap-8 lg:grid-cols-2">
-        <div class="space-y-5">
-          <div>
-            <h2 class="text-3xl font-semibold tracking-tight text-highlighted">
+      <section class="grid items-stretch gap-8 lg:grid-cols-2">
+        <div class="flex h-full flex-col gap-6">
+          <div class="space-y-2">
+            <h2 class="text-3xl font-semibold tracking-tight text-balance leading-snug text-highlighted">
               {{ t('sections.labNotes') }}
             </h2>
-            <p class="mt-2 text-base text-muted">
+            <p class="text-base leading-7 text-pretty text-muted">
               {{ t('sections.labNotesDescription') }}
             </p>
           </div>
 
-          <div v-if="labNotes?.length" class="grid auto-rows-fr gap-4">
+          <div v-if="labNotes?.length" class="grid flex-1 auto-rows-fr gap-4">
             <ContentCard
               v-for="note in labNotes"
               :key="note.id"
@@ -296,17 +296,17 @@ function formatDate(date?: string | Date) {
           <UiEmpty v-else :title="t('empty.labTitle')" :description="t('empty.labDescription')" />
         </div>
 
-        <div class="space-y-5">
-          <div>
-            <h2 class="text-3xl font-semibold tracking-tight text-highlighted">
+        <div class="flex h-full flex-col gap-6">
+          <div class="space-y-2">
+            <h2 class="text-3xl font-semibold tracking-tight text-balance leading-snug text-highlighted">
               {{ t('sections.featuredProjects') }}
             </h2>
-            <p class="mt-2 text-base text-muted">
+            <p class="text-base leading-7 text-pretty text-muted">
               {{ t('sections.featuredProjectsDescription') }}
             </p>
           </div>
 
-          <div v-if="projects?.length" class="grid auto-rows-fr gap-4">
+          <div v-if="projects?.length" class="grid flex-1 auto-rows-fr gap-4">
             <ContentCard
               v-for="project in projects"
               :key="project.id"
@@ -329,11 +329,11 @@ function formatDate(date?: string | Date) {
       </section>
 
       <section class="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
-        <div>
-          <h2 class="text-3xl font-semibold tracking-tight text-highlighted">
+        <div class="space-y-2">
+          <h2 class="text-3xl font-semibold tracking-tight text-balance leading-snug text-highlighted">
             {{ t('sections.principles') }}
           </h2>
-          <p class="mt-2 text-base text-muted">
+          <p class="text-base leading-7 text-pretty text-muted">
             {{ t('sections.principlesDescription') }}
           </p>
         </div>
@@ -344,10 +344,10 @@ function formatDate(date?: string | Date) {
             :key="principle"
             class="grid gap-4 rounded-2xl border border-default bg-muted/20 p-5 sm:grid-cols-[3rem_1fr]"
           >
-            <div class="text-base font-semibold text-muted">
+            <div class="text-sm font-semibold tabular-nums leading-7 text-muted">
               {{ String(index + 1).padStart(2, '0') }}
             </div>
-            <p class="text-base text-muted">
+            <p class="text-base leading-7 text-muted">
               {{ principle }}
             </p>
           </div>
@@ -355,31 +355,7 @@ function formatDate(date?: string | Date) {
       </section>
 
       <section>
-        <div class="rounded-2xl border border-default bg-muted/30 p-6 sm:p-8 lg:p-10">
-          <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <div>
-              <h2 class="text-3xl font-semibold tracking-tight text-highlighted">
-                {{ t('home.cta.title') }}
-              </h2>
-              <p class="mt-2 text-base text-muted">
-                {{ t('home.cta.description') }}
-              </p>
-            </div>
-
-            <div class="flex flex-col gap-3 sm:flex-row">
-              <UButton :to="localePath('/blog')" trailing-icon="i-lucide-arrow-right">
-                {{ t('nav.blog') }}
-              </UButton>
-              <UButton :to="localePath('/projects')" color="neutral" variant="subtle">
-                {{ t('nav.projects') }}
-              </UButton>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section>
-        <NewsletterSubscribe source="home" />
+        <NewsletterSubscribe source="home" section-title />
       </section>
     </UPageBody>
   </UPage>
