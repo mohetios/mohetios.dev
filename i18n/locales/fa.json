@@ -692,6 +692,15 @@
       "copied": "کپی شد",
       "copyFailed": "ناموفق"
     },
+    "mermaid": {
+      "fullscreen": "تمام‌صفحه",
+      "openSvg": "باز کردن SVG",
+      "pan": "برای جابه‌جایی بکش",
+      "zoomIn": "بزرگ‌نمایی",
+      "zoomOut": "کوچک‌نمایی",
+      "reset": "بازنشانی",
+      "close": "بستن"
+    },
     "subscribe": {
       "blog": {
         "title": "یادداشت‌ها را دنبال کن",

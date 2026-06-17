@@ -692,6 +692,15 @@
       "copied": "Copied",
       "copyFailed": "Failed"
     },
+    "mermaid": {
+      "fullscreen": "Fullscreen",
+      "openSvg": "Open SVG",
+      "pan": "Drag to pan",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "reset": "Reset",
+      "close": "Close"
+    },
     "subscribe": {
       "blog": {
         "title": "Follow the notebook",
