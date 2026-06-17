@@ -77,7 +77,9 @@ function formatDate(date?: string | Date) {
       <section class="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
         <div class="space-y-7">
           <div class="space-y-5">
-            <h1 class="text-4xl font-semibold tracking-tight text-balance text-highlighted sm:text-5xl">
+            <h1
+              class="text-4xl font-semibold tracking-tight text-balance text-highlighted sm:text-5xl"
+            >
               {{ t('site.tagline') }}
             </h1>
             <p class="text-lg text-pretty text-muted">
@@ -126,15 +128,20 @@ function formatDate(date?: string | Date) {
       </section>
 
       <section v-if="featuredItem">
-        <article class="grid overflow-hidden rounded-2xl border border-default bg-default md:grid-cols-2">
-          <div v-if="featuredItem.thumbnail" class="bg-muted">
+        <article
+          class="grid overflow-hidden rounded-2xl border border-default bg-default md:grid-cols-[1.15fr_0.85fr]"
+        >
+          <div
+            v-if="featuredItem.thumbnail"
+            class="flex min-h-72 items-center bg-muted p-4 sm:min-h-80"
+          >
             <NuxtImg
               :src="featuredItem.thumbnail"
               :alt="featuredItem.title"
               loading="eager"
               fetchpriority="high"
-              class="aspect-[4/3] h-full w-full object-cover md:aspect-auto"
-              sizes="xs:100vw md:50vw lg:560px"
+              class="aspect-[4/3] h-full w-full object-contain md:aspect-auto"
+              sizes="xs:100vw md:58vw lg:660px"
               placeholder
             />
           </div>
@@ -286,11 +293,7 @@ function formatDate(date?: string | Date) {
               hide-media
             />
           </div>
-          <UiEmpty
-            v-else
-            :title="t('empty.labTitle')"
-            :description="t('empty.labDescription')"
-          />
+          <UiEmpty v-else :title="t('empty.labTitle')" :description="t('empty.labDescription')" />
         </div>
 
         <div class="space-y-5">
