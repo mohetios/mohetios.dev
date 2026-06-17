@@ -45,6 +45,12 @@ html[lang^='fa'] .prose :where(h1, h2, h3, h4) {
   text-align: left;
 }
 
+.prose pre[dir='rtl'],
+.prose pre[dir='rtl'] code {
+  direction: rtl;
+  text-align: right;
+}
+
 .prose pre.shiki {
   position: relative;
   padding: 0;
@@ -92,6 +98,11 @@ html[lang^='fa'] .prose :where(h1, h2, h3, h4) {
   top: 0.75rem;
   right: 0.75rem;
   z-index: 1;
+}
+
+.prose pre.shiki[dir='rtl'] .code-copy-button {
+  right: auto;
+  left: 0.75rem;
 }
 
 @media (max-width: 640px) {

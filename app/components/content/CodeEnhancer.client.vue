@@ -5,6 +5,7 @@ const { t } = useI18n()
 type Cleanup = () => void
 
 const cleanups: Cleanup[] = []
+const RTL_SCRIPT_RE = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/
 
 function getCodeText(pre: HTMLElement) {
   const code = pre.querySelector('code')
@@ -12,11 +13,28 @@ function getCodeText(pre: HTMLElement) {
   return code?.textContent || ''
 }
 
+function setCodeDirection(pre: HTMLElement) {
+  const code = pre.querySelector<HTMLElement>('code')
+  const direction = RTL_SCRIPT_RE.test(getCodeText(pre)) ? 'rtl' : 'ltr'
+
+  pre.dir = direction
+
+  if (code) {
+    code.dir = direction
+  }
+}
+
 function enhance() {
-  const blocks = document.querySelectorAll<HTMLElement>('.prose pre.shiki')
+  const blocks = document.querySelectorAll<HTMLElement>('.prose pre')
 
   blocks.forEach((pre) => {
+    setCodeDirection(pre)
+
     if (pre.dataset.mohetiosCodeEnhanced === 'true') {
+      return
+    }
+
+    if (!pre.classList.contains('shiki')) {
       return
     }
 
