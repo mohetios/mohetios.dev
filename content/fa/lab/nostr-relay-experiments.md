@@ -40,11 +40,11 @@ application server کامل نیست.
 
 Repositoryهای مرتبط:
 
-- private `mehotkhan/nostr-relay`
+- private `mohetios/nostr-relay`
     
-- private `mehotkhan/cloudflare-nostr-relay`
+- private `mohetios/cloudflare-nostr-relay`
     
-- [mehotkhan/nostr](https://github.com/mehotkhan/nostr)، فورکی از یک پیاده‌سازی Erlang
+- [mohetios/nostr](https://github.com/mohetios/nostr)، فورکی از یک پیاده‌سازی Erlang
     
 
 ## چرا Relayها جالب‌اند

@@ -106,7 +106,7 @@ You can reach me by email:
 
 You can also find me here:
 
-- **GitHub**: [mehotkhan](https://github.com/mehotkhan)
+- **GitHub**: [mohetios](https://github.com/mohetios)
     
 - **LinkedIn**: [ali-zemani](https://www.linkedin.com/in/ali-zemani/)
     

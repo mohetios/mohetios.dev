@@ -105,7 +105,7 @@ description: راهی ساده برای ارتباط با علی زمانی در
 
 اینجا هم می‌توانید من را پیدا کنید:
 
-- **GitHub**: [mehotkhan](https://github.com/mehotkhan)
+- **GitHub**: [mohetios](https://github.com/mohetios)
 
 - **LinkedIn**: [ali-zemani](https://www.linkedin.com/in/ali-zemani/)
 

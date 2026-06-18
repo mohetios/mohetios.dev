@@ -45,9 +45,9 @@ offline-first و P2P قرارداد دیگری می‌خواهند.
 
 این سؤال در چند پروژه قدیمی و جدید من تکرار شده:
 
-- [mehotkhan/safarnak.app](https://github.com/mehotkhan/safarnak.app)
+- [mohetios/safarnak.app](https://github.com/mohetios/safarnak.app)
     
-- [mehotkhan/pnews](https://github.com/mehotkhan/pnews)
+- [mohetios/pnews](https://github.com/mohetios/pnews)
     
 - [bagche/mamoochi](https://github.com/bagche/mamoochi)
     

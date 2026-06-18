@@ -9,8 +9,8 @@ tags:
   - html5-video
   - javascript
   - branching-narrative
-repo: https://github.com/mehotkhan/BandersnatchInteractive
-website: https://mehotkhan.github.io/BandersnatchInteractive/
+repo: https://github.com/mohetios/BandersnatchInteractive
+website: https://mohetios.github.io/BandersnatchInteractive/
 featured: true
 ---
 
@@ -20,8 +20,8 @@ Bandersnatch Interactive یک تجربه قدیمی و متن‌باز در مر
 
 Repository:
 
-- [mehotkhan/BandersnatchInteractive](https://github.com/mehotkhan/BandersnatchInteractive)
-- [Interactive demo](https://mehotkhan.github.io/BandersnatchInteractive/)
+- [mohetios/BandersnatchInteractive](https://github.com/mohetios/BandersnatchInteractive)
+- [Interactive demo](https://mohetios.github.io/BandersnatchInteractive/)
 
 ## چرا وجود دارد
 

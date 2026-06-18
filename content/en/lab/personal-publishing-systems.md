@@ -39,15 +39,15 @@ A place where old ideas do not disappear just because the interface around them 
 
 That is the thread behind several repositories:
 
-- [mehotkhan/totoro](https://github.com/mehotkhan/totoro)
+- [mohetios/totoro](https://github.com/mohetios/totoro)
     
-- [mehotkhan/front](https://github.com/mehotkhan/front)
+- [mohetios/front](https://github.com/mohetios/front)
     
-- [mehotkhan/front_old](https://github.com/mehotkhan/front_old)
+- [mohetios/front_old](https://github.com/mohetios/front_old)
     
-- [mehotkhan/Inbox](https://github.com/mehotkhan/Inbox)
+- [mohetios/Inbox](https://github.com/mohetios/Inbox)
     
-- [mehotkhan/mohetios.dev](https://github.com/mehotkhan/mohetios.dev)
+- [mohetios/mohetios.dev](https://github.com/mohetios/mohetios.dev)
     
 
 They are not the same project, but they belong to the same pattern.

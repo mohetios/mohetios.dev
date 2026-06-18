@@ -10,7 +10,7 @@ tags:
   - persian
   - word-cloud
   - visualization
-repo: https://github.com/mehotkhan/persian-word-cloud
+repo: https://github.com/mohetios/persian-word-cloud
 featured: true
 ---
 
@@ -20,7 +20,7 @@ The project started from a practical gap: many text visualization tools assume l
 
 Repository:
 
-- [mehotkhan/persian-word-cloud](https://github.com/mehotkhan/persian-word-cloud)
+- [mohetios/persian-word-cloud](https://github.com/mohetios/persian-word-cloud)
 
 ## Why It Exists
 

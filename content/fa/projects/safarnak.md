@@ -10,7 +10,7 @@ tags:
   - react-native
   - ai
   - expo
-repo: https://github.com/mehotkhan/safarnak.app
+repo: https://github.com/mohetios/safarnak.app
 website: https://safarnak.app
 featured: true
 ---
@@ -21,7 +21,7 @@ featured: true
 
 Repository:
 
-- [mehotkhan/safarnak.app](https://github.com/mehotkhan/safarnak.app)
+- [mohetios/safarnak.app](https://github.com/mohetios/safarnak.app)
 - [safarnak.app](https://safarnak.app)
 
 ## چرا وجود دارد

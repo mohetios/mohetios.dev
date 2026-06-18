@@ -43,7 +43,7 @@ tags:
 
 لینک پروژه:
 
-- [mehotkhan/Nekonymous](https://github.com/mehotkhan/Nekonymous)
+- [mohetios/Nekonymous](https://github.com/mohetios/Nekonymous)
 
 ## ایده از کجا آمد؟
 

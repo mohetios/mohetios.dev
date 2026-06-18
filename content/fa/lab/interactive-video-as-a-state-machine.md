@@ -41,7 +41,7 @@ Bandersnatch Interactive یک پروژه قدیمی و تجربی متن‌با�
 
 مخزن پروژه:
 
-- [mehotkhan/BandersnatchInteractive](https://github.com/mehotkhan/BandersnatchInteractive)
+- [mohetios/BandersnatchInteractive](https://github.com/mohetios/BandersnatchInteractive)
     
 
 ## این پروژه چه بود

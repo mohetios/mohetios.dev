@@ -40,7 +40,7 @@ const footerSections = computed<FooterSection[]>(() => [
     links: [
       {
         label: 'GitHub',
-        to: 'https://github.com/mehotkhan',
+        to: 'https://github.com/mohetios',
         icon: 'i-lucide-github',
         external: true
       },

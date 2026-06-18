@@ -16,8 +16,8 @@ Offline-first and peer-to-peer systems begin with the same uncomfortable questio
 
 The projects around this question include:
 
-- [mehotkhan/safarnak.app](https://github.com/mehotkhan/safarnak.app)
-- [mehotkhan/pnews](https://github.com/mehotkhan/pnews)
+- [mohetios/safarnak.app](https://github.com/mohetios/safarnak.app)
+- [mohetios/pnews](https://github.com/mohetios/pnews)
 - [bagche/mamoochi](https://github.com/bagche/mamoochi)
 - older private P2P commerce and Bagche experiments
 

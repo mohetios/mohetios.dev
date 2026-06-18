@@ -192,7 +192,7 @@ Everything, in a wonderfully good way, must be.
 
 - **Email**: [hi@mohetios.dev](mailto:hi@mohetios.dev)
     
-- **GitHub**: [mehotkhan](https://github.com/mehotkhan)
+- **GitHub**: [mohetios](https://github.com/mohetios)
     
 - **LinkedIn**: [ali-zemani](https://www.linkedin.com/in/ali-zemani/)
     

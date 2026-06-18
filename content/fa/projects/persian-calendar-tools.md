@@ -9,8 +9,8 @@ tags:
   - persian-calendar
   - jalali
   - date-picker
-repo: https://github.com/mehotkhan/zcalendar
-website: https://mehotkhan.github.io/zcalendar/
+repo: https://github.com/mohetios/zcalendar
+website: https://mohetios.github.io/zcalendar/
 ---
 
 ابزارهای تقویم فارسی دو تجربه مرتبط Vue را کنار هم نگه می‌دارد: `simple-taghvim` و `zcalendar`. پروژه‌ها کوچک‌اند، اما داخل مسئله بزرگ‌تری قرار می‌گیرند که من زیاد به آن برمی‌گردم: رابط فارسی نباید حس یک component چپ‌به‌راست ترجمه‌شده را بدهد.
@@ -19,8 +19,8 @@ website: https://mehotkhan.github.io/zcalendar/
 
 Repositoryها:
 
-- [mehotkhan/zcalendar](https://github.com/mehotkhan/zcalendar)
-- [mehotkhan/simple-taghvim](https://github.com/mehotkhan/simple-taghvim)
+- [mohetios/zcalendar](https://github.com/mohetios/zcalendar)
+- [mohetios/simple-taghvim](https://github.com/mohetios/simple-taghvim)
 
 ## چرا وجود دارد
 

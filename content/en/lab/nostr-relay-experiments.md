@@ -39,11 +39,11 @@ That makes relay implementation a useful architecture exercise.
 
 Related repositories:
 
-- private `mehotkhan/nostr-relay`
+- private `mohetios/nostr-relay`
     
-- private `mehotkhan/cloudflare-nostr-relay`
+- private `mohetios/cloudflare-nostr-relay`
     
-- [mehotkhan/nostr](https://github.com/mehotkhan/nostr), a fork of an Erlang implementation
+- [mohetios/nostr](https://github.com/mohetios/nostr), a fork of an Erlang implementation
     
 
 ## Why Relays Are Interesting

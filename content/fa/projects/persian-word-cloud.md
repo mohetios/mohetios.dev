@@ -10,7 +10,7 @@ tags:
   - persian
   - word-cloud
   - visualization
-repo: https://github.com/mehotkhan/persian-word-cloud
+repo: https://github.com/mohetios/persian-word-cloud
 featured: true
 ---
 
@@ -20,7 +20,7 @@ Persian Word Cloud یک package پایتون برای ساخت تصویر word c
 
 Repository:
 
-- [mehotkhan/persian-word-cloud](https://github.com/mehotkhan/persian-word-cloud)
+- [mohetios/persian-word-cloud](https://github.com/mohetios/persian-word-cloud)
 
 ## چرا وجود دارد
 

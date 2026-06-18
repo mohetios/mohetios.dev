@@ -188,7 +188,7 @@ tradeoff به جا می‌گذارد.
 
 - **ایمیل**: [hi@mohetios.dev](mailto:hi@mohetios.dev)
     
-- **گیت‌هاب**: [mehotkhan](https://github.com/mehotkhan)
+- **گیت‌هاب**: [mohetios](https://github.com/mohetios)
     
 - **لینکدین**: [ali-zemani](https://www.linkedin.com/in/ali-zemani/)
     

@@ -10,7 +10,7 @@ tags:
   - decap-cms
   - cloudflare-pages
   - static-blog
-repo: https://github.com/mehotkhan/totoro
+repo: https://github.com/mohetios/totoro
 website: https://totoro.mohetios.dev/
 ---
 
@@ -20,7 +20,7 @@ Totoro یک starter کوچک Jamstack برای publishing بود: Nuxt برای 
 
 Repository:
 
-- [mehotkhan/totoro](https://github.com/mehotkhan/totoro)
+- [mohetios/totoro](https://github.com/mohetios/totoro)
 
 ## چرا وجود دارد
 

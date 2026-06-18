@@ -10,7 +10,7 @@ tags:
   - decap-cms
   - cloudflare-pages
   - static-blog
-repo: https://github.com/mehotkhan/totoro
+repo: https://github.com/mohetios/totoro
 website: https://totoro.mohetios.dev/
 ---
 
@@ -20,7 +20,7 @@ It is not just another portfolio template. It is a record of a specific publishi
 
 Repository:
 
-- [mehotkhan/totoro](https://github.com/mehotkhan/totoro)
+- [mohetios/totoro](https://github.com/mohetios/totoro)
 
 ## Why It Exists
 

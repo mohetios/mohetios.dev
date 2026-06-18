@@ -16,7 +16,7 @@ The WebAssembly thread starts from a teaching question: how small can the first 
 
 Related repositories:
 
-- [mehotkhan/tinygo-wasm-tuts](https://github.com/mehotkhan/tinygo-wasm-tuts)
+- [mohetios/tinygo-wasm-tuts](https://github.com/mohetios/tinygo-wasm-tuts)
 - private `nuxt-wasm` experiments
 
 ## The Teaching Shape

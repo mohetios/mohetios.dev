@@ -41,7 +41,7 @@ That is where the project becomes interesting.
 
 Project repository:
 
-- [mehotkhan/BandersnatchInteractive](https://github.com/mehotkhan/BandersnatchInteractive)
+- [mohetios/BandersnatchInteractive](https://github.com/mohetios/BandersnatchInteractive)
     
 
 ## What This Project Was

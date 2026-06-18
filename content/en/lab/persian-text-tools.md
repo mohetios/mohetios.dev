@@ -17,10 +17,10 @@ A layout can technically render Persian characters while still choosing the wron
 
 Related repositories:
 
-- [mehotkhan/persian-word-cloud](https://github.com/mehotkhan/persian-word-cloud)
-- [mehotkhan/persian-linkedin](https://github.com/mehotkhan/persian-linkedin)
-- [mehotkhan/faPoems](https://github.com/mehotkhan/faPoems)
-- [mehotkhan/faPoems-markdown](https://github.com/mehotkhan/faPoems-markdown)
+- [mohetios/persian-word-cloud](https://github.com/mohetios/persian-word-cloud)
+- [mohetios/persian-linkedin](https://github.com/mohetios/persian-linkedin)
+- [mohetios/faPoems](https://github.com/mohetios/faPoems)
+- [mohetios/faPoems-markdown](https://github.com/mohetios/faPoems-markdown)
 
 ## The Pattern
 

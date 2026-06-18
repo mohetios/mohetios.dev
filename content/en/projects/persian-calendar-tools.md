@@ -9,8 +9,8 @@ tags:
   - persian-calendar
   - jalali
   - date-picker
-repo: https://github.com/mehotkhan/zcalendar
-website: https://mehotkhan.github.io/zcalendar/
+repo: https://github.com/mohetios/zcalendar
+website: https://mohetios.github.io/zcalendar/
 ---
 
 Persian Calendar Tools collects two related Vue experiments: `simple-taghvim` and `zcalendar`. They are small projects, but they sit inside a larger problem I keep returning to: Persian interfaces should not feel like translated left-to-right components.
@@ -19,8 +19,8 @@ A calendar makes that problem visible quickly. The grid is simple. The expectati
 
 Repositories:
 
-- [mehotkhan/zcalendar](https://github.com/mehotkhan/zcalendar)
-- [mehotkhan/simple-taghvim](https://github.com/mehotkhan/simple-taghvim)
+- [mohetios/zcalendar](https://github.com/mohetios/zcalendar)
+- [mohetios/simple-taghvim](https://github.com/mohetios/simple-taghvim)
 
 ## Why It Exists
 

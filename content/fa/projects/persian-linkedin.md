@@ -10,7 +10,7 @@ tags:
   - rtl
   - typography
   - linkedin
-repo: https://github.com/mehotkhan/persian-linkedin
+repo: https://github.com/mohetios/persian-linkedin
 ---
 
 Persian LinkedIn یک extension کوچک مرورگر برای یک آزار مشخص بود: متن فارسی در LinkedIn می‌تواند از نظر فنی نمایش داده شود، اما هنوز خواندنش راحت نباشد.
@@ -19,7 +19,7 @@ extension از ایده Persian Twitter adaptation گرفت. کارش محدود
 
 Repository:
 
-- [mehotkhan/persian-linkedin](https://github.com/mehotkhan/persian-linkedin)
+- [mohetios/persian-linkedin](https://github.com/mohetios/persian-linkedin)
 
 ## چرا وجود دارد
 

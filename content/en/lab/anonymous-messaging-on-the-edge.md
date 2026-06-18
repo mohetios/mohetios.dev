@@ -27,7 +27,7 @@ The lab question sits around it: how small can an anonymous relay remain while s
 
 Project links:
 
-- [mehotkhan/Nekonymous](https://github.com/mehotkhan/Nekonymous)
+- [mohetios/Nekonymous](https://github.com/mohetios/Nekonymous)
 - [nekonymous.mohetios.dev](https://nekonymous.mohetios.dev/)
 
 ## The original question
