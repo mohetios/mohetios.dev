@@ -5,25 +5,6 @@ const posts = computed(() => getBlogPosts(locale.value, 3))
 const labNotes = computed(() => getLabNotes(locale.value, 3))
 const projects = computed(() => getProjects(locale.value, 3))
 
-const featuredItem = computed(() => getHomeFeaturedItem(locale.value))
-const featuredBadge = computed(() => {
-  if (featuredItem.value?.type === 'project') {
-    return featuredItem.value.status || t('nav.projects')
-  }
-
-  return featuredItem.value?.type === 'lab' ? t('badges.lab') : t('badges.blog')
-})
-const featuredActionLabel = computed(() => {
-  if (featuredItem.value?.type === 'project') {
-    return t('home.featured.actions.project')
-  }
-
-  if (featuredItem.value?.type === 'lab') {
-    return t('home.featured.actions.lab')
-  }
-
-  return t('home.featured.actions.blog')
-})
 useMohetiosSeo({
   description: () => t('site.description'),
   path: () => getLocalizedPublicPath('/', locale.value),
@@ -31,42 +12,36 @@ useMohetiosSeo({
   type: 'website'
 })
 
-const workshopItems = computed(() => [
-  t('home.workshop.items.softwareSystems'),
-  t('home.workshop.items.openSourceProducts'),
-  t('home.workshop.items.aiTravelTools'),
-  t('home.workshop.items.geometryNotes')
-])
+const workbenchItems = computed(() => {
+  const firstProject = projects.value[0]
+  const firstLabNote = labNotes.value.find((note) => note.path.includes('/anonymous-messaging-'))
 
-const trackCards = computed(() => [
-  {
-    icon: 'i-lucide-pen-line',
-    title: t('home.tracks.blog.title'),
-    description: t('home.tracks.blog.description'),
-    to: localePath('/blog'),
-    label: t('actions.readBlog')
-  },
-  {
-    icon: 'i-lucide-flask-conical',
-    title: t('home.tracks.lab.title'),
-    description: t('home.tracks.lab.description'),
-    to: localePath('/lab'),
-    label: t('actions.exploreLab')
-  },
-  {
-    icon: 'i-lucide-box',
-    title: t('home.tracks.projects.title'),
-    description: t('home.tracks.projects.description'),
-    to: localePath('/projects'),
-    label: t('actions.viewProjects')
-  }
-])
+  return [
+    {
+      icon: 'i-lucide-lamp',
+      title: t('home.workbench.email.title'),
+      description: t('home.workbench.email.description'),
+      to: getLocalizedPublicPath('/blog/building-small-email-client-cloudflare-workers', 'en')
+    },
+    {
+      icon: 'i-lucide-pen-line',
+      title: firstLabNote?.title || t('home.workbench.nekonymous.title'),
+      description: firstLabNote?.description || t('home.workbench.nekonymous.description'),
+      to: firstLabNote ? toPublicPath(firstLabNote.path) : localePath('/lab')
+    },
+    {
+      icon: 'i-lucide-box',
+      title: firstProject?.title || t('home.workbench.safarnak.title'),
+      description: firstProject?.description || t('home.workbench.safarnak.description'),
+      to: firstProject ? toPublicPath(firstProject.path) : localePath('/projects')
+    }
+  ]
+})
 
-const principles = computed(() => [
-  t('home.principles.items.smallUseful'),
-  t('home.principles.items.preservePath'),
-  t('home.principles.items.clearInterfaces'),
-  t('home.principles.items.openWorkshop')
+const archiveItems = computed(() => [
+  { year: '2026', label: t('home.archive.items.2026') },
+  { year: '2025', label: t('home.archive.items.2025') },
+  { year: '2024', label: t('home.archive.items.2024') }
 ])
 
 function formatDate(date?: string | Date) {
@@ -83,279 +58,229 @@ function formatDate(date?: string | Date) {
 </script>
 
 <template>
-  <UPage>
-    <UPageBody :ui="{ base: 'space-y-12 pb-16 sm:space-y-16' }">
-      <section class="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
-        <div class="space-y-7">
-          <div class="space-y-5">
-            <h1
-              class="text-4xl font-semibold tracking-tight text-balance leading-snug text-highlighted sm:text-5xl"
-            >
-              {{ t('site.tagline') }}
-            </h1>
-            <p class="text-lg leading-7 text-pretty text-muted">
-              {{ t('home.hero.description') }}
-            </p>
-          </div>
-
-          <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <UButton :to="localePath('/blog')" size="lg">
-              {{ t('actions.readBlog') }}
-            </UButton>
-            <UButton :to="localePath('/lab')" color="neutral" variant="subtle" size="lg">
-              {{ t('actions.exploreLab') }}
-            </UButton>
-            <UButton :to="localePath('/projects')" color="neutral" variant="ghost" size="lg">
-              {{ t('actions.viewProjects') }}
-            </UButton>
-          </div>
+  <UPage class="mh-page">
+    <UPageBody :ui="{ base: 'space-y-10 pb-16 sm:space-y-12' }">
+      <section
+        class="grid items-center gap-8 border-b border-default pb-8 lg:grid-cols-[0.55fr_0.45fr] lg:gap-12 lg:pb-10"
+      >
+        <div class="space-y-5">
+          <p class="mh-kicker">
+            {{ t('home.hero.kicker') }}
+          </p>
+          <h1
+            class="mh-display max-w-3xl text-4xl leading-tight font-semibold text-balance text-highlighted sm:text-5xl lg:text-6xl"
+          >
+            {{ t('home.hero.title') }}
+          </h1>
+          <p
+            class="max-w-[36rem] text-base leading-7 text-pretty text-muted sm:text-lg sm:leading-8"
+          >
+            {{ t('home.hero.description') }}
+          </p>
         </div>
 
-        <aside class="rounded-2xl border border-default bg-muted/30 p-5 sm:p-6">
-          <div class="flex items-center justify-between gap-4 border-b border-default pb-4">
-            <div>
-              <p
-                class="text-sm font-medium tracking-[0.14em] text-muted uppercase rtl:normal-case rtl:tracking-normal"
-              >
-                {{ t('home.workshop.label') }}
-              </p>
-            </div>
-            <UIcon name="i-lucide-square-terminal" class="size-7 text-muted" />
-          </div>
-
-          <div class="grid gap-3 py-5">
-            <div
-              v-for="item in workshopItems"
-              :key="item"
-              class="flex items-center gap-3 rounded-xl border border-default bg-default px-4 py-3"
-            >
-              <span class="size-2 rounded-full bg-primary" />
-              <span class="text-base leading-7 font-medium text-highlighted">{{ item }}</span>
-            </div>
-          </div>
-
-          <p class="border-t border-default pt-4 text-base leading-7 text-muted">
-            {{ t('home.workshop.footer') }}
-          </p>
-        </aside>
+        <figure class="relative overflow-hidden">
+          <NuxtImg
+            src="/home-intro.png"
+            :alt="t('home.hero.imageAlt')"
+            loading="eager"
+            fetchpriority="high"
+            class="aspect-[4/3] w-full object-contain opacity-90"
+            sizes="xs:100vw md:42vw lg:520px"
+          />
+        </figure>
       </section>
 
-      <section v-if="featuredItem">
-        <article
-          class="grid overflow-hidden rounded-2xl border border-default bg-default md:grid-cols-2"
+      <section class="border-b border-default pb-8">
+        <div
+          class="grid divide-y divide-default border-b border-default lg:grid-cols-3 lg:divide-x lg:divide-y-0 lg:rtl:divide-x-reverse"
         >
-          <div v-if="featuredItem.thumbnail" class="min-h-72 bg-muted sm:min-h-80">
-            <NuxtLink :to="toPublicPath(featuredItem.path)" class="block h-full">
-              <NuxtImg
-                :src="featuredItem.thumbnail"
-                :alt="featuredItem.title"
-                loading="eager"
-                fetchpriority="high"
-                class="aspect-[4/3] h-full w-full object-cover md:aspect-auto"
-                sizes="xs:100vw md:50vw lg:560px"
-                placeholder
-              />
-            </NuxtLink>
-          </div>
-          <div
-            v-else
-            class="flex aspect-[4/3] min-h-64 w-full flex-col items-center justify-center gap-4 bg-muted/40 p-8 text-base font-medium uppercase tracking-[0.14em] text-muted md:aspect-auto md:h-full"
-          >
-            <div
-              class="grid size-16 place-items-center rounded-full border border-default bg-default/70"
-            >
-              <UIcon name="i-lucide-image" class="size-7 text-muted" />
-            </div>
-            <span>{{ t('home.featured.placeholder') }}</span>
-          </div>
+          <article class="min-w-0 py-5 lg:pe-6">
+            <header class="mb-5 flex items-center gap-4">
+              <UIcon name="i-lucide-lamp" class="size-6 shrink-0 text-primary" />
+              <span class="text-sm font-semibold tabular-nums text-primary">01</span>
+              <h2 class="mh-display text-xl leading-tight font-semibold text-highlighted">
+                {{ t('home.workbench.title') }}
+              </h2>
+            </header>
 
-          <div class="flex flex-col justify-center space-y-5 p-6 sm:p-8 lg:p-10">
-            <div class="flex flex-wrap items-center gap-3">
-              <UBadge color="neutral" variant="outline">
-                {{ t('home.featured.label') }}
-              </UBadge>
-              <UBadge color="neutral" variant="soft">
-                {{ featuredBadge }}
-              </UBadge>
-              <time
-                v-if="featuredItem.updated || featuredItem.date"
-                class="text-base leading-7 text-muted"
+            <div class="divide-y divide-default">
+              <NuxtLink
+                v-for="(item, index) in workbenchItems"
+                :key="item.title"
+                :to="item.to"
+                class="group block py-3.5"
               >
-                {{ formatDate(featuredItem.updated || featuredItem.date) }}
-              </time>
-            </div>
-
-            <h2
-              class="text-3xl font-semibold tracking-tight text-balance leading-snug text-highlighted sm:text-4xl"
-            >
-              <NuxtLink :to="toPublicPath(featuredItem.path)" class="hover:underline">
-                {{ featuredItem.title }}
+                <div class="grid grid-cols-[2.25rem_1fr] gap-3">
+                  <UIcon :name="item.icon" class="mt-0.5 size-6 text-primary" />
+                  <div class="min-w-0 flex-1 space-y-1">
+                    <div
+                      class="flex gap-3 text-sm font-semibold text-highlighted group-hover:text-primary"
+                    >
+                      <span class="shrink-0 tabular-nums text-muted">
+                        {{ String(index + 1).padStart(2, '0') }}
+                      </span>
+                      <span>{{ item.title }}</span>
+                    </div>
+                    <p class="line-clamp-2 ps-8 text-sm leading-6 text-muted">
+                      {{ item.description }}
+                    </p>
+                  </div>
+                </div>
               </NuxtLink>
-            </h2>
-            <p class="text-lg leading-7 text-pretty text-muted">
-              {{ featuredItem.description }}
-            </p>
+            </div>
 
             <UButton
-              :to="toPublicPath(featuredItem.path)"
+              :to="localePath('/lab')"
               color="neutral"
-              variant="subtle"
-              class="w-fit"
+              variant="link"
+              trailing-icon="i-lucide-arrow-right"
+              class="mt-4 px-0 rtl:[&_.iconify:last-child]:rotate-180"
             >
-              {{ featuredActionLabel }}
+              {{ t('home.workbench.viewAll') }}
             </UButton>
-          </div>
-        </article>
-      </section>
+          </article>
 
-      <section class="space-y-6">
-        <div class="space-y-2">
-          <h2 class="text-3xl font-semibold tracking-tight text-balance leading-snug text-highlighted">
-            {{ t('home.tracks.title') }}
-          </h2>
-          <p class="text-base leading-7 text-pretty text-muted">
-            {{ t('home.tracks.description') }}
-          </p>
-        </div>
+          <article class="min-w-0 py-5 lg:px-6">
+            <header class="mb-5 flex items-center gap-4">
+              <UIcon name="i-lucide-book-open" class="size-6 shrink-0 text-primary" />
+              <span class="text-sm font-semibold tabular-nums text-primary">02</span>
+              <h2 class="mh-display text-xl leading-tight font-semibold text-highlighted">
+                {{ t('home.notebook.title') }}
+              </h2>
+            </header>
 
-        <UPageGrid>
-          <UPageCard
-            v-for="track in trackCards"
-            :key="track.title"
-            :title="track.title"
-            :description="track.description"
-            :to="track.to"
-            variant="subtle"
-          >
-            <template #leading>
-              <div class="flex size-12 items-center justify-center">
-                <UIcon :name="track.icon" class="size-8 text-muted" />
-              </div>
-            </template>
-
-            <template #footer>
-              <span class="inline-flex text-base leading-7 font-medium text-highlighted">
-                {{ track.label }}
-              </span>
-            </template>
-          </UPageCard>
-        </UPageGrid>
-      </section>
-
-      <section class="space-y-6">
-        <div class="space-y-2">
-          <h2 class="text-3xl font-semibold tracking-tight text-balance leading-snug text-highlighted">
-            {{ t('sections.latestWriting') }}
-          </h2>
-          <p class="text-base leading-7 text-pretty text-muted">
-            {{ t('sections.latestWritingDescription') }}
-          </p>
-        </div>
-
-        <UPageGrid v-if="posts?.length">
-          <ContentCard
-            v-for="post in posts"
-            :key="post.id"
-            :title="post.title"
-            :description="post.description"
-            :to="toPublicPath(post.path)"
-            :date="post.date"
-            :badge="t('badges.blog')"
-            :tags="post.tags"
-            :thumbnail="post.thumbnail"
-          />
-        </UPageGrid>
-        <UiEmpty v-else :title="t('empty.blogTitle')" :description="t('empty.blogDescription')" />
-      </section>
-
-      <section class="grid items-stretch gap-8 lg:grid-cols-2">
-        <div class="flex h-full flex-col gap-6">
-          <div class="space-y-2">
-            <h2 class="text-3xl font-semibold tracking-tight text-balance leading-snug text-highlighted">
-              {{ t('sections.labNotes') }}
-            </h2>
-            <p class="text-base leading-7 text-pretty text-muted">
-              {{ t('sections.labNotesDescription') }}
-            </p>
-          </div>
-
-          <div v-if="labNotes?.length" class="grid flex-1 auto-rows-fr gap-4">
-            <ContentCard
-              v-for="note in labNotes"
-              :key="note.id"
-              :title="note.title"
-              :description="note.description"
-              :to="toPublicPath(note.path)"
-              :date="note.date"
-              :badge="t('badges.lab')"
-              :tags="note.tags"
-              :thumbnail="note.thumbnail"
-              hide-media
-            />
-          </div>
-          <UiEmpty v-else :title="t('empty.labTitle')" :description="t('empty.labDescription')" />
-        </div>
-
-        <div class="flex h-full flex-col gap-6">
-          <div class="space-y-2">
-            <h2 class="text-3xl font-semibold tracking-tight text-balance leading-snug text-highlighted">
-              {{ t('sections.featuredProjects') }}
-            </h2>
-            <p class="text-base leading-7 text-pretty text-muted">
-              {{ t('sections.featuredProjectsDescription') }}
-            </p>
-          </div>
-
-          <div v-if="projects?.length" class="grid flex-1 auto-rows-fr gap-4">
-            <ContentCard
-              v-for="project in projects"
-              :key="project.id"
-              :title="project.title"
-              :description="project.description"
-              :to="toPublicPath(project.path)"
-              :date="project.date"
-              :badge="project.status"
-              :tags="project.tags"
-              :thumbnail="project.thumbnail"
-              hide-media
-            />
-          </div>
-          <UiEmpty
-            v-else
-            :title="t('empty.projectsTitle')"
-            :description="t('empty.projectsDescription')"
-          />
-        </div>
-      </section>
-
-      <section class="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
-        <div class="space-y-2">
-          <h2 class="text-3xl font-semibold tracking-tight text-balance leading-snug text-highlighted">
-            {{ t('sections.principles') }}
-          </h2>
-          <p class="text-base leading-7 text-pretty text-muted">
-            {{ t('sections.principlesDescription') }}
-          </p>
-        </div>
-
-        <div class="grid gap-3">
-          <div
-            v-for="(principle, index) in principles"
-            :key="principle"
-            class="grid gap-4 rounded-2xl border border-default bg-muted/20 p-5 sm:grid-cols-[3rem_1fr]"
-          >
-            <div class="text-sm font-semibold tabular-nums leading-7 text-muted">
-              {{ String(index + 1).padStart(2, '0') }}
+            <div v-if="posts.length" class="divide-y divide-default">
+              <NuxtLink
+                v-for="post in posts"
+                :key="post.id"
+                :to="toPublicPath(post.path)"
+                class="group block py-3.5"
+              >
+                <div class="grid grid-cols-[1fr_auto] gap-3">
+                  <div class="min-w-0 space-y-1">
+                    <h3
+                      class="line-clamp-2 text-base leading-6 font-medium text-highlighted group-hover:text-primary"
+                    >
+                      {{ post.title }}
+                    </h3>
+                    <time v-if="post.date" class="text-xs text-muted">
+                      {{ formatDate(post.date) }}
+                    </time>
+                  </div>
+                  <UIcon
+                    name="i-lucide-arrow-right"
+                    class="mt-1 size-4 shrink-0 text-muted transition group-hover:translate-x-1 group-hover:text-primary rtl:rotate-180 rtl:group-hover:-translate-x-1"
+                  />
+                </div>
+              </NuxtLink>
             </div>
-            <p class="text-base leading-7 text-muted">
-              {{ principle }}
-            </p>
-          </div>
+            <UiEmpty
+              v-else
+              :title="t('empty.blogTitle')"
+              :description="t('empty.blogDescription')"
+            />
+
+            <UButton
+              :to="localePath('/blog')"
+              color="neutral"
+              variant="link"
+              trailing-icon="i-lucide-arrow-right"
+              class="mt-4 px-0 rtl:[&_.iconify:last-child]:rotate-180"
+            >
+              {{ t('home.notebook.viewAll') }}
+            </UButton>
+          </article>
+
+          <article class="min-w-0 py-5 lg:ps-6">
+            <header class="mb-5 flex items-center gap-4">
+              <UIcon name="i-lucide-wrench" class="size-6 shrink-0 text-primary" />
+              <span class="text-sm font-semibold tabular-nums text-primary">03</span>
+              <h2 class="mh-display text-xl leading-tight font-semibold text-highlighted">
+                {{ t('home.builtSystems.title') }}
+              </h2>
+            </header>
+
+            <div v-if="projects.length" class="divide-y divide-default">
+              <NuxtLink
+                v-for="project in projects"
+                :key="project.id"
+                :to="toPublicPath(project.path)"
+                class="group block py-3.5"
+              >
+                <div class="grid grid-cols-[0.625rem_1fr] gap-4">
+                  <span class="mt-2 size-2 rounded-full bg-primary/80" />
+                  <div class="min-w-0 space-y-1">
+                    <h3
+                      class="text-base leading-6 font-medium text-highlighted group-hover:text-primary"
+                    >
+                      {{ project.title }}
+                    </h3>
+                    <p class="line-clamp-2 text-sm leading-6 text-muted">
+                      {{ project.description }}
+                    </p>
+                  </div>
+                </div>
+              </NuxtLink>
+            </div>
+            <UiEmpty
+              v-else
+              :title="t('empty.projectsTitle')"
+              :description="t('empty.projectsDescription')"
+            />
+
+            <UButton
+              :to="localePath('/projects')"
+              color="neutral"
+              variant="link"
+              trailing-icon="i-lucide-arrow-right"
+              class="mt-4 px-0 rtl:[&_.iconify:last-child]:rotate-180"
+            >
+              {{ t('home.builtSystems.viewAll') }}
+            </UButton>
+          </article>
         </div>
       </section>
 
-      <section>
-        <NewsletterSubscribe source="home" section-title />
+      <section class="grid gap-6 border-b border-default pb-7 lg:grid-cols-[0.24fr_0.76fr]">
+        <div class="flex items-start gap-4">
+          <UIcon name="i-lucide-archive" class="mt-0.5 size-6 shrink-0 text-primary" />
+          <span class="text-sm font-semibold tabular-nums text-primary">04</span>
+          <h2 class="mh-display text-xl leading-tight font-semibold text-highlighted">
+            {{ t('home.archive.title') }}
+          </h2>
+        </div>
+
+        <div
+          class="grid divide-y divide-default sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:rtl:divide-x-reverse"
+        >
+          <NuxtLink
+            v-for="item in archiveItems"
+            :key="item.year"
+            :to="localePath('/blog')"
+            class="group grid grid-cols-[1fr_auto] gap-4 py-4 text-start sm:px-5 sm:py-0"
+          >
+            <span>
+              <span class="block font-mono text-sm text-highlighted">{{ item.year }}</span>
+              <span class="mt-2 block text-sm leading-6 text-muted">{{ item.label }}</span>
+            </span>
+            <UIcon
+              name="i-lucide-arrow-right"
+              class="mt-1 size-4 text-muted transition group-hover:translate-x-1 group-hover:text-primary rtl:rotate-180 rtl:group-hover:-translate-x-1"
+            />
+          </NuxtLink>
+        </div>
+      </section>
+
+      <section class="grid gap-6 py-2 sm:grid-cols-[9rem_1fr] sm:items-center">
+        <div class="hidden border-e border-default pe-8 sm:block">
+          <UIcon name="i-lucide-pen-line" class="size-8 text-muted" />
+        </div>
+        <p
+          class="mh-display max-w-3xl text-2xl leading-tight font-medium text-balance text-highlighted sm:text-3xl"
+        >
+          {{ t('home.closing.quote') }}
+        </p>
       </section>
     </UPageBody>
   </UPage>

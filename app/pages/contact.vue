@@ -2,6 +2,7 @@
 import { z } from 'zod'
 
 const { locale, t } = useI18n()
+const localePath = useLocalePath()
 const toast = useToast()
 
 const path = computed(() => `/${locale.value}/contact`)
@@ -76,49 +77,33 @@ const isSubmitted = ref(false)
 const turnstile = ref<TurnstileWidget | null>(null)
 const turnstileToken = ref('')
 
-const contactChannels = computed(() => [
+const contactIntents = computed(() => [
+  t('pages.contactGate.intents.project'),
+  t('pages.contactGate.intents.work'),
+  t('pages.contactGate.intents.feedback'),
+  t('pages.contactGate.intents.general')
+])
+
+const directLinks = computed(() => [
   {
+    icon: 'i-lucide-mail',
     title: t('contact.channels.email.title'),
-    description: 'hi@mohetios.dev',
-    icon: 'i-lucide-mail'
+    description: t('contact.channels.email.description'),
+    href: 'mailto:hi@mohetios.dev'
   },
   {
-    title: t('contact.channels.work.title'),
-    description: t('contact.channels.work.description'),
-    icon: 'i-lucide-briefcase-business'
+    icon: 'i-lucide-book-open',
+    title: t('pages.contactGate.direct.notebook'),
+    description: t('pages.contactGate.direct.notebookDescription'),
+    to: localePath('/blog')
   },
   {
-    title: t('contact.channels.response.title'),
-    description: t('contact.channels.response.description'),
-    icon: 'i-lucide-clock-3'
+    icon: 'i-lucide-wrench',
+    title: t('pages.contactGate.direct.systems'),
+    description: t('pages.contactGate.direct.systemsDescription'),
+    to: localePath('/projects')
   }
 ])
-
-const focusAreas = computed(() => [
-  t('contact.focus.productEngineering'),
-  t('contact.focus.frontendArchitecture'),
-  t('contact.focus.aiWorkflows'),
-  t('contact.focus.dashboards'),
-  t('contact.focus.technicalWriting')
-])
-
-const cardUi = {
-  root: 'min-w-0 max-w-full rounded-2xl ring-1 ring-default',
-  body: 'min-w-0 p-6 sm:p-8'
-}
-
-const sidebarIntroCardUi = {
-  root: 'min-w-0 max-w-full overflow-hidden rounded-2xl bg-muted/30 ring-1 ring-default',
-  body: 'min-w-0 p-6'
-}
-
-const sidebarCardUi = {
-  root: 'min-w-0 max-w-full overflow-hidden rounded-2xl ring-1 ring-default',
-  body: 'min-w-0 p-5'
-}
-
-const sidebarBadgeClass =
-  'max-w-full whitespace-normal rounded-full text-start leading-snug h-auto py-1'
 
 function getContactErrorMessage(error: unknown) {
   if (!error || typeof error !== 'object') {
@@ -231,230 +216,233 @@ async function onSubmit() {
 </script>
 
 <template>
-  <UPage v-if="page">
-    <UPageHeader :title="page.title" :description="page.description">
-      <template #headline>
-        <UBadge color="neutral" variant="outline">
-          {{ t('content.contact.eyebrow') }}
-        </UBadge>
-      </template>
-    </UPageHeader>
-
-    <UPageBody>
-      <section class="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]">
-        <div class="min-w-0 space-y-6">
-          <UCard :ui="cardUi">
-            <ContentHtml
-              :html="page.content"
-              class="prose prose-lg mb-8 max-w-none border-b border-default pb-8"
-            />
-
-            <div v-if="isSubmitted" class="space-y-4">
-              <div
-                class="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary"
-              >
-                <UIcon name="i-lucide-check" class="size-6" />
-              </div>
-
-              <div class="space-y-2">
-                <h2 class="text-lg font-semibold leading-7 tracking-tight text-highlighted">
-                  {{ t('contact.success.title') }}
-                </h2>
-
-                <p class="text-base leading-7 text-muted">
-                  {{ t('contact.success.description') }}
-                </p>
-              </div>
-
-              <UButton variant="soft" icon="i-lucide-send" @click="isSubmitted = false">
-                {{ t('contact.success.sendAnother') }}
-              </UButton>
-            </div>
-
-            <UForm v-else :schema="schema" :state="state" class="space-y-6" @submit="onSubmit">
-              <div class="grid gap-4 sm:grid-cols-2">
-                <UFormField :label="t('contact.form.name')" name="name" required class="w-full">
-                  <UInput
-                    v-model="state.name"
-                    class="w-full"
-                    size="md"
-                    :placeholder="t('contact.form.namePlaceholder')"
-                    autocomplete="name"
-                  />
-                </UFormField>
-
-                <UFormField :label="t('contact.form.email')" name="email" required class="w-full">
-                  <UInput
-                    v-model="state.email"
-                    class="w-full"
-                    size="md"
-                    type="email"
-                    :placeholder="t('contact.form.emailPlaceholder')"
-                    autocomplete="email"
-                  />
-                </UFormField>
-              </div>
-
-              <UFormField :label="t('contact.form.topic')" name="topic" required class="w-full">
-                <USelectMenu
-                  v-model="state.topic"
-                  class="w-full"
-                  size="md"
-                  value-key="value"
-                  :items="contactTopics"
-                  :placeholder="t('contact.form.topicPlaceholder')"
-                />
-              </UFormField>
-
-              <UFormField :label="t('contact.form.message')" name="message" required class="w-full">
-                <UTextarea
-                  v-model="state.message"
-                  class="w-full"
-                  :rows="7"
-                  size="md"
-                  autoresize
-                  :maxrows="10"
-                  :placeholder="t('contact.form.messagePlaceholder')"
-                />
-              </UFormField>
-
-              <UAccordion
-                :items="[
-                  {
-                    label: t('contact.form.optionalContext'),
-                    icon: 'i-lucide-plus',
-                    slot: 'optional'
-                  }
-                ]"
-                variant="soft"
-                size="sm"
-              >
-                <template #optional>
-                  <div class="grid gap-4 pt-3 sm:grid-cols-2">
-                    <UFormField :label="t('contact.form.company')" name="company" class="w-full">
-                      <UInput
-                        v-model="state.company"
-                        class="w-full"
-                        size="md"
-                        :placeholder="t('contact.form.companyPlaceholder')"
-                        autocomplete="organization"
-                      />
-                    </UFormField>
-
-                    <UFormField :label="t('contact.form.website')" name="website" class="w-full">
-                      <UInput
-                        v-model="state.website"
-                        class="w-full"
-                        size="md"
-                        :placeholder="t('contact.form.websitePlaceholder')"
-                        autocomplete="url"
-                      />
-                    </UFormField>
-                  </div>
-                </template>
-              </UAccordion>
-
-              <!-- Honeypot: hidden from users, visible to simple bots -->
-              <div class="hidden" aria-hidden="true">
-                <UFormField label="Subject" name="subject">
-                  <UInput v-model="state.subject" tabindex="-1" autocomplete="off" />
-                </UFormField>
-              </div>
-
-              <div class="space-y-3 border-t border-default pt-6">
-                <div
-                  class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6"
-                >
-                  <div
-                    class="flex min-h-16 items-center [&_iframe]:block [&>span]:block [&>span]:min-h-0 [&>span]:leading-none"
-                  >
-                    <NuxtTurnstile
-                      ref="turnstile"
-                      v-model="turnstileToken"
-                      element="span"
-                      :options="{
-                        action: 'contact_message',
-                        theme: 'auto',
-                        language: locale,
-                        appearance: 'interaction-only'
-                      }"
-                    />
-                  </div>
-
-                  <UButton
-                    type="submit"
-                    size="md"
-                    icon="i-lucide-send"
-                    :loading="isSubmitting"
-                    :disabled="!turnstileToken || isSubmitting"
-                    class="w-full shrink-0 px-5 sm:w-auto sm:min-w-36"
-                  >
-                    {{ t('contact.form.submit') }}
-                  </UButton>
-                </div>
-
-                <p class="text-sm leading-6 text-dimmed">
-                  {{ t('contact.form.privacyNote') }}
-                </p>
-              </div>
-            </UForm>
-          </UCard>
+  <UPage v-if="page" class="mh-page">
+    <UPageBody :ui="{ base: 'space-y-10 pb-16 sm:space-y-12' }">
+      <section
+        class="grid gap-8 border-b border-default pb-8 lg:grid-cols-[0.68fr_0.32fr] lg:items-end"
+      >
+        <div class="max-w-4xl space-y-5">
+          <p class="mh-kicker">
+            {{ t('pages.contactGate.kicker') }}
+          </p>
+          <h1
+            class="mh-display max-w-4xl text-4xl leading-tight font-semibold text-balance text-highlighted sm:text-5xl lg:text-6xl"
+          >
+            {{ t('pages.contactGate.title') }}
+          </h1>
+          <p class="max-w-2xl text-base leading-7 text-pretty text-muted sm:text-lg sm:leading-8">
+            {{ t('pages.contactGate.description') }}
+          </p>
         </div>
 
-        <aside class="min-w-0 w-full max-w-full space-y-5 lg:sticky lg:top-20 lg:z-[1] lg:self-start">
-          <UCard :ui="sidebarIntroCardUi">
-            <div class="min-w-0 space-y-4">
-              <div class="min-w-0">
-                <p
-                  class="text-pretty text-sm font-medium tracking-[0.14em] text-primary uppercase break-words rtl:normal-case rtl:tracking-normal"
-                >
-                  {{ t('contact.sidebar.label') }}
-                </p>
+        <div class="hidden border-y border-default py-4 lg:block">
+          <p class="mh-kicker">
+            {{ t('pages.contactGate.response.title') }}
+          </p>
+          <p class="mt-2 text-sm leading-6 text-muted">
+            {{ t('pages.contactGate.response.description') }}
+          </p>
+        </div>
+      </section>
 
-                <h2
-                  class="mt-2 text-pretty text-lg font-semibold leading-7 tracking-tight text-highlighted break-words"
-                >
-                  {{ t('contact.sidebar.title') }}
-                </h2>
+      <section class="grid gap-3 border-y border-default py-4 sm:grid-cols-4">
+        <div v-for="intent in contactIntents" :key="intent" class="flex items-center gap-2">
+          <span class="size-1.5 shrink-0 rounded-full bg-primary" />
+          <span class="text-sm font-medium text-muted">{{ intent }}</span>
+        </div>
+      </section>
 
-                <p class="mt-2 text-pretty text-base leading-7 text-muted break-words">
-                  {{ t('contact.sidebar.description') }}
-                </p>
-              </div>
-
-              <div class="flex min-w-0 flex-wrap gap-2">
-                <UBadge
-                  v-for="item in focusAreas"
-                  :key="item"
-                  variant="soft"
-                  color="neutral"
-                  :class="sidebarBadgeClass"
-                >
-                  {{ item }}
-                </UBadge>
-              </div>
+      <section class="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
+        <div class="mh-paper-panel min-w-0 border border-default bg-muted/10 p-5 sm:p-6">
+          <div v-if="isSubmitted" class="space-y-5">
+            <div
+              class="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary"
+            >
+              <UIcon name="i-lucide-check" class="size-6" />
             </div>
-          </UCard>
+            <div class="space-y-2">
+              <h2 class="text-xl font-semibold leading-7 tracking-tight text-highlighted">
+                {{ t('contact.success.title') }}
+              </h2>
+              <p class="text-base leading-7 text-muted">
+                {{ t('contact.success.description') }}
+              </p>
+            </div>
+            <UButton variant="soft" icon="i-lucide-send" @click="isSubmitted = false">
+              {{ t('contact.success.sendAnother') }}
+            </UButton>
+          </div>
 
-          <UCard v-for="channel in contactChannels" :key="channel.title" :ui="sidebarCardUi">
-            <div class="flex min-w-0 gap-3">
+          <UForm v-else :schema="schema" :state="state" class="space-y-5" @submit="onSubmit">
+            <div class="grid gap-4 sm:grid-cols-2">
+              <UFormField :label="t('contact.form.name')" name="name" required class="w-full">
+                <UInput
+                  v-model="state.name"
+                  class="w-full"
+                  size="md"
+                  :placeholder="t('contact.form.namePlaceholder')"
+                  autocomplete="name"
+                />
+              </UFormField>
+
+              <UFormField :label="t('contact.form.email')" name="email" required class="w-full">
+                <UInput
+                  v-model="state.email"
+                  class="w-full"
+                  size="md"
+                  type="email"
+                  :placeholder="t('contact.form.emailPlaceholder')"
+                  autocomplete="email"
+                />
+              </UFormField>
+            </div>
+
+            <UFormField :label="t('contact.form.topic')" name="topic" required class="w-full">
+              <USelectMenu
+                v-model="state.topic"
+                class="w-full"
+                size="md"
+                value-key="value"
+                :items="contactTopics"
+                :placeholder="t('contact.form.topicPlaceholder')"
+              />
+            </UFormField>
+
+            <UFormField :label="t('contact.form.message')" name="message" required class="w-full">
+              <UTextarea
+                v-model="state.message"
+                class="w-full"
+                :rows="7"
+                size="md"
+                autoresize
+                :maxrows="10"
+                :placeholder="t('contact.form.messagePlaceholder')"
+              />
+            </UFormField>
+
+            <UAccordion
+              :items="[
+                {
+                  label: t('contact.form.optionalContext'),
+                  icon: 'i-lucide-plus',
+                  slot: 'optional'
+                }
+              ]"
+              variant="soft"
+              size="sm"
+            >
+              <template #optional>
+                <div class="grid gap-4 pt-3 sm:grid-cols-2">
+                  <UFormField :label="t('contact.form.company')" name="company" class="w-full">
+                    <UInput
+                      v-model="state.company"
+                      class="w-full"
+                      size="md"
+                      :placeholder="t('contact.form.companyPlaceholder')"
+                      autocomplete="organization"
+                    />
+                  </UFormField>
+
+                  <UFormField :label="t('contact.form.website')" name="website" class="w-full">
+                    <UInput
+                      v-model="state.website"
+                      class="w-full"
+                      size="md"
+                      :placeholder="t('contact.form.websitePlaceholder')"
+                      autocomplete="url"
+                    />
+                  </UFormField>
+                </div>
+              </template>
+            </UAccordion>
+
+            <!-- Honeypot: hidden from users, visible to simple bots -->
+            <div class="hidden" aria-hidden="true">
+              <UFormField label="Subject" name="subject">
+                <UInput v-model="state.subject" tabindex="-1" autocomplete="off" />
+              </UFormField>
+            </div>
+
+            <div class="space-y-3 border-t border-default pt-5">
               <div
-                class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted text-toned"
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6"
               >
-                <UIcon :name="channel.icon" class="size-5" />
+                <div
+                  class="flex min-h-16 items-center [&_iframe]:block [&>span]:block [&>span]:min-h-0 [&>span]:leading-none"
+                >
+                  <NuxtTurnstile
+                    ref="turnstile"
+                    v-model="turnstileToken"
+                    element="span"
+                    :options="{
+                      action: 'contact_message',
+                      theme: 'auto',
+                      language: locale,
+                      appearance: 'interaction-only'
+                    }"
+                  />
+                </div>
+
+                <UButton
+                  type="submit"
+                  size="md"
+                  icon="i-lucide-send"
+                  :loading="isSubmitting"
+                  :disabled="!turnstileToken || isSubmitting"
+                  class="w-full shrink-0 px-5 sm:w-auto sm:min-w-36"
+                >
+                  {{ t('contact.form.submit') }}
+                </UButton>
               </div>
 
-              <div class="min-w-0 flex-1">
-                <h3 class="text-pretty text-base font-semibold tracking-tight text-highlighted break-words">
-                  {{ channel.title }}
-                </h3>
-
-                <p class="mt-1 text-pretty text-base leading-7 text-muted break-words">
-                  {{ channel.description }}
-                </p>
-              </div>
+              <p class="text-sm leading-6 text-dimmed">
+                {{ t('contact.form.privacyNote') }}
+              </p>
             </div>
-          </UCard>
+          </UForm>
+        </div>
+
+        <aside
+          class="mh-index-sidebar space-y-6 border-t border-default pt-5 lg:sticky lg:top-24 lg:self-start lg:border-s lg:border-t-0 lg:ps-6 lg:pt-0"
+        >
+          <section class="border-y border-default py-4">
+            <h2 class="mh-kicker">
+              {{ t('contact.sidebar.label') }}
+            </h2>
+            <p class="mt-3 text-sm leading-6 text-muted">
+              {{ t('contact.sidebar.description') }}
+            </p>
+          </section>
+
+          <section class="divide-y divide-default border-y border-default">
+            <component
+              :is="link.href ? 'a' : 'NuxtLink'"
+              v-for="link in directLinks"
+              :key="link.title"
+              :href="link.href"
+              :to="link.to"
+              class="group flex gap-3 py-3.5"
+            >
+              <UIcon :name="link.icon" class="mt-1 size-4 text-muted" />
+              <span>
+                <span class="block text-sm font-semibold text-highlighted group-hover:text-primary">
+                  {{ link.title }}
+                </span>
+                <span class="mt-1 block text-sm leading-6 text-muted">
+                  {{ link.description }}
+                </span>
+              </span>
+            </component>
+          </section>
+
+          <section class="border-y border-default py-4">
+            <h2 class="mh-kicker">
+              {{ t('pages.contactGate.response.title') }}
+            </h2>
+            <p class="mt-3 text-sm leading-6 text-muted">
+              {{ t('pages.contactGate.response.description') }}
+            </p>
+          </section>
         </aside>
       </section>
     </UPageBody>

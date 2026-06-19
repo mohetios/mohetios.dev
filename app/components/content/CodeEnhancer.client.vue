@@ -47,13 +47,12 @@ function enhance() {
       'rounded-md',
       'border',
       'border-default',
-      'bg-default/80',
+      'bg-elevated',
       'px-2.5',
       'py-1',
       'text-sm',
       'font-medium',
       'text-muted',
-      'backdrop-blur',
       'transition',
       'hover:text-highlighted'
     ].join(' ')

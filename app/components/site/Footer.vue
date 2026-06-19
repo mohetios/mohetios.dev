@@ -28,9 +28,9 @@ const footerSections = computed<FooterSection[]>(() => [
     title: t('footer.sections.explore'),
     links: [
       { label: t('nav.home'), to: localePath('/') },
-      { label: t('nav.blog'), to: localePath('/blog') },
+      { label: t('pages.notebook.kicker'), to: localePath('/blog') },
       { label: t('nav.lab'), to: localePath('/lab') },
-      { label: t('nav.projects'), to: localePath('/projects') },
+      { label: t('pages.systems.kicker'), to: localePath('/projects') },
       { label: t('nav.about'), to: localePath('/about') },
       { label: t('nav.contact'), to: localePath('/contact') }
     ]
@@ -68,65 +68,56 @@ const footerSections = computed<FooterSection[]>(() => [
 </script>
 
 <template>
-  <footer
-    class="relative overflow-hidden bg-(--color-surface) text-highlighted after:pointer-events-none after:absolute after:inset-0 after:opacity-74 after:content-[''] after:bg-[linear-gradient(180deg,var(--color-surface)_0%,transparent_44%),radial-gradient(circle_at_12%_88%,color-mix(in_oklab,var(--color-pattern-green)_64%,transparent)_0,transparent_34%),radial-gradient(circle_at_88%_82%,color-mix(in_oklab,var(--color-pattern-blue)_62%,transparent)_0,transparent_32%)] dark:after:opacity-[0.42]"
-  >
-    <div class="site-shell relative z-[2]">
+  <footer class="border-t border-default bg-default text-highlighted">
+    <div class="site-shell">
       <div
-        class="grid gap-12 pt-16 pb-[3.25rem] md:grid-cols-[minmax(0,1.1fr)_minmax(20rem,0.9fr)] md:items-start"
+        class="grid gap-10 py-10 md:grid-cols-[minmax(0,1fr)_minmax(18rem,0.7fr)] md:items-start"
       >
-        <section class="min-w-0" :aria-label="t('site.name')">
+        <section class="min-w-0 space-y-4" :aria-label="t('site.name')">
           <NuxtLink
             :to="localePath('/')"
-            class="group/logo inline-flex items-center gap-[0.85rem] text-highlighted no-underline"
+            class="group/logo inline-flex text-highlighted no-underline"
             :aria-label="t('site.name')"
           >
-            <img
-              src="/icons/android-chrome-512x512.png"
-              alt=""
-              width="72"
-              height="72"
-              class="block size-[4.5rem] shrink-0 object-contain"
-              aria-hidden="true"
-            />
             <SiteLogo show-tagline size="footer" />
           </NuxtLink>
 
-          <p class="mt-6 text-pretty text-base leading-7 text-muted">
+          <p class="max-w-xl text-pretty text-sm leading-6 text-muted">
             {{ t('site.description') }}
           </p>
 
-          <div class="mt-6 flex flex-wrap gap-3">
-            <UButton :to="localePath('/blog')" trailing-icon="i-lucide-arrow-right">
-              {{ t('actions.readBlog') }}
-            </UButton>
-            <UButton :to="localePath('/projects')" color="neutral" variant="subtle">
-              {{ t('actions.viewProjects') }}
-            </UButton>
-          </div>
+          <p class="mh-display max-w-2xl text-2xl leading-tight text-highlighted">
+            {{ t('footer.workshopQuote') }}
+          </p>
         </section>
 
-        <nav
-          class="grid gap-8 md:grid-cols-2"
-          :aria-label="t('footer.navigationLabel')"
-        >
+        <nav class="grid gap-8 sm:grid-cols-2" :aria-label="t('footer.navigationLabel')">
           <section v-for="section in footerSections" :key="section.title">
-            <h2
-              class="text-sm font-bold tracking-[0.14em] text-highlighted uppercase rtl:normal-case rtl:tracking-normal"
-            >
+            <h2 class="mh-kicker text-highlighted">
               {{ section.title }}
             </h2>
-            <ul class="mt-4 grid gap-3">
+            <ul class="mt-4 divide-y divide-default border-y border-default">
               <li v-for="link in section.links" :key="link.to">
                 <NuxtLink
                   :to="link.to"
-                  class="inline-flex items-center gap-[0.45rem] text-base leading-7 font-medium text-muted no-underline transition-[color,transform] duration-[160ms] hover:-translate-y-px hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                  class="group flex items-center justify-between gap-3 py-2.5 text-sm leading-6 text-muted no-underline transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
                   :target="link.external ? '_blank' : undefined"
                   :rel="link.external ? 'noopener noreferrer' : undefined"
                 >
-                  <UIcon v-if="link.icon" :name="link.icon" class="size-4" />
-                  <span>{{ link.label }}</span>
-                  <UIcon v-if="link.external" name="i-lucide-arrow-up-right" class="size-3.5" />
+                  <span class="inline-flex items-center gap-2">
+                    <UIcon v-if="link.icon" :name="link.icon" class="size-4" />
+                    <span>{{ link.label }}</span>
+                  </span>
+                  <UIcon
+                    v-if="link.external"
+                    name="i-lucide-arrow-up-right"
+                    class="size-4 text-muted transition group-hover:text-primary"
+                  />
+                  <UIcon
+                    v-else
+                    name="i-lucide-arrow-right"
+                    class="size-4 text-muted transition group-hover:translate-x-1 group-hover:text-primary rtl:rotate-180 rtl:group-hover:-translate-x-1"
+                  />
                 </NuxtLink>
               </li>
             </ul>
@@ -135,7 +126,7 @@ const footerSections = computed<FooterSection[]>(() => [
       </div>
 
       <div
-        class="flex flex-col justify-between gap-4 border-t border-default py-5 pb-8 text-base leading-7 text-muted sm:flex-row"
+        class="flex flex-col justify-between gap-3 border-t border-default py-5 text-sm leading-6 text-muted sm:flex-row"
       >
         <p>{{ t('site.footer') }}</p>
         <p>© {{ currentYear }} {{ t('site.name') }}</p>

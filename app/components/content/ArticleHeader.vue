@@ -44,22 +44,19 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
       <div v-if="backTo" class="mb-6">
         <NuxtLink
           :to="backTo"
-          class="inline-flex items-center gap-2 text-base leading-7 text-muted transition-colors hover:text-highlighted"
+          class="inline-flex items-center gap-2 text-sm leading-6 text-muted transition-colors hover:text-primary"
         >
-          <UIcon name="i-lucide-arrow-left" class="size-4" />
+          <UIcon name="i-lucide-arrow-left" class="size-4 rtl:rotate-180" />
           {{ backLabel }}
         </NuxtLink>
       </div>
 
-      <p
-        v-if="status"
-        class="text-sm font-medium tracking-[0.14em] text-primary uppercase rtl:normal-case rtl:tracking-normal"
-      >
+      <p v-if="status" class="mh-kicker">
         {{ status }}
       </p>
 
       <h1
-        class="mt-2 text-balance text-4xl font-semibold tracking-tight leading-snug text-highlighted sm:text-5xl"
+        class="mh-display mt-2 text-balance text-4xl leading-tight font-semibold text-highlighted sm:text-5xl"
       >
         {{ title }}
       </h1>
@@ -101,11 +98,11 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
 
       <ContentTags v-if="tags?.length" class="mt-4" :tags="tags" size="sm" />
 
-      <figure v-if="thumbnail" class="mt-6">
+      <figure v-if="thumbnail" class="mt-6 border-y border-default py-4">
         <img
           :src="thumbnail"
           :alt="imageAlt"
-          class="w-full rounded-xl object-cover"
+          class="w-full object-cover"
           loading="eager"
           fetchpriority="high"
           decoding="async"

@@ -19,10 +19,8 @@ const { t } = useI18n()
       :to="toPublicPath(surround[0].path)"
       class="group flex min-w-0 flex-col gap-1 py-2 no-underline transition-colors duration-150"
     >
-      <span
-        class="inline-flex items-center gap-1.5 text-sm font-medium tracking-[0.14em] text-muted uppercase rtl:normal-case rtl:tracking-normal"
-      >
-        <UIcon name="i-lucide-arrow-left" class="size-3.5" />
+      <span class="mh-kicker inline-flex items-center gap-1.5 text-muted">
+        <UIcon name="i-lucide-arrow-left" class="size-3.5 rtl:rotate-180" />
         {{ t('content.article.previous') }}
       </span>
       <span
@@ -38,11 +36,9 @@ const { t } = useI18n()
       :to="toPublicPath(surround[1].path)"
       class="group flex min-w-0 flex-col gap-1 py-2 no-underline transition-colors duration-150 sm:items-end sm:text-end"
     >
-      <span
-        class="inline-flex items-center gap-1.5 text-sm font-medium tracking-[0.14em] text-muted uppercase sm:justify-end rtl:normal-case rtl:tracking-normal"
-      >
+      <span class="mh-kicker inline-flex items-center gap-1.5 text-muted sm:justify-end">
         {{ t('content.article.next') }}
-        <UIcon name="i-lucide-arrow-right" class="size-3.5" />
+        <UIcon name="i-lucide-arrow-right" class="size-3.5 rtl:rotate-180" />
       </span>
       <span
         class="text-base font-medium text-highlighted transition-colors duration-150 group-hover:text-primary"

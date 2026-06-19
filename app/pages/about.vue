@@ -4,70 +4,29 @@ const localePath = useLocalePath()
 const path = computed(() => `/${locale.value}/about`)
 const legacyPath = computed(() => `/${locale.value}/pages/about`)
 const page = computed(() => getPage(path.value) || getPage(legacyPath.value))
+const recentPosts = computed(() => getBlogPosts(locale.value, 3))
+const buildSteps = computed(() => [
+  t('pages.aboutWorkshop.buildSteps.observe'),
+  t('pages.aboutWorkshop.buildSteps.draw'),
+  t('pages.aboutWorkshop.buildSteps.gather'),
+  t('pages.aboutWorkshop.buildSteps.build'),
+  t('pages.aboutWorkshop.buildSteps.write')
+])
+const focusAreas = computed(() => [
+  t('pages.aboutWorkshop.focus.mohetios'),
+  t('pages.aboutWorkshop.focus.nekonymous'),
+  t('pages.aboutWorkshop.focus.safarnak'),
+  t('pages.aboutWorkshop.focus.cloudflare'),
+  t('pages.aboutWorkshop.focus.productNotes')
+])
 
 if (!page.value || page.value.draft) {
   throw createError({ statusCode: 404, statusMessage: 'About page not found', fatal: true })
 }
 
-const recentPosts = computed(() => getBlogPosts(locale.value, 3))
-
-const siteSections = computed(() => [
-  {
-    icon: 'i-lucide-pen-line',
-    title: t('home.tracks.blog.title'),
-    description: t('home.tracks.blog.description'),
-    to: localePath('/blog'),
-    action: t('actions.readBlog')
-  },
-  {
-    icon: 'i-lucide-flask-conical',
-    title: t('home.tracks.lab.title'),
-    description: t('home.tracks.lab.description'),
-    to: localePath('/lab'),
-    action: t('actions.exploreLab')
-  },
-  {
-    icon: 'i-lucide-box',
-    title: t('home.tracks.projects.title'),
-    description: t('home.tracks.projects.description'),
-    to: localePath('/projects'),
-    action: t('actions.viewProjects')
-  }
-])
-
-const principles = computed(() => [
-  t('home.principles.items.smallUseful'),
-  t('home.principles.items.preservePath'),
-  t('home.principles.items.clearInterfaces'),
-  t('home.principles.items.openWorkshop')
-])
-
-const cardUi = {
-  root: 'min-w-0 max-w-full rounded-2xl ring-1 ring-default',
-  body: 'min-w-0 p-6 sm:p-8'
-}
-
-const sidebarIntroCardUi = {
-  root: 'min-w-0 max-w-full overflow-hidden rounded-2xl bg-muted/30 ring-1 ring-default',
-  body: 'min-w-0 p-6'
-}
-
-const sidebarCardUi = {
-  root: 'min-w-0 max-w-full overflow-hidden rounded-2xl ring-1 ring-default',
-  body: 'min-w-0 p-5'
-}
-
-const sidebarButtonUi = {
-  base: 'w-full max-w-full justify-center',
-  label: 'whitespace-normal text-center'
-}
-
-const sidebarBadgeClass =
-  'max-w-full whitespace-normal rounded-full text-start leading-snug h-auto py-1'
-
 useMohetiosSeo({
-  title: () => page.value?.title,
-  description: () => page.value?.description,
+  title: () => t('pages.aboutWorkshop.kicker'),
+  description: () => t('pages.aboutWorkshop.description'),
   path: () => toPublicPath(page.value?.path || path.value),
   image: () => page.value?.thumbnail,
   locale: () => locale.value,
@@ -76,174 +35,182 @@ useMohetiosSeo({
 </script>
 
 <template>
-  <UPage v-if="page">
-    <UPageHeader :title="page.title" :description="page.description">
-      <template #headline>
-        <UBadge color="neutral" variant="outline">
-          {{ t('content.about.eyebrow') }}
-        </UBadge>
-      </template>
-    </UPageHeader>
-
-    <UPageBody>
-      <section class="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]">
-        <div class="min-w-0 space-y-6">
-          <UCard :ui="cardUi">
-            <ContentCodeEnhancer />
-            <ContentMermaidEnhancer />
-
-            <ContentHtml :html="page.content" class="prose prose-lg max-w-none" />
-
-            <section
-              v-if="recentPosts.length"
-              class="mt-8 space-y-4 border-t border-default pt-8"
-            >
-              <div class="space-y-2">
-                <p
-                  class="text-sm font-medium tracking-[0.14em] text-muted uppercase rtl:normal-case rtl:tracking-normal"
-                >
-                  {{ t('about.latestWriting.title') }}
-                </p>
-                <p class="text-base leading-7 text-muted">
-                  {{ t('about.latestWriting.description') }}
-                </p>
-              </div>
-
-              <div class="flex flex-col gap-1">
-                <ContentList
-                  v-for="post in recentPosts"
-                  :key="post.id || post.path"
-                  plain
-                  :title="post.title"
-                  :description="post.description"
-                  :to="post.path"
-                  :date="post.date"
-                  :updated="post.updated"
-                />
-              </div>
-
-              <UButton
-                :to="localePath('/blog')"
-                color="neutral"
-                variant="subtle"
-                trailing-icon="i-lucide-arrow-right"
-              >
-                {{ t('actions.readBlog') }}
-              </UButton>
-            </section>
-
-            <div class="mt-8 border-t border-default pt-8">
-              <NewsletterSubscribe source="about" />
-            </div>
-          </UCard>
+  <UPage v-if="page" class="mh-page">
+    <UPageBody :ui="{ base: 'space-y-10 pb-16 sm:space-y-12' }">
+      <section
+        class="grid gap-8 border-b border-default pb-8 lg:grid-cols-[0.68fr_0.32fr] lg:items-end"
+      >
+        <div class="max-w-4xl space-y-5">
+          <p class="mh-kicker">
+            {{ t('pages.aboutWorkshop.kicker') }}
+          </p>
+          <h1
+            class="mh-display max-w-4xl text-4xl leading-tight font-semibold text-balance text-highlighted sm:text-5xl lg:text-6xl"
+          >
+            {{ t('pages.aboutWorkshop.title') }}
+          </h1>
+          <p class="max-w-2xl text-base leading-7 text-pretty text-muted sm:text-lg sm:leading-8">
+            {{ t('pages.aboutWorkshop.description') }}
+          </p>
         </div>
 
-        <aside class="min-w-0 w-full max-w-full space-y-5 lg:sticky lg:top-20 lg:z-[1] lg:self-start">
-          <UCard :ui="sidebarIntroCardUi">
-            <div class="min-w-0 space-y-4">
-              <div class="min-w-0">
-                <p
-                  class="text-pretty text-sm font-medium tracking-[0.14em] text-primary uppercase break-words rtl:normal-case rtl:tracking-normal"
-                >
-                  {{ t('about.sidebar.label') }}
-                </p>
+        <div class="hidden border-y border-default py-4 lg:block">
+          <p class="mh-kicker">
+            {{ t('pages.aboutWorkshop.focus.title') }}
+          </p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <span v-for="area in focusAreas.slice(0, 3)" :key="area" class="text-sm text-muted">
+              {{ area }}
+            </span>
+          </div>
+        </div>
+      </section>
 
-                <h2
-                  class="mt-2 text-pretty text-lg font-semibold leading-7 tracking-tight text-highlighted break-words"
-                >
-                  {{ t('about.sidebar.title') }}
-                </h2>
-
-                <p class="mt-2 text-pretty text-base leading-7 text-muted break-words">
-                  {{ t('about.sidebar.description') }}
-                </p>
-              </div>
-
-              <p class="text-pretty text-base leading-7 text-muted break-words">
-                {{ t('home.tracks.description') }}
-              </p>
-
-              <div class="flex min-w-0 flex-wrap gap-2">
-                <UBadge
-                  v-for="item in principles"
-                  :key="item"
-                  variant="soft"
-                  color="neutral"
-                  :class="sidebarBadgeClass"
-                >
-                  {{ item }}
-                </UBadge>
-              </div>
+      <section class="grid gap-8 border-b border-default pb-8 lg:grid-cols-2">
+        <article class="min-w-0 border-t border-default pt-5">
+          <header class="mb-4 space-y-3">
+            <div class="flex items-center gap-3 text-primary">
+              <UIcon name="i-lucide-book-open" class="size-5" />
+              <span class="text-sm font-semibold tabular-nums">01</span>
             </div>
-          </UCard>
+            <h2
+              class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl"
+            >
+              {{ t('pages.aboutWorkshop.what.title') }}
+            </h2>
+          </header>
+          <p class="text-sm leading-6 text-muted sm:text-base sm:leading-7">
+            {{ t('pages.aboutWorkshop.what.description') }}
+          </p>
+        </article>
 
-          <UCard v-for="section in siteSections" :key="section.to" :ui="sidebarCardUi">
-            <div class="flex min-w-0 gap-3">
-              <div
-                class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted text-toned"
+        <article class="min-w-0 border-t border-default pt-5 lg:border-s lg:ps-6">
+          <header class="mb-4 space-y-3">
+            <div class="flex items-center gap-3 text-primary">
+              <UIcon name="i-lucide-pen-line" class="size-5" />
+              <span class="text-sm font-semibold tabular-nums">02</span>
+            </div>
+            <h2
+              class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl"
+            >
+              {{ t('pages.aboutWorkshop.name.title') }}
+            </h2>
+          </header>
+          <div class="space-y-3 text-sm leading-6 text-muted sm:text-base sm:leading-7">
+            <p>{{ t('pages.aboutWorkshop.name.description') }}</p>
+            <p>{{ t('pages.aboutWorkshop.name.standard') }}</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="grid gap-8 lg:grid-cols-[0.28fr_0.72fr]">
+        <div class="space-y-3">
+          <div class="flex items-center gap-3 text-primary">
+            <UIcon name="i-lucide-wrench" class="size-5" />
+            <span class="text-sm font-semibold tabular-nums">03</span>
+          </div>
+          <h2 class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
+            {{ t('pages.aboutWorkshop.how.title') }}
+          </h2>
+        </div>
+        <div class="divide-y divide-default border-y border-default">
+          <div
+            v-for="(step, index) in buildSteps"
+            :key="step"
+            class="grid gap-3 py-4 sm:grid-cols-[3rem_1fr]"
+          >
+            <span class="text-sm font-semibold tabular-nums text-primary">
+              {{ String(index + 1).padStart(2, '0') }}
+            </span>
+            <p class="text-base leading-7 text-highlighted">{{ step }}</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid gap-8 lg:grid-cols-[0.28fr_0.72fr]">
+        <div class="space-y-3">
+          <div class="flex items-center gap-3 text-primary">
+            <UIcon name="i-lucide-archive" class="size-5" />
+            <span class="text-sm font-semibold tabular-nums">04</span>
+          </div>
+          <h2 class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
+            {{ t('pages.aboutWorkshop.focus.title') }}
+          </h2>
+        </div>
+        <div
+          class="grid divide-y divide-default border-y border-default sm:grid-cols-2 sm:divide-x sm:divide-y-0 sm:rtl:divide-x-reverse"
+        >
+          <div v-for="area in focusAreas" :key="area" class="py-3 sm:px-4">
+            <p class="text-sm leading-6 text-muted">{{ area }}</p>
+          </div>
+        </div>
+      </section>
+
+      <section
+        v-if="recentPosts.length"
+        class="grid gap-8 border-y border-default py-7 lg:grid-cols-[0.28fr_0.72fr]"
+      >
+        <div class="space-y-3">
+          <div class="flex items-center gap-3 text-primary">
+            <UIcon name="i-lucide-book-open" class="size-5" />
+            <span class="text-sm font-semibold tabular-nums">05</span>
+          </div>
+          <h2 class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
+            {{ t('about.latestWriting.title') }}
+          </h2>
+          <UButton
+            :to="localePath('/blog')"
+            color="neutral"
+            variant="link"
+            trailing-icon="i-lucide-arrow-right"
+            class="px-0 rtl:[&_.iconify:last-child]:rotate-180"
+          >
+            {{ t('actions.readBlog') }}
+          </UButton>
+        </div>
+        <div class="divide-y divide-default border-y border-default">
+          <NuxtLink
+            v-for="post in recentPosts"
+            :key="post.id || post.path"
+            :to="toPublicPath(post.path)"
+            class="group grid gap-3 py-4 sm:grid-cols-[1fr_auto]"
+          >
+            <div>
+              <h3
+                class="text-base leading-6 font-semibold text-highlighted group-hover:text-primary"
               >
-                <UIcon :name="section.icon" class="size-5" />
-              </div>
-
-              <div class="min-w-0 flex-1 space-y-3">
-                <div class="min-w-0">
-                  <h3 class="text-pretty text-base font-semibold tracking-tight text-highlighted break-words">
-                    {{ section.title }}
-                  </h3>
-
-                  <p class="mt-1 text-pretty text-base leading-7 text-muted break-words">
-                    {{ section.description }}
-                  </p>
-                </div>
-
-                <UButton
-                  :to="section.to"
-                  color="neutral"
-                  variant="soft"
-                  size="sm"
-                  class="w-full max-w-full"
-                  trailing-icon="i-lucide-arrow-right"
-                  :ui="sidebarButtonUi"
-                >
-                  {{ section.action }}
-                </UButton>
-              </div>
+                {{ post.title }}
+              </h3>
+              <p class="mt-1 line-clamp-2 text-sm leading-6 text-muted">{{ post.description }}</p>
             </div>
-          </UCard>
+            <UIcon
+              name="i-lucide-arrow-right"
+              class="mt-1 size-4 text-muted transition group-hover:translate-x-1 group-hover:text-primary rtl:rotate-180 rtl:group-hover:-translate-x-1"
+            />
+          </NuxtLink>
+        </div>
+      </section>
 
-          <UCard :ui="sidebarCardUi">
-            <div class="flex min-w-0 gap-3">
-              <div
-                class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted text-toned"
-              >
-                <UIcon name="i-lucide-mail" class="size-5" />
-              </div>
-
-              <div class="min-w-0 flex-1 space-y-3">
-                <div class="min-w-0">
-                  <h3 class="text-pretty text-base font-semibold tracking-tight text-highlighted break-words">
-                    {{ t('about.contactCta.title') }}
-                  </h3>
-
-                  <p class="mt-1 text-pretty text-base leading-7 text-muted break-words">
-                    {{ t('about.contactCta.description') }}
-                  </p>
-                </div>
-
-                <UButton
-                  :to="localePath('/contact')"
-                  variant="soft"
-                  size="sm"
-                  class="w-full max-w-full"
-                  trailing-icon="i-lucide-arrow-right"
-                  :ui="sidebarButtonUi"
-                >
-                  {{ t('about.contactCta.action') }}
-                </UButton>
-              </div>
-            </div>
-          </UCard>
-        </aside>
+      <section
+        class="grid gap-4 border-y border-default py-7 sm:grid-cols-[1fr_auto] sm:items-center"
+      >
+        <div class="space-y-2">
+          <h2 class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
+            {{ t('about.contactCta.title') }}
+          </h2>
+          <p class="text-sm leading-6 text-muted">
+            {{ t('about.contactCta.description') }}
+          </p>
+        </div>
+        <UButton
+          :to="localePath('/contact')"
+          color="neutral"
+          variant="subtle"
+          trailing-icon="i-lucide-arrow-right"
+          class="rtl:[&_.iconify:last-child]:rotate-180"
+        >
+          {{ t('about.contactCta.action') }}
+        </UButton>
       </section>
     </UPageBody>
   </UPage>

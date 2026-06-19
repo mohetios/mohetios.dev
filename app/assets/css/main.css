@@ -52,70 +52,65 @@
 }
 
 :root {
-  --color-bg: #fcfbf8;
-  --color-surface: #ffffff;
-  --color-text: var(--ui-color-neutral-800);
-  --color-muted: var(--ui-color-neutral-500);
-  --color-primary: var(--ui-color-primary-600);
-  --color-accent: var(--ui-color-secondary-500);
-  --color-gold: #c6a15b;
-  --color-pattern-blue: #dde8f0;
-  --color-pattern-green: #e4ece5;
-  --color-pattern-tint: #dde8f0;
+  --mh-paper: #f8f5ee;
+  --mh-paper-soft: #f3efe7;
+  --mh-surface: #fffdf8;
+  --mh-surface-muted: color-mix(in oklab, var(--color-mohet-accent-100) 52%, var(--mh-paper));
+  --mh-surface-blue: color-mix(in oklab, var(--color-mohet-100) 68%, var(--mh-surface));
+  --mh-ink: var(--ui-color-neutral-800);
+  --mh-ink-muted: var(--ui-color-neutral-500);
+  --mh-ink-soft: color-mix(in oklab, var(--mh-ink-muted) 74%, var(--mh-paper));
+  --mh-brand: var(--ui-color-primary-600);
+  --mh-accent: var(--ui-color-secondary-500);
+  --mh-craft: #c6a15b;
+  --mh-rule: color-mix(in oklab, var(--mh-brand) 16%, var(--mh-surface));
+  --mh-rule-muted: color-mix(in oklab, var(--mh-brand) 9%, var(--mh-surface));
+  --mh-rule-craft: color-mix(in oklab, var(--mh-craft) 42%, var(--mh-surface));
+
+  --font-mh-display: 'Newsreader', ui-serif, Georgia, serif;
+  --font-mh-body: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
 
   --ui-primary: var(--ui-color-primary-600);
   --ui-secondary: var(--ui-color-secondary-500);
-  --ui-bg: var(--color-bg);
-  --ui-bg-muted: color-mix(in oklab, var(--color-pattern-green) 58%, var(--color-bg));
-  --ui-bg-elevated: var(--color-surface);
-  --ui-bg-accented: color-mix(in oklab, var(--color-pattern-blue) 72%, var(--color-surface));
-  --ui-border: color-mix(in oklab, var(--color-primary) 18%, var(--color-surface));
-  --ui-border-muted: color-mix(in oklab, var(--color-primary) 10%, var(--color-surface));
-  --ui-border-accented: color-mix(in oklab, var(--color-gold) 48%, var(--color-surface));
-  --ui-text: var(--color-text);
-  --ui-text-muted: var(--color-muted);
-  --ui-text-dimmed: color-mix(in oklab, var(--color-muted) 76%, var(--color-bg));
-  --ui-text-toned: color-mix(in oklab, var(--color-text) 78%, var(--color-muted));
-  --ui-text-highlighted: var(--color-text);
+  --ui-bg: var(--mh-paper);
+  --ui-bg-muted: var(--mh-surface-muted);
+  --ui-bg-elevated: var(--mh-surface);
+  --ui-bg-accented: var(--mh-surface-blue);
+  --ui-border: var(--mh-rule);
+  --ui-border-muted: var(--mh-rule-muted);
+  --ui-border-accented: var(--mh-rule-craft);
+  --ui-text: var(--mh-ink);
+  --ui-text-muted: var(--mh-ink-muted);
+  --ui-text-dimmed: var(--mh-ink-soft);
+  --ui-text-toned: color-mix(in oklab, var(--mh-ink) 78%, var(--mh-ink-muted));
+  --ui-text-highlighted: var(--mh-ink);
 
   --mohetios-site-width: 72rem;
   --mohetios-reading-width: 46rem;
   --mohetios-article-wide-width: 64rem;
-
-  --mohetios-fa-scale: 1.04;
-  --mohetios-fa-leading-scale: 0.9;
-  --mohetios-fa-lh-extra: 1.4;
 
   --ui-container: var(--mohetios-site-width);
 }
 
 .dark,
 [data-theme='dark'] {
-  --color-bg: #0f1823;
-  --color-surface: #172433;
-  --color-text: #eef3f7;
-  --color-muted: #a9b6c2;
-  --color-primary: var(--ui-color-primary-300);
-  --color-accent: var(--ui-color-secondary-400);
-  --color-gold: #d2b06d;
-  --color-pattern-blue: #2a3947;
-  --color-pattern-green: #2a3947;
-  --color-pattern-tint: #2a3947;
+  --mh-paper: #0f1823;
+  --mh-paper-soft: #142030;
+  --mh-surface: #172433;
+  --mh-surface-muted: color-mix(in oklab, #2a3947 68%, var(--mh-paper));
+  --mh-surface-blue: color-mix(in oklab, #2a3947 86%, var(--mh-surface));
+  --mh-ink: #eef3f7;
+  --mh-ink-muted: #a9b6c2;
+  --mh-ink-soft: color-mix(in oklab, var(--mh-ink-muted) 72%, var(--mh-paper));
+  --mh-brand: var(--ui-color-primary-300);
+  --mh-accent: var(--ui-color-secondary-400);
+  --mh-craft: #d2b06d;
+  --mh-rule: color-mix(in oklab, var(--mh-brand) 25%, var(--mh-surface));
+  --mh-rule-muted: color-mix(in oklab, var(--mh-brand) 14%, var(--mh-surface));
+  --mh-rule-craft: color-mix(in oklab, var(--mh-craft) 42%, var(--mh-surface));
 
   --ui-primary: var(--ui-color-primary-300);
   --ui-secondary: var(--ui-color-secondary-400);
-  --ui-bg: var(--color-bg);
-  --ui-bg-muted: color-mix(in oklab, var(--color-pattern-tint) 68%, var(--color-bg));
-  --ui-bg-elevated: var(--color-surface);
-  --ui-bg-accented: color-mix(in oklab, var(--color-pattern-tint) 86%, var(--color-surface));
-  --ui-border: color-mix(in oklab, var(--color-primary) 25%, var(--color-surface));
-  --ui-border-muted: color-mix(in oklab, var(--color-primary) 14%, var(--color-surface));
-  --ui-border-accented: color-mix(in oklab, var(--color-gold) 42%, var(--color-surface));
-  --ui-text: var(--color-text);
-  --ui-text-muted: var(--color-muted);
-  --ui-text-dimmed: color-mix(in oklab, var(--color-muted) 72%, var(--color-bg));
-  --ui-text-toned: color-mix(in oklab, var(--color-text) 80%, var(--color-muted));
-  --ui-text-highlighted: var(--color-text);
 }
 
 html,
@@ -156,44 +151,16 @@ html[dir='rtl'] {
 }
 
 html[lang^='fa'] {
-  --mohetios-fa-lh-5: calc(1.25rem * var(--mohetios-fa-lh-extra) * var(--mohetios-fa-leading-scale));
-  --mohetios-fa-lh-6: calc(1.5rem * var(--mohetios-fa-lh-extra) * var(--mohetios-fa-leading-scale));
-  --mohetios-fa-lh-7: calc(1.75rem * var(--mohetios-fa-lh-extra) * var(--mohetios-fa-leading-scale));
-  --mohetios-fa-lh-8: calc(2rem * var(--mohetios-fa-lh-extra) * var(--mohetios-fa-leading-scale));
-  --mohetios-fa-lh-snug: calc(1.375 * var(--mohetios-fa-lh-extra) * var(--mohetios-fa-leading-scale));
-
-  font-size: calc(100% * var(--mohetios-fa-scale));
-  line-height: calc(1.5 * var(--mohetios-fa-scale) * 1.2 * var(--mohetios-fa-leading-scale));
+  font-size: 104%;
+  line-height: 1.75;
 }
 
-/* Sync common text sizes with the FA leading scale. */
-html[lang^='fa'] .text-lg {
-  line-height: var(--mohetios-fa-lh-7);
+html[lang^='fa'] :where(.leading-5, .leading-6, .leading-7, .leading-8) {
+  line-height: inherit;
 }
 
-html[lang^='fa'] :where(.text-2xl, .text-3xl, .text-4xl, .text-5xl) {
-  line-height: var(--mohetios-fa-lh-snug);
-}
-
-/* Explicit leading-* utilities win over the text-size defaults above. */
-html[lang^='fa'] .leading-5 {
-  line-height: var(--mohetios-fa-lh-5);
-}
-
-html[lang^='fa'] .leading-6 {
-  line-height: var(--mohetios-fa-lh-6);
-}
-
-html[lang^='fa'] .leading-7 {
-  line-height: var(--mohetios-fa-lh-7);
-}
-
-html[lang^='fa'] .leading-8 {
-  line-height: var(--mohetios-fa-lh-8);
-}
-
-html[lang^='fa'] .leading-snug {
-  line-height: var(--mohetios-fa-lh-snug);
+html[lang^='fa'] :where(h1, h2, h3, .mh-display) {
+  line-height: 1.35;
 }
 
 [dir='rtl'] body {
@@ -216,6 +183,173 @@ html[lang^='fa'] .leading-snug {
   .site-shell {
     padding-inline: 1.5rem;
   }
+}
+
+.mh-page {
+  color: var(--ui-text);
+}
+
+.mh-display {
+  font-family: var(--font-mh-display, ui-serif, Georgia, serif);
+  letter-spacing: -0.035em;
+  font-feature-settings: 'ss01';
+}
+
+html[lang^='fa'] .mh-display,
+html[dir='rtl'] .mh-display {
+  font-family: var(--font-fa);
+  letter-spacing: 0;
+  font-feature-settings: normal;
+}
+
+.mh-paper-panel {
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--ui-bg-muted) 42%, transparent),
+      transparent 58%
+    ),
+    color-mix(in oklab, var(--ui-bg) 94%, var(--ui-bg-muted) 6%);
+}
+
+.mh-figure-panel {
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--ui-bg-muted) 40%, transparent),
+      transparent 55%
+    ),
+    color-mix(in oklab, var(--ui-bg) 94%, var(--ui-bg-muted) 6%);
+}
+
+.mh-ruled {
+  border-block: 1px solid var(--ui-border);
+}
+
+.mh-ruled-muted {
+  border-block: 1px solid var(--ui-border-muted);
+}
+
+.mh-rule-b {
+  border-block-end: 1px solid var(--ui-border);
+}
+
+.mh-rule-t {
+  border-block-start: 1px solid var(--ui-border);
+}
+
+.mh-kicker {
+  color: var(--ui-primary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+html[dir='rtl'] .mh-kicker {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.mh-kicker.text-muted {
+  color: var(--ui-text-muted);
+}
+
+.mh-kicker.text-highlighted {
+  color: var(--ui-text-highlighted);
+}
+
+.mh-index-row {
+  border-block-end: 1px solid var(--ui-border-muted);
+}
+
+.mh-index-row:first-child {
+  border-block-start: 1px solid var(--ui-border);
+}
+
+.mh-index-row:last-child {
+  border-block-end: 1px solid var(--ui-border);
+}
+
+.mh-index-sidebar {
+  border-color: var(--ui-border);
+}
+
+.mh-soft-link {
+  color: var(--ui-text-highlighted);
+  text-decoration: none;
+  transition:
+    color 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease;
+}
+
+.mh-soft-link:hover {
+  color: var(--ui-primary);
+}
+
+.prose {
+  --tw-prose-body: var(--ui-text);
+  --tw-prose-headings: var(--ui-text-highlighted);
+  --tw-prose-lead: var(--ui-text-toned);
+  --tw-prose-links: var(--ui-primary);
+  --tw-prose-bold: var(--ui-text-highlighted);
+  --tw-prose-counters: var(--ui-primary);
+  --tw-prose-bullets: var(--ui-primary);
+  --tw-prose-hr: var(--ui-border);
+  --tw-prose-quotes: var(--ui-text-muted);
+  --tw-prose-quote-borders: var(--ui-border-accented);
+  --tw-prose-captions: var(--ui-text-muted);
+  --tw-prose-code: var(--ui-text-highlighted);
+  --tw-prose-pre-code: var(--ui-text-highlighted);
+  --tw-prose-pre-bg: var(--ui-bg-muted);
+  --tw-prose-th-borders: var(--ui-border);
+  --tw-prose-td-borders: var(--ui-border-muted);
+  max-width: none;
+}
+
+.prose :where(h1, h2, h3, h4) {
+  font-family: var(--font-mh-display);
+  color: var(--ui-text-highlighted);
+  letter-spacing: -0.025em;
+}
+
+html[lang^='fa'] .prose :where(h1, h2, h3, h4),
+html[dir='rtl'] .prose :where(h1, h2, h3, h4) {
+  font-family: var(--font-fa);
+  letter-spacing: 0;
+}
+
+.prose a {
+  text-decoration-color: color-mix(in oklab, var(--ui-primary) 45%, transparent);
+  text-underline-offset: 0.18em;
+  transition:
+    color 150ms ease,
+    text-decoration-color 150ms ease;
+}
+
+.prose a:hover {
+  color: var(--ui-primary);
+  text-decoration-color: var(--ui-primary);
+}
+
+.prose blockquote {
+  border-inline-start-color: var(--ui-border-accented);
+  color: var(--ui-text-toned);
+  font-style: normal;
+}
+
+.prose :not(pre) > code {
+  border: 1px solid var(--ui-border-muted);
+  border-radius: 0.375rem;
+  background: var(--ui-bg-muted);
+  padding: 0.1rem 0.35rem;
+  font-weight: 500;
+}
+
+.prose :not(pre) > code::before,
+.prose :not(pre) > code::after {
+  content: none;
 }
 
 @media (min-width: 1024px) {

@@ -5,9 +5,9 @@ const route = useRoute()
 
 const navigation = computed(() => [
   { label: t('nav.home'), to: localePath('/') },
-  { label: t('nav.blog'), to: localePath('/blog') },
+  { label: t('pages.notebook.kicker'), to: localePath('/blog') },
   { label: t('nav.lab'), to: localePath('/lab') },
-  { label: t('nav.projects'), to: localePath('/projects') },
+  { label: t('pages.systems.kicker'), to: localePath('/projects') },
   { label: t('nav.about'), to: localePath('/about') },
   { label: t('nav.contact'), to: localePath('/contact') }
 ])
@@ -28,8 +28,8 @@ const nextLocalePath = computed(() =>
     :to="localePath('/')"
     mode="slideover"
     :ui="{
-      root: 'border-b border-default bg-default/90 backdrop-blur',
-      container: 'site-shell flex h-full items-center justify-between gap-3'
+      root: 'border-b border-default bg-default',
+      container: 'site-shell flex h-16 items-center justify-between gap-4'
     }"
   >
     <template #left>
@@ -45,11 +45,13 @@ const nextLocalePath = computed(() =>
     <UNavigationMenu
       :items="navigation"
       variant="link"
+      highlight
+      highlight-color="primary"
       class="hidden text-sm lg:flex"
     />
 
     <template #right>
-      <div class="flex items-center gap-0.5">
+      <div class="flex items-center gap-1">
         <UButton
           v-if="nextLocale && nextLocalePath"
           :to="nextLocalePath"
@@ -58,9 +60,14 @@ const nextLocalePath = computed(() =>
           size="sm"
           icon="i-lucide-languages"
           :label="nextLocale.code.toUpperCase()"
-          class="cursor-pointer"
+          class="cursor-pointer text-muted hover:text-primary"
         />
-        <UColorModeButton color="neutral" variant="ghost" size="sm" />
+        <UColorModeButton
+          color="neutral"
+          variant="ghost"
+          size="sm"
+          class="text-muted hover:text-primary"
+        />
       </div>
     </template>
 

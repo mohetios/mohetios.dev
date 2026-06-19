@@ -1,11 +1,10 @@
 <template>
-  <div class="flex w-full flex-col">
+  <div class="mh-page flex min-h-dvh w-full flex-col bg-default text-highlighted">
     <SiteHeader />
 
-    <div class="site-shell">
+    <main class="site-shell flex-1">
       <slot />
-      <USeparator />
-    </div>
+    </main>
 
     <SiteFooter />
   </div>

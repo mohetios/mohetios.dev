@@ -66,7 +66,7 @@ function createButton(label: string, icon: MermaidIcon, onClick: () => void, ext
     'rounded-md',
     'border',
     'border-default',
-    'bg-default/80',
+    'bg-elevated',
     'inline-flex',
     'size-8',
     'items-center',
@@ -75,7 +75,6 @@ function createButton(label: string, icon: MermaidIcon, onClick: () => void, ext
     'text-sm',
     'font-medium',
     'text-muted',
-    'backdrop-blur',
     'transition',
     'hover:text-highlighted',
     extraClass || ''
@@ -284,7 +283,7 @@ function enhanceControls() {
     const toolbar = document.createElement('div')
     toolbar.className = 'mermaid-action-toolbar'
 
-    toolbar.append(
+    toolbar.appendChild(
       createButton(
         t('content.mermaid.fullscreen'),
         'fullscreen',
@@ -292,7 +291,9 @@ function enhanceControls() {
           openViewer(container)
         },
         'mermaid-action-primary'
-      ),
+      )
+    )
+    toolbar.appendChild(
       createButton(
         t('content.mermaid.openSvg'),
         'externalLink',

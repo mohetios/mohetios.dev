@@ -11,9 +11,7 @@ const hasItems = computed(() => Boolean(props.items?.length))
 
 <template>
   <aside v-if="hasItems" class="space-y-3" :aria-label="heading">
-    <p
-      class="text-sm font-medium tracking-[0.14em] text-muted uppercase rtl:normal-case rtl:tracking-normal"
-    >
+    <p class="mh-kicker text-muted">
       {{ heading }}
     </p>
     <ul class="space-y-2 text-base leading-7 text-muted">
