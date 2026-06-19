@@ -66,7 +66,7 @@ const archiveItems = computed(() => [
 
       <section class="pb-8">
         <div
-          class="grid divide-y divide-default border-b border-default lg:grid-cols-3 lg:items-stretch lg:divide-x lg:divide-y-0 lg:rtl:divide-x-reverse"
+          class="grid divide-y divide-default border-b border-default lg:grid-cols-3 lg:items-stretch"
         >
           <article class="flex min-w-0 flex-col py-5 lg:pe-6">
             <header class="mb-5 flex items-center gap-4">
