@@ -23,9 +23,9 @@ const motion = 'transition-colors duration-150 ease-out'
 const sizeStyles = {
   header: {
     root: 'inline-flex min-w-0 items-center gap-3',
-    part1: 'text-xl',
-    part2: 'text-lg',
-    tld: 'text-sm',
+    part1: 'text-2xl',
+    part2: 'text-xl',
+    tld: 'text-base',
     tagline: [
       'hidden shrink-0 text-sm text-muted opacity-90',
       'whitespace-nowrap xl:inline',
@@ -34,16 +34,16 @@ const sizeStyles = {
   },
   footer: {
     root: 'inline-flex flex-col items-start',
-    part1: 'text-2xl',
-    part2: 'text-xl',
-    tld: 'text-sm',
-    tagline: 'mt-0.5 text-sm text-muted opacity-90'
+    part1: 'text-4xl',
+    part2: 'text-3xl',
+    tld: 'text-lg',
+    tagline: 'mt-1 text-base leading-6 text-muted opacity-90'
   },
   dashboard: {
     root: 'inline-flex min-w-0 flex-wrap items-baseline gap-x-1.5 gap-y-1',
-    part1: 'text-lg',
-    part2: 'text-base',
-    tld: 'text-xs',
+    part1: 'text-xl',
+    part2: 'text-lg',
+    tld: 'text-sm',
     tagline: [
       'inline text-xs font-medium uppercase tracking-wide text-muted opacity-90 rtl:normal-case',
       'transition-colors duration-150 ease-out'

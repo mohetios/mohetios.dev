@@ -804,10 +804,10 @@
     },
     "actions": {
       "readArticle": "Read article",
-      "openProject": "Open project",
-      "backToBlog": "Back to writing",
-      "backToLab": "Back to lab",
-      "backToProjects": "Back to projects",
+      "openProject": "Open system",
+      "backToBlog": "Back to Notebook",
+      "backToLab": "Back to Lab",
+      "backToProjects": "Back to Systems",
       "backToNotebook": "Back to Notebook",
       "backToSystems": "Back to Systems"
     },
@@ -847,8 +847,8 @@
         "description": "Short updates from experiments, prototypes, and technical research."
       },
       "project": {
-        "title": "Interested in this work?",
-        "description": "Reach out if you want to discuss the project, collaboration, or implementation details.",
+        "title": "Interested in this system?",
+        "description": "Reach out if you want to discuss the system, collaboration, or implementation details.",
         "action": "Contact me"
       }
     },
@@ -876,11 +876,11 @@
       "metadata": "Article metadata"
     },
     "blog": {
-      "eyebrow": "Writing archive",
-      "title": "Writing",
+      "eyebrow": "Notebook archive",
+      "title": "Notebook",
       "description": "Notes on software, product engineering, architecture, and the craft of building with care.",
-      "latest": "Latest article",
-      "placeholder": "Featured article"
+      "latest": "Latest note",
+      "placeholder": "Featured note"
     },
     "lab": {
       "eyebrow": "Working notebook",
@@ -895,12 +895,12 @@
       }
     },
     "projects": {
-      "eyebrow": "Project archive",
-      "title": "Projects",
+      "eyebrow": "System archive",
+      "title": "Systems",
       "description": "Open-source products, tools, prototypes, and systems shaped by real constraints.",
-      "featured": "Featured projects",
-      "featuredDescription": "The main projects currently shaping my public work.",
-      "archive": "Project archive"
+      "featured": "Featured systems",
+      "featuredDescription": "The main systems currently shaping my public work.",
+      "archive": "System archive"
     },
     "about": {
       "eyebrow": "Background"

@@ -22,12 +22,10 @@ const navigation = computed(() => [
 ])
 
 const sidebarIndex = computed(() =>
-  navigation.value
-    .filter((item) => item.to !== localePath('/contact'))
-    .map((item, index) => ({
-      ...item,
-      number: String(index + 1).padStart(2, '0')
-    }))
+  navigation.value.map((item, index) => ({
+    ...item,
+    number: String(index + 1).padStart(2, '0')
+  }))
 )
 
 const nextLocale = computed(
@@ -38,6 +36,38 @@ const nextLocalePath = computed(() =>
     ? getLocalizedRoutePath(route.path, nextLocale.value.code, { fallbackToSection: true })
     : undefined
 )
+
+const currentYear = computed(() => {
+  const calendar = locale.value === 'fa' ? 'persian' : 'gregory'
+
+  return new Intl.DateTimeFormat(locale.value === 'fa' ? 'fa-IR-u-ca-persian' : 'en-US', {
+    year: 'numeric',
+    calendar
+  }).format(new Date())
+})
+
+const socialLinks = [
+  {
+    label: 'GitHub',
+    to: 'https://github.com/mohetios',
+    icon: 'i-lucide-github'
+  },
+  {
+    label: 'LinkedIn',
+    to: 'https://www.linkedin.com/in/ali-zemani/',
+    icon: 'i-lucide-linkedin'
+  },
+  {
+    label: 'X',
+    to: 'https://x.com/ZemaniAli',
+    icon: 'i-lucide-twitter'
+  },
+  {
+    label: 'Medium',
+    to: 'https://medium.com/@mohetios',
+    icon: 'i-lucide-book-open-text'
+  }
+]
 
 const isActive = (to: string) => {
   if (to === localePath('/')) {
@@ -113,34 +143,48 @@ function toggleSidebar() {
         />
       </figure>
 
-      <blockquote class="space-y-3 border-b border-default pb-7 text-sm leading-6 text-muted">
-        <p>{{ t('footer.workshopQuote') }}</p>
-        <footer class="text-highlighted">— M.</footer>
+      <blockquote class="space-y-3 pb-0 text-sm leading-6 text-muted">
+        <p>{{ t('site.footer') }}</p>
+        <!-- <footer class="text-highlighted">— M.</footer> -->
       </blockquote>
 
-      <div class="flex items-center justify-between gap-3 text-xs text-muted">
-        <span>MMXXIV</span>
-        <span aria-hidden="true">•</span>
-        <span>v1.0</span>
-      </div>
-
-      <div class="flex items-center gap-1 border-t border-default pt-4">
-        <UButton
-          v-if="nextLocale && nextLocalePath"
-          :to="nextLocalePath"
-          color="neutral"
-          variant="ghost"
-          size="sm"
-          icon="i-lucide-languages"
-          :label="nextLocale.code.toUpperCase()"
-          class="cursor-pointer text-muted hover:text-primary"
-        />
-        <UColorModeButton
-          color="neutral"
-          variant="ghost"
-          size="sm"
-          class="text-muted hover:text-primary"
-        />
+      <div class="space-y-3 border-t border-default pt-4">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-1" :aria-label="t('footer.sections.connect')">
+            <UButton
+              v-for="link in socialLinks"
+              :key="link.to"
+              :to="link.to"
+              :icon="link.icon"
+              color="neutral"
+              variant="ghost"
+              size="sm"
+              class="text-muted hover:text-primary"
+              target="_blank"
+              rel="noopener noreferrer"
+              :aria-label="link.label"
+            />
+          </div>
+          <div class="flex items-center gap-1">
+            <UButton
+              v-if="nextLocale && nextLocalePath"
+              :to="nextLocalePath"
+              color="neutral"
+              variant="ghost"
+              size="sm"
+              icon="i-lucide-languages"
+              :label="nextLocale.code.toUpperCase()"
+              class="cursor-pointer text-muted hover:text-primary"
+            />
+            <UColorModeButton
+              color="neutral"
+              variant="ghost"
+              size="sm"
+              class="text-muted hover:text-primary"
+            />
+          </div>
+        </div>
+        <p class="text-xs leading-5 text-muted">© {{ currentYear }} {{ t('site.name') }}</p>
       </div>
     </div>
   </aside>
@@ -194,12 +238,33 @@ function toggleSidebar() {
     </template>
 
     <template #body>
-      <UNavigationMenu
-        :items="navigation"
-        orientation="vertical"
-        variant="link"
-        class="-mx-2 text-sm"
-      />
+      <div class="space-y-6">
+        <UNavigationMenu
+          :items="navigation"
+          orientation="vertical"
+          variant="link"
+          class="-mx-2 text-sm"
+        />
+
+        <div class="space-y-3 border-t border-default pt-4">
+          <div class="flex items-center gap-1" :aria-label="t('footer.sections.connect')">
+            <UButton
+              v-for="link in socialLinks"
+              :key="link.to"
+              :to="link.to"
+              :icon="link.icon"
+              color="neutral"
+              variant="ghost"
+              size="sm"
+              class="text-muted hover:text-primary"
+              target="_blank"
+              rel="noopener noreferrer"
+              :aria-label="link.label"
+            />
+          </div>
+          <p class="text-xs leading-5 text-muted">© {{ currentYear }} {{ t('site.name') }}</p>
+        </div>
+      </div>
     </template>
   </UHeader>
 </template>

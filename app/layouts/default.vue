@@ -12,8 +12,6 @@ const sidebarOpen = ref(true)
       <main class="site-shell min-h-dvh">
         <slot />
       </main>
-
-      <SiteFooter />
     </div>
   </div>
 </template>

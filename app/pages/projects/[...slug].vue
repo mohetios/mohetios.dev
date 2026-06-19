@@ -9,7 +9,7 @@ const item = computed(() => getProject(path.value))
 const collection = computed(() => getProjects(locale.value))
 
 if (!item.value || item.value.draft) {
-  throw createError({ statusCode: 404, statusMessage: 'Project not found', fatal: true })
+  throw createError({ statusCode: 404, statusMessage: 'System not found', fatal: true })
 }
 </script>
 
