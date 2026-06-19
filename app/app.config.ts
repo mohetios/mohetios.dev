@@ -14,9 +14,22 @@ export default defineAppConfig({
         base: 'font-medium'
       }
     },
+    card: {
+      variants: {
+        variant: {
+          outline: {
+            root: 'bg-default ring-0 border-y border-default divide-y divide-default'
+          },
+          subtle: {
+            root: 'bg-elevated/50 ring-0 border-y border-default divide-y divide-default'
+          }
+        }
+      }
+    },
     pageHeader: {
       slots: {
-        title: 'text-4xl font-semibold tracking-tight text-balance leading-snug text-highlighted sm:text-5xl',
+        title:
+          'text-4xl font-semibold tracking-tight text-balance leading-snug text-highlighted sm:text-5xl',
         description: 'mt-3 text-lg leading-7 text-pretty text-muted'
       }
     },
@@ -24,6 +37,16 @@ export default defineAppConfig({
       slots: {
         title: 'text-base font-semibold tracking-tight leading-snug text-highlighted',
         description: 'mt-2 text-base leading-7 text-muted'
+      },
+      variants: {
+        variant: {
+          outline: {
+            root: 'bg-default ring-0 border-y border-default'
+          },
+          subtle: {
+            root: 'bg-elevated/50 ring-0 border-y border-default'
+          }
+        }
       }
     }
   }

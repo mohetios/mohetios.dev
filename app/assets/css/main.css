@@ -13,18 +13,18 @@
   --font-fa: Farhang, 'Noto Sans Arabic', Tahoma, Arial, sans-serif;
   --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
 
-  /* Mohetios brand — mapped in app.config.ts as primary / secondary / neutral */
-  --color-mohet-50: #f0f4f8;
-  --color-mohet-100: #dde7ef;
-  --color-mohet-200: #b8c9d9;
-  --color-mohet-300: #7ea8ca;
-  --color-mohet-400: #5c81a3;
-  --color-mohet-500: #3d6689;
-  --color-mohet-600: #1e4265;
-  --color-mohet-700: #183552;
-  --color-mohet-800: #122840;
-  --color-mohet-900: #0c1b2e;
-  --color-mohet-950: #060f1a;
+  /* Mohetios primary — Persian blue, mapped in app.config.ts as Nuxt UI primary */
+  --color-mohet-50: #eef3ff;
+  --color-mohet-100: #dfe8ff;
+  --color-mohet-200: #c5d4ff;
+  --color-mohet-300: #9fb6ff;
+  --color-mohet-400: #718bfb;
+  --color-mohet-500: #4960e8;
+  --color-mohet-600: #1c39bb;
+  --color-mohet-700: #18309d;
+  --color-mohet-800: #172a7f;
+  --color-mohet-900: #172765;
+  --color-mohet-950: #0d143a;
 
   --color-mohet-accent-50: #f2f6f4;
   --color-mohet-accent-100: #e0ebe4;

@@ -614,6 +614,8 @@
     "readBlog": "خواندن نوشته‌ها",
     "exploreLab": "ورود به آزمایشگاه",
     "viewProjects": "دیدن پروژه‌ها",
+    "openSidebar": "باز کردن نوار کناری",
+    "closeSidebar": "بستن نوار کناری",
     "switchToEnglish": "English",
     "switchToPersian": "فارسی"
   },

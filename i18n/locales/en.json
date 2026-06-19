@@ -614,6 +614,8 @@
     "readBlog": "Read writing",
     "exploreLab": "Open the lab",
     "viewProjects": "View projects",
+    "openSidebar": "Open sidebar",
+    "closeSidebar": "Close sidebar",
     "switchToEnglish": "English",
     "switchToPersian": "فارسی"
   },

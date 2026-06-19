@@ -1,11 +1,19 @@
+<script setup lang="ts">
+const sidebarOpen = ref(true)
+</script>
+
 <template>
-  <div class="mh-page flex min-h-dvh w-full flex-col bg-default text-highlighted">
-    <SiteHeader />
+  <div class="mh-page min-h-dvh w-full bg-default text-highlighted">
+    <SiteHeader v-model:sidebar-open="sidebarOpen" />
 
-    <main class="site-shell flex-1">
-      <slot />
-    </main>
+    <div
+      :class="['transition-[padding] duration-200 ease-out', sidebarOpen ? 'lg:ps-80' : 'lg:ps-0']"
+    >
+      <main class="site-shell min-h-dvh">
+        <slot />
+      </main>
 
-    <SiteFooter />
+      <SiteFooter />
+    </div>
   </div>
 </template>
