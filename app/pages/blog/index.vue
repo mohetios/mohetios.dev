@@ -39,7 +39,6 @@ const nearbyLinks = computed(() => [
     to: localePath('/projects')
   }
 ])
-
 useMohetiosSeo({
   title: () => t('pages.notebook.kicker'),
   description: () => t('pages.notebook.description'),
@@ -63,6 +62,7 @@ function formatDate(date?: string | Date) {
   <UPage class="mh-page">
     <UPageBody :ui="{ base: 'space-y-10 pb-16 sm:space-y-12' }">
       <section
+        id="notebook"
         class="grid gap-8 border-b border-default pb-8 lg:grid-cols-[0.68fr_0.32fr] lg:items-end"
       >
         <div class="max-w-4xl space-y-5">
@@ -124,7 +124,11 @@ function formatDate(date?: string | Date) {
             </span>
           </div>
 
-          <section v-if="posts.length" class="divide-y divide-default border-y border-default">
+          <section
+            v-if="posts.length"
+            id="latest-notes"
+            class="divide-y divide-default border-y border-default"
+          >
             <NuxtLink
               v-for="post in posts"
               :key="post.id"
@@ -167,7 +171,10 @@ function formatDate(date?: string | Date) {
 
           <UiEmpty v-else :title="t('empty.blogTitle')" :description="t('empty.blogDescription')" />
 
-          <section class="grid gap-6 border-y border-default py-7 lg:grid-cols-[0.28fr_0.72fr]">
+          <section
+            id="archive"
+            class="grid gap-6 border-y border-default py-7 lg:grid-cols-[0.28fr_0.72fr]"
+          >
             <div class="space-y-2">
               <div class="flex items-center gap-3 text-primary">
                 <UIcon name="i-lucide-archive" class="size-5" />
@@ -207,7 +214,7 @@ function formatDate(date?: string | Date) {
             </div>
           </section>
 
-          <section v-if="tags.length" class="border-y border-default py-5">
+          <section v-if="tags.length" id="tags" class="border-y border-default py-5">
             <h2 class="mh-kicker">
               {{ t('pages.notebook.indexTitle') }}
             </h2>
@@ -232,7 +239,7 @@ function formatDate(date?: string | Date) {
             </UButton>
           </section>
 
-          <section class="divide-y divide-default border-y border-default">
+          <section id="nearby" class="divide-y divide-default border-y border-default">
             <div class="py-4">
               <h2 class="mh-kicker">
                 {{ t('pages.notebook.nearbyTitle') }}

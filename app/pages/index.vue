@@ -14,17 +14,13 @@ useMohetiosSeo({
   type: 'website'
 })
 
-const archiveItems = computed(() => [
-  { year: '2026', label: t('home.archive.items.2026') },
-  { year: '2025', label: t('home.archive.items.2025') },
-  { year: '2024', label: t('home.archive.items.2024') }
-])
 </script>
 
 <template>
   <UPage class="mh-page">
     <UPageBody :ui="{ base: 'space-y-10 pb-16 sm:space-y-12' }">
       <section
+        id="workshop"
         class="grid items-center gap-8 border-b border-default pb-8 lg:grid-cols-[0.55fr_0.45fr] lg:gap-12 lg:pb-10"
       >
         <div class="space-y-5">
@@ -68,9 +64,9 @@ const archiveItems = computed(() => [
         <div
           class="grid divide-y divide-default border-b border-default lg:grid-cols-3 lg:items-stretch"
         >
-          <article class="flex min-w-0 flex-col py-5 lg:pe-6">
+          <article id="workbench" class="flex min-w-0 flex-col py-5 lg:pe-6">
             <header class="mb-5 flex items-center gap-4">
-              <UIcon name="i-lucide-lamp" class="size-10 shrink-0 text-primary" />
+              <!-- <UIcon name="i-lucide-lamp" class="size-10 shrink-0 text-primary" /> -->
               <span class="text-sm font-semibold tabular-nums text-primary">01</span>
               <h2 class="mh-display text-xl leading-tight font-semibold text-highlighted">
                 {{ t('home.workbench.title') }}
@@ -114,9 +110,9 @@ const archiveItems = computed(() => [
             </UButton>
           </article>
 
-          <article class="flex min-w-0 flex-col py-5 lg:px-6">
+          <article id="notebook" class="flex min-w-0 flex-col py-5 lg:px-6">
             <header class="mb-5 flex items-center gap-4">
-              <UIcon name="i-lucide-book-open" class="size-10  shrink-0 text-primary" />
+              <!-- <UIcon name="i-lucide-book-open" class="size-10  shrink-0 text-primary" /> -->
               <span class="text-sm font-semibold tabular-nums text-primary">02</span>
               <h2 class="mh-display text-xl leading-tight font-semibold text-highlighted">
                 {{ t('home.notebook.title') }}
@@ -162,9 +158,9 @@ const archiveItems = computed(() => [
             </UButton>
           </article>
 
-          <article class="flex min-w-0 flex-col py-5 lg:ps-6">
+          <article id="built-systems" class="flex min-w-0 flex-col py-5 lg:ps-6">
             <header class="mb-5 flex items-center gap-4">
-              <UIcon name="i-lucide-wrench" class="size-10 shrink-0 text-primary" />
+              <!-- <UIcon name="i-lucide-wrench" class="size-10 shrink-0 text-primary" /> -->
               <span class="text-sm font-semibold tabular-nums text-primary">03</span>
               <h2 class="mh-display text-xl leading-tight font-semibold text-highlighted">
                 {{ t('home.builtSystems.title') }}

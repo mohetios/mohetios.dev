@@ -106,6 +106,7 @@ useMohetiosSeo({
       <template v-if="sections.length">
         <section
           v-for="(section, sectionIndex) in sections"
+          :id="section.type === 'project' ? 'systems' : section.type === 'blog' ? 'notebook' : 'lab'"
           :key="section.type"
           class="grid gap-8 lg:grid-cols-[0.28fr_0.72fr]"
         >
@@ -165,7 +166,7 @@ useMohetiosSeo({
         />
       </section>
 
-      <section class="border-y border-default py-6">
+      <section id="all-tags" class="border-y border-default py-6">
         <UButton
           :to="localePath('/tags')"
           color="neutral"

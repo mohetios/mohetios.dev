@@ -160,7 +160,8 @@ html[lang^='fa'] :where(.leading-5, .leading-6, .leading-7, .leading-8) {
 }
 
 html[lang^='fa'] :where(h1, h2, h3, .mh-display) {
-  line-height: 1.35;
+  line-height: inherit;
+
 }
 
 [dir='rtl'] body {
@@ -273,6 +274,28 @@ html[dir='rtl'] .mh-kicker {
 
 .mh-index-sidebar {
   border-color: var(--ui-border);
+}
+
+.mh-sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--ui-border-accented) 70%, transparent) transparent;
+}
+
+.mh-sidebar-scroll::-webkit-scrollbar {
+  width: 0.35rem;
+}
+
+.mh-sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mh-sidebar-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--ui-border-accented) 70%, transparent);
+}
+
+.mh-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--ui-border-accented);
 }
 
 .mh-soft-link {

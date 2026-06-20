@@ -42,7 +42,7 @@ withDefaults(
 
           <ContentArticleSummary v-if="summary?.length" :items="summary" />
 
-          <ContentToc v-if="showToc" :title="$t('content.toc')" :links="tocLinks" />
+          <ContentToc v-if="showToc" :title="$t('content.toc')" :links="tocLinks" class="lg:hidden" />
 
           <article class="prose prose-lg">
             <ContentHtml :html="content" />

@@ -67,7 +67,7 @@ useMohetiosSeo({
       </section>
 
       <section class="grid gap-8 border-b border-default pb-8 lg:grid-cols-2">
-        <article class="min-w-0 border-t border-default pt-5">
+        <article id="what-is-mohetios" class="min-w-0 border-t border-default pt-5">
           <header class="mb-4 space-y-3">
             <div class="flex items-center gap-3 text-primary">
               <UIcon name="i-lucide-book-open" class="size-5" />
@@ -84,7 +84,7 @@ useMohetiosSeo({
           </p>
         </article>
 
-        <article class="min-w-0 border-t border-default pt-5 lg:border-s lg:ps-6">
+        <article id="the-name" class="min-w-0 border-t border-default pt-5 lg:border-s lg:ps-6">
           <header class="mb-4 space-y-3">
             <div class="flex items-center gap-3 text-primary">
               <UIcon name="i-lucide-pen-line" class="size-5" />
@@ -103,7 +103,7 @@ useMohetiosSeo({
         </article>
       </section>
 
-      <section class="grid gap-8 lg:grid-cols-[0.28fr_0.72fr]">
+      <section id="how-i-build" class="grid gap-8 lg:grid-cols-[0.28fr_0.72fr]">
         <div class="space-y-3">
           <div class="flex items-center gap-3 text-primary">
             <UIcon name="i-lucide-wrench" class="size-5" />
@@ -127,7 +127,7 @@ useMohetiosSeo({
         </div>
       </section>
 
-      <section class="grid gap-8 lg:grid-cols-[0.28fr_0.72fr]">
+      <section id="current-focus" class="grid gap-8 lg:grid-cols-[0.28fr_0.72fr]">
         <div class="space-y-3">
           <div class="flex items-center gap-3 text-primary">
             <UIcon name="i-lucide-archive" class="size-5" />
@@ -148,6 +148,7 @@ useMohetiosSeo({
 
       <section
         v-if="recentPosts.length"
+        id="latest-writing"
         class="grid gap-8 border-y border-default py-7 lg:grid-cols-[0.28fr_0.72fr]"
       >
         <div class="space-y-3">
@@ -192,6 +193,7 @@ useMohetiosSeo({
       </section>
 
       <section
+        id="contact"
         class="grid gap-4 border-y border-default py-7 sm:grid-cols-[1fr_auto] sm:items-center"
       >
         <div class="space-y-2">

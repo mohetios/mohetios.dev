@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { TocItem } from '~/utils/content'
+
 const props = defineProps<{
-  sidebarOpen: boolean
+  sidebarOpen?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -10,6 +12,16 @@ const emit = defineEmits<{
 const { locale, locales, t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+const localSidebarOpen = ref<boolean | undefined>(undefined)
+const isDesktop = ref(false)
+const resolvedSidebarOpen = computed(() => props.sidebarOpen ?? localSidebarOpen.value)
+const isSidebarOpen = computed({
+  get: () => resolvedSidebarOpen.value ?? isDesktop.value,
+  set: (value: boolean) => {
+    localSidebarOpen.value = value
+    emit('update:sidebarOpen', value)
+  }
+})
 
 const navigation = computed(() => [
   { label: t('nav.home'), to: localePath('/') },
@@ -17,8 +29,7 @@ const navigation = computed(() => [
   { label: t('nav.lab'), to: localePath('/lab') },
   { label: t('pages.systems.kicker'), to: localePath('/projects') },
   { label: t('pages.tagsIndex.kicker'), to: localePath('/tags') },
-  { label: t('nav.about'), to: localePath('/about') },
-  { label: t('nav.contact'), to: localePath('/contact') }
+  { label: t('nav.about'), to: localePath('/about') }
 ])
 
 const sidebarIndex = computed(() =>
@@ -27,6 +38,104 @@ const sidebarIndex = computed(() =>
     number: String(index + 1).padStart(2, '0')
   }))
 )
+
+const routeSectionPath = computed(() => stripLocalePrefix(toPublicPath(route.path)))
+const contentPath = computed(() => toContentPath(route.path, locale.value))
+
+const contentTocLinks = computed(() => {
+  const item =
+    getBlogPost(contentPath.value) ||
+    getLabNote(contentPath.value) ||
+    getProject(contentPath.value) ||
+    getPage(contentPath.value)
+
+  return item?.tocData && shouldShowToc(item.tocData) ? getTocNavLinks(item.tocData) : []
+})
+
+const staticPageTocLinks = computed<TocItem[]>(() => {
+  switch (routeSectionPath.value) {
+    case '/':
+      return [
+        { title: t('home.workbench.title'), url: '#workbench' },
+        { title: t('home.notebook.title'), url: '#notebook' },
+        { title: t('home.builtSystems.title'), url: '#built-systems' }
+      ]
+    case '/blog':
+      return [
+        { title: t('pages.notebook.entriesTitle'), url: '#latest-notes' },
+        { title: t('pages.notebook.archive.title'), url: '#archive' },
+        { title: t('pages.notebook.indexTitle'), url: '#tags' },
+        { title: t('pages.notebook.nearbyTitle'), url: '#nearby' }
+      ]
+    case '/lab':
+      return [
+        { title: t('pages.labIndex.logsTitle'), url: '#lab-logs' },
+        { title: t('pages.labIndex.status.title'), url: '#prototype-state' }
+      ]
+    case '/projects':
+      return [
+        { title: t('pages.systems.filesTitle'), url: '#system-files' },
+        { title: t('pages.systems.status.title'), url: '#build-state' },
+        { title: t('pages.systems.relatedTitle'), url: '#related-writing' }
+      ]
+    case '/about':
+      return [
+        { title: t('pages.aboutWorkshop.what.title'), url: '#what-is-mohetios' },
+        { title: t('pages.aboutWorkshop.name.title'), url: '#the-name' },
+        { title: t('pages.aboutWorkshop.how.title'), url: '#how-i-build' },
+        { title: t('pages.aboutWorkshop.focus.title'), url: '#current-focus' },
+        { title: t('about.latestWriting.title'), url: '#latest-writing' },
+        { title: t('about.contactCta.title'), url: '#contact' }
+      ]
+    case '/contact':
+      return [
+        { title: t('pages.contactGate.kicker'), url: '#contact' },
+        { title: t('contact.sidebar.label'), url: '#useful-context' },
+        { title: t('pages.contactGate.response.title'), url: '#response-note' }
+      ]
+    case '/tags':
+      return [
+        { title: t('pages.tagsIndex.entriesTitle'), url: '#topic-entries' },
+        { title: t('pages.tagsIndex.returnTitle'), url: '#return-paths' }
+      ]
+    default:
+      if (routeSectionPath.value.startsWith('/tags/')) {
+        return [
+          { title: t('pages.tagPath.sections.notebook'), url: '#notebook' },
+          { title: t('pages.tagPath.sections.lab'), url: '#lab' },
+          { title: t('pages.tagPath.sections.systems'), url: '#systems' },
+          { title: t('tags.allTags'), url: '#all-tags' }
+        ]
+      }
+
+      return []
+  }
+})
+
+const pageTocLinks = computed(() =>
+  contentTocLinks.value.length ? contentTocLinks.value : staticPageTocLinks.value
+)
+const hasPageToc = computed(() => pageTocLinks.value.length > 0)
+const sidebarTitle = computed(() =>
+  hasPageToc.value ? t('content.toc') : t('pages.tagsIndex.kicker')
+)
+const sidebarOffsetClass = computed(() =>
+  resolvedSidebarOpen.value === false ? 'lg:ms-0' : 'lg:ms-80'
+)
+const sidebarTransformClass = computed(() => {
+  if (resolvedSidebarOpen.value === undefined) {
+    return '-translate-x-full rtl:translate-x-full lg:translate-x-0 lg:rtl:translate-x-0'
+  }
+
+  return isSidebarOpen.value ? 'translate-x-0' : '-translate-x-full rtl:translate-x-full'
+})
+const sidebarTogglePositionClass = computed(() => {
+  if (resolvedSidebarOpen.value === undefined) {
+    return 'start-4 lg:start-[18.75rem]'
+  }
+
+  return isSidebarOpen.value ? 'start-[16.75rem] sm:start-[18.75rem]' : 'start-4'
+})
 
 const nextLocale = computed(
   () => locales.value.find((item) => item.code !== locale.value) || locales.value[0]
@@ -70,16 +179,60 @@ const socialLinks = [
 ]
 
 const isActive = (to: string) => {
-  if (to === localePath('/')) {
-    return route.path === to || route.path === `/${locale.value}`
+  const currentPath = stripLocalePrefix(toPublicPath(route.path))
+  const targetPath = stripLocalePrefix(toPublicPath(to))
+
+  if (targetPath === '/') {
+    return currentPath === '/'
   }
 
-  return route.path === to || route.path.startsWith(`${to}/`)
+  return currentPath === targetPath || currentPath.startsWith(`${targetPath}/`)
 }
 
 function toggleSidebar() {
-  emit('update:sidebarOpen', !props.sidebarOpen)
+  const currentOpen = resolvedSidebarOpen.value ?? isDesktop.value
+
+  isSidebarOpen.value = !currentOpen
 }
+
+function closeSidebarOnSmallScreen(event: MouseEvent) {
+  if (
+    import.meta.client &&
+    event.target instanceof Element &&
+    event.target.closest('a') &&
+    !window.matchMedia('(min-width: 1024px)').matches
+  ) {
+    isSidebarOpen.value = false
+  }
+}
+
+function closeSidebarIfSmallScreen() {
+  if (
+    import.meta.client &&
+    resolvedSidebarOpen.value === true &&
+    !window.matchMedia('(min-width: 1024px)').matches
+  ) {
+    isSidebarOpen.value = false
+  }
+}
+
+onMounted(() => {
+  const desktopQuery = window.matchMedia('(min-width: 1024px)')
+  const onBreakpointChange = () => {
+    isDesktop.value = desktopQuery.matches
+    closeSidebarIfSmallScreen()
+  }
+
+  isDesktop.value = desktopQuery.matches
+  closeSidebarIfSmallScreen()
+  desktopQuery.addEventListener('change', onBreakpointChange)
+
+  onBeforeUnmount(() => {
+    desktopQuery.removeEventListener('change', onBreakpointChange)
+  })
+})
+
+watch(() => route.fullPath, closeSidebarIfSmallScreen)
 </script>
 
 <template>
@@ -87,18 +240,27 @@ function toggleSidebar() {
     color="neutral"
     variant="ghost"
     size="sm"
-    :icon="sidebarOpen ? 'i-lucide-panel-left-close' : 'i-lucide-panel-left-open'"
-    class="fixed top-4 z-50 hidden border border-default bg-default/95 text-muted shadow-sm transition-[inset-inline-start,color] duration-200 hover:text-primary lg:inline-flex"
-    :class="sidebarOpen ? 'start-[18.75rem]' : 'start-4'"
-    :aria-label="sidebarOpen ? t('actions.closeSidebar') : t('actions.openSidebar')"
+    :icon="isSidebarOpen ? 'i-lucide-panel-left-close' : 'i-lucide-panel-left-open'"
+    class="fixed top-20 z-50 border border-default bg-default/95 text-muted shadow-sm transition-[inset-inline-start,color] duration-200 hover:text-primary lg:top-4"
+    :class="sidebarTogglePositionClass"
+    :aria-label="isSidebarOpen ? t('actions.closeSidebar') : t('actions.openSidebar')"
     @click="toggleSidebar"
   />
 
+  <button
+    v-if="isSidebarOpen"
+    type="button"
+    class="fixed inset-0 z-30 bg-inverted/15 backdrop-blur-[1px] lg:hidden"
+    :aria-label="t('actions.closeSidebar')"
+    @click="isSidebarOpen = false"
+  />
+
   <aside
-    class="fixed inset-y-0 start-0 z-40 hidden w-80 flex-col border-e border-default bg-default px-8 py-10 text-highlighted transition-transform duration-200 ease-out lg:flex"
-    :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full rtl:translate-x-full'"
+    class="fixed inset-y-0 start-0 z-40 flex w-72 flex-col overflow-y-auto border-e border-default bg-default px-6 py-8 text-highlighted transition-transform duration-200 ease-out sm:w-80 sm:px-8"
+    :class="sidebarTransformClass"
+    @click.capture="closeSidebarOnSmallScreen"
   >
-    <div class="space-y-8">
+    <div class="flex min-h-0 flex-1 flex-col gap-6">
       <NuxtLink
         :to="localePath('/')"
         class="group/logo inline-flex text-highlighted no-underline"
@@ -107,48 +269,46 @@ function toggleSidebar() {
         <SiteLogo show-tagline size="footer" />
       </NuxtLink>
 
-      <nav class="space-y-4" :aria-label="t('footer.navigationLabel')">
+      <nav class="flex min-h-0 flex-1 flex-col gap-4" :aria-label="sidebarTitle">
         <p class="mh-kicker text-highlighted">
-          {{ t('pages.tagsIndex.kicker') }}
+          {{ sidebarTitle }}
         </p>
-        <ul class="space-y-3">
-          <li v-for="item in sidebarIndex" :key="item.to">
-            <NuxtLink
-              :to="item.to"
-              class="group grid grid-cols-[2rem_1fr] gap-3 text-sm leading-6 text-muted no-underline transition hover:text-primary"
-              :class="isActive(item.to) ? 'text-highlighted' : undefined"
-            >
-              <span class="font-mono text-xs tabular-nums text-muted">{{ item.number }}</span>
-              <span>{{ item.label }}</span>
-            </NuxtLink>
-          </li>
-        </ul>
+        <div class="mh-sidebar-scroll min-h-0 flex-1 overflow-y-auto pe-1">
+          <ContentTocList v-if="hasPageToc" :links="pageTocLinks" ordered compact />
+          <ul v-else class="space-y-2.5">
+            <li v-for="item in sidebarIndex" :key="item.to">
+              <NuxtLink
+                :to="item.to"
+                class="group grid grid-cols-[1.75rem_1fr] gap-2 text-[0.95rem] leading-6 text-muted no-underline transition hover:text-primary"
+                :class="isActive(item.to) ? 'text-highlighted' : undefined"
+              >
+                <span class="font-mono text-xs tabular-nums text-muted">{{ item.number }}</span>
+                <span>{{ item.label }}</span>
+              </NuxtLink>
+            </li>
+          </ul>
+        </div>
       </nav>
     </div>
 
-    <div class="mt-auto space-y-7">
+    <div class="mt-auto shrink-0 space-y-4 pt-4">
       <figure>
         <img
           src="/workbench-lamp.png"
           :alt="t('home.hero.imageAlt')"
-          class="w-full object-contain opacity-90 dark:hidden"
+          class="mx-auto max-h-56 w-full object-contain opacity-90 dark:hidden"
           loading="lazy"
         />
         <img
           src="/workbench-lamp-dark.png"
           alt=""
           aria-hidden="true"
-          class="hidden w-full object-contain opacity-85 dark:block"
+          class="mx-auto hidden max-h-56 w-full object-contain opacity-85 dark:block"
           loading="lazy"
         />
       </figure>
 
-      <blockquote class="space-y-3 pb-0 text-sm leading-6 text-muted">
-        <p>{{ t('site.footer') }}</p>
-        <!-- <footer class="text-highlighted">— M.</footer> -->
-      </blockquote>
-
-      <div class="space-y-3 border-t border-default pt-4">
+      <div class="space-y-2 border-t border-default pt-3">
         <div class="flex items-center justify-between gap-2">
           <div class="flex items-center gap-1" :aria-label="t('footer.sections.connect')">
             <UButton
@@ -184,21 +344,39 @@ function toggleSidebar() {
             />
           </div>
         </div>
-        <p class="text-xs leading-5 text-muted">© {{ currentYear }} {{ t('site.name') }}</p>
+        <p class="text-xs leading-5 text-muted">
+          <span class="font-medium text-highlighted">{{ t('site.footer') }}</span>
+          <span class="ms-1 font-normal text-muted">© {{ currentYear }} {{ t('site.name') }}</span>
+        </p>
       </div>
     </div>
   </aside>
 
-  <UHeader
-    :title="t('site.name')"
-    :to="localePath('/')"
-    mode="slideover"
-    :ui="{
-      root: 'border-b border-default bg-default lg:hidden',
-      container: 'site-shell flex h-16 items-center justify-between gap-4'
-    }"
+  <header
+    class="hidden bg-default transition-[margin] duration-200 ease-out lg:block"
+    :class="sidebarOffsetClass"
   >
-    <template #left>
+    <div class="site-shell flex h-20 items-stretch justify-end border-b border-default">
+      <nav class="flex items-stretch gap-10" :aria-label="t('footer.navigationLabel')">
+        <NuxtLink
+          v-for="item in navigation"
+          :key="item.to"
+          :to="item.to"
+          class="flex items-center border-b-2 px-1 text-base leading-6 no-underline transition"
+          :class="
+            isActive(item.to)
+              ? 'border-primary text-primary'
+              : 'border-transparent text-highlighted hover:border-primary hover:text-primary'
+          "
+        >
+          {{ item.label }}
+        </NuxtLink>
+      </nav>
+    </div>
+  </header>
+
+  <header class="border-b border-default bg-default lg:hidden">
+    <div class="site-shell flex h-16 items-center justify-between gap-4">
       <NuxtLink
         :to="localePath('/')"
         class="group/logo inline-flex min-w-0 items-center text-inherit no-underline"
@@ -206,65 +384,26 @@ function toggleSidebar() {
       >
         <SiteLogo show-tagline size="header" />
       </NuxtLink>
-    </template>
 
-    <UNavigationMenu
-      :items="navigation"
-      variant="link"
-      highlight
-      highlight-color="primary"
-      class="hidden text-sm lg:flex"
-    />
-
-    <template #right>
-      <div class="flex items-center gap-1">
-        <UButton
-          v-if="nextLocale && nextLocalePath"
-          :to="nextLocalePath"
-          color="neutral"
-          variant="ghost"
-          size="sm"
-          icon="i-lucide-languages"
-          :label="nextLocale.code.toUpperCase()"
-          class="cursor-pointer text-muted hover:text-primary"
-        />
-        <UColorModeButton
-          color="neutral"
-          variant="ghost"
-          size="sm"
-          class="text-muted hover:text-primary"
-        />
-      </div>
-    </template>
-
-    <template #body>
-      <div class="space-y-6">
-        <UNavigationMenu
-          :items="navigation"
-          orientation="vertical"
-          variant="link"
-          class="-mx-2 text-sm"
-        />
-
-        <div class="space-y-3 border-t border-default pt-4">
-          <div class="flex items-center gap-1" :aria-label="t('footer.sections.connect')">
-            <UButton
-              v-for="link in socialLinks"
-              :key="link.to"
-              :to="link.to"
-              :icon="link.icon"
-              color="neutral"
-              variant="ghost"
-              size="sm"
-              class="text-muted hover:text-primary"
-              target="_blank"
-              rel="noopener noreferrer"
-              :aria-label="link.label"
-            />
-          </div>
-          <p class="text-xs leading-5 text-muted">© {{ currentYear }} {{ t('site.name') }}</p>
-        </div>
-      </div>
-    </template>
-  </UHeader>
+      <span class="text-sm font-medium text-muted">{{ sidebarTitle }}</span>
+    </div>
+    <nav
+      class="site-shell flex gap-6 overflow-x-auto border-t border-default py-3 text-sm"
+      :aria-label="t('footer.navigationLabel')"
+    >
+      <NuxtLink
+        v-for="item in navigation"
+        :key="item.to"
+        :to="item.to"
+        class="shrink-0 border-b pb-1 no-underline transition"
+        :class="
+          isActive(item.to)
+            ? 'border-primary text-primary'
+            : 'border-transparent text-highlighted hover:border-primary hover:text-primary'
+        "
+      >
+        {{ item.label }}
+      </NuxtLink>
+    </nav>
+  </header>
 </template>

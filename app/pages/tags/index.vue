@@ -76,7 +76,7 @@ useMohetiosSeo({
         </div>
       </section>
 
-      <section class="grid gap-8 lg:grid-cols-[0.28fr_0.72fr]">
+      <section id="topic-entries" class="grid gap-8 lg:grid-cols-[0.28fr_0.72fr]">
         <header class="space-y-3">
           <div class="flex items-center gap-3 text-primary">
             <UIcon name="i-lucide-list-ordered" class="size-5" />
@@ -121,7 +121,10 @@ useMohetiosSeo({
         </div>
       </section>
 
-      <section class="grid gap-6 border-y border-default py-7 lg:grid-cols-[0.28fr_0.72fr]">
+      <section
+        id="return-paths"
+        class="grid gap-6 border-y border-default py-7 lg:grid-cols-[0.28fr_0.72fr]"
+      >
         <div class="space-y-2">
           <div class="flex items-center gap-3 text-primary">
             <UIcon name="i-lucide-archive" class="size-5" />

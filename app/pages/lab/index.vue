@@ -6,7 +6,6 @@ const questions = computed(() => [
   t('pages.labIndex.questions.staySmall'),
   t('pages.labIndex.questions.testFirst')
 ])
-
 useMohetiosSeo({
   title: () => t('pages.labIndex.kicker'),
   description: () => t('pages.labIndex.description'),
@@ -30,6 +29,7 @@ function formatDate(date?: string | Date) {
   <UPage class="mh-page">
     <UPageBody :ui="{ base: 'space-y-10 pb-16 sm:space-y-12' }">
       <section
+        id="lab"
         class="grid gap-8 border-b border-default pb-8 lg:grid-cols-[0.68fr_0.32fr] lg:items-end"
       >
         <div class="max-w-4xl space-y-5">
@@ -67,7 +67,7 @@ function formatDate(date?: string | Date) {
         </div>
       </section>
 
-      <section class="grid gap-8 lg:grid-cols-[0.28fr_0.72fr]">
+      <section id="lab-logs" class="grid gap-8 lg:grid-cols-[0.28fr_0.72fr]">
         <header class="space-y-3">
           <div class="flex items-center gap-3 text-primary">
             <UIcon name="i-lucide-book-open" class="size-5" />
@@ -128,7 +128,10 @@ function formatDate(date?: string | Date) {
         </div>
       </section>
 
-      <section class="grid gap-6 border-y border-default py-7 lg:grid-cols-[0.28fr_0.72fr]">
+      <section
+        id="prototype-state"
+        class="grid gap-6 border-y border-default py-7 lg:grid-cols-[0.28fr_0.72fr]"
+      >
         <div class="space-y-2">
           <div class="flex items-center gap-3 text-primary">
             <UIcon name="i-lucide-flask-conical" class="size-5" />

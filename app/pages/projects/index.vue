@@ -17,6 +17,7 @@ useMohetiosSeo({
   <UPage class="mh-page">
     <UPageBody :ui="{ base: 'space-y-10 pb-16 sm:space-y-12' }">
       <section
+        id="systems"
         class="grid gap-8 border-b border-default pb-8 lg:grid-cols-[0.68fr_0.32fr] lg:items-end"
       >
         <div class="max-w-4xl space-y-5">
@@ -43,7 +44,7 @@ useMohetiosSeo({
         </div>
       </section>
 
-      <section class="grid gap-8 lg:grid-cols-[0.28fr_0.72fr]">
+      <section id="system-files" class="grid gap-8 lg:grid-cols-[0.28fr_0.72fr]">
         <header class="space-y-3">
           <div class="flex items-center gap-3 text-primary">
             <UIcon name="i-lucide-folder-kanban" class="size-5" />
@@ -109,7 +110,10 @@ useMohetiosSeo({
         </div>
       </section>
 
-      <section class="grid gap-6 border-y border-default py-7 lg:grid-cols-[0.28fr_0.72fr]">
+      <section
+        id="build-state"
+        class="grid gap-6 border-y border-default py-7 lg:grid-cols-[0.28fr_0.72fr]"
+      >
         <div class="space-y-2">
           <div class="flex items-center gap-3 text-primary">
             <UIcon name="i-lucide-wrench" class="size-5" />
@@ -126,6 +130,7 @@ useMohetiosSeo({
 
       <section
         v-if="recentPosts.length"
+        id="related-writing"
         class="grid gap-6 border-y border-default py-7 lg:grid-cols-[0.28fr_0.72fr]"
       >
         <div class="space-y-2">

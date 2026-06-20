@@ -253,7 +253,7 @@ async function onSubmit() {
       </section>
 
       <section class="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
-        <div class="mh-paper-panel min-w-0 border border-default bg-muted/10 p-5 sm:p-6">
+        <div id="contact" class="mh-paper-panel min-w-0 border border-default bg-muted/10 p-5 sm:p-6">
           <div v-if="isSubmitted" class="space-y-5">
             <div
               class="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary"
@@ -405,7 +405,7 @@ async function onSubmit() {
         <aside
           class="mh-index-sidebar space-y-6 border-t border-default pt-5 lg:sticky lg:top-24 lg:self-start lg:border-s lg:border-t-0 lg:ps-6 lg:pt-0"
         >
-          <section class="border-y border-default py-4">
+          <section id="useful-context" class="border-y border-default py-4">
             <h2 class="mh-kicker">
               {{ t('contact.sidebar.label') }}
             </h2>
@@ -435,7 +435,7 @@ async function onSubmit() {
             </component>
           </section>
 
-          <section class="border-y border-default py-4">
+          <section id="response-note" class="border-y border-default py-4">
             <h2 class="mh-kicker">
               {{ t('pages.contactGate.response.title') }}
             </h2>

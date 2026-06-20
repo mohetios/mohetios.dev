@@ -4,6 +4,7 @@ import type { TocItem } from '~/utils/content'
 defineProps<{
   title?: string
   links: TocItem[]
+  compact?: boolean
 }>()
 </script>
 
@@ -12,6 +13,6 @@ defineProps<{
     <p v-if="title" class="mh-kicker text-muted">
       {{ title }}
     </p>
-    <ContentTocList :links="links" ordered />
+    <ContentTocList :links="links" ordered :compact="compact" />
   </nav>
 </template>
