@@ -3,6 +3,8 @@ const { locale, t } = useI18n()
 const localePath = useLocalePath()
 const projects = computed(() => getProjects(locale.value))
 const recentPosts = computed(() => getBlogPosts(locale.value, 3))
+const sectionNumber = (value: number) =>
+  formatLocalizedNumber(String(value).padStart(2, '0'), locale.value)
 
 useMohetiosSeo({
   title: () => t('pages.systems.kicker'),
@@ -68,7 +70,7 @@ useMohetiosSeo({
         <header class="space-y-3">
           <div class="flex items-center gap-3 text-primary">
             <UIcon name="i-lucide-folder-kanban" class="size-5" />
-            <span class="text-sm font-semibold tabular-nums">01</span>
+            <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(1) }}</span>
           </div>
           <h2 class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
             {{ t('pages.systems.filesTitle') }}
@@ -137,7 +139,7 @@ useMohetiosSeo({
         <div class="space-y-2">
           <div class="flex items-center gap-3 text-primary">
             <UIcon name="i-lucide-wrench" class="size-5" />
-            <span class="text-sm font-semibold tabular-nums">02</span>
+            <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(2) }}</span>
           </div>
           <h2 class="mh-display text-2xl font-semibold text-highlighted">
             {{ t('pages.systems.status.title') }}
@@ -156,7 +158,7 @@ useMohetiosSeo({
         <div class="space-y-2">
           <div class="flex items-center gap-3 text-primary">
             <UIcon name="i-lucide-book-open" class="size-5" />
-            <span class="text-sm font-semibold tabular-nums">03</span>
+            <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(3) }}</span>
           </div>
           <h2 class="mh-display text-2xl font-semibold text-highlighted">
             {{ t('pages.systems.relatedTitle') }}

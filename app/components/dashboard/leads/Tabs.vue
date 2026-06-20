@@ -11,7 +11,7 @@ const emit = defineEmits<{
   'select-tab': [tab: LeadTabKey]
 }>()
 
-const { t } = useI18n()
+const { locale, t } = useI18n()
 
 const activeSecondaryTab = computed(() =>
   props.secondaryTabs.find((tab) => tab.key === props.activeTab)
@@ -21,7 +21,10 @@ const isSecondaryActive = computed(() => Boolean(activeSecondaryTab.value))
 
 const moreMenuItems = computed(() =>
   props.secondaryTabs.map((tab) => ({
-    label: tab.count != null && tab.count > 0 ? `${tab.label} (${tab.count})` : tab.label,
+    label:
+      tab.count != null && tab.count > 0
+        ? `${tab.label} (${formatLocalizedNumber(tab.count, locale.value)})`
+        : tab.label,
     onSelect: () => emit('select-tab', tab.key)
   }))
 )
@@ -54,7 +57,7 @@ const moreMenuItems = computed(() =>
             class="tabular-nums"
             :class="activeTab === tab.key ? 'text-primary/80' : 'text-muted'"
           >
-            {{ tab.count }}
+            {{ formatLocalizedNumber(tab.count, locale) }}
           </span>
         </span>
       </button>

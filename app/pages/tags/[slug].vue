@@ -63,6 +63,8 @@ function formatDate(date?: string | Date) {
   })
 }
 
+const sectionNumber = (index: number) => formatListNumber(index, locale.value)
+
 useMohetiosSeo({
   title: () => t('pages.tagPath.seoTitle', { tag: tagLabel.value }),
   description: () => t('pages.tagPath.description'),
@@ -98,7 +100,7 @@ useMohetiosSeo({
             {{ t('tags.counts') }}
           </p>
           <p class="mt-2 text-sm leading-6 text-muted">
-            {{ matchedItems.length }}
+            {{ formatLocalizedNumber(matchedItems.length, locale) }}
           </p>
         </div>
       </section>
@@ -114,7 +116,7 @@ useMohetiosSeo({
             <div class="flex items-center gap-3 text-primary">
               <UIcon :name="section.icon" class="size-5" />
               <span class="text-sm font-semibold tabular-nums">
-                {{ String(sectionIndex + 1).padStart(2, '0') }}
+                {{ sectionNumber(sectionIndex) }}
               </span>
             </div>
             <h2

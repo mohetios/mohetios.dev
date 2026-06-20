@@ -8,6 +8,8 @@ const props = defineProps<{
   compact?: boolean
 }>()
 
+const { locale } = useI18n()
+
 const listTag = computed(() => (props.ordered ? 'ol' : 'ul'))
 
 const listClass = computed(() => {
@@ -46,7 +48,7 @@ const listClass = computed(() => {
         v-if="compact && ordered"
         class="font-mono text-xs leading-6 tabular-nums text-muted"
       >
-        {{ String(index + 1).padStart(2, '0') }}
+        {{ formatListNumber(index, locale) }}
       </span>
       <div class="min-w-0">
         <a

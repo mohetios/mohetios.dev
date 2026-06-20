@@ -1,6 +1,6 @@
 export type MaybeString = string | null | undefined
 
-export const DEFAULT_OG_IMAGE_PATH = '/content/physics.webp'
+export const DEFAULT_OG_IMAGE_PATH = '/page-images/home.webp'
 
 function isLatinWordmark(value: string) {
   return /^[a-z0-9]+$/i.test(value)

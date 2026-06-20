@@ -194,7 +194,7 @@ html[lang^='fa'] :where(h1, h2, h3, .mh-display) {
   font-feature-settings: normal;
 }
 
-[dir='rtl'] ol {
+html[lang^='fa'] :where(.prose ol, .prose ol > li) {
   list-style: persian;
 }
 

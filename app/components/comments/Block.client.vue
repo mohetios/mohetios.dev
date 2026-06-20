@@ -17,13 +17,14 @@ type Props = {
 
 const props = defineProps<Props>()
 
-const { t } = useI18n()
+const { locale, t } = useI18n()
 
 const comments = ref<PublicComment[]>([])
 const isLoading = ref(true)
 const loadError = ref(false)
 
 const commentCount = computed(() => comments.value.length)
+const localizedCommentCount = computed(() => formatLocalizedNumber(commentCount.value, locale.value))
 
 async function loadComments() {
   isLoading.value = true
@@ -74,7 +75,7 @@ onMounted(() => {
           {{ t('comments.publishedComments') }}
         </h3>
         <span v-if="!isLoading && commentCount" class="text-sm leading-6 text-dimmed">
-          {{ t('comments.commentCount', { count: commentCount }) }}
+          {{ t('comments.commentCount', { count: localizedCommentCount }) }}
         </span>
       </div>
 

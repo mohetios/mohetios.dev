@@ -36,7 +36,7 @@ const navigation = computed(() => [
 const sidebarIndex = computed(() =>
   navigation.value.map((item, index) => ({
     ...item,
-    number: String(index + 1).padStart(2, '0')
+    number: formatListNumber(index, locale.value)
   }))
 )
 

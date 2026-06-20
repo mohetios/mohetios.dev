@@ -52,7 +52,9 @@ const readingTime = computed(() => {
   }
 
   const minutes = estimateReadingTimeFromHtml(props.item.content)
-  return t('content.meta.readingTimeValue', { count: minutes })
+  return t('content.meta.readingTimeValue', {
+    count: formatLocalizedNumber(minutes, locale.value)
+  })
 })
 
 const relatedItems = computed(() => {

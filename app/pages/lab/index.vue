@@ -6,6 +6,10 @@ const questions = computed(() => [
   t('pages.labIndex.questions.staySmall'),
   t('pages.labIndex.questions.testFirst')
 ])
+const sectionNumber = (value: number) =>
+  formatLocalizedNumber(String(value).padStart(2, '0'), locale.value)
+const itemNumber = (index: number) => formatListNumber(index, locale.value)
+
 useMohetiosSeo({
   title: () => t('pages.labIndex.kicker'),
   description: () => t('pages.labIndex.description'),
@@ -79,7 +83,7 @@ function formatDate(date?: string | Date) {
       <section class="grid gap-4 border-y border-default py-5 sm:grid-cols-3">
         <div v-for="(question, index) in questions" :key="question" class="space-y-2">
           <p class="text-xs font-semibold tabular-nums text-primary">
-            {{ String(index + 1).padStart(2, '0') }}
+            {{ itemNumber(index) }}
           </p>
           <p class="text-sm leading-6 text-highlighted">
             {{ question }}
@@ -91,7 +95,7 @@ function formatDate(date?: string | Date) {
         <header class="space-y-3">
           <div class="flex items-center gap-3 text-primary">
             <UIcon name="i-lucide-book-open" class="size-5" />
-            <span class="text-sm font-semibold tabular-nums">02</span>
+            <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(2) }}</span>
           </div>
           <h2 class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
             {{ t('pages.labIndex.logsTitle') }}
@@ -155,7 +159,7 @@ function formatDate(date?: string | Date) {
         <div class="space-y-2">
           <div class="flex items-center gap-3 text-primary">
             <UIcon name="i-lucide-flask-conical" class="size-5" />
-            <span class="text-sm font-semibold tabular-nums">03</span>
+            <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(3) }}</span>
           </div>
           <h2 class="mh-display text-2xl font-semibold text-highlighted">
             {{ t('pages.labIndex.status.title') }}

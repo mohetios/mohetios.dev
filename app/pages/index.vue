@@ -6,6 +6,9 @@ const homeIndexLimit = 5
 const posts = computed(() => getBlogPosts(locale.value, homeIndexLimit))
 const labNotes = computed(() => getLabNotes(locale.value, homeIndexLimit))
 const projects = computed(() => getProjects(locale.value, homeIndexLimit))
+const sectionNumber = (value: number) =>
+  formatLocalizedNumber(String(value).padStart(2, '0'), locale.value)
+const itemNumber = (index: number) => formatListNumber(index, locale.value)
 
 useMohetiosSeo({
   description: () => t('site.description'),
@@ -38,14 +41,14 @@ useMohetiosSeo({
           </p>
         </div>
 
-        <figure class="relative overflow-hidden">
+        <figure class="relative overflow-hidden lg:-mx-[10%]">
           <NuxtImg
             src="/page-images/home.webp"
             :alt="t('home.hero.imageAlt')"
             loading="eager"
             fetchpriority="high"
             class="aspect-[4/3] w-full object-contain opacity-90 dark:hidden"
-            sizes="xs:100vw md:42vw lg:520px"
+            sizes="xs:100vw md:42vw lg:624px"
           />
           <NuxtImg
             src="/page-images/home-dark.webp"
@@ -54,7 +57,7 @@ useMohetiosSeo({
             loading="eager"
             fetchpriority="high"
             class="hidden aspect-[4/3] w-full object-contain opacity-85 dark:block"
-            sizes="xs:100vw md:42vw lg:520px"
+            sizes="xs:100vw md:42vw lg:624px"
           />
         </figure>
       </section>
@@ -66,7 +69,9 @@ useMohetiosSeo({
           <article id="workbench" class="flex min-w-0 flex-col py-5 lg:pe-6">
             <header class="mb-5 flex items-center gap-4">
               <!-- <UIcon name="i-lucide-lamp" class="size-10 shrink-0 text-primary" /> -->
-              <span class="text-sm font-semibold tabular-nums text-primary">01</span>
+              <span class="text-sm font-semibold tabular-nums text-primary">
+                {{ sectionNumber(1) }}
+              </span>
               <h2 class="mh-display text-xl leading-tight font-semibold text-highlighted">
                 {{ t('home.workbench.title') }}
               </h2>
@@ -84,7 +89,7 @@ useMohetiosSeo({
                     class="flex gap-3 text-sm font-semibold text-highlighted group-hover:text-primary"
                   >
                     <span class="shrink-0 tabular-nums text-xl text-muted">
-                      {{ String(index + 1).padStart(2, '0') }}
+                      {{ itemNumber(index) }}
                     </span>
                     <span>{{ item.title }}</span>
                   </div>
@@ -112,7 +117,9 @@ useMohetiosSeo({
           <article id="notebook" class="flex min-w-0 flex-col py-5 lg:px-6">
             <header class="mb-5 flex items-center gap-4">
               <!-- <UIcon name="i-lucide-book-open" class="size-10  shrink-0 text-primary" /> -->
-              <span class="text-sm font-semibold tabular-nums text-primary">02</span>
+              <span class="text-sm font-semibold tabular-nums text-primary">
+                {{ sectionNumber(2) }}
+              </span>
               <h2 class="mh-display text-xl leading-tight font-semibold text-highlighted">
                 {{ t('home.notebook.title') }}
               </h2>
@@ -130,7 +137,7 @@ useMohetiosSeo({
                     class="flex gap-3 text-sm font-semibold text-highlighted group-hover:text-primary"
                   >
                     <span class="shrink-0 tabular-nums text-xl text-muted">
-                      {{ String(index + 1).padStart(2, '0') }}
+                      {{ itemNumber(index) }}
                     </span>
                     <h3 class="line-clamp-2 text-base leading-6 font-medium">
                       {{ post.title }}
@@ -160,7 +167,9 @@ useMohetiosSeo({
           <article id="built-systems" class="flex min-w-0 flex-col py-5 lg:ps-6">
             <header class="mb-5 flex items-center gap-4">
               <!-- <UIcon name="i-lucide-wrench" class="size-10 shrink-0 text-primary" /> -->
-              <span class="text-sm font-semibold tabular-nums text-primary">03</span>
+              <span class="text-sm font-semibold tabular-nums text-primary">
+                {{ sectionNumber(3) }}
+              </span>
               <h2 class="mh-display text-xl leading-tight font-semibold text-highlighted">
                 {{ t('home.builtSystems.title') }}
               </h2>
@@ -178,7 +187,7 @@ useMohetiosSeo({
                     class="flex gap-3 text-sm font-semibold text-highlighted group-hover:text-primary"
                   >
                     <span class="shrink-0 tabular-nums text-xl text-muted">
-                      {{ String(index + 1).padStart(2, '0') }}
+                      {{ itemNumber(index) }}
                     </span>
                     <h3 class="line-clamp-2 text-base leading-6 font-medium">
                       {{ project.title }}

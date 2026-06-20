@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { t } = useI18n()
+const { locale, t } = useI18n()
 const brandName = computed(() => getSeoSiteName(t))
 const route = useRoute()
 
@@ -97,6 +97,12 @@ function isActive(path: string) {
 
   return currentPath.value === path || currentPath.value.startsWith(`${path}/`)
 }
+
+function formatBadgeCount(count: number, max: number) {
+  const value = count > max ? `${max}+` : count
+
+  return formatLocalizedNumber(value, locale.value)
+}
 </script>
 
 <template>
@@ -165,13 +171,13 @@ function isActive(path: string) {
             v-if="!collapsed && item.count != null && item.count > 0"
             class="ms-auto inline-flex min-w-5 items-center justify-center rounded-full bg-primary/10 px-1.5 text-xs font-medium tabular-nums text-primary"
           >
-            {{ item.count > 99 ? '99+' : item.count }}
+            {{ formatBadgeCount(item.count, 99) }}
           </span>
           <span
             v-else-if="collapsed && item.count != null && item.count > 0"
             class="absolute -me-1 -mt-1 ms-5 flex min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-medium leading-4 tabular-nums text-inverted"
           >
-            {{ item.count > 9 ? '9+' : item.count }}
+            {{ formatBadgeCount(item.count, 9) }}
           </span>
         </NuxtLink>
       </nav>

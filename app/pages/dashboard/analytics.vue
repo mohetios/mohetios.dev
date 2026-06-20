@@ -12,7 +12,7 @@ definePageMeta({
   middleware: ['auth']
 })
 
-const { t } = useI18n()
+const { locale, t } = useI18n()
 const toast = useToast()
 
 useMohetiosSeo({
@@ -85,7 +85,7 @@ function getVitalColor(status: string): BadgeColor {
 }
 
 function formatNumber(value: number) {
-  return new Intl.NumberFormat().format(value)
+  return new Intl.NumberFormat(locale.value).format(value)
 }
 
 const topPageChartItems = computed(() =>
@@ -165,6 +165,13 @@ const filteredPages = computed(() => {
     [page.title, page.path].join(' ').toLowerCase().includes(query)
   )
 })
+const filteredPagesCount = computed(
+  () =>
+    `${formatLocalizedNumber(filteredPages.value.length, locale.value)} / ${formatLocalizedNumber(
+      analytics.value.topPages.length,
+      locale.value
+    )}`
+)
 
 const totalSearchClicks = computed(() =>
   analytics.value.searchQueries.reduce((total, item) => total + item.clicks, 0)
@@ -469,7 +476,7 @@ watch(error, (currentError) => {
             {{ t('dashboard.analytics.sections.topContent') }}
           </h2>
           <p class="text-xs text-muted">
-            {{ filteredPages.length }} / {{ analytics.topPages.length }}
+            {{ filteredPagesCount }}
           </p>
         </div>
         <UInput

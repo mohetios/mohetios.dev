@@ -39,6 +39,11 @@ const nearbyLinks = computed(() => [
     to: localePath('/projects')
   }
 ])
+const sectionNumber = (value: number) =>
+  formatLocalizedNumber(String(value).padStart(2, '0'), locale.value)
+const countText = (count: number) =>
+  t('pages.tagsIndex.count', { count: formatLocalizedNumber(count, locale.value) })
+
 useMohetiosSeo({
   title: () => t('pages.notebook.kicker'),
   description: () => t('pages.notebook.description'),
@@ -121,7 +126,7 @@ function formatDate(date?: string | Date) {
           <header class="mb-5 space-y-3">
             <div class="flex items-center gap-3 text-primary">
               <UIcon name="i-lucide-book-open" class="size-5" />
-              <span class="text-sm font-semibold tabular-nums">01</span>
+              <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(1) }}</span>
             </div>
             <h2
               class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl"
@@ -198,7 +203,7 @@ function formatDate(date?: string | Date) {
             <div class="space-y-2">
               <div class="flex items-center gap-3 text-primary">
                 <UIcon name="i-lucide-archive" class="size-5" />
-                <span class="text-sm font-semibold tabular-nums">02</span>
+                <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(2) }}</span>
               </div>
               <h2 class="mh-display text-2xl font-semibold text-highlighted">
                 {{ t('pages.notebook.archive.title') }}
@@ -229,7 +234,7 @@ function formatDate(date?: string | Date) {
             >
               <span class="font-mono text-sm text-highlighted">{{ year.year }}</span>
               <span class="text-xs tabular-nums text-muted">
-                {{ t('pages.tagsIndex.count', { count: year.count }) }}
+                {{ countText(year.count) }}
               </span>
             </div>
           </section>

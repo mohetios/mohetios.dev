@@ -19,6 +19,9 @@ const focusAreas = computed(() => [
   t('pages.aboutWorkshop.focus.cloudflare'),
   t('pages.aboutWorkshop.focus.productNotes')
 ])
+const sectionNumber = (value: number) =>
+  formatLocalizedNumber(String(value).padStart(2, '0'), locale.value)
+const itemNumber = (index: number) => formatListNumber(index, locale.value)
 
 if (!page.value || page.value.draft) {
   throw createError({ statusCode: 404, statusMessage: 'About page not found', fatal: true })
@@ -91,7 +94,7 @@ useMohetiosSeo({
           <header class="mb-4 space-y-3">
             <div class="flex items-center gap-3 text-primary">
               <UIcon name="i-lucide-book-open" class="size-5" />
-              <span class="text-sm font-semibold tabular-nums">01</span>
+              <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(1) }}</span>
             </div>
             <h2
               class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl"
@@ -108,7 +111,7 @@ useMohetiosSeo({
           <header class="mb-4 space-y-3">
             <div class="flex items-center gap-3 text-primary">
               <UIcon name="i-lucide-pen-line" class="size-5" />
-              <span class="text-sm font-semibold tabular-nums">02</span>
+              <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(2) }}</span>
             </div>
             <h2
               class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl"
@@ -127,7 +130,7 @@ useMohetiosSeo({
         <div class="space-y-3">
           <div class="flex items-center gap-3 text-primary">
             <UIcon name="i-lucide-wrench" class="size-5" />
-            <span class="text-sm font-semibold tabular-nums">03</span>
+            <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(3) }}</span>
           </div>
           <h2 class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
             {{ t('pages.aboutWorkshop.how.title') }}
@@ -140,7 +143,7 @@ useMohetiosSeo({
             class="grid gap-3 py-4 sm:grid-cols-[3rem_1fr]"
           >
             <span class="text-sm font-semibold tabular-nums text-primary">
-              {{ String(index + 1).padStart(2, '0') }}
+              {{ itemNumber(index) }}
             </span>
             <p class="text-base leading-7 text-highlighted">{{ step }}</p>
           </div>
@@ -151,7 +154,7 @@ useMohetiosSeo({
         <div class="space-y-3">
           <div class="flex items-center gap-3 text-primary">
             <UIcon name="i-lucide-archive" class="size-5" />
-            <span class="text-sm font-semibold tabular-nums">04</span>
+            <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(4) }}</span>
           </div>
           <h2 class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
             {{ t('pages.aboutWorkshop.focus.title') }}
@@ -174,7 +177,7 @@ useMohetiosSeo({
         <div class="space-y-3">
           <div class="flex items-center gap-3 text-primary">
             <UIcon name="i-lucide-book-open" class="size-5" />
-            <span class="text-sm font-semibold tabular-nums">05</span>
+            <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(5) }}</span>
           </div>
           <h2 class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
             {{ t('about.latestWriting.title') }}

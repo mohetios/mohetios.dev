@@ -37,6 +37,11 @@ function typeLabel(type: 'blog' | 'lab' | 'project') {
   return type === 'blog' ? t('tags.writing') : type === 'lab' ? t('tags.lab') : t('tags.projects')
 }
 
+const sectionNumber = (value: number) =>
+  formatLocalizedNumber(String(value).padStart(2, '0'), locale.value)
+const countText = (count: number) =>
+  t('pages.tagsIndex.count', { count: formatLocalizedNumber(count, locale.value) })
+
 useMohetiosSeo({
   title: () => t('pages.tagsIndex.kicker'),
   description: () => t('pages.tagsIndex.description'),
@@ -90,7 +95,7 @@ useMohetiosSeo({
               {{ t('tags.allTags') }}
             </p>
             <p class="mt-2 text-sm leading-6 text-muted">
-              {{ t('pages.tagsIndex.count', { count: tags.length }) }}
+              {{ countText(tags.length) }}
             </p>
           </div>
         </div>
@@ -100,7 +105,7 @@ useMohetiosSeo({
         <header class="space-y-3">
           <div class="flex items-center gap-3 text-primary">
             <UIcon name="i-lucide-list-ordered" class="size-5" />
-            <span class="text-sm font-semibold tabular-nums">01</span>
+            <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(1) }}</span>
           </div>
           <h2 class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
             {{ t('pages.tagsIndex.entriesTitle') }}
@@ -126,7 +131,7 @@ useMohetiosSeo({
                   </h2>
                 </div>
                 <p class="text-xs tabular-nums text-primary">
-                  {{ t('pages.tagsIndex.count', { count: tag.count }) }}
+                  {{ countText(tag.count) }}
                 </p>
                 <p class="text-sm text-muted">{{ tag.sources }}</p>
                 <UIcon
@@ -148,7 +153,7 @@ useMohetiosSeo({
         <div class="space-y-2">
           <div class="flex items-center gap-3 text-primary">
             <UIcon name="i-lucide-archive" class="size-5" />
-            <span class="text-sm font-semibold tabular-nums">02</span>
+            <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(2) }}</span>
           </div>
           <h2 class="mh-display text-2xl font-semibold text-highlighted">
             {{ t('pages.tagsIndex.returnTitle') }}
