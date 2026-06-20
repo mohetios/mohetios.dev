@@ -63,7 +63,7 @@ function formatDate(date?: string | Date) {
     <UPageBody :ui="{ base: 'space-y-10 pb-16 sm:space-y-12' }">
       <section
         id="notebook"
-        class="grid gap-8 border-b border-default pb-8 lg:grid-cols-[0.68fr_0.32fr] lg:items-end"
+        class="grid gap-8 border-b border-default pb-8 lg:grid-cols-[0.6fr_0.4fr] lg:items-end"
       >
         <div class="max-w-4xl space-y-5">
           <p class="mh-kicker">
@@ -79,19 +79,39 @@ function formatDate(date?: string | Date) {
           </p>
         </div>
 
-        <div v-if="tags.length" class="hidden border-y border-default py-4 lg:block">
-          <p class="mh-kicker">
-            {{ t('pages.notebook.indexTitle') }}
-          </p>
-          <div class="mt-3 flex flex-wrap gap-2">
-            <NuxtLink
-              v-for="tag in tags.slice(0, 8)"
-              :key="tag"
-              :to="localePath(`/tags/${normalizeTagSlug(tag)}`)"
-              class="text-sm text-muted hover:text-primary"
-            >
-              #{{ tag }}
-            </NuxtLink>
+        <div class="hidden space-y-4 lg:block">
+          <figure class="flex h-80 w-full items-center justify-center overflow-hidden">
+            <NuxtImg
+              src="/page-images/blog.webp"
+              :alt="t('pages.notebook.imageAlt')"
+              class="h-full w-full object-contain opacity-90 dark:hidden"
+              sizes="lg:320px"
+              loading="eager"
+            />
+            <NuxtImg
+              src="/page-images/blog-dark.webp"
+              alt=""
+              aria-hidden="true"
+              class="hidden h-full w-full object-contain opacity-85 dark:block"
+              sizes="lg:320px"
+              loading="eager"
+            />
+          </figure>
+
+          <div v-if="tags.length" class="border-y border-default py-4">
+            <p class="mh-kicker">
+              {{ t('pages.notebook.indexTitle') }}
+            </p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <NuxtLink
+                v-for="tag in tags.slice(0, 8)"
+                :key="tag"
+                :to="localePath(`/tags/${normalizeTagSlug(tag)}`)"
+                class="text-sm text-muted hover:text-primary"
+              >
+                #{{ tag }}
+              </NuxtLink>
+            </div>
           </div>
         </div>
       </section>

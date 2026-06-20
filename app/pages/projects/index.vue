@@ -18,7 +18,7 @@ useMohetiosSeo({
     <UPageBody :ui="{ base: 'space-y-10 pb-16 sm:space-y-12' }">
       <section
         id="systems"
-        class="grid gap-8 border-b border-default pb-8 lg:grid-cols-[0.68fr_0.32fr] lg:items-end"
+        class="grid gap-8 border-b border-default pb-8 lg:grid-cols-[0.6fr_0.4fr] lg:items-end"
       >
         <div class="max-w-4xl space-y-5">
           <p class="mh-kicker">
@@ -34,13 +34,33 @@ useMohetiosSeo({
           </p>
         </div>
 
-        <div class="hidden border-y border-default py-4 lg:block">
-          <p class="mh-kicker">
-            {{ t('pages.systems.status.title') }}
-          </p>
-          <p class="mt-2 text-sm leading-6 text-muted">
-            {{ t('pages.systems.status.description') }}
-          </p>
+        <div class="hidden space-y-4 lg:block">
+          <figure class="flex h-80 w-full items-center justify-center overflow-hidden">
+            <NuxtImg
+              src="/page-images/projects.webp"
+              :alt="t('pages.systems.imageAlt')"
+              class="h-full w-full object-contain opacity-90 dark:hidden"
+              sizes="lg:320px"
+              loading="eager"
+            />
+            <NuxtImg
+              src="/page-images/projects-dark.webp"
+              alt=""
+              aria-hidden="true"
+              class="hidden h-full w-full object-contain opacity-85 dark:block"
+              sizes="lg:320px"
+              loading="eager"
+            />
+          </figure>
+
+          <div class="border-y border-default py-4">
+            <p class="mh-kicker">
+              {{ t('pages.systems.status.title') }}
+            </p>
+            <p class="mt-2 text-sm leading-6 text-muted">
+              {{ t('pages.systems.status.description') }}
+            </p>
+          </div>
         </div>
       </section>
 

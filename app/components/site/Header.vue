@@ -29,7 +29,8 @@ const navigation = computed(() => [
   { label: t('nav.lab'), to: localePath('/lab') },
   { label: t('pages.systems.kicker'), to: localePath('/projects') },
   { label: t('pages.tagsIndex.kicker'), to: localePath('/tags') },
-  { label: t('nav.about'), to: localePath('/about') }
+  { label: t('nav.about'), to: localePath('/about') },
+  { label: t('nav.contact'), to: localePath('/contact') }
 ])
 
 const sidebarIndex = computed(() =>
@@ -294,13 +295,13 @@ watch(() => route.fullPath, closeSidebarIfSmallScreen)
     <div class="mt-auto shrink-0 space-y-4 pt-4">
       <figure>
         <img
-          src="/workbench-lamp.png"
-          :alt="t('home.hero.imageAlt')"
+          src="/page-images/sidebar.webp"
+          :alt="t('pages.systems.imageAlt')"
           class="mx-auto max-h-56 w-full object-contain opacity-90 dark:hidden"
           loading="lazy"
         />
         <img
-          src="/workbench-lamp-dark.png"
+          src="/page-images/sidebar-dark.webp"
           alt=""
           aria-hidden="true"
           class="mx-auto hidden max-h-56 w-full object-contain opacity-85 dark:block"

@@ -219,7 +219,7 @@ async function onSubmit() {
   <UPage v-if="page" class="mh-page">
     <UPageBody :ui="{ base: 'space-y-10 pb-16 sm:space-y-12' }">
       <section
-        class="grid gap-8 border-b border-default pb-8 lg:grid-cols-[0.68fr_0.32fr] lg:items-end"
+        class="grid gap-8 border-b border-default pb-8 lg:grid-cols-[0.6fr_0.4fr] lg:items-end"
       >
         <div class="max-w-4xl space-y-5">
           <p class="mh-kicker">
@@ -235,13 +235,33 @@ async function onSubmit() {
           </p>
         </div>
 
-        <div class="hidden border-y border-default py-4 lg:block">
-          <p class="mh-kicker">
-            {{ t('pages.contactGate.response.title') }}
-          </p>
-          <p class="mt-2 text-sm leading-6 text-muted">
-            {{ t('pages.contactGate.response.description') }}
-          </p>
+        <div class="hidden space-y-4 lg:block">
+          <figure class="flex h-80 w-full items-center justify-center overflow-hidden">
+            <NuxtImg
+              src="/page-images/contact.webp"
+              :alt="t('pages.contactGate.imageAlt')"
+              class="h-full w-full object-contain opacity-90 dark:hidden"
+              sizes="lg:320px"
+              loading="eager"
+            />
+            <NuxtImg
+              src="/page-images/contact-dark.webp"
+              alt=""
+              aria-hidden="true"
+              class="hidden h-full w-full object-contain opacity-85 dark:block"
+              sizes="lg:320px"
+              loading="eager"
+            />
+          </figure>
+
+          <div class="border-y border-default py-4">
+            <p class="mh-kicker">
+              {{ t('pages.contactGate.response.title') }}
+            </p>
+            <p class="mt-2 text-sm leading-6 text-muted">
+              {{ t('pages.contactGate.response.description') }}
+            </p>
+          </div>
         </div>
       </section>
 
@@ -253,7 +273,10 @@ async function onSubmit() {
       </section>
 
       <section class="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
-        <div id="contact" class="mh-paper-panel min-w-0 border border-default bg-muted/10 p-5 sm:p-6">
+        <div
+          id="contact"
+          class="mh-paper-panel min-w-0 border border-default bg-muted/10 p-5 sm:p-6"
+        >
           <div v-if="isSubmitted" class="space-y-5">
             <div
               class="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary"

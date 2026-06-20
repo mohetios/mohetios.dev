@@ -12,9 +12,9 @@
   },
   "nav": {
     "home": "Home",
-    "blog": "Writing",
+    "blog": "Notebook",
     "lab": "Lab",
-    "projects": "Projects",
+    "projects": "Systems",
     "about": "About",
     "contact": "Contact",
     "profile": "Profile",
@@ -53,12 +53,12 @@
           "description": "Inbox, leads, analytics, and the quiet ops layer behind the site."
         },
         "writing": {
-          "title": "Writing & lab",
-          "description": "Long-form notes, experiments, and the thinking behind the systems."
+          "title": "Notebook & lab",
+          "description": "Notes, experiments, and the thinking behind the systems."
         },
         "projects": {
-          "title": "Projects",
-          "description": "Open notebooks of software, products, and tools in progress."
+          "title": "Systems",
+          "description": "Software, products, and tools that are still taking shape."
         }
       },
       "pages": {
@@ -611,43 +611,44 @@
     }
   },
   "actions": {
-    "readBlog": "Read writing",
+    "readBlog": "Open Notebook",
     "exploreLab": "Open the lab",
-    "viewProjects": "View projects",
+    "viewProjects": "Explore systems",
     "openSidebar": "Open sidebar",
     "closeSidebar": "Close sidebar",
     "switchToEnglish": "English",
     "switchToPersian": "فارسی"
   },
   "sections": {
-    "latestWriting": "Latest writing",
+    "latestWriting": "Latest notes",
     "latestWritingDescription": "Technical notes, product decisions, and implementation records from real work.",
     "labNotes": "Lab notes",
     "labNotesDescription": "Small experiments, rough prototypes, and early ideas that are still being tested.",
-    "featuredProjects": "Featured projects",
-    "featuredProjectsDescription": "Open-source work, product experiments, systems built under real constraints.",
+    "featuredProjects": "Featured systems",
+    "featuredProjectsDescription": "Open-source work, product experiments, and systems built under real constraints.",
     "principles": "Working principles",
     "principlesDescription": "A few practical rules for keeping the work clear, useful, and grounded."
   },
   "empty": {
-    "blogTitle": "No writing published yet",
+    "blogTitle": "No notes published yet",
     "blogDescription": "Technical notes and essays will appear here.",
     "labTitle": "No lab notes yet",
     "labDescription": "Experiments, prototypes, and working notes will appear here.",
-    "projectsTitle": "No projects published yet",
-    "projectsDescription": "Project notes and case studies will appear here."
+    "projectsTitle": "No systems published yet",
+    "projectsDescription": "System notes and case studies will appear here."
   },
   "pages": {
-    "blogTitle": "Writing",
-    "blogDescription": "Technical essays, product notes, implementation records, and lessons from real projects.",
+    "blogTitle": "Notebook",
+    "blogDescription": "Technical notes, product decisions, implementation records, and lessons from real systems.",
     "labTitle": "Lab",
     "labDescription": "Experiments, prototypes, research notes, and unfinished ideas worth tracking.",
-    "projectsTitle": "Projects",
+    "projectsTitle": "Systems",
     "projectsDescription": "Open-source work, product experiments, and practical systems built in public.",
     "notebook": {
       "kicker": "Notebook",
       "title": "Notes on building, thinking, and turning vague ideas into systems.",
       "description": "Essays, build notes, logs, and field notes from the workbench. Observations, experiments, and patterns from building in public.",
+      "imageAlt": "Box of filed notes illustration",
       "indexTitle": "By tag",
       "entriesTitle": "Latest notes",
       "entriesDescription": "A ruled notebook index, kept compact so the trail is easy to scan.",
@@ -671,6 +672,7 @@
       "kicker": "Lab",
       "title": "Experiments, prototypes, and unfinished technical questions.",
       "description": "A place for open work: rough notes, small tests, edge experiments, product ideas, and systems before they become polished.",
+      "imageAlt": "Mechanical prototype sketch illustration",
       "questions": {
         "worthBuilding": "What is worth building?",
         "staySmall": "What should stay small?",
@@ -687,9 +689,10 @@
       "kicker": "Systems",
       "title": "Small systems built from notes, experiments, and product questions.",
       "description": "These are the things that moved from vague ideas into working software, public experiments, and useful product systems.",
+      "imageAlt": "Workbench lamp and desk illustration",
       "filesTitle": "System files",
       "filesDescription": "Each row is a small file: what exists, where it stands, and what it connects to.",
-      "relatedTitle": "Related writing",
+      "relatedTitle": "Related notes",
       "status": {
         "title": "Build state",
         "description": "Some systems are polished. Some are still rough. The point is to keep the build path visible."
@@ -699,6 +702,7 @@
       "kicker": "About",
       "title": "A small engineering workshop for ideas that are still becoming.",
       "description": "Mohetios is where I keep notes, experiments, product questions, technical decisions, unfinished thoughts, and the systems that slowly grow out of them.",
+      "imageAlt": "Stacked notebooks and sketches illustration",
       "what": {
         "title": "What is Mohetios?",
         "description": "Mohetios is not just a portfolio, and not only a blog. It is a living notebook for software, product engineering, open-source work, and the practice of turning vague ideas into working systems."
@@ -731,6 +735,7 @@
       "kicker": "Contact",
       "title": "Send a note to the workshop.",
       "description": "Use this page for project ideas, collaboration, writing feedback, work opportunities, or a thoughtful technical note.",
+      "imageAlt": "Interlocking gears illustration",
       "intents": {
         "project": "Project / Collaboration",
         "work": "Work / Hiring",
@@ -751,7 +756,8 @@
     "tagsIndex": {
       "kicker": "Index",
       "title": "An index of topics, tools, and recurring ideas.",
-      "description": "Tags are small paths through the workshop: technologies, systems, questions, and patterns that appear across notes and projects.",
+      "description": "Tags are small paths through the workshop: technologies, systems, questions, and patterns that appear across notes and systems.",
+      "imageAlt": "Box of indexed topic notes illustration",
       "count": "{count} items",
       "entriesTitle": "Topic entries",
       "entriesDescription": "Not a cloud. Just an index of the recurring paths through the work.",
@@ -772,7 +778,7 @@
     }
   },
   "badges": {
-    "blog": "Writing",
+    "blog": "Note",
     "lab": "Lab"
   },
   "tags": {
@@ -781,16 +787,16 @@
     "seoDescription": "All notes tagged with {tag} across {site}.",
     "description": "{count} items across {types}.",
     "all": "All",
-    "writing": "Writing",
+    "writing": "Notebook",
     "lab": "Lab",
-    "projects": "Projects",
+    "projects": "Systems",
     "latest": "Latest with this tag",
     "results": "All tagged items",
     "related": "Related tags",
     "counts": "Content types",
     "emptyTitle": "No content found for this tag",
     "emptyDescription": "This tag may belong to an old link, or the related content has not been published yet.",
-    "backToWriting": "Back to writing",
+    "backToWriting": "Back to Notebook",
     "allTags": "All tags"
   },
   "content": {
@@ -947,24 +953,24 @@
       "label": "Featured note",
       "placeholder": "No featured note yet",
       "actions": {
-        "blog": "Read the article",
+        "blog": "Read note",
         "lab": "Open lab note",
-        "project": "Open project"
+        "project": "Open system"
       }
     },
     "tracks": {
-      "title": "Three ways to follow the work",
-      "description": "Writing explains the thinking, Lab tracks experiments, Projects show what is being built.",
+      "title": "Three paths through the workshop",
+      "description": "Notebook records the thinking, Lab keeps the tests visible, and Systems show what became working software.",
       "blog": {
-        "title": "Writing",
-        "description": "Technical essays, engineering notes, and product reflections."
+        "title": "Notebook",
+        "description": "Notes on software, product decisions, and the practice of building."
       },
       "lab": {
         "title": "Lab",
         "description": "Prototypes, research fragments, and ideas still being tested."
       },
       "projects": {
-        "title": "Projects",
+        "title": "Systems",
         "description": "Open-source work, practical tools, and product systems."
       }
     },
@@ -1001,7 +1007,7 @@
   },
   "newsletter": {
     "title": "Follow the work as it takes shape.",
-    "description": "Read the notes, explore the projects, and see the decisions behind the systems. Occasional notes on product engineering, Cloudflare-native systems, AI workflows, and open-source experiments.",
+    "description": "Read the notes, explore the systems, and see the decisions behind the work. Occasional notes on product engineering, Cloudflare-native systems, AI workflows, and open-source experiments.",
     "emailLabel": "Email address",
     "consent": "I agree to receive occasional emails from Mohetios.dev. I can unsubscribe anytime.",
     "submit": "Subscribe",
@@ -1128,11 +1134,11 @@
     "sidebar": {
       "label": "Around the site",
       "title": "Where to go next",
-      "description": "Writing, Lab, and Projects are the three main tracks on Mohetios.dev — each shows a different stage of the work."
+      "description": "Notebook, Lab, and Systems are the three main tracks on Mohetios.dev — each shows a different stage of the work."
     },
     "latestWriting": {
-      "title": "Latest writing",
-      "description": "Recent essays and engineering notes from the notebook."
+      "title": "Latest notes",
+      "description": "Recent notes and engineering records from the notebook."
     },
     "contactCta": {
       "title": "Say hello",

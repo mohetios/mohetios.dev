@@ -38,7 +38,7 @@ useMohetiosSeo({
   <UPage v-if="page" class="mh-page">
     <UPageBody :ui="{ base: 'space-y-10 pb-16 sm:space-y-12' }">
       <section
-        class="grid gap-8 border-b border-default pb-8 lg:grid-cols-[0.68fr_0.32fr] lg:items-end"
+        class="grid gap-8 border-b border-default pb-8 lg:grid-cols-[0.6fr_0.4fr] lg:items-end"
       >
         <div class="max-w-4xl space-y-5">
           <p class="mh-kicker">
@@ -54,14 +54,34 @@ useMohetiosSeo({
           </p>
         </div>
 
-        <div class="hidden border-y border-default py-4 lg:block">
-          <p class="mh-kicker">
-            {{ t('pages.aboutWorkshop.focus.title') }}
-          </p>
-          <div class="mt-3 flex flex-wrap gap-2">
-            <span v-for="area in focusAreas.slice(0, 3)" :key="area" class="text-sm text-muted">
-              {{ area }}
-            </span>
+        <div class="hidden space-y-4 lg:block">
+          <figure class="flex h-80 w-full items-center justify-center overflow-hidden">
+            <NuxtImg
+              src="/page-images/about.webp"
+              :alt="t('pages.aboutWorkshop.imageAlt')"
+              class="h-full w-full object-contain opacity-90 dark:hidden"
+              sizes="lg:320px"
+              loading="eager"
+            />
+            <NuxtImg
+              src="/page-images/about-dark.webp"
+              alt=""
+              aria-hidden="true"
+              class="hidden h-full w-full object-contain opacity-85 dark:block"
+              sizes="lg:320px"
+              loading="eager"
+            />
+          </figure>
+
+          <div class="border-y border-default py-4">
+            <p class="mh-kicker">
+              {{ t('pages.aboutWorkshop.focus.title') }}
+            </p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <span v-for="area in focusAreas.slice(0, 3)" :key="area" class="text-sm text-muted">
+                {{ area }}
+              </span>
+            </div>
           </div>
         </div>
       </section>

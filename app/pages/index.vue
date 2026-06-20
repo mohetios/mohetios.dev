@@ -13,7 +13,6 @@ useMohetiosSeo({
   locale: () => locale.value,
   type: 'website'
 })
-
 </script>
 
 <template>
@@ -41,7 +40,7 @@ useMohetiosSeo({
 
         <figure class="relative overflow-hidden">
           <NuxtImg
-            src="/home-intro.png"
+            src="/page-images/home.webp"
             :alt="t('home.hero.imageAlt')"
             loading="eager"
             fetchpriority="high"
@@ -49,7 +48,7 @@ useMohetiosSeo({
             sizes="xs:100vw md:42vw lg:520px"
           />
           <NuxtImg
-            src="/home-intro-dark.png"
+            src="/page-images/home-dark.webp"
             alt=""
             aria-hidden="true"
             loading="eager"

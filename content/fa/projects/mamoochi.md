@@ -1,5 +1,5 @@
 ---
-title: ماموچی
+title: مَموچی
 description: یادداشت پروژه‌ای درباره Mamoochi؛ فریم‌ورک Jamstack متن‌باز برای سیستم‌های محتوایی Nuxt، Vue، و Cloudflare-friendly.
 date: 2024-10-31
 updated: 2025-05-19
@@ -28,7 +28,7 @@ Repository:
 
 یک content system معمولاً دو بار ساخته می‌شود.
 
-اول به شکل یک website.  
+اول به شکل یک website.
 بعد به شکل یک pattern.
 
 Mamoochi نسخه دوم همین غریزه است: تصمیم‌هایی که در سایت‌های کوچک publishing و product تکرار می‌شوند را آن‌قدر روشن کند که پروژه بعدی بتواند از آن‌ها شروع کند.
