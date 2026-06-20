@@ -137,6 +137,10 @@ const sidebarTogglePositionClass = computed(() => {
 
   return isSidebarOpen.value ? 'start-[16.75rem] sm:start-[18.75rem]' : 'start-4'
 })
+// const sidebarOrnamentStyle = computed(() => ({
+//   backgroundImage: `url('/page-images/sidebar-${locale.value === 'fa' ? 'farsi' : 'english'}.webp')`,
+//   backgroundPosition: locale.value === 'fa' ? 'right bottom' : 'left bottom'
+// }))
 
 const nextLocale = computed(
   () => locales.value.find((item) => item.code !== locale.value) || locales.value[0]
@@ -257,11 +261,19 @@ watch(() => route.fullPath, closeSidebarIfSmallScreen)
   />
 
   <aside
-    class="fixed inset-y-0 start-0 z-40 flex w-72 flex-col overflow-y-auto border-e border-default bg-default px-6 py-8 text-highlighted transition-transform duration-200 ease-out sm:w-80 sm:px-8"
+    class="fixed inset-y-0 start-0 z-40 flex w-72 flex-col overflow-hidden border-e border-default bg-default px-6 py-8 text-highlighted transition-transform duration-200 ease-out sm:w-80 sm:px-8"
     :class="sidebarTransformClass"
     @click.capture="closeSidebarOnSmallScreen"
   >
-    <div class="flex min-h-0 flex-1 flex-col gap-6">
+    <!--
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-72 bg-contain bg-bottom bg-no-repeat opacity-55 dark:opacity-35 sm:h-80"
+      :style="sidebarOrnamentStyle"
+    />
+    -->
+
+    <div class="relative z-10 flex min-h-0 flex-1 flex-col gap-6">
       <NuxtLink
         :to="localePath('/')"
         class="group/logo inline-flex text-highlighted no-underline"
@@ -292,23 +304,7 @@ watch(() => route.fullPath, closeSidebarIfSmallScreen)
       </nav>
     </div>
 
-    <div class="mt-auto shrink-0 space-y-4 pt-4">
-      <figure>
-        <img
-          src="/page-images/sidebar.webp"
-          :alt="t('pages.systems.imageAlt')"
-          class="mx-auto max-h-56 w-full object-contain opacity-90 dark:hidden"
-          loading="lazy"
-        />
-        <img
-          src="/page-images/sidebar-dark.webp"
-          alt=""
-          aria-hidden="true"
-          class="mx-auto hidden max-h-56 w-full object-contain opacity-85 dark:block"
-          loading="lazy"
-        />
-      </figure>
-
+    <div class="relative z-10 mt-auto shrink-0 space-y-4 pt-4">
       <div class="space-y-2 border-t border-default pt-3">
         <div class="flex items-center justify-between gap-2">
           <div class="flex items-center gap-1" :aria-label="t('footer.sections.connect')">

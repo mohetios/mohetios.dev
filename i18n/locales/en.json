@@ -6,8 +6,8 @@
       "part2": "ios",
       "tld": ""
     },
-    "tagline": "Where ideas unfold into systems.",
-    "description": "A technical notebook for software, product engineering, open-source work, and the practice of building useful systems.",
+    "tagline": "Where ideas are slowly made.",
+    "description": "A quiet technical notebook and workshop for software, product engineering, open-source work, and making useful things.",
     "footer": "Everything in a wonderfully good way, must be."
   },
   "nav": {
@@ -54,7 +54,7 @@
         },
         "writing": {
           "title": "Notebook & lab",
-          "description": "Notes, experiments, and the thinking behind the systems."
+          "description": "Notes, experiments, and the thinking behind the work."
         },
         "projects": {
           "title": "Systems",
@@ -625,7 +625,7 @@
     "labNotes": "Lab notes",
     "labNotesDescription": "Small experiments, rough prototypes, and early ideas that are still being tested.",
     "featuredProjects": "Featured systems",
-    "featuredProjectsDescription": "Open-source work, product experiments, and systems built under real constraints.",
+    "featuredProjectsDescription": "Open-source work, product experiments, and useful things shaped under real constraints.",
     "principles": "Working principles",
     "principlesDescription": "A few practical rules for keeping the work clear, useful, and grounded."
   },
@@ -639,15 +639,15 @@
   },
   "pages": {
     "blogTitle": "Notebook",
-    "blogDescription": "Technical notes, product decisions, implementation records, and lessons from real systems.",
+    "blogDescription": "Technical notes, product decisions, implementation records, and lessons from useful things that made it into the world.",
     "labTitle": "Lab",
     "labDescription": "Experiments, prototypes, research notes, and unfinished ideas worth tracking.",
     "projectsTitle": "Systems",
     "projectsDescription": "Open-source work, product experiments, and practical systems built in public.",
     "notebook": {
       "kicker": "Notebook",
-      "title": "Notes on building, thinking, and turning vague ideas into systems.",
-      "description": "Essays, build notes, logs, and field notes from the workbench. Observations, experiments, and patterns from building in public.",
+      "title": "Notes on building, thinking, and making useful things.",
+      "description": "Essays, build notes, logs, and field notes from the workshop: paths of observation, testing, and slow making.",
       "imageAlt": "Box of filed notes illustration",
       "indexTitle": "By tag",
       "entriesTitle": "Latest notes",
@@ -670,42 +670,42 @@
     },
     "labIndex": {
       "kicker": "Lab",
-      "title": "Experiments, prototypes, and unfinished technical questions.",
-      "description": "A place for open work: rough notes, small tests, edge experiments, product ideas, and systems before they become polished.",
+      "title": "Experiments, prototypes, and thoughts still taking shape.",
+      "description": "A place for open work: rough notes, small tests, technical questions, and ideas that may one day become useful things.",
       "imageAlt": "Mechanical prototype sketch illustration",
       "questions": {
-        "worthBuilding": "What is worth building?",
+        "worthBuilding": "What is worth making?",
         "staySmall": "What should stay small?",
-        "testFirst": "What can be tested before it becomes a system?"
+        "testFirst": "What can be tested before it is built?"
       },
       "logsTitle": "Lab logs",
-      "logsDescription": "Open questions, prototypes, and small tests before they become finished systems.",
+      "logsDescription": "Open questions, prototypes, and small tests before they become finished work.",
       "status": {
         "title": "Prototype state",
-        "description": "Lab notes are allowed to stay rough. Their job is to keep open questions visible before they turn into systems."
+        "description": "Lab notes are allowed to stay rough. Their job is to keep open questions visible before they turn into finished work."
       }
     },
     "systems": {
       "kicker": "Systems",
-      "title": "Small systems built from notes, experiments, and product questions.",
-      "description": "These are the things that moved from vague ideas into working software, public experiments, and useful product systems.",
+      "title": "Useful things made from notes, experiments, and product questions.",
+      "description": "This is where rough ideas become working software, public experiments, and tools useful enough to keep.",
       "imageAlt": "Workbench lamp and desk illustration",
-      "filesTitle": "System files",
-      "filesDescription": "Each row is a small file: what exists, where it stands, and what it connects to.",
+      "filesTitle": "Build files",
+      "filesDescription": "Each row is a small file: what was made, where it stands, and what it connects to.",
       "relatedTitle": "Related notes",
       "status": {
         "title": "Build state",
-        "description": "Some systems are polished. Some are still rough. The point is to keep the build path visible."
+        "description": "Some things are polished. Some are still rough. The point is to keep the build path visible."
       }
     },
     "aboutWorkshop": {
       "kicker": "About",
-      "title": "A small engineering workshop for ideas that are still becoming.",
-      "description": "Mohetios is where I keep notes, experiments, product questions, technical decisions, unfinished thoughts, and the systems that slowly grow out of them.",
+      "title": "A quiet workshop for ideas still being made.",
+      "description": "Mohetios is where I keep notes, experiments, product questions, technical decisions, and unfinished thoughts — things slowly shaped into useful work.",
       "imageAlt": "Stacked notebooks and sketches illustration",
       "what": {
         "title": "What is Mohetios?",
-        "description": "Mohetios is not just a portfolio, and not only a blog. It is a living notebook for software, product engineering, open-source work, and the practice of turning vague ideas into working systems."
+        "description": "Mohetios is not just a portfolio, and not only a blog. It is a living notebook and quiet workshop for software, product engineering, open-source work, and the practice of making useful things."
       },
       "name": {
         "title": "The name",
@@ -719,7 +719,7 @@
         "observe": "Observe the problem.",
         "draw": "Draw its shape.",
         "gather": "Gather the pieces.",
-        "build": "Build the smallest useful system.",
+        "build": "Build the smallest useful thing.",
         "write": "Write down the path."
       },
       "focus": {
@@ -734,7 +734,7 @@
     "contactGate": {
       "kicker": "Contact",
       "title": "Send a note to the workshop.",
-      "description": "Use this page for project ideas, collaboration, writing feedback, work opportunities, or a thoughtful technical note.",
+      "description": "Use this page for project ideas, collaboration, writing feedback, work opportunities, or a specific technical note.",
       "imageAlt": "Interlocking gears illustration",
       "intents": {
         "project": "Project / Collaboration",
@@ -756,7 +756,7 @@
     "tagsIndex": {
       "kicker": "Index",
       "title": "An index of topics, tools, and recurring ideas.",
-      "description": "Tags are small paths through the workshop: technologies, systems, questions, and patterns that appear across notes and systems.",
+      "description": "Tags are small paths through the workshop: ways to follow what has been written, tested, or slowly made.",
       "imageAlt": "Box of indexed topic notes illustration",
       "count": "{count} items",
       "entriesTitle": "Topic entries",
@@ -846,7 +846,7 @@
     "subscribe": {
       "blog": {
         "title": "Follow the notebook",
-        "description": "Occasional notes on product engineering, systems, and building in public."
+        "description": "Occasional notes on product engineering, useful things, and building in public."
       },
       "lab": {
         "title": "Follow lab notes",
@@ -884,7 +884,7 @@
     "blog": {
       "eyebrow": "Notebook archive",
       "title": "Notebook",
-      "description": "Notes on software, product engineering, architecture, and the craft of building with care.",
+      "description": "Notes on software, product engineering, architecture, and the slow practice of making useful things.",
       "latest": "Latest note",
       "placeholder": "Featured note"
     },
@@ -903,7 +903,7 @@
     "projects": {
       "eyebrow": "System archive",
       "title": "Systems",
-      "description": "Open-source products, tools, prototypes, and systems shaped by real constraints.",
+      "description": "Open-source products, tools, prototypes, and systems shaped under real constraints.",
       "featured": "Featured systems",
       "featuredDescription": "The main systems currently shaping my public work.",
       "archive": "System archive"
@@ -918,13 +918,13 @@
   "home": {
     "hero": {
       "kicker": "Open notebook",
-      "title": "A quiet engineering workshop for notes, experiments, systems, and unfinished thoughts.",
-      "description": "Mohetios is where ideas are observed, sketched, gathered, assembled, and built into working systems.",
+      "title": "A quiet workshop for ideas being slowly made.",
+      "description": "Mohetios is where rough notes, small experiments, and unfinished thoughts are observed, tested, shaped, and made useful.",
       "imageAlt": "Engineering notebook illustration"
     },
     "workbench": {
       "title": "On the workbench",
-      "description": "Current notes, systems, and experiments on the table.",
+      "description": "Notes, experiments, and useful things currently on the table.",
       "email": {
         "title": "Programmable email on Cloudflare",
         "description": "Turning email into an application event."
@@ -960,7 +960,7 @@
     },
     "tracks": {
       "title": "Three paths through the workshop",
-      "description": "Notebook records the thinking, Lab keeps the tests visible, and Systems show what became working software.",
+      "description": "Notebook records the thinking, Lab keeps the tests visible, and Systems show what was made useful.",
       "blog": {
         "title": "Notebook",
         "description": "Notes on software, product decisions, and the practice of building."
@@ -971,7 +971,7 @@
       },
       "projects": {
         "title": "Systems",
-        "description": "Open-source work, practical tools, and product systems."
+        "description": "Open-source work, practical tools, and useful product work."
       }
     },
     "principles": {
@@ -984,12 +984,12 @@
     },
     "notebook": {
       "title": "Notebook",
-      "description": "Essays, build notes, lab logs, and field notes from the workshop.",
+      "description": "Essays, build notes, lab logs, and unfinished thoughts from the workshop.",
       "viewAll": "View all notes"
     },
     "builtSystems": {
       "title": "Built systems",
-      "description": "Small engineered systems from the workshop.",
+      "description": "Small useful things made from notes, experiments, and product questions.",
       "viewAll": "Explore systems"
     },
     "archive": {
@@ -1002,12 +1002,12 @@
       }
     },
     "closing": {
-      "quote": "Build small things well. Observe. Iterate. Assemble."
+      "quote": "Build small things well. Observe. Test. Make slowly."
     }
   },
   "newsletter": {
-    "title": "Follow the work as it takes shape.",
-    "description": "Read the notes, explore the systems, and see the decisions behind the work. Occasional notes on product engineering, Cloudflare-native systems, AI workflows, and open-source experiments.",
+    "title": "Follow the work as it is made.",
+    "description": "Read the notes, explore the useful things taking shape, and see the decisions behind the work. Occasional notes on product engineering, Cloudflare-native systems, AI workflows, and open-source experiments.",
     "emailLabel": "Email address",
     "consent": "I agree to receive occasional emails from Mohetios.dev. I can unsubscribe anytime.",
     "submit": "Subscribe",

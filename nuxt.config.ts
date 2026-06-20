@@ -192,6 +192,19 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  fonts: {
+    families: [
+      {
+        name: 'Vazirmatn',
+        provider: 'google',
+        global: true,
+        weights: ['100 900'],
+        styles: ['normal'],
+        subsets: ['arabic', 'latin']
+      }
+    ]
+  },
+
   vite: {
     optimizeDeps: {
       include: ['mermaid', 'zod']
