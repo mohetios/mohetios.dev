@@ -12,6 +12,15 @@ export function useDashboardAccountMenu() {
   const nextLocale = computed(() => {
     return locales.value.find((item) => item.code !== locale.value)
   })
+  const nextLocaleLabel = computed(() => {
+    if (!nextLocale.value) {
+      return ''
+    }
+
+    return nextLocale.value.code === 'fa'
+      ? t('actions.switchToPersian')
+      : t('actions.switchToEnglish')
+  })
 
   const accountLabel = computed(
     () => auth.user.value?.username || t('dashboard.sidebar.accountName')
@@ -44,7 +53,7 @@ export function useDashboardAccountMenu() {
       ...(nextLocale.value
         ? [
             {
-              label: nextLocale.value.code.toUpperCase(),
+              label: nextLocaleLabel.value,
               icon: 'i-lucide-languages',
               onSelect: () => switchDashboardLocale(nextLocale.value?.code as typeof locale.value)
             }

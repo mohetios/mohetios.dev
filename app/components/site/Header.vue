@@ -150,6 +150,15 @@ const nextLocalePath = computed(() =>
     ? getLocalizedRoutePath(route.path, nextLocale.value.code, { fallbackToSection: true })
     : undefined
 )
+const nextLocaleLabel = computed(() => {
+  if (!nextLocale.value) {
+    return ''
+  }
+
+  return nextLocale.value.code === 'fa'
+    ? t('actions.switchToPersian')
+    : t('actions.switchToEnglish')
+})
 
 const currentYear = computed(() => {
   const calendar = locale.value === 'fa' ? 'persian' : 'gregory'
@@ -330,7 +339,7 @@ watch(() => route.fullPath, closeSidebarIfSmallScreen)
               variant="ghost"
               size="sm"
               icon="i-lucide-languages"
-              :label="nextLocale.code.toUpperCase()"
+              :label="nextLocaleLabel"
               class="cursor-pointer text-muted hover:text-primary"
             />
             <UColorModeButton
