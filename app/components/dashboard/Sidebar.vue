@@ -102,11 +102,11 @@ function isActive(path: string) {
 <template>
   <UDashboardSidebar
     collapsible
-    class="border-e border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950"
+    class="border-e border-mohstone-200 bg-mohstone-50 dark:border-mohstone-800/60 dark:bg-ink-950 dark:text-mohstone-100"
     :ui="{
-      header: 'border-b border-neutral-200 p-3 dark:border-neutral-800',
+      header: 'border-b border-mohstone-200 p-3 dark:border-mohstone-800/60',
       body: 'p-3',
-      footer: 'border-t border-neutral-200 p-2 dark:border-neutral-800'
+      footer: 'border-t border-mohstone-200 p-2 dark:border-mohstone-800/60'
     }"
   >
     <template #header="{ collapsed }">
@@ -146,7 +146,7 @@ function isActive(path: string) {
           :class="[
             isActive(item.to)
               ? 'bg-primary/10 text-primary'
-              : 'text-muted hover:bg-neutral-100 hover:text-highlighted dark:hover:bg-neutral-900',
+              : 'text-muted hover:bg-mohstone-100 hover:text-highlighted dark:hover:bg-ink-900',
             collapsed ? 'justify-center px-2' : 'gap-3'
           ]"
           :aria-current="isActive(item.to) ? 'page' : undefined"

@@ -12,56 +12,84 @@
   --font-fa: 'Vazirmatn', 'Noto Sans Arabic', Tahoma, Arial, sans-serif;
   --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
 
-  /* Mohetios primary — Persian blue, mapped in app.config.ts as Nuxt UI primary */
-  --color-mohet-50: #eef3ff;
-  --color-mohet-100: #dfe8ff;
-  --color-mohet-200: #c5d4ff;
-  --color-mohet-300: #9fb6ff;
-  --color-mohet-400: #718bfb;
-  --color-mohet-500: #4960e8;
-  --color-mohet-600: #1c39bb;
-  --color-mohet-700: #18309d;
-  --color-mohet-800: #172a7f;
-  --color-mohet-900: #172765;
-  --color-mohet-950: #0d143a;
+  /* Persian flower blue */
+  --color-golpich-50: #f3f7fb;
+  --color-golpich-100: #e4edf6;
+  --color-golpich-200: #c9dbed;
+  --color-golpich-300: #a7c3df;
+  --color-golpich-400: #83a7cc;
+  --color-golpich-500: #6487b0;
+  --color-golpich-600: #4e6e94;
+  --color-golpich-700: #3f5877;
+  --color-golpich-800: #344961;
+  --color-golpich-900: #2d3e52;
+  --color-golpich-950: #1a2735;
 
-  --color-mohet-accent-50: #f2f6f4;
-  --color-mohet-accent-100: #e0ebe4;
-  --color-mohet-accent-200: #c2d7c9;
-  --color-mohet-accent-300: #9bb8a4;
-  --color-mohet-accent-400: #6d9179;
-  --color-mohet-accent-500: #486a56;
-  --color-mohet-accent-600: #3a5545;
-  --color-mohet-accent-700: #2f4438;
-  --color-mohet-accent-800: #25362d;
-  --color-mohet-accent-900: #1c2923;
-  --color-mohet-accent-950: #0f1612;
+  /* Leaf green */
+  --color-leaf-50: #f4f7f1;
+  --color-leaf-100: #e6ece0;
+  --color-leaf-200: #cdd9c4;
+  --color-leaf-300: #aebf9f;
+  --color-leaf-400: #8da079;
+  --color-leaf-500: #6f806b;
+  --color-leaf-600: #596753;
+  --color-leaf-700: #465240;
+  --color-leaf-800: #394335;
+  --color-leaf-900: #30382d;
+  --color-leaf-950: #171d16;
 
-  --color-mohet-neutral-50: #f7f8f9;
-  --color-mohet-neutral-100: #eef1f4;
-  --color-mohet-neutral-200: #dde3e8;
-  --color-mohet-neutral-300: #c4cdd6;
-  --color-mohet-neutral-400: #9aa8b5;
-  --color-mohet-neutral-500: #66727d;
-  --color-mohet-neutral-600: #4f5a66;
-  --color-mohet-neutral-700: #3d4752;
-  --color-mohet-neutral-800: #223244;
-  --color-mohet-neutral-900: #1a2835;
-  --color-mohet-neutral-950: #0f1823;
+  /* Gold line / tile accent */
+  --color-tilegold-50: #fbf7ec;
+  --color-tilegold-100: #f3e8c9;
+  --color-tilegold-200: #e8d092;
+  --color-tilegold-300: #d8b45f;
+  --color-tilegold-400: #c89c3e;
+  --color-tilegold-500: #b78a3a;
+  --color-tilegold-600: #936b2d;
+  --color-tilegold-700: #755226;
+  --color-tilegold-800: #614323;
+  --color-tilegold-900: #523921;
+  --color-tilegold-950: #2f1f10;
+
+  /* Mohetios warm dark neutral */
+  --color-mohstone-50: #faf7f0;
+  --color-mohstone-100: #efe8da;
+  --color-mohstone-200: #ded2be;
+  --color-mohstone-300: #c8b89e;
+  --color-mohstone-400: #ad9777;
+  --color-mohstone-500: #927b5e;
+  --color-mohstone-600: #755f48;
+  --color-mohstone-700: #5c4a39;
+  --color-mohstone-800: #40352b;
+  --color-mohstone-900: #25211c;
+  --color-mohstone-950: #12100d;
+
+  /* Ink / navy */
+  --color-ink-50: #f3f5f8;
+  --color-ink-100: #e4e8ef;
+  --color-ink-200: #cbd3e0;
+  --color-ink-300: #a6b3c8;
+  --color-ink-400: #7b8ca9;
+  --color-ink-500: #5d6f90;
+  --color-ink-600: #465674;
+  --color-ink-700: #36435c;
+  --color-ink-800: #263149;
+  --color-ink-900: #17223b;
+  --color-ink-950: #0b1020;
 }
 
 :root {
-  --mh-paper: #f8f5ee;
-  --mh-paper-soft: #f3efe7;
-  --mh-surface: #fffdf8;
-  --mh-surface-muted: color-mix(in oklab, var(--color-mohet-accent-100) 52%, var(--mh-paper));
-  --mh-surface-blue: color-mix(in oklab, var(--color-mohet-100) 68%, var(--mh-surface));
-  --mh-ink: var(--ui-color-neutral-800);
+  --mh-paper: #f6f1e8;
+  --mh-paper-soft: #ddd3c2;
+  --mh-surface: var(--color-mohstone-50);
+  --mh-surface-muted: color-mix(in oklab, var(--color-leaf-100) 42%, var(--mh-paper));
+  --mh-surface-blue: color-mix(in oklab, var(--color-golpich-100) 68%, var(--mh-surface));
+  --mh-ink: var(--color-ink-900);
   --mh-ink-muted: var(--ui-color-neutral-500);
   --mh-ink-soft: color-mix(in oklab, var(--mh-ink-muted) 74%, var(--mh-paper));
   --mh-brand: var(--ui-color-primary-600);
   --mh-accent: var(--ui-color-secondary-500);
-  --mh-craft: #c6a15b;
+  --mh-craft: var(--color-tilegold-500);
   --mh-rule: color-mix(in oklab, var(--mh-brand) 16%, var(--mh-surface));
   --mh-rule-muted: color-mix(in oklab, var(--mh-brand) 9%, var(--mh-surface));
   --mh-rule-craft: color-mix(in oklab, var(--mh-craft) 42%, var(--mh-surface));
@@ -93,17 +121,17 @@
 
 .dark,
 [data-theme='dark'] {
-  --mh-paper: #0f1823;
-  --mh-paper-soft: #142030;
-  --mh-surface: #172433;
-  --mh-surface-muted: color-mix(in oklab, #2a3947 68%, var(--mh-paper));
-  --mh-surface-blue: color-mix(in oklab, #2a3947 86%, var(--mh-surface));
-  --mh-ink: #eef3f7;
-  --mh-ink-muted: #a9b6c2;
+  --mh-paper: #111827;
+  --mh-paper-soft: #1b2433;
+  --mh-surface: #1b2433;
+  --mh-surface-muted: color-mix(in oklab, var(--color-ink-800) 72%, var(--mh-paper));
+  --mh-surface-blue: color-mix(in oklab, var(--color-golpich-900) 68%, var(--mh-surface));
+  --mh-ink: #f6f1e8;
+  --mh-ink-muted: var(--color-mohstone-300);
   --mh-ink-soft: color-mix(in oklab, var(--mh-ink-muted) 72%, var(--mh-paper));
   --mh-brand: var(--ui-color-primary-300);
   --mh-accent: var(--ui-color-secondary-400);
-  --mh-craft: #d2b06d;
+  --mh-craft: var(--color-tilegold-300);
   --mh-rule: color-mix(in oklab, var(--mh-brand) 25%, var(--mh-surface));
   --mh-rule-muted: color-mix(in oklab, var(--mh-brand) 14%, var(--mh-surface));
   --mh-rule-craft: color-mix(in oklab, var(--mh-craft) 42%, var(--mh-surface));

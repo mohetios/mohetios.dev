@@ -37,10 +37,10 @@ function getThemeColors() {
   const dark = isDarkMermaidTheme()
 
   return {
-    text: cssVar('--color-text', dark ? '#eef3f7' : '#223244'),
-    muted: cssVar('--color-muted', dark ? '#a9b6c2' : '#66727d'),
-    primary: cssVar('--color-primary', dark ? '#7ea8ca' : '#1e4265'),
-    accent: cssVar('--color-accent', dark ? '#93b09a' : '#486a56')
+    text: cssVar('--color-text', dark ? '#f6f1e8' : '#17223b'),
+    muted: cssVar('--color-muted', dark ? '#c8b89e' : '#927b5e'),
+    primary: cssVar('--color-primary', dark ? '#a7c3df' : '#4e6e94'),
+    accent: cssVar('--color-accent', dark ? '#aebf9f' : '#596753')
   }
 }
 
