@@ -1,27 +1,15 @@
 <script setup lang="ts">
 import type { TocItem } from '~/utils/content'
 
-const props = defineProps<{
-  sidebarOpen?: boolean
-}>()
-
-const emit = defineEmits<{
-  'update:sidebarOpen': [value: boolean]
-}>()
+const desktopMediaQuery = '(min-width: 1024px)'
 
 const { locale, locales, t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
-const localSidebarOpen = ref<boolean | undefined>(undefined)
 const isDesktop = ref(false)
-const resolvedSidebarOpen = computed(() => props.sidebarOpen ?? localSidebarOpen.value)
-const isSidebarOpen = computed({
-  get: () => resolvedSidebarOpen.value ?? isDesktop.value,
-  set: (value: boolean) => {
-    localSidebarOpen.value = value
-    emit('update:sidebarOpen', value)
-  }
-})
+const mainMenuOpen = ref(false)
+const sidebarOpen = ref<boolean | undefined>(undefined)
+const isSidebarOpen = computed(() => sidebarOpen.value ?? isDesktop.value)
 
 const navigation = computed(() => [
   { label: t('nav.home'), to: localePath('/') },
@@ -120,27 +108,27 @@ const hasPageToc = computed(() => pageTocLinks.value.length > 0)
 const sidebarTitle = computed(() =>
   hasPageToc.value ? t('content.toc') : t('pages.tagsIndex.kicker')
 )
-const sidebarOffsetClass = computed(() =>
-  resolvedSidebarOpen.value === false ? 'lg:ms-0' : 'lg:ms-80'
-)
 const sidebarTransformClass = computed(() => {
-  if (resolvedSidebarOpen.value === undefined) {
+  if (sidebarOpen.value === undefined) {
     return '-translate-x-full rtl:translate-x-full lg:translate-x-0 lg:rtl:translate-x-0'
   }
 
   return isSidebarOpen.value ? 'translate-x-0' : '-translate-x-full rtl:translate-x-full'
 })
 const sidebarTogglePositionClass = computed(() => {
-  if (resolvedSidebarOpen.value === undefined) {
+  if (sidebarOpen.value === undefined) {
     return 'start-4 lg:start-[18.75rem]'
   }
 
   return isSidebarOpen.value ? 'start-[16.75rem] sm:start-[18.75rem]' : 'start-4'
 })
-// const sidebarOrnamentStyle = computed(() => ({
-//   backgroundImage: `url('/page-images/sidebar-${locale.value === 'fa' ? 'farsi' : 'english'}.webp')`,
-//   backgroundPosition: locale.value === 'fa' ? 'right bottom' : 'left bottom'
-// }))
+const sidebarToggleIcon = computed(() => {
+  if (locale.value === 'fa') {
+    return isSidebarOpen.value ? 'i-lucide-panel-right-close' : 'i-lucide-panel-right-open'
+  }
+
+  return isSidebarOpen.value ? 'i-lucide-panel-left-close' : 'i-lucide-panel-left-open'
+})
 
 const nextLocale = computed(
   () => locales.value.find((item) => item.code !== locale.value) || locales.value[0]
@@ -204,41 +192,61 @@ const isActive = (to: string) => {
 }
 
 function toggleSidebar() {
-  const currentOpen = resolvedSidebarOpen.value ?? isDesktop.value
+  const currentOpen = sidebarOpen.value ?? isDesktop.value
 
-  isSidebarOpen.value = !currentOpen
+  mainMenuOpen.value = false
+  sidebarOpen.value = !currentOpen
 }
 
-function closeSidebarOnSmallScreen(event: MouseEvent) {
+function toggleMainMenu() {
+  const willOpen = !mainMenuOpen.value
+
+  mainMenuOpen.value = willOpen
+
+  if (willOpen) {
+    sidebarOpen.value = false
+  }
+}
+
+function closeMainMenu() {
+  mainMenuOpen.value = false
+}
+
+function isDesktopViewport() {
+  return window.matchMedia(desktopMediaQuery).matches
+}
+
+function closeSidebarAfterMobileLinkClick(event: MouseEvent) {
   if (
     import.meta.client &&
     event.target instanceof Element &&
     event.target.closest('a') &&
-    !window.matchMedia('(min-width: 1024px)').matches
+    !isDesktopViewport()
   ) {
-    isSidebarOpen.value = false
+    sidebarOpen.value = false
   }
 }
 
-function closeSidebarIfSmallScreen() {
-  if (
-    import.meta.client &&
-    resolvedSidebarOpen.value === true &&
-    !window.matchMedia('(min-width: 1024px)').matches
-  ) {
-    isSidebarOpen.value = false
+function closeSidebarOnMobile() {
+  if (import.meta.client && sidebarOpen.value === true && !isDesktopViewport()) {
+    sidebarOpen.value = false
   }
 }
 
 onMounted(() => {
-  const desktopQuery = window.matchMedia('(min-width: 1024px)')
+  const desktopQuery = window.matchMedia(desktopMediaQuery)
   const onBreakpointChange = () => {
     isDesktop.value = desktopQuery.matches
-    closeSidebarIfSmallScreen()
+
+    if (isDesktop.value) {
+      closeMainMenu()
+    }
+
+    closeSidebarOnMobile()
   }
 
   isDesktop.value = desktopQuery.matches
-  closeSidebarIfSmallScreen()
+  closeSidebarOnMobile()
   desktopQuery.addEventListener('change', onBreakpointChange)
 
   onBeforeUnmount(() => {
@@ -246,16 +254,22 @@ onMounted(() => {
   })
 })
 
-watch(() => route.fullPath, closeSidebarIfSmallScreen)
+watch(
+  () => route.fullPath,
+  () => {
+    closeSidebarOnMobile()
+    closeMainMenu()
+  }
+)
 </script>
 
 <template>
   <UButton
     color="neutral"
     variant="ghost"
-    size="sm"
-    :icon="isSidebarOpen ? 'i-lucide-panel-left-close' : 'i-lucide-panel-left-open'"
-    class="fixed top-20 z-50 border border-default bg-default/95 text-muted shadow-sm transition-[inset-inline-start,color] duration-200 hover:text-primary lg:top-4"
+    size="md"
+    :icon="sidebarToggleIcon"
+    class="fixed top-12 z-50 border border-default bg-default/95 text-muted shadow-sm transition-[inset-inline-start,color] duration-200 hover:text-primary lg:top-4"
     :class="sidebarTogglePositionClass"
     :aria-label="isSidebarOpen ? t('actions.closeSidebar') : t('actions.openSidebar')"
     @click="toggleSidebar"
@@ -266,21 +280,26 @@ watch(() => route.fullPath, closeSidebarIfSmallScreen)
     type="button"
     class="fixed inset-0 z-30 bg-inverted/15 backdrop-blur-[1px] lg:hidden"
     :aria-label="t('actions.closeSidebar')"
-    @click="isSidebarOpen = false"
+    @click="sidebarOpen = false"
   />
 
   <aside
     class="fixed inset-y-0 start-0 z-40 flex w-72 flex-col overflow-hidden border-e border-default bg-default px-6 py-8 text-highlighted transition-transform duration-200 ease-out sm:w-80 sm:px-8"
     :class="sidebarTransformClass"
-    @click.capture="closeSidebarOnSmallScreen"
+    @click.capture="closeSidebarAfterMobileLinkClick"
   >
-    <!--
-    <div
+    <img
       aria-hidden="true"
-      class="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-72 bg-contain bg-bottom bg-no-repeat opacity-55 dark:opacity-35 sm:h-80"
-      :style="sidebarOrnamentStyle"
+      src="/page-images/projects.webp"
+      alt=""
+      class="pointer-events-none absolute bottom-29 left-1/2 z-0 w-56 -translate-x-1/2 opacity-55 dark:hidden sm:w-64"
     />
-    -->
+    <img
+      aria-hidden="true"
+      src="/page-images/projects-dark.webp"
+      alt=""
+      class="pointer-events-none absolute bottom-29 left-1/2 z-0 hidden w-56 -translate-x-1/2 opacity-40 dark:block sm:w-64"
+    />
 
     <div class="relative z-10 flex min-h-0 flex-1 flex-col gap-6">
       <NuxtLink
@@ -358,10 +377,7 @@ watch(() => route.fullPath, closeSidebarIfSmallScreen)
     </div>
   </aside>
 
-  <header
-    class="hidden bg-default transition-[margin] duration-200 ease-out lg:block"
-    :class="sidebarOffsetClass"
-  >
+  <header class="hidden bg-default lg:block">
     <div class="site-shell flex h-20 items-stretch justify-end border-b border-default">
       <nav class="flex items-stretch gap-10" :aria-label="t('footer.navigationLabel')">
         <NuxtLink
@@ -391,25 +407,34 @@ watch(() => route.fullPath, closeSidebarIfSmallScreen)
         <SiteLogo show-tagline size="header" />
       </NuxtLink>
 
-      <span class="text-sm font-medium text-muted">{{ sidebarTitle }}</span>
+      <UButton
+        color="neutral"
+        variant="ghost"
+        size="sm"
+        :icon="mainMenuOpen ? 'i-lucide-x' : 'i-lucide-menu'"
+        class="text-muted hover:text-primary"
+        :aria-label="t('footer.navigationLabel')"
+        @click="toggleMainMenu"
+      />
     </div>
     <nav
-      class="site-shell flex gap-6 overflow-x-auto border-t border-default py-3 text-sm"
+      v-if="mainMenuOpen"
+      class="site-shell border-t border-default pb-3 pt-12"
       :aria-label="t('footer.navigationLabel')"
     >
-      <NuxtLink
-        v-for="item in navigation"
-        :key="item.to"
-        :to="item.to"
-        class="shrink-0 border-b pb-1 no-underline transition"
-        :class="
-          isActive(item.to)
-            ? 'border-primary text-primary'
-            : 'border-transparent text-highlighted hover:border-primary hover:text-primary'
-        "
-      >
-        {{ item.label }}
-      </NuxtLink>
+      <ul class="divide-y divide-default">
+        <li v-for="item in navigation" :key="item.to">
+          <NuxtLink
+            :to="item.to"
+            class="flex items-center justify-between py-3 text-base leading-6 no-underline transition"
+            :class="isActive(item.to) ? 'text-primary' : 'text-highlighted hover:text-primary'"
+            @click="closeMainMenu"
+          >
+            <span>{{ item.label }}</span>
+            <UIcon name="i-lucide-arrow-up-right" class="size-4 text-muted" />
+          </NuxtLink>
+        </li>
+      </ul>
     </nav>
   </header>
 </template>
