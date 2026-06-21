@@ -129,6 +129,7 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     'nuxt-charts',
     '@nuxt/image',
+    'nuxt-booster',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots',
     '@nuxtjs/turnstile',
@@ -449,6 +450,11 @@ export default defineNuxtConfig({
   image: {
     provider: isProduction ? 'cloudflare' : 'none',
     quality: 70,
+    domains: ['img.youtube.com', 'i.vimeocdn.com'],
+    alias: {
+      youtube: 'https://img.youtube.com',
+      vimeo: 'https://i.vimeocdn.com'
+    },
     screens: {
       xs: 320,
       sm: 640,
@@ -458,6 +464,28 @@ export default defineNuxtConfig({
     },
     cloudflare: {
       baseURL: process.env.NUXT_BASE_URL || siteUrl
+    }
+  },
+
+  booster: {
+    crossorigin: 'anonymous',
+    disableNuxtFontaine: true,
+    disableNuxtImage: false,
+    detection: {
+      performance: false,
+      browserSupport: false,
+      battery: false
+    },
+    optimizeSSR: {
+      cleanPreloads: true,
+      cleanPrefetches: true,
+      inlineStyles: true
+    },
+    targetFormats: ['webp', 'avif', 'jpg|jpeg|png|gif'],
+    densities: 'x1 x2',
+    lazyOffset: {
+      component: '120px',
+      asset: '120px'
     }
   },
 
