@@ -105,6 +105,7 @@ const pageTocLinks = computed(() =>
   contentTocLinks.value.length ? contentTocLinks.value : staticPageTocLinks.value
 )
 const hasPageToc = computed(() => pageTocLinks.value.length > 0)
+const shouldDimSidebarLamp = computed(() => contentTocLinks.value.length > 0)
 const sidebarTitle = computed(() =>
   hasPageToc.value ? t('content.toc') : t('pages.tagsIndex.kicker')
 )
@@ -292,13 +293,15 @@ watch(
       aria-hidden="true"
       src="/page-images/projects.webp"
       alt=""
-      class="pointer-events-none absolute bottom-29 left-1/2 z-0 w-56 -translate-x-1/2 opacity-55 dark:hidden sm:w-64"
+      class="pointer-events-none absolute bottom-29 left-1/2 z-0 w-56 -translate-x-1/2 dark:hidden sm:w-64"
+      :class="shouldDimSidebarLamp ? 'opacity-20' : 'opacity-55'"
     />
     <img
       aria-hidden="true"
       src="/page-images/projects-dark.webp"
       alt=""
-      class="pointer-events-none absolute bottom-29 left-1/2 z-0 hidden w-56 -translate-x-1/2 opacity-40 dark:block sm:w-64"
+      class="pointer-events-none absolute bottom-29 left-1/2 z-0 hidden w-56 -translate-x-1/2 dark:block sm:w-64"
+      :class="shouldDimSidebarLamp ? 'opacity-20' : 'opacity-40'"
     />
 
     <div class="relative z-10 flex min-h-0 flex-1 flex-col gap-6">
