@@ -2,13 +2,33 @@
 import type { TocItem } from '~/utils/content'
 
 const desktopMediaQuery = '(min-width: 1024px)'
+const SIDEBAR_OPEN_COOKIE = 'mohetios_sidebar_open'
+
+type SidebarOpenPreference = 'open' | 'closed'
+
+function parseSidebarOpenPreference(value?: string | null): boolean | undefined {
+  if (value === 'open') {
+    return true
+  }
+
+  if (value === 'closed') {
+    return false
+  }
+
+  return undefined
+}
 
 const { locale, locales, t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+const storedSidebarOpen = useCookie<string | null>(SIDEBAR_OPEN_COOKIE, {
+  default: () => null,
+  sameSite: 'lax',
+  maxAge: 60 * 60 * 24 * 365
+})
 const isDesktop = ref(false)
 const mainMenuOpen = ref(false)
-const sidebarOpen = ref<boolean | undefined>(undefined)
+const sidebarOpen = ref<boolean | undefined>(parseSidebarOpenPreference(storedSidebarOpen.value))
 const isSidebarOpen = computed(() => sidebarOpen.value ?? isDesktop.value)
 
 const navigation = computed(() => [
@@ -234,6 +254,18 @@ function closeSidebarOnMobile() {
   }
 }
 
+function serializeSidebarOpenPreference(value: boolean | undefined): SidebarOpenPreference | null {
+  if (value === true) {
+    return 'open'
+  }
+
+  if (value === false) {
+    return 'closed'
+  }
+
+  return null
+}
+
 onMounted(() => {
   const desktopQuery = window.matchMedia(desktopMediaQuery)
   const onBreakpointChange = () => {
@@ -262,6 +294,22 @@ watch(
     closeMainMenu()
   }
 )
+
+watch(storedSidebarOpen, (value) => {
+  const parsed = parseSidebarOpenPreference(value)
+
+  if (sidebarOpen.value !== parsed) {
+    sidebarOpen.value = parsed
+  }
+})
+
+watch(sidebarOpen, (value) => {
+  const serialized = serializeSidebarOpenPreference(value)
+
+  if (storedSidebarOpen.value !== serialized) {
+    storedSidebarOpen.value = serialized
+  }
+})
 </script>
 
 <template>
