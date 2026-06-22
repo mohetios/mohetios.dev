@@ -191,7 +191,7 @@ const socialLinks = [
   },
   {
     label: 'X',
-    to: 'https://x.com/ZemaniAli',
+    to: 'https://x.com/mohetios',
     icon: 'i-lucide-twitter'
   },
   {
