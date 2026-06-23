@@ -12,84 +12,97 @@
   --font-fa: 'Vazirmatn', 'Noto Sans Arabic', Tahoma, Arial, sans-serif;
   --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
 
-  /* Persian flower blue */
-  --color-golpich-50: #f3f7fb;
-  --color-golpich-100: #e4edf6;
-  --color-golpich-200: #c9dbed;
-  --color-golpich-300: #a7c3df;
-  --color-golpich-400: #83a7cc;
-  --color-golpich-500: #6487b0;
-  --color-golpich-600: #4e6e94;
-  --color-golpich-700: #3f5877;
-  --color-golpich-800: #344961;
-  --color-golpich-900: #2d3e52;
-  --color-golpich-950: #1a2735;
+  /* Persian tile blue / primary brand */
+  --color-tileblue-50: #ecfbfe;
+  --color-tileblue-100: #d1f4fa;
+  --color-tileblue-200: #a8e7f2;
+  --color-tileblue-300: #75d4e7;
+  --color-tileblue-400: #54b8d2;
+  --color-tileblue-500: #0e7490;
+  --color-tileblue-600: #0b6178;
+  --color-tileblue-700: #0a4f63;
+  --color-tileblue-800: #083d4d;
+  --color-tileblue-900: #062b37;
+  --color-tileblue-950: #031821;
 
-  /* Leaf green */
-  --color-leaf-50: #f4f7f1;
-  --color-leaf-100: #e6ece0;
-  --color-leaf-200: #cdd9c4;
-  --color-leaf-300: #aebf9f;
-  --color-leaf-400: #8da079;
-  --color-leaf-500: #6f806b;
-  --color-leaf-600: #596753;
-  --color-leaf-700: #465240;
-  --color-leaf-800: #394335;
-  --color-leaf-900: #30382d;
-  --color-leaf-950: #171d16;
+  /* Persian green / secondary accent */
+  --color-persiangreen-50: #e8fffb;
+  --color-persiangreen-100: #c9fff5;
+  --color-persiangreen-200: #92fbea;
+  --color-persiangreen-300: #5dedd9;
+  --color-persiangreen-400: #29d3bf;
+  --color-persiangreen-500: #00a693;
+  --color-persiangreen-600: #008b7b;
+  --color-persiangreen-700: #007267;
+  --color-persiangreen-800: #00584f;
+  --color-persiangreen-900: #00463f;
+  --color-persiangreen-950: #002a26;
 
-  /* Gold line / tile accent */
-  --color-tilegold-50: #fbf7ec;
-  --color-tilegold-100: #f3e8c9;
-  --color-tilegold-200: #e8d092;
-  --color-tilegold-300: #d8b45f;
-  --color-tilegold-400: #c89c3e;
-  --color-tilegold-500: #b78a3a;
-  --color-tilegold-600: #936b2d;
-  --color-tilegold-700: #755226;
-  --color-tilegold-800: #614323;
-  --color-tilegold-900: #523921;
-  --color-tilegold-950: #2f1f10;
+  /* Aged gold / Persian ornament line */
+  --color-agedgold-50: #fcf7ea;
+  --color-agedgold-100: #f6e7bd;
+  --color-agedgold-200: #ecd27f;
+  --color-agedgold-300: #ddb449;
+  --color-agedgold-400: #c49a4a;
+  --color-agedgold-500: #a97d2d;
+  --color-agedgold-600: #886123;
+  --color-agedgold-700: #6e4a20;
+  --color-agedgold-800: #5d3f20;
+  --color-agedgold-900: #503720;
+  --color-agedgold-950: #2e1d0e;
 
-  /* Mohetios warm dark neutral */
-  --color-mohstone-50: #faf7f0;
-  --color-mohstone-100: #efe8da;
-  --color-mohstone-200: #ded2be;
-  --color-mohstone-300: #c8b89e;
-  --color-mohstone-400: #ad9777;
-  --color-mohstone-500: #927b5e;
-  --color-mohstone-600: #755f48;
-  --color-mohstone-700: #5c4a39;
+  /* Warm paper / neutral surface */
+  --color-mohstone-50: #fbf7ef;
+  --color-mohstone-100: #f7f0e4;
+  --color-mohstone-200: #eadfce;
+  --color-mohstone-300: #d8cab8;
+  --color-mohstone-400: #bda98f;
+  --color-mohstone-500: #9f8669;
+  --color-mohstone-600: #7f684f;
+  --color-mohstone-700: #62503e;
   --color-mohstone-800: #40352b;
-  --color-mohstone-900: #25211c;
+  --color-mohstone-900: #201b16;
   --color-mohstone-950: #12100d;
 
-  /* Ink / navy */
-  --color-ink-50: #f3f5f8;
-  --color-ink-100: #e4e8ef;
-  --color-ink-200: #cbd3e0;
-  --color-ink-300: #a6b3c8;
-  --color-ink-400: #7b8ca9;
-  --color-ink-500: #5d6f90;
-  --color-ink-600: #465674;
-  --color-ink-700: #36435c;
-  --color-ink-800: #263149;
-  --color-ink-900: #17223b;
-  --color-ink-950: #0b1020;
+  /* Ink / editorial navy */
+  --color-ink-50: #f3f8fb;
+  --color-ink-100: #e2edf3;
+  --color-ink-200: #c7dbe6;
+  --color-ink-300: #8ea3b6;
+  --color-ink-400: #6b7f91;
+  --color-ink-500: #506273;
+  --color-ink-600: #3b4b5a;
+  --color-ink-700: #2b3947;
+  --color-ink-800: #172436;
+  --color-ink-900: #101c2a;
+  --color-ink-950: #071018;
+
+  /* Clay red / destructive and rare warm contrast */
+  --color-clay-50: #fff1ee;
+  --color-clay-100: #ffddd6;
+  --color-clay-200: #ffc0b4;
+  --color-clay-300: #ff9686;
+  --color-clay-400: #f36552;
+  --color-clay-500: #d94735;
+  --color-clay-600: #a63d2f;
+  --color-clay-700: #8d3027;
+  --color-clay-800: #752a25;
+  --color-clay-900: #612723;
+  --color-clay-950: #37110e;
 }
 
 :root {
-  --mh-paper: #f6f1e8;
-  --mh-paper-soft: #ddd3c2;
+  --mh-paper: #f7f0e4;
+  --mh-paper-soft: #d8cab8;
   --mh-surface: var(--color-mohstone-50);
-  --mh-surface-muted: color-mix(in oklab, var(--color-leaf-100) 42%, var(--mh-paper));
-  --mh-surface-blue: color-mix(in oklab, var(--color-golpich-100) 68%, var(--mh-surface));
-  --mh-ink: var(--color-ink-900);
-  --mh-ink-muted: var(--ui-color-neutral-500);
-  --mh-ink-soft: color-mix(in oklab, var(--mh-ink-muted) 74%, var(--mh-paper));
+  --mh-surface-muted: color-mix(in oklab, var(--color-mohstone-100) 72%, var(--mh-paper-soft));
+  --mh-surface-blue: color-mix(in oklab, var(--color-tileblue-50) 70%, var(--mh-surface));
+  --mh-ink: var(--color-ink-950);
+  --mh-ink-muted: var(--color-ink-500);
+  --mh-ink-soft: color-mix(in oklab, var(--mh-ink-muted) 72%, var(--mh-paper));
   --mh-brand: var(--ui-color-primary-600);
   --mh-accent: var(--ui-color-secondary-500);
-  --mh-craft: var(--color-tilegold-500);
+  --mh-craft: var(--color-agedgold-400);
   --mh-rule: color-mix(in oklab, var(--mh-brand) 16%, var(--mh-surface));
   --mh-rule-muted: color-mix(in oklab, var(--mh-brand) 9%, var(--mh-surface));
   --mh-rule-craft: color-mix(in oklab, var(--mh-craft) 42%, var(--mh-surface));
@@ -121,17 +134,17 @@
 
 .dark,
 [data-theme='dark'] {
-  --mh-paper: #111827;
-  --mh-paper-soft: #1b2433;
-  --mh-surface: #1b2433;
+  --mh-paper: #071018;
+  --mh-paper-soft: #101c2a;
+  --mh-surface: #101c2a;
   --mh-surface-muted: color-mix(in oklab, var(--color-ink-800) 72%, var(--mh-paper));
-  --mh-surface-blue: color-mix(in oklab, var(--color-golpich-900) 68%, var(--mh-surface));
-  --mh-ink: #f6f1e8;
-  --mh-ink-muted: var(--color-mohstone-300);
+  --mh-surface-blue: color-mix(in oklab, var(--color-tileblue-900) 58%, var(--mh-surface));
+  --mh-ink: #f7f0e4;
+  --mh-ink-muted: #8ea3b6;
   --mh-ink-soft: color-mix(in oklab, var(--mh-ink-muted) 72%, var(--mh-paper));
   --mh-brand: var(--ui-color-primary-300);
   --mh-accent: var(--ui-color-secondary-400);
-  --mh-craft: var(--color-tilegold-300);
+  --mh-craft: var(--color-agedgold-400);
   --mh-rule: color-mix(in oklab, var(--mh-brand) 25%, var(--mh-surface));
   --mh-rule-muted: color-mix(in oklab, var(--mh-brand) 14%, var(--mh-surface));
   --mh-rule-craft: color-mix(in oklab, var(--mh-craft) 42%, var(--mh-surface));
