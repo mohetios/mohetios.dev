@@ -1,13 +1,13 @@
 export default defineAppConfig({
   ui: {
     colors: {
-      primary: 'golpich',
-      secondary: 'leaf',
+      primary: 'tileblue',
+      secondary: 'persiangreen',
       neutral: 'mohstone',
-      info: 'golpich',
-      success: 'leaf',
-      warning: 'tilegold',
-      error: 'red'
+      info: 'tileblue',
+      success: 'persiangreen',
+      warning: 'agedgold',
+      error: 'clay'
     },
     container: {
       // Gutters live on `.site-shell` only — do not stack UContainer padding on top.
