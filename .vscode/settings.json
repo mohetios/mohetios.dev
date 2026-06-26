@@ -100,6 +100,19 @@
   "typescript.suggest.autoImports": true,
   "typescript.surveys.enabled": false,
   "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+  "typescript.tsserver.watchOptions": {
+    "excludeDirectories": [
+      "**/node_modules",
+      "**/.nuxt",
+      "**/.output",
+      "**/.nitro",
+      "**/.cache",
+      "**/.velite",
+      "**/dist",
+      "**/.wrangler",
+      "**/.data"
+    ]
+  },
   "javascript.updateImportsOnFileMove.enabled": "always",
   "vue.server.hybridMode": true,
   "vue.inlayHints.missingProps": false,
@@ -107,8 +120,7 @@
   "vue.inlayHints.optionsWrapper": false,
   "vue.updateImportsOnFileMove.enabled": true,
   "volar.autoCompleteRefs": false,
-  "nuxt.isNuxtApp": true,
-  "nuxt-intellisense.showWelcomeMessage": false,
+  "vue.server.maxFileSize": 2097152,
 
   // ── Tailwind 4 (CSS-first config) ─────────────────────────────────
   "tailwindCSS.emmetCompletions": false,
@@ -187,7 +199,30 @@
   "terminal.integrated.defaultProfile.linux": "zsh",
   "npm.packageManager": "pnpm",
 
-  // ── Disable heavy language servers in this repo ───────────────────
+  // ── Extension marketplace / background work ───────────────────────
+  "extensions.autoUpdate": false,
+  "extensions.autoCheckUpdates": false,
+  "extensions.ignoreRecommendations": true,
+
+  // ── Neuter heavy extensions if still installed globally ───────────
   "python.analysis.diagnosticMode": "openFilesOnly",
-  "python.languageServer": "None"
+  "python.languageServer": "None",
+  "cSpell.enabled": false,
+  "cSpell.showInRuler": false,
+  "yaml.validate": false,
+  "yaml.schemaStore.enable": false,
+  "yaml.hover": false,
+  "yaml.completion": false,
+  "markdownlint.run": "onSave",
+  "markdownlint.lintWorkspaceGlobs": [],
+  "docker.showStartPage": false,
+  "containers.showWelcomeView": false,
+  "git-graph.showStatusBar": false,
+  "gitlens.codeLens.enabled": false,
+  "gitlens.currentLine.enabled": false,
+  "gitlens.hovers.enabled": false,
+  "gitlens.statusBar.enabled": false,
+  "platformio-ide.activateOnlyOnPlatformIOProject": true,
+  "remote.autoForwardPorts": false,
+  "remote.restoreForwardedPorts": false
 }
