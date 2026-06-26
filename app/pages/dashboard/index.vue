@@ -192,8 +192,6 @@ watch(error, (currentError) => {
 <template>
   <div class="mx-auto w-full max-w-[1600px] space-y-6">
     <section class="flex min-w-0 items-start gap-3">
-      <UDashboardSidebarCollapse class="shrink-0 lg:hidden" />
-
       <div class="min-w-0">
         <h1 class="text-3xl font-semibold tracking-tight text-highlighted">
           {{ t('dashboard.home.title') }}

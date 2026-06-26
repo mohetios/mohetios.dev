@@ -9,8 +9,6 @@ defineProps<{
 <template>
   <div class="mx-auto flex w-full max-w-[1600px] flex-col gap-4 pb-5 sm:pb-6">
     <section class="flex min-w-0 items-start gap-3">
-      <UDashboardSidebarCollapse class="shrink-0 lg:hidden" />
-
       <div class="min-w-0">
         <h1 class="truncate text-2xl font-semibold tracking-tight text-highlighted sm:text-3xl">
           {{ title }}

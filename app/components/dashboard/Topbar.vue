@@ -4,13 +4,14 @@ import {
   DASHBOARD_RANGE_LABEL_KEYS
 } from '~~/shared/constants/dashboard-range'
 
-const { t } = useI18n()
+const { locale, t } = useI18n()
 const localePath = useLocalePath()
 
 const route = useRoute()
 const preset = useDashboardToolbarPreset()
 const runtime = useDashboardToolbarRuntime()
 const range = useDashboardRangePreference()
+const dashboardSidebarSide = computed(() => (locale.value === 'fa' ? 'right' : 'left'))
 
 watch(
   () => route.path,
@@ -48,7 +49,8 @@ async function handleRefresh() {
   <UDashboardNavbar class="border-b border-default bg-default/90 backdrop-blur" :toggle="false">
     <template #left>
       <div class="flex min-w-0 items-center gap-2">
-        <UDashboardSidebarCollapse  class="shrink-0" />
+        <UDashboardSidebarToggle class="shrink-0 lg:hidden" :side="dashboardSidebarSide" />
+        <UDashboardSidebarCollapse class="hidden shrink-0 lg:flex" :side="dashboardSidebarSide" />
         <UDashboardSearchButton
           variant="soft"
           class="hidden max-w-xs min-w-0 flex-1 sm:flex"

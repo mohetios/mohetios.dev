@@ -2,6 +2,7 @@
 const { locale, t } = useI18n()
 const brandName = computed(() => getSeoSiteName(t))
 const route = useRoute()
+const dashboardSidebarSide = computed(() => (locale.value === 'fa' ? 'right' : 'left'))
 
 type DashboardNavItem = {
   label: string
@@ -108,6 +109,9 @@ function formatBadgeCount(count: number, max: number) {
 <template>
   <UDashboardSidebar
     collapsible
+    :side="dashboardSidebarSide"
+    :toggle-side="dashboardSidebarSide"
+    :menu="{ side: dashboardSidebarSide }"
     class="border-e border-mohstone-200 bg-mohstone-50 dark:border-mohstone-800/60 dark:bg-ink-950 dark:text-mohstone-100"
     :ui="{
       header: 'border-b border-mohstone-200 p-3 dark:border-mohstone-800/60',

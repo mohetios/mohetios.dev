@@ -28,7 +28,7 @@ const storedSidebarOpen = useCookie<string | null>(SIDEBAR_OPEN_COOKIE, {
 })
 const isDesktop = ref(false)
 const mainMenuOpen = ref(false)
-const sidebarOpen = ref<boolean | undefined>(parseSidebarOpenPreference(storedSidebarOpen.value))
+const sidebarOpen = ref<boolean | undefined>(undefined)
 const isSidebarOpen = computed(() => sidebarOpen.value ?? isDesktop.value)
 
 const navigation = computed(() => [
@@ -273,12 +273,19 @@ onMounted(() => {
 
     if (isDesktop.value) {
       closeMainMenu()
+
+      if (sidebarOpen.value === undefined) {
+        sidebarOpen.value = parseSidebarOpenPreference(storedSidebarOpen.value)
+      }
     }
 
     closeSidebarOnMobile()
   }
 
   isDesktop.value = desktopQuery.matches
+  if (isDesktop.value) {
+    sidebarOpen.value = parseSidebarOpenPreference(storedSidebarOpen.value)
+  }
   closeSidebarOnMobile()
   desktopQuery.addEventListener('change', onBreakpointChange)
 
@@ -296,6 +303,10 @@ watch(
 )
 
 watch(storedSidebarOpen, (value) => {
+  if (!isDesktop.value) {
+    return
+  }
+
   const parsed = parseSidebarOpenPreference(value)
 
   if (sidebarOpen.value !== parsed) {
@@ -304,6 +315,10 @@ watch(storedSidebarOpen, (value) => {
 })
 
 watch(sidebarOpen, (value) => {
+  if (!isDesktop.value) {
+    return
+  }
+
   const serialized = serializeSidebarOpenPreference(value)
 
   if (storedSidebarOpen.value !== serialized) {
