@@ -617,7 +617,8 @@
     "openSidebar": "باز کردن نوار کناری",
     "closeSidebar": "بستن نوار کناری",
     "switchToEnglish": "English",
-    "switchToPersian": "پارسی"
+    "switchToPersian": "پارسی",
+    "theme": "پوسته"
   },
   "sections": {
     "latestWriting": "آخرین یادداشت‌ها",

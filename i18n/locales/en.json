@@ -617,7 +617,8 @@
     "openSidebar": "Open sidebar",
     "closeSidebar": "Close sidebar",
     "switchToEnglish": "English",
-    "switchToPersian": "پارسی"
+    "switchToPersian": "پارسی",
+    "theme": "Theme"
   },
   "sections": {
     "latestWriting": "Latest notes",
