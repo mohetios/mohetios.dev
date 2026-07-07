@@ -1,7 +1,7 @@
 ---
 title: 'نکونیموس: معماری یک ربات پیام ناشناس با مرزهای روشن'
 description: دفترچه فنی نکونیموس؛ ربات تلگرام فارسی‌محور برای پیام ناشناس، ارزیابی سبک گفت‌وگو و پیشنهاد گفت‌وگوی اختیاری روی Cloudflare Edge.
-thumbnail: /content/nekonymous-cover.webp
+thumbnail: /content/nekonymous-lab.webp
 date: 2024-08-19
 updated: 2026-07-07
 status: V1 release candidate

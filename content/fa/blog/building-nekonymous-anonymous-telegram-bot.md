@@ -1,7 +1,7 @@
 ---
 title: 'نِکونیموس: ساخت یک ربات پیام ناشناس با مرزهای شفاف حریم خصوصی'
 description: یادداشتی درباره نکونیموس، پیام ناشناس، کمینه‌سازی داده، مرزهای حریم خصوصی و ساخت یک ربات تلگرام که کمتر ادعا می‌کند و دقیق‌تر توضیح می‌دهد.
-thumbnail: /content/nekonymous-cover.webp
+thumbnail: /content/nekonymous-blog.webp
 date: 2026-06-26
 updated: 2026-07-07
 tags:
