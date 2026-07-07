@@ -931,7 +931,7 @@
       },
       "nekonymous": {
         "title": "Nekonymous",
-        "description": "Anonymous messaging, assessment, and matching on the edge."
+        "description": "Anonymous messaging, conversation-style assessment, and opt-in conversation suggestions on Cloudflare Edge."
       },
       "safarnak": {
         "title": "Safarnak",

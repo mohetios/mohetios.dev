@@ -210,11 +210,11 @@
         "topReferrers": "برترین ارجاع‌دهنده‌ها",
         "topCountries": "برترین کشورها",
         "pageLoadTime": "زمان بارگذاری صفحه",
-        "edgeSummary": "خلاصه کش / لبه",
-        "edgeHealth": "سلامت لبه",
+        "edgeSummary": "خلاصه کش / Edge",
+        "edgeHealth": "سلامت Edge",
         "cacheEfficiency": "کارایی کش",
-        "edgeRequests": "درخواست‌های لبه",
-        "edgeErrors": "خطاهای لبه",
+        "edgeRequests": "درخواست‌های Edge",
+        "edgeErrors": "خطاهای Edge",
         "cloudflareIntegration": "یکپارچه‌سازی Cloudflare"
       },
       "search": {
@@ -242,7 +242,7 @@
       },
       "pending": {
         "externalAnalytics": "ارائه‌دهنده تحلیل خارجی هنوز متصل نشده است.",
-        "cloudflare": "بعداً Cloudflare Analytics را وصل کن تا درخواست‌ها، نسبت برخورد کش، خطاهای لبه و فعالیت Worker نمایش داده شود.",
+        "cloudflare": "بعداً Cloudflare Analytics را وصل کن تا درخواست‌ها، نسبت برخورد کش، خطاهای Edge و فعالیت Worker نمایش داده شود.",
         "webVitals": "شاخص‌های وب به داده Cloudflare Web Analytics/RUM نیاز دارند.",
         "searchConsole": "اتصال Search Console در فاز بعدی برنامه‌ریزی شده است."
       }
@@ -931,7 +931,7 @@
       },
       "nekonymous": {
         "title": "نکونیموس",
-        "description": "پیام‌رسانی ناشناس، ارزیابی و مچ‌یابی روی لبه."
+        "description": "پیام ناشناس، ارزیابی سبک گفت‌وگو و پیشنهاد گفت‌وگو — روی Cloudflare Edge."
       },
       "safarnak": {
         "title": "سفرناک",
@@ -996,7 +996,7 @@
       "title": "از بایگانی",
       "description": "یادداشت‌هایی از سال‌های قبل.",
       "items": {
-        "2026": "سیستم‌ها، لبه، مشاهده‌پذیری",
+        "2026": "سیستم‌ها، Edge، مشاهده‌پذیری",
         "2025": "ابزارها، خودکارسازی، یادداشت‌ها",
         "2024": "آزمایش‌ها، نمونه‌های اولیه، یادگیری"
       }
