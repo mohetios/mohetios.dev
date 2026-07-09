@@ -53,10 +53,12 @@ withDefaults(
           </div>
 
           <div
-            v-if="backTo || surround?.some(Boolean) || $slots.related || kind || $slots.comments"
-            class="flex flex-col gap-8 border-t border-default pt-8 [&_.comments-section]:mt-0"
+            v-if="backTo || surround?.some(Boolean) || $slots.related || $slots.comments"
+            class="mt-2 flex flex-col gap-8 border-t border-default pt-8"
           >
-            <slot name="comments" />
+            <section v-if="$slots.comments" class="border-b border-default/70 pb-8">
+              <slot name="comments" />
+            </section>
 
             <UButton
               v-if="backTo"
@@ -70,16 +72,16 @@ withDefaults(
               {{ backLabel }}
             </UButton>
 
-            <section v-if="surround?.some(Boolean)" class="space-y-3">
+            <section v-if="surround?.some(Boolean)" class="space-y-3 border-b border-default/70 pb-8">
               <p class="mh-kicker text-muted">
                 {{ $t('content.article.continueReading') }}
               </p>
               <ContentSurround :surround="surround || []" />
             </section>
 
-            <slot name="related" />
-
-            <ContentSubscribe v-if="kind" :kind="kind" plain />
+            <section v-if="$slots.related" class="space-y-3">
+              <slot name="related" />
+            </section>
           </div>
         </div>
       </section>

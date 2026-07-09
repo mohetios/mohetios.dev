@@ -22,27 +22,21 @@ function writePreference(value: SidebarPreference) {
 
 export function useSiteSidebar() {
   const isDesktop = useState('site-sidebar:is-desktop', () => false)
-  const preference = useState<SidebarPreference | null>('site-sidebar:preference', () => null)
+  const desktopPreference = useState<SidebarPreference | null>('site-sidebar:preference', () => null)
   const mobileOpen = useState('site-sidebar:mobile-open', () => false)
-  const ready = useState('site-sidebar:ready', () => false)
-  const lifecycleReady = useState('site-sidebar:lifecycle-ready', () => false)
-  const watchReady = useState('site-sidebar:watch-ready', () => false)
+  const initialized = useState('site-sidebar:initialized', () => false)
+  const mediaCleanup = useState<null | (() => void)>('site-sidebar:media-cleanup', () => null)
 
-  const desktopOpen = computed(() => preference.value !== 'closed')
+  const desktopOpen = computed(() => desktopPreference.value !== 'closed')
   const isSidebarOpen = computed(() => (isDesktop.value ? desktopOpen.value : mobileOpen.value))
 
-  const sidebarPanelClass = computed(() => ({
-    'mh-site-sidebar--open': !isDesktop.value && mobileOpen.value,
-    'mh-site-sidebar--closed': ready.value && isDesktop.value && !desktopOpen.value
-  }))
-
   const sidebarTogglePositionClass = computed(() => {
-    if (isSidebarOpen.value) {
-      return 'start-[16.75rem] sm:start-[18.75rem]'
+    if (!isDesktop.value) {
+      return 'start-4'
     }
 
-    if (ready.value && isDesktop.value && !desktopOpen.value) {
-      return 'start-4'
+    if (isSidebarOpen.value) {
+      return 'start-[16.75rem] sm:start-[18.75rem]'
     }
 
     return 'start-4 lg:start-[18.75rem]'
@@ -50,7 +44,7 @@ export function useSiteSidebar() {
 
   function setDesktopOpen(open: boolean) {
     const next: SidebarPreference = open ? 'open' : 'closed'
-    preference.value = next
+    desktopPreference.value = next
     writePreference(next)
   }
 
@@ -77,43 +71,44 @@ export function useSiteSidebar() {
   }
 
   onMounted(() => {
-    if (lifecycleReady.value) {
-      return
+    if (!initialized.value) {
+      initialized.value = true
+      desktopPreference.value = readPreference()
+
+      const mediaQuery = window.matchMedia(DESKTOP_MEDIA_QUERY)
+      const syncDesktop = () => {
+        isDesktop.value = mediaQuery.matches
+      }
+
+      syncDesktop()
+      mediaQuery.addEventListener('change', syncDesktop)
+      mediaCleanup.value = () => {
+        mediaQuery.removeEventListener('change', syncDesktop)
+      }
+
+      watch(isDesktop, (desktop) => {
+        if (desktop) {
+          mobileOpen.value = false
+        }
+      })
     }
-
-    lifecycleReady.value = true
-
-    const mediaQuery = window.matchMedia(DESKTOP_MEDIA_QUERY)
-    const syncDesktop = () => {
-      isDesktop.value = mediaQuery.matches
-    }
-
-    preference.value = readPreference()
-    syncDesktop()
-    ready.value = true
-    mediaQuery.addEventListener('change', syncDesktop)
-
-    onBeforeUnmount(() => {
-      mediaQuery.removeEventListener('change', syncDesktop)
-    })
   })
 
-  if (!watchReady.value) {
-    watchReady.value = true
-
-    watch(isDesktop, (desktop) => {
-      if (!desktop) {
-        mobileOpen.value = false
-      }
-    })
-  }
+  onBeforeUnmount(() => {
+    mediaCleanup.value?.()
+    mediaCleanup.value = null
+    initialized.value = false
+  })
 
   return {
+    isDesktop,
+    desktopOpen,
+    mobileOpen,
     isSidebarOpen,
-    sidebarPanelClass,
     sidebarTogglePositionClass,
     toggleSidebar,
     closeSidebar,
+    setDesktopOpen,
     closeSidebarOnMobile
   }
 }

@@ -25,6 +25,7 @@
     "db:generate": "drizzle-kit generate",
     "db:push": "wrangler d1 migrations apply DB --local",
     "db:seed": "node scripts/seed-local-db.mjs",
+    "db:seed:comments": "node scripts/seed-comments-local.mjs",
     "db:studio": "drizzle-kit studio",
     "types:cloudflare": "wrangler types",
     "postinstall": "velite build && pnpm gql:schema && nuxt prepare"

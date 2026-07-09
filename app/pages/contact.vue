@@ -468,6 +468,18 @@ async function onSubmit() {
           </section>
         </aside>
       </section>
+
+      <section id="newsletter" class="border-t border-default pt-8">
+        <div class="max-w-3xl">
+          <NewsletterSubscribe
+            source="contact_page"
+            plain
+            section-title
+            :title="t('newsletter.title')"
+            :description="t('newsletter.description')"
+          />
+        </div>
+      </section>
     </UPageBody>
   </UPage>
 </template>

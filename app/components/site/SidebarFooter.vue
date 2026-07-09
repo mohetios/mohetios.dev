@@ -21,7 +21,7 @@ const currentYear = computed(() => {
 <template>
   <footer class="relative z-10 mt-auto shrink-0 border-t border-default pt-3">
     <p class="text-xs leading-5 font-normal text-muted">
-      <span class="text-sm  text-highlighted">{{ t('site.footer') }}</span>
+      <span class="text-sm text-highlighted">{{ t('site.footer') }}</span>
       <span class="ms-1.5">© {{ currentYear }} {{ t('site.name') }}</span>
       <span
         class="ms-1.5 inline-flex items-center gap-1 align-middle"
@@ -32,12 +32,12 @@ const currentYear = computed(() => {
           v-for="link in socialLinks"
           :key="link.to"
           :href="link.to"
-          class="text-muted hover:text-primary items-center flex"
+          class="flex items-center text-muted hover:text-primary"
           target="_blank"
           rel="noopener noreferrer"
           :aria-label="link.label"
         >
-          <UIcon :name="link.icon" class="size-3 items-center flex " />
+          <UIcon :name="link.icon" class="size-3" />
         </a>
       </span>
     </p>

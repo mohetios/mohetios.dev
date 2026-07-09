@@ -11,8 +11,9 @@ type Cleanup = () => void
 
 const cleanups: Cleanup[] = []
 const ZOOM_MAX = 2.5
-const ZOOM_MIN = 0.75
+const ZOOM_MIN = 0.2
 const ZOOM_STEP = 0.25
+const VIEWER_PADDING = 48
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 const MERMAID_ICONS = {
   externalLink:
@@ -195,16 +196,32 @@ function applyViewerZoom(zoom: number, focalPoint?: { x: number; y: number }) {
 
 function resetViewer() {
   const viewport = viewerViewport.value
-  viewerZoom.value = 1
 
   if (!viewport) {
+    viewerZoom.value = 1
     viewerPan.value = { x: 0, y: 0 }
     return
   }
 
+  const availableWidth = Math.max(0, viewport.clientWidth - VIEWER_PADDING * 2)
+  const availableHeight = Math.max(0, viewport.clientHeight - VIEWER_PADDING * 2)
+  const { width, height } = viewerBaseSize.value
+
+  if (width <= 0 || height <= 0 || availableWidth <= 0 || availableHeight <= 0) {
+    viewerZoom.value = 1
+    viewerPan.value = { x: 0, y: 0 }
+    return
+  }
+
+  const fitScale = Math.min(availableWidth / width, availableHeight / height)
+  viewerZoom.value = clamp(fitScale, ZOOM_MIN, ZOOM_MAX)
+
+  const scaledWidth = width * viewerZoom.value
+  const scaledHeight = height * viewerZoom.value
+
   viewerPan.value = {
-    x: viewport.clientWidth * 0.12,
-    y: viewport.clientHeight * 0.18
+    x: (viewport.clientWidth - scaledWidth) / 2,
+    y: (viewport.clientHeight - scaledHeight) / 2
   }
 }
 
@@ -430,7 +447,7 @@ onBeforeUnmount(() => {
           @pointercancel="stopViewerDragging"
         >
           <div
-            class="mermaid-viewer-stage absolute left-0 top-0 p-24"
+            class="mermaid-viewer-stage absolute left-0 top-0"
             :style="{
               width: `${viewerBaseSize.width * viewerZoom}px`,
               height: `${viewerBaseSize.height * viewerZoom}px`,

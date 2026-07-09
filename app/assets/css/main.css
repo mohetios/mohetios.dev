@@ -315,32 +315,6 @@ html[dir='rtl'] .mh-kicker {
   border-color: var(--ui-border);
 }
 
-.mh-site-sidebar {
-  --mh-sidebar-hide-dir: 1;
-  transform: translateX(calc(-100% * var(--mh-sidebar-hide-dir)));
-  transition: transform 200ms ease-out;
-}
-
-html[dir='rtl'] .mh-site-sidebar {
-  --mh-sidebar-hide-dir: -1;
-}
-
-@media (min-width: 1024px) {
-  .mh-site-sidebar {
-    transform: translateX(0);
-  }
-}
-
-.mh-site-sidebar.mh-site-sidebar--closed {
-  transform: translateX(calc(-100% * var(--mh-sidebar-hide-dir)));
-}
-
-@media (max-width: 1023px) {
-  .mh-site-sidebar.mh-site-sidebar--open {
-    transform: translateX(0);
-  }
-}
-
 .mh-sidebar-scroll {
   scrollbar-width: thin;
   scrollbar-color: color-mix(in oklab, var(--ui-border-accented) 70%, transparent) transparent;
