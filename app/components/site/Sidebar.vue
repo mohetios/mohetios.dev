@@ -26,7 +26,7 @@ const sidebarToggleIcon = computed(() => {
 
 const drawerUi = {
   content:
-    'inset-y-0 h-full w-[min(100vw,20rem)] max-w-none flex-col rounded-none border-e border-default p-0 ring-0',
+    'inset-y-0 h-full w-[min(100vw,18rem)] max-w-none flex-col rounded-none border-e border-default p-0 ring-0',
   container: 'flex h-full w-full min-h-0 flex-col gap-0 overflow-hidden p-0',
   header: 'hidden',
   body: 'min-h-0 flex-1 overflow-hidden p-0',
@@ -43,6 +43,11 @@ function closeSidebarAfterLinkClick(event: MouseEvent) {
     closeSidebarOnMobile()
     props.closeMainMenu?.()
   }
+}
+
+function closeSidebarFromDrawer() {
+  closeSidebarOnMobile()
+  props.closeMainMenu?.()
 }
 
 watch(
@@ -87,6 +92,15 @@ watch(
         class="relative flex h-full w-full min-h-0 flex-col overflow-hidden bg-default px-6 py-8 text-highlighted sm:px-8"
         @click.capture="closeSidebarAfterLinkClick"
       >
+        <UButton
+          color="neutral"
+          variant="ghost"
+          size="sm"
+          icon="i-lucide-x"
+          class="absolute end-4 top-4 z-10"
+          :aria-label="t('actions.closeSidebar')"
+          @click="closeSidebarFromDrawer"
+        />
         <SiteSidebarContent />
       </div>
     </template>

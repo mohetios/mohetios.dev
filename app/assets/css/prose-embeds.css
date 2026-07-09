@@ -68,6 +68,20 @@
   z-index: 1;
 }
 
+/* Keep markdown tables from stretching the whole article layout on mobile. */
+.prose table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.prose table :is(th, td) {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .prose pre.shiki[dir='rtl'] .code-copy-button {
   right: auto;
   left: 0.75rem;
