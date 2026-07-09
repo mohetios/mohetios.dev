@@ -26,8 +26,26 @@ function setCodeDirection(pre: HTMLElement) {
   }
 }
 
+function enhanceTables() {
+  const tables = document.querySelectorAll<HTMLTableElement>('.prose table')
+
+  tables.forEach((table) => {
+    if (table.closest('.mohetios-table-scroll')) {
+      return
+    }
+
+    const wrapper = document.createElement('div')
+    wrapper.className = 'mohetios-table-scroll'
+
+    table.parentNode?.insertBefore(wrapper, table)
+    wrapper.appendChild(table)
+  })
+}
+
 function enhance() {
   const blocks = document.querySelectorAll<HTMLElement>('.prose pre')
+
+  enhanceTables()
 
   blocks.forEach((pre) => {
     setCodeDirection(pre)

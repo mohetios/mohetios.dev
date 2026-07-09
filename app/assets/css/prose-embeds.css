@@ -68,18 +68,25 @@
   z-index: 1;
 }
 
-/* Keep markdown tables from stretching the whole article layout on mobile. */
-.prose table {
-  display: block;
+/* Keep tables fully visible on mobile with horizontal scrolling. */
+.prose .mohetios-table-scroll {
   width: 100%;
   max-width: 100%;
   overflow-x: auto;
+  overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  margin-block: 1.25rem;
 }
 
-.prose table :is(th, td) {
-  overflow-wrap: anywhere;
-  word-break: break-word;
+.prose .mohetios-table-scroll table {
+  width: max-content;
+  min-width: 100%;
+  margin: 0;
+}
+
+.prose .mohetios-table-scroll :is(th, td) {
+  white-space: nowrap;
 }
 
 .prose pre.shiki[dir='rtl'] .code-copy-button {
@@ -112,7 +119,7 @@
   overscroll-behavior-x: contain;
   overscroll-behavior-y: auto;
   text-rendering: optimizeLegibility;
-  touch-action: pan-x;
+  touch-action: auto;
 }
 
 .prose .mohetios-mermaid svg {

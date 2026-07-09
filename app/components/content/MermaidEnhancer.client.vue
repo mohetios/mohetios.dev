@@ -39,6 +39,9 @@ const isViewerDragging = ref(false)
 const viewerBaseSize = ref({ height: 0, width: 0 })
 
 let viewerStart = { panX: 0, panY: 0, pointerX: 0, pointerY: 0 }
+let pinchStartDistance = 0
+let pinchStartZoom = 1
+const activePointers = new Map<number, { x: number; y: number }>()
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value))
@@ -256,6 +259,23 @@ function onViewerPointerDown(event: PointerEvent) {
     return
   }
 
+  activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
+
+  if (activePointers.size === 2) {
+    const points = Array.from(activePointers.values())
+    const a = points[0]
+    const b = points[1]
+
+    if (!a || !b) {
+      return
+    }
+
+    pinchStartDistance = Math.hypot(b.x - a.x, b.y - a.y)
+    pinchStartZoom = viewerZoom.value
+    isViewerDragging.value = false
+    return
+  }
+
   isViewerDragging.value = true
   viewerStart = {
     panX: viewerPan.value.x,
@@ -267,6 +287,30 @@ function onViewerPointerDown(event: PointerEvent) {
 }
 
 function onViewerPointerMove(event: PointerEvent) {
+  if (activePointers.has(event.pointerId)) {
+    activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
+  }
+
+  if (activePointers.size === 2) {
+    const points = Array.from(activePointers.values())
+    const a = points[0]
+    const b = points[1]
+
+    if (!a || !b) {
+      return
+    }
+
+    const distance = Math.hypot(b.x - a.x, b.y - a.y)
+
+    if (pinchStartDistance > 0 && distance > 0) {
+      const center = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }
+      const nextZoom = pinchStartZoom * (distance / pinchStartDistance)
+      applyViewerZoom(nextZoom, center)
+    }
+
+    return
+  }
+
   if (!isViewerDragging.value) {
     return
   }
@@ -278,6 +322,12 @@ function onViewerPointerMove(event: PointerEvent) {
 }
 
 function stopViewerDragging(event: PointerEvent) {
+  activePointers.delete(event.pointerId)
+
+  if (activePointers.size < 2) {
+    pinchStartDistance = 0
+  }
+
   if (!isViewerDragging.value) {
     return
   }
@@ -377,6 +427,14 @@ watch(
     void enhance()
   }
 )
+
+watch(viewerOpen, (open) => {
+  if (!open) {
+    isViewerDragging.value = false
+    activePointers.clear()
+    pinchStartDistance = 0
+  }
+})
 
 onBeforeUnmount(() => {
   cleanups.splice(0).forEach((cleanup) => cleanup())

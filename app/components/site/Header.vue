@@ -95,7 +95,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <SiteSidebar :close-main-menu="closeMainMenu" />
+  <SiteSidebar :close-main-menu="closeMainMenu" :header-visible="isHeaderVisible" />
 
   <div
     class="fixed inset-x-0 top-0 z-30 transition-transform duration-200"
