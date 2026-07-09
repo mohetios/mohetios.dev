@@ -1,4 +1,5 @@
 import rehypeShiki from '@shikijs/rehype'
+import { rehypeCodeDirection } from './velite/rehype-code-direction'
 import { rehypeMermaidBlocks } from './velite/rehype-mermaid-blocks'
 import {
   transformerNotationDiff,
@@ -132,7 +133,8 @@ export default defineConfig({
             transformerNotationWordHighlight({ matchAlgorithm: 'v3' })
           ]
         }
-      ]
+      ],
+      rehypeCodeDirection
     ]
   }
 })

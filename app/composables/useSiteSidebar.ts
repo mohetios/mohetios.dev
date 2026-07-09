@@ -39,7 +39,7 @@ export function useSiteSidebar() {
       return 'start-[16.75rem] sm:start-[18.75rem]'
     }
 
-    return 'start-4 lg:start-[18.75rem]'
+    return 'start-4'
   })
 
   function setDesktopOpen(open: boolean) {

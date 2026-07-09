@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import { detectTextDirection } from '~~/shared/utils/text-direction'
+
 const route = useRoute()
 const { t } = useI18n()
 
 type Cleanup = () => void
 
 const cleanups: Cleanup[] = []
-const RTL_SCRIPT_RE = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/
+let proseObserver: MutationObserver | null = null
 
 function getCodeText(pre: HTMLElement) {
   const code = pre.querySelector('code')
@@ -15,7 +17,7 @@ function getCodeText(pre: HTMLElement) {
 
 function setCodeDirection(pre: HTMLElement) {
   const code = pre.querySelector<HTMLElement>('code')
-  const direction = RTL_SCRIPT_RE.test(getCodeText(pre)) ? 'rtl' : 'ltr'
+  const direction = detectTextDirection(getCodeText(pre))
 
   pre.dir = direction
 
@@ -85,6 +87,21 @@ function enhance() {
   })
 }
 
+function observeProse() {
+  proseObserver?.disconnect()
+
+  proseObserver = new MutationObserver(() => {
+    enhance()
+  })
+
+  document.querySelectorAll<HTMLElement>('.prose').forEach((prose) => {
+    proseObserver?.observe(prose, {
+      childList: true,
+      subtree: true
+    })
+  })
+}
+
 async function runEnhance() {
   await nextTick()
   enhance()
@@ -92,6 +109,7 @@ async function runEnhance() {
 
 onMounted(() => {
   void runEnhance()
+  observeProse()
 })
 
 watch(
@@ -99,11 +117,13 @@ watch(
   () => {
     cleanups.splice(0).forEach((cleanup) => cleanup())
     void runEnhance()
+    observeProse()
   }
 )
 
 onBeforeUnmount(() => {
   cleanups.splice(0).forEach((cleanup) => cleanup())
+  proseObserver?.disconnect()
 })
 </script>
 

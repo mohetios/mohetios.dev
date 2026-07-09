@@ -37,10 +37,12 @@ function getThemeColors() {
   const dark = isDarkMermaidTheme()
 
   return {
-    text: cssVar('--color-text', dark ? '#f6f1e8' : '#17223b'),
-    muted: cssVar('--color-muted', dark ? '#c8b89e' : '#927b5e'),
-    primary: cssVar('--color-primary', dark ? '#a7c3df' : '#4e6e94'),
-    accent: cssVar('--color-accent', dark ? '#aebf9f' : '#596753')
+    text: cssVar('--ui-text', dark ? '#f6f1e8' : '#17223b'),
+    muted: cssVar('--ui-text-muted', dark ? '#8ea3b6' : '#6b7f91'),
+    primary: cssVar('--ui-primary', dark ? '#a7c3df' : '#4e6e94'),
+    accent: cssVar('--ui-secondary', dark ? '#aebf9f' : '#596753'),
+    border: cssVar('--ui-border', dark ? '#2b3947' : '#d8cab8'),
+    bgMuted: cssVar('--ui-bg-muted', dark ? '#172436' : '#f7f0e4')
   }
 }
 
@@ -70,8 +72,9 @@ export function normalizeMermaidDiagram(container: HTMLElement) {
   }
 
   const proseWidth = getProseWidth(container)
-  // Small diagrams: natural size. Large diagrams: shrink to prose column only.
-  const displayWidth = vbWidth > proseWidth ? proseWidth : vbWidth
+  const containerWidth = container.clientWidth
+  // Always fill the available breakout width, same as wide code/table blocks.
+  const displayWidth = containerWidth > 0 ? containerWidth : proseWidth
   const displayHeight = (vbHeight / vbWidth) * displayWidth
 
   svg.style.display = 'block'
@@ -194,7 +197,21 @@ export function getMermaidConfig(): MermaidConfig {
       clusterBorder: colors.primary,
       titleColor: colors.text,
       nodeBorder: colors.accent,
-      defaultLinkColor: colors.muted
+      defaultLinkColor: colors.muted,
+      actorBkg: 'transparent',
+      actorBorder: colors.accent,
+      actorTextColor: colors.text,
+      actorLineColor: colors.muted,
+      signalColor: colors.muted,
+      signalTextColor: colors.text,
+      labelBoxBkgColor: colors.bgMuted,
+      labelBoxBorderColor: colors.border,
+      labelTextColor: colors.text,
+      loopTextColor: colors.text,
+      noteBkgColor: colors.bgMuted,
+      noteBorderColor: colors.border,
+      noteTextColor: colors.text,
+      activationBorderColor: colors.border
     },
     themeCSS: MERMAID_THEME_CSS
   }

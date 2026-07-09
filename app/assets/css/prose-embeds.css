@@ -144,6 +144,43 @@
   stroke: none;
 }
 
+.prose .mohetios-mermaid .actor rect,
+.prose .mohetios-mermaid .actor-man circle,
+.prose .mohetios-mermaid .actor-man line {
+  fill: transparent;
+  stroke: var(--ui-secondary);
+}
+
+.prose .mohetios-mermaid .actor-line,
+.prose .mohetios-mermaid .messageLine0,
+.prose .mohetios-mermaid .messageLine1,
+.prose .mohetios-mermaid .loopLine {
+  stroke: color-mix(in oklab, var(--ui-primary) 65%, var(--ui-secondary));
+}
+
+.prose .mohetios-mermaid .loopText,
+.prose .mohetios-mermaid .messageText,
+.prose .mohetios-mermaid .noteText,
+.prose .mohetios-mermaid .labelText,
+.prose .mohetios-mermaid .actor text {
+  fill: var(--ui-text);
+  color: var(--ui-text);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.prose .mohetios-mermaid .note {
+  fill: color-mix(in oklab, var(--ui-bg-muted) 55%, transparent);
+  stroke: var(--ui-border);
+}
+
+.prose .mohetios-mermaid .labelBox,
+.prose .mohetios-mermaid .loopText > rect {
+  fill: color-mix(in oklab, var(--ui-bg-muted) 45%, transparent);
+  stroke: var(--ui-border);
+}
+
 .prose .mohetios-mermaid .mermaid-action-toolbar {
   position: absolute;
   top: 0.75rem;

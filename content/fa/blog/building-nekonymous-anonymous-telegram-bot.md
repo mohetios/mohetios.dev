@@ -453,7 +453,7 @@ Open-source بودن به‌تنهایی سیستم را امن نمی‌کند.
 
 اگر می‌خواهی کد، README، threat model یا معماری پیشنهاد گفت‌وگو را ببینی، مخزن پروژه اینجاست:
 
-https://github.com/mohetios/Nekonymous
+[نِکونیموس در تلگرام](https://t.me/nekonymous_bot)
 
 یادداشت فنی مرتبط هم اینجا منتشر شده است:
 
