@@ -3,7 +3,7 @@ title: 'نکونیموس: معماری یک ربات پیام ناشناس با 
 description: دفترچه فنی نکونیموس؛ ربات تلگرام فارسی‌محور برای پیام ناشناس، ارزیابی سبک گفت‌وگو و پیشنهاد گفت‌وگوی اختیاری روی Cloudflare Edge.
 thumbnail: /content/nekonymous-lab.webp
 date: 2026-07-07
-updated: 2026-07-07
+updated: 2026-07-10
 status: V1 release candidate
 featured: true
 tags:
@@ -89,29 +89,28 @@ UI اصلی داخل تلگرام است. یک Worker واحد روی Cloudflare
 
 ## ۴. تجربه کاربر داخل بات
 
-**منوی اصلی (reply keyboard):**
+مدل تعامل V1 ساده‌تر از نسخه‌های قبلی نگه داشته شده است. reply keyboard فقط برای ناوبری اصلی است؛ صفحه‌های کاری و تصمیم‌های حساس با inline keyboard روی همان پیام انجام می‌شوند.
+
+**منوی اصلی ثابت (reply keyboard):**
 
 ```txt
-🔗 لینک من
-🧭 پیشنهاد گفت‌وگو
-⚙️ تنظیمات
+🔗 لینک من          📥 صندوق پیام‌ها
+🧭 پیشنهاد گفت‌وگو   ⚙️ تنظیمات
 ```
 
-**قاعده UX:** reply keyboard برای ناوبری و hub؛ inline keyboard برای عمل روی همان پیام، ticket، درخواست یا تأیید.
+این چهار دکمه به ترتیب لینک شخصی، `/inbox`، hub پیشنهاد گفت‌وگو و صفحه تنظیمات را باز می‌کنند. تنظیمات، پیشنهاد گفت‌وگو و ارزیابی فقط با inline keyboard جلو می‌روند، نه با reply keyboardهای جدا.
 
-دستورات slash همچنان کار می‌کنند: `/start`، `/inbox`، `/settings`، `/assessment`، `/match`، `/match_system`.
+دستورات slash فعلی: `/start`، `/inbox`، `/settings`، `/assessment` و `/match`.
 
-داخل پیشنهاد گفت‌وگو:
+وقتی کاربر در حال نوشتن متن است، مثل پیام ناشناس، پاسخ، نام خصوصی، نام نمایشی یا معرفی کوتاه برای پیشنهاد گفت‌وگو، reply keyboard فقط یک دکمه دارد:
 
 ```txt
-👤 پروفایل گفت‌وگو
-🔎 پیدا کردن گزینه‌ها
-📥 درخواست‌های گفت‌وگو
-📝 شروع ارزیابی / 📝 ارزیابی دوباره
-↩️ بازگشت
+↩️ لغو
 ```
 
-تنظیمات شامل نام نمایشی، توقف یا فعال‌سازی صندوق، پاک‌کردن مسدودسازی‌ها، reset تاریخچه پیشنهادها، about/privacy و پاک‌کردن حساب است.
+این تغییر کوچک جلوی یک خطای UX مهم را می‌گیرد: متن دکمه‌های منوی اصلی نباید وقتی کاربر وسط draft است، ورودی draft را hijack کند. برای همین `handleMessage` اول draft input را بررسی می‌کند و بعد سراغ labelهای منوی اصلی می‌رود.
+
+ورودی‌های hub پیشنهاد گفت‌وگو هم محدود و روشن‌اند: `/match`، دکمه‌ی `🧭 پیشنهاد گفت‌وگو`، و callback `m:hub`. جست‌وجو فقط با `m:search` شروع می‌شود. callbackهای قدیمی مثل `m:refresh` یا `m:back` دیگر رفتار پشتیبانی‌شده نیستند؛ اگر کاربر روی دکمه‌ی قدیمی باقی‌مانده در chat history بزند، catch-all فقط پیام «این دکمه دیگر در دسترس نیست.» را برمی‌گرداند و raw callback را log نمی‌کند.
 
 ## ۵. لینک ناشناس و پیام ناشناس
 
@@ -609,7 +608,7 @@ flowchart TD
 ```txt
 src/
 ├── index.ts
-├── bot/                    # grammY، منوها، keyboards، router
+├── bot/                    # grammY، commands، منوی اصلی، render-screen، callback routing
 ├── features/
 │   ├── identity/           # کاربران، لینک‌ها، hard delete
 │   ├── messaging/          # relay، inbox، sealed ticket
@@ -632,6 +631,8 @@ migrations/
 tools/                      # verify-*، audit-ticket-storage، flush-remote.*
 docs/                       # architecture، threat model، release audits
 ```
+
+برای مدل فعلی تعامل داخل بات، سند canonical در repository این است: `docs/architecture/bot-interaction-v1.md`.
 
 ## ۱۹. تصمیم‌هایی که عمداً نگرفتیم
 
