@@ -110,16 +110,14 @@
   justify-content: center;
   align-items: center;
   margin-block: 1.75rem;
-  overflow-x: auto;
-  overflow-y: visible;
+  overflow: visible;
   padding-block: 0.25rem;
   background: transparent;
   font-family: inherit;
   -webkit-font-smoothing: antialiased;
-  overscroll-behavior-x: contain;
-  overscroll-behavior-y: auto;
+  overscroll-behavior: auto;
   text-rendering: optimizeLegibility;
-  touch-action: auto;
+  touch-action: pan-y pinch-zoom;
 }
 
 .prose .mohetios-mermaid svg {
@@ -155,9 +153,9 @@
   color: var(--ui-text);
   fill: var(--ui-text);
   font-family: inherit;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
 .prose .mohetios-mermaid .edgeLabel rect {
@@ -187,7 +185,7 @@
   fill: var(--ui-text);
   color: var(--ui-text);
   font-family: inherit;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
 }
 

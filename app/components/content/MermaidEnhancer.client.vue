@@ -108,17 +108,17 @@ function getSvg(container: HTMLElement) {
 }
 
 function getSvgSize(svg: SVGSVGElement) {
+  const viewBox = svg.viewBox.baseVal
+
+  if (viewBox.width > 0 && viewBox.height > 0) {
+    return { height: viewBox.height, width: viewBox.width }
+  }
+
   const width = Number.parseFloat(svg.style.width || svg.getAttribute('width') || '')
   const height = Number.parseFloat(svg.style.height || svg.getAttribute('height') || '')
 
   if (width > 0 && height > 0) {
     return { height, width }
-  }
-
-  const viewBox = svg.viewBox.baseVal
-
-  if (viewBox.width > 0 && viewBox.height > 0) {
-    return { height: viewBox.height, width: viewBox.width }
   }
 
   const rect = svg.getBoundingClientRect()

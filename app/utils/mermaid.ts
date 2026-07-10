@@ -1,6 +1,7 @@
 import type { MermaidConfig } from 'mermaid'
 
 const DIAGRAM_FALLBACK_WIDTH = 640
+const DIAGRAM_MIN_INLINE_WIDTH = 160
 
 function cssVar(name: string, fallback: string) {
   if (import.meta.server) {
@@ -51,7 +52,7 @@ function getProseWidth(container: HTMLElement) {
   return prose?.clientWidth ?? DIAGRAM_FALLBACK_WIDTH
 }
 
-/** Fit diagram to content width, center it, avoid stretching small charts full-bleed. */
+/** Center diagrams at their natural SVG size, shrinking only when the article column needs it. */
 export function normalizeMermaidDiagram(container: HTMLElement) {
   const svg = container.querySelector('svg')
   if (!svg) {
@@ -73,8 +74,9 @@ export function normalizeMermaidDiagram(container: HTMLElement) {
 
   const proseWidth = getProseWidth(container)
   const containerWidth = container.clientWidth
-  // Always fill the available breakout width, same as wide code/table blocks.
-  const displayWidth = containerWidth > 0 ? containerWidth : proseWidth
+  const availableWidth = containerWidth > 0 ? containerWidth : proseWidth
+  const naturalWidth = Math.max(vbWidth, DIAGRAM_MIN_INLINE_WIDTH)
+  const displayWidth = Math.min(availableWidth, naturalWidth)
   const displayHeight = (vbHeight / vbWidth) * displayWidth
 
   svg.style.display = 'block'
@@ -86,6 +88,7 @@ export function normalizeMermaidDiagram(container: HTMLElement) {
   container.style.display = 'flex'
   container.style.justifyContent = 'center'
   container.style.alignItems = 'center'
+  container.dataset.mermaidLayout = displayWidth < naturalWidth ? 'fit' : 'natural'
 }
 
 export function normalizeMermaidDiagrams(root: ParentNode = document) {
@@ -138,9 +141,9 @@ const MERMAID_THEME_CSS = `
     fill: var(--color-text) !important;
     color: var(--color-text) !important;
     font-family: inherit !important;
-    font-size: 16px !important;
+    font-size: 15px !important;
     font-weight: 500 !important;
-    letter-spacing: -0.01em !important;
+    letter-spacing: 0 !important;
     -webkit-font-smoothing: antialiased !important;
     text-rendering: geometricPrecision !important;
   }
@@ -164,7 +167,7 @@ export function getMermaidConfig(): MermaidConfig {
     look: 'classic',
     theme: 'base',
     fontFamily: getFontFamily(),
-    fontSize: 16,
+    fontSize: 15,
     flowchart: {
       curve: 'basis',
       padding: 20,
@@ -225,6 +228,7 @@ export function resetMermaidNodes(nodes: Iterable<HTMLElement>) {
     node.style.display = ''
     node.style.justifyContent = ''
     node.style.alignItems = ''
+    delete node.dataset.mermaidLayout
   }
 }
 
