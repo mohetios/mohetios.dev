@@ -780,3 +780,27 @@ When asked to give AI editor/Codex instructions, provide a complete implementabl
 - checks to run
 
 The brief should be complete enough that the editor agent can implement without guessing.
+
+
+<!-- MOHETIOS_FA_EDITORIAL_KIT_START -->
+# Repository agent guidance
+
+## Persian editorial work
+
+When a task creates, rewrites, translates, audits, or updates Persian content:
+
+1. Read `editorial/fa/README.md`.
+2. Read the relevant canonical files it lists, especially `editorial-context.md`, `fa-voice.md`, `fa-content-modes.md`, `fa-fact-safety.md`, and `fa-review-rubric.md`.
+3. Treat `editorial/fa/` as the only source of truth for Persian editorial style; do not rely on removed external tool adapters or chat memory.
+4. Preserve frontmatter, links, code blocks, identifiers, technical meaning, ownership, release status, and limitations.
+5. Build a factual inventory before rewriting: shipped/planned status, ownership, security/privacy claims, numbers, links, and constraints.
+6. Do not invent facts, current capabilities, benchmarks, citations, security guarantees, or roadmap commitments.
+7. Do not translate technical product names and primitives into unfamiliar Persian equivalents.
+8. Remove generic AI framing, literal translation, corporate language, and promotional overclaim.
+9. Prefer problem → constraint → decision → trade-off → current result.
+10. Run `python3 editorial/fa/scripts/editorial_lint.py <changed-paths>` after editing Persian content.
+11. Report unresolved factual uncertainty instead of guessing.
+
+Rules closer to the target directory override this summary. Canonical editorial documents remain the source of truth.
+
+<!-- MOHETIOS_FA_EDITORIAL_KIT_END -->

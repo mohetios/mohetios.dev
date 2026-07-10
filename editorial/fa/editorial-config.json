@@ -1,0 +1,86 @@
+{
+  "version": "1.0.0",
+  "default_content_paths": [
+    "content/fa/**/*.md",
+    "content/fa/**/*.mdx",
+    "content/fa/**/*.yaml",
+    "content/fa/**/*.yml"
+  ],
+  "exclude_paths": [
+    "node_modules/**",
+    ".git/**",
+    "dist/**",
+    ".output/**",
+    ".nuxt/**",
+    "public/**",
+    "editorial/fa/examples/rejected/**"
+  ],
+  "forbidden_phrases": [
+    "در دنیای امروز",
+    "در عصر دیجیتال",
+    "با پیشرفت روزافزون فناوری",
+    "در این مقاله قصد داریم",
+    "شایان ذکر است",
+    "لازم به ذکر است",
+    "راهکاری نوآورانه و انقلابی",
+    "تجربه‌ای بی‌نظیر",
+    "تحولی شگرف",
+    "گامی بزرگ در راستای",
+    "با افتخار اعلام می‌کنیم",
+    "همه‌چیز را تغییر می‌دهد",
+    "غیرقابل هک",
+    "امنیت صددرصد",
+    "ناشناس مطلق",
+    "توقف‌ناپذیر"
+  ],
+  "suspicious_phrases": [
+    "بدون شک",
+    "بی‌شک",
+    "بهترین",
+    "کامل‌ترین",
+    "بی‌رقیب",
+    "راهکار جامع",
+    "نسل آینده",
+    "فوق‌امن",
+    "کاملاً مقیاس‌پذیر",
+    "قدرت فناوری",
+    "قدرت تکنولوژی"
+  ],
+  "canonical_terms": {
+    "Nekonymous": [
+      "Nekonymous",
+      "نکونیموس"
+    ],
+    "Mohetios": [
+      "Mohetios",
+      "موهتیوس"
+    ],
+    "IropHome": [
+      "IropHome"
+    ],
+    "Cloudflare Workers": [
+      "Cloudflare Workers"
+    ],
+    "Durable Object": [
+      "Durable Object",
+      "Durable Objects"
+    ],
+    "D1": [
+      "D1",
+      "Cloudflare D1"
+    ],
+    "Queues": [
+      "Queue",
+      "Queues",
+      "Cloudflare Queues"
+    ]
+  },
+  "hard_fail_patterns": [
+    "end-to-end encrypted",
+    "رمزنگاری سرتاسری",
+    "کاملاً غیرقابل ردیابی",
+    "هیچ داده‌ای ذخیره نمی‌شود"
+  ],
+  "max_paragraph_chars_warning": 900,
+  "max_heading_depth": 4
+}
