@@ -4,7 +4,8 @@
     "content/fa/**/*.md",
     "content/fa/**/*.mdx",
     "content/fa/**/*.yaml",
-    "content/fa/**/*.yml"
+    "content/fa/**/*.yml",
+    "i18n/locales/fa.json"
   ],
   "exclude_paths": [
     "node_modules/**",
@@ -46,35 +47,7 @@
     "قدرت فناوری",
     "قدرت تکنولوژی"
   ],
-  "canonical_terms": {
-    "Nekonymous": [
-      "Nekonymous",
-      "نکونیموس"
-    ],
-    "Mohetios": [
-      "Mohetios",
-      "موهتیوس"
-    ],
-    "IropHome": [
-      "IropHome"
-    ],
-    "Cloudflare Workers": [
-      "Cloudflare Workers"
-    ],
-    "Durable Object": [
-      "Durable Object",
-      "Durable Objects"
-    ],
-    "D1": [
-      "D1",
-      "Cloudflare D1"
-    ],
-    "Queues": [
-      "Queue",
-      "Queues",
-      "Cloudflare Queues"
-    ]
-  },
+  "canonical_terms": {},
   "hard_fail_patterns": [
     "end-to-end encrypted",
     "رمزنگاری سرتاسری",

@@ -1,6 +1,6 @@
 ---
-title: Persian Text Tools
-description: Notes on the recurring engineering details behind Persian Word Cloud, Persian LinkedIn, and other RTL text experiments.
+title: ابزارهای متن فارسی
+description: یادداشتی درباره جزئیات تکرارشونده‌ی مهندسی پشت Persian Word Cloud، Persian LinkedIn و تجربه‌های دیگر روی متن راست‌به‌چپ.
 date: 2017-07-05
 updated: 2022-12-16
 status: Reference
@@ -11,40 +11,44 @@ tags:
   - i18n
 ---
 
-Persian text support often fails in small ways before it fails completely.
+پشتیبانی از متن فارسی معمولاً یک‌باره خراب نمی‌شود.
 
-A layout can technically render Persian characters while still choosing the wrong direction, using a weak font, breaking mixed English and Persian phrases, or making visual output unreadable. Projects like Persian Word Cloud and Persian LinkedIn came from those small failures.
+اول از چیزهای کوچک شروع می‌کند: جهت متن درست انتخاب نمی‌شود، فونت شکل حروف را خوب نشان نمی‌دهد، عبارت‌های فارسی و انگلیسی در یک خط ترتیبشان را از دست می‌دهند، یا خروجی تصویری از نظر فنی ساخته می‌شود اما خواندنش سخت است.
 
-Related repositories:
+چند پروژه‌ی فارسی من از همین نقطه‌ها شروع شدند. نه از یک ایده‌ی بزرگ درباره‌ی localization، بلکه از این سؤال ساده که چرا یک کاربر فارسی‌زبان باید برای خواندن یا ساختن متن خودش مدام با ابزار بجنگد.
+
+Repositoryهای مرتبط:
 
 - [mohetios/persian-word-cloud](https://github.com/mohetios/persian-word-cloud)
 - [mohetios/persian-linkedin](https://github.com/mohetios/persian-linkedin)
 - [mohetios/faPoems](https://github.com/mohetios/faPoems)
 - [mohetios/faPoems-markdown](https://github.com/mohetios/faPoems-markdown)
 
-## The Pattern
+## الگوی تکرارشونده
 
-The recurring work is not glamorous:
+کار تکراری اینجا خیلی نمایشی نیست:
 
-- Pick fonts that support Persian forms cleanly.
-- Respect right-to-left direction instead of only translating strings.
-- Handle mixed Persian and English text without corrupting order.
-- Make browser extensions apply direction and font choices to hostile third-party layouts.
-- Make visualization tools understand that tokenization and rendering are language-specific.
+- انتخاب فونتی که شکل‌های فارسی را تمیز نشان بدهد.
+- رعایت جهت راست‌به‌چپ، نه فقط ترجمه‌ی چند string.
+- مدیریت متن ترکیبی فارسی و انگلیسی بدون خراب‌کردن ترتیب خواندن.
+- وادارکردن extension مرورگر به اعمال جهت و فونت روی layoutهای بیرونی.
+- ساخت ابزار visualization که بفهمد tokenization و rendering وابسته به زبان‌اند.
 
-These are not separate concerns. Typography, layout, parsing, and product UX all meet at the same point: can a Persian user read this comfortably?
+این‌ها مسئله‌های جدا نیستند. typography، layout، parsing و UX محصول در نهایت به یک نقطه می‌رسند:
 
-## Why It Matters
+آیا کاربر فارسی این متن را راحت می‌خواند؟
 
-Localized tooling is often treated as polish. In practice, it is infrastructure.
+## چرا مهم است
 
-For Persian users, a word cloud generator needs script-aware rendering. A LinkedIn improvement extension needs direction and font controls. A bilingual product like Safarnak needs RTL behavior to be part of the design system, not an afterthought.
+ابزارهای بومی‌سازی‌شده معمولاً مثل polish دیده می‌شوند. در عمل، برای فارسی زیرساخت‌اند.
 
-This lab thread collects the small engineering decisions that make Persian interfaces feel native instead of merely supported.
+برای یک word cloud فارسی، rendering باید script-aware باشد. برای یک extension بهترکننده‌ی LinkedIn، کنترل جهت و فونت بخشی از تجربه است. برای محصول دوزبانه‌ای مثل سفرناک، RTL نباید چیزی باشد که آخر کار به design system چسبانده می‌شود.
 
-## Task Checklist
+این یادداشت جایی است برای جمع‌کردن همین تصمیم‌های کوچک؛ تصمیم‌هایی که باعث می‌شوند یک رابط فارسی فقط «پشتیبانی‌شده» نباشد و واقعاً قابل خواندن و استفاده‌کردن باشد.
 
-- [ ] Document font choices and fallback behavior for Persian UI.
-- [ ] Add examples of mixed Persian-English rendering failures.
-- [ ] Compare browser-extension fixes with app-level design-system fixes.
-- [ ] Connect Persian calendar and poem-rendering work to this note.
+## کارهای بعدی
+
+- [ ] انتخاب فونت و fallbackهای مناسب برای UI فارسی را مستند کن.
+- [ ] نمونه‌های خرابی متن ترکیبی فارسی-انگلیسی را اضافه کن.
+- [ ] fixهای extension مرورگر را با fixهای design-system مقایسه کن.
+- [ ] کارهای تقویم فارسی و نمایش شعر را به این یادداشت وصل کن.

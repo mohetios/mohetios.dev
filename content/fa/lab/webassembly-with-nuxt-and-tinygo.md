@@ -1,6 +1,6 @@
 ---
-title: WebAssembly With Nuxt and TinyGo
-description: Notes from TinyGo and Nuxt WebAssembly experiments on teaching WASM through small browser-first examples.
+title: WebAssembly با Nuxt و TinyGo
+description: یادداشت‌هایی از تجربه‌های TinyGo و Nuxt برای آموزش WASM با مثال‌های کوچک و browser-first.
 date: 2023-09-09
 updated: 2024-06-12
 status: Exploring
@@ -12,37 +12,41 @@ tags:
   - wasm
 ---
 
-The WebAssembly thread starts from a teaching question: how small can the first useful WASM example be?
+مسیر WebAssembly برای من از یک سؤال آموزشی شروع شد:
 
-Related repositories:
+اولین مثال مفید WASM چقدر می‌تواند کوچک باشد؟
+
+Repositoryهای مرتبط:
 
 - [mohetios/tinygo-wasm-tuts](https://github.com/mohetios/tinygo-wasm-tuts)
 - private `nuxt-wasm` experiments
 
-## The Teaching Shape
+## شکل آموزشی مسئله
 
-WASM can become abstract very quickly: binary modules, imports, memory, runtimes, toolchains, and browser APIs all arrive at once.
+WASM خیلی زود abstract می‌شود. هم‌زمان باید درباره‌ی binary module، import، memory، runtime، toolchain و APIهای مرورگر فکر کرد. برای شروع یادگیری، این حجم از مفهوم می‌تواند مسیر را سنگین کند.
 
-TinyGo helps because it gives a compact path from Go code to a browser-loaded module. Nuxt adds a second layer: how does a real app load, isolate, and call a WASM module without turning the page into a pile of script tags?
+TinyGo کمک می‌کند چون مسیر کوتاهی از کد Go تا یک module قابل load در مرورگر می‌دهد. Nuxt لایه‌ی دوم را اضافه می‌کند: یک اپ واقعی چطور module WASM را load، isolate و call کند، بدون اینکه صفحه تبدیل به چند script tag پراکنده شود؟
 
-The useful learning path is:
+مسیر آموزشی مفید برای من این است:
 
-- write a small Go function,
-- compile it with TinyGo,
-- load it in the browser,
-- pass data across the JavaScript/WASM boundary,
-- wrap the result in a real UI,
-- document the build and debugging loop.
+- یک تابع کوچک Go بنویس.
+- آن را با TinyGo کامپایل کن.
+- خروجی را در مرورگر load کن.
+- داده را از مرز JavaScript/WASM عبور بده.
+- نتیجه را داخل یک UI واقعی نشان بده.
+- مسیر build و debug را مستند کن.
 
-## Product Notes
+## یادداشت محصولی
 
-WASM should earn its place. It is useful when the browser needs speed, portability, reuse of non-JavaScript code, or a constrained runtime for a specific task.
+WASM باید جای خودش را به‌دست بیاورد. برای بیشتر UIها JavaScript کافی است. WASM وقتی معنی دارد که مرورگر به سرعت بیشتر، portability، استفاده‌ی دوباره از کد غیر JavaScript، یا runtime محدود برای یک کار مشخص نیاز داشته باشد.
 
-For most UI work, JavaScript is enough. The interesting WASM projects are the ones where the boundary is clear: image processing, text processing, simulation, parsing, cryptography, or other compute-heavy jobs.
+پروژه‌های جالب WASM همان‌هایی هستند که مرزشان روشن است: پردازش تصویر، پردازش متن، simulation، parsing، cryptography یا کارهای compute-heavy دیگر.
 
-## Task Checklist
+برای من، ارزش این مسیر فقط در «اجرای Go در مرورگر» نیست. ارزشش در فهمیدن این مرز است: کدام بخش باید در JavaScript بماند و کدام بخش واقعاً از WASM سود می‌برد؟
 
-- [ ] Turn `tinygo-wasm-tuts` into a step-by-step lab series.
-- [ ] Add a Nuxt example that loads a WASM module from the app runtime.
-- [ ] Document the build command, generated files, and browser loading path.
-- [ ] Identify one practical Persian text or visualization task that would justify WASM.
+## کارهای بعدی
+
+- [ ] `tinygo-wasm-tuts` را به یک lab series مرحله‌به‌مرحله تبدیل کن.
+- [ ] یک نمونه‌ی Nuxt اضافه کن که WASM module را از app runtime load کند.
+- [ ] commandهای build، فایل‌های تولیدشده و مسیر load در مرورگر را مستند کن.
+- [ ] یک کار واقعی در پردازش متن فارسی یا visualization پیدا کن که استفاده از WASM را توجیه کند.

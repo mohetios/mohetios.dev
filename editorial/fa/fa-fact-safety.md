@@ -59,7 +59,7 @@ Agent نباید:
 
 ## ادعاهای external و current
 
-برای محدودیت Cloudflare، API behavior، قیمت، نسخه‌ی framework، policy تلگرام، library status و استاندارد امنیتی از مستند رسمی فعلی استفاده کن. اگر web در دسترس نیست، claim را محدود یا برای verification علامت‌گذاری کن.
+برای محدودیت پلتفرم، API behavior، قیمت، نسخه‌ی framework، policy سرویس خارجی، library status و استاندارد امنیتی از مستند رسمی فعلی استفاده کن. اگر web در دسترس نیست، claim را محدود یا برای verification علامت‌گذاری کن.
 
 ## زبان مناسب برای عدم قطعیت
 

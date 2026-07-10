@@ -4,18 +4,15 @@
 
 ## نام‌های canonical
 
+نام‌های خاص باید از خود repository، frontmatter، package/config، README یا سندهای canonical همان پروژه خوانده شوند. این جدول فقط سیاست عمومی اصطلاحات را نگه می‌دارد و نباید نام یک محصول خاص را به همه‌ی repoها تحمیل کند.
+
 | مفهوم | شکل پیشنهادی |
 |---|---|
-| Mohetios | موهتیوس؛ در context بین‌المللی `Mohetios` |
-| Nekonymous | نکونیموس؛ نخستین اشاره می‌تواند `Nekonymous` را هم داشته باشد |
-| Mamochi | ماموچی / `Mamochi` بر اساس repository |
-| Safarnak | سفرناک / `Safarnak` |
-| IropHome | همیشه `IropHome`؛ مالکیت را به علی نسبت نده |
-| Cloudflare Workers | `Cloudflare Workers` |
-| Cloudflare D1 | `D1` یا `Cloudflare D1` |
-| Durable Objects | `Durable Objects`؛ مفرد `Durable Object` |
-| Cloudflare Queues | `Queues` یا `Cloudflare Queues` |
-| Telegram | تلگرام در نثر؛ `Telegram Bot API` برای نام رسمی |
+| نام پروژه | spelling را از repository بگیر؛ در نخستین اشاره می‌توان شکل فارسی و لاتین را کنار هم آورد |
+| نام مشتری یا مالک | فقط اگر در متن یا سند public آمده استفاده شود؛ ownership را حدس نزن |
+| نام پلتفرم | شکل رسمی را حفظ کن؛ فقط اگر در فارسی رایج است شکل فارسی را در نثر بیاور |
+| primitive فنی | نام رسمی را ترجمه نکن، مگر معادل فارسی کاملاً جاافتاده باشد |
+| API رسمی | نام رسمی API را داخل backtick یا با spelling اصلی نگه دار |
 | GitHub | `GitHub` |
 | repository | `repository` در متن فنی؛ «مخزن» اگر طبیعی باشد |
 | open source | `open-source` در جایگاه صفت؛ «متن‌باز» در جمله‌ی عمومی مجاز |
@@ -27,7 +24,7 @@
 | webhook | `webhook` |
 | rate limit | `rate limit` |
 | queue | `Queue` برای primitive؛ «صف» برای مفهوم عمومی |
-| worker | `Worker` برای Cloudflare primitive |
+| worker | `Worker` برای primitive؛ «کارگر» ننویس |
 | frontend/backend | `frontend` و `backend` |
 | product engineer | `Product Engineer` در عنوان؛ «مهندس محصول» در توضیح |
 | trade-off | `trade-off` ترجیح دارد |

@@ -12,9 +12,9 @@ For every Persian content edit:
 - Build a factual inventory before rewriting: ownership, current status, shipped/planned scope, security/privacy claims, links, numbers, and limitations.
 - Keep the actual problem close to the opening.
 - Explain choices through constraints, decisions, and trade-offs.
-- Use first-person singular when Ali made or owns the decision; do not inflate `من` into `ما`.
-- Keep IropHome framed as client/commercial delivery, not Ali-owned IP.
-- Keep Nekonymous security and anonymity wording within the verified threat model.
+- Use first-person singular when one author made or owns the decision; do not inflate `من` into `ما`.
+- Keep project ownership explicit; do not turn client/commercial delivery into author-owned IP.
+- Keep security, privacy, anonymity, and retention wording within the verified threat model.
 - Distinguish shipped, tested, release-candidate, planned, and speculative work.
 - Preserve Markdown with runtime meaning: frontmatter, anchors, links, code fences, tables, embeds, image paths, and identifiers.
 - Use Persian characters, Persian punctuation, ZWNJ, and the house-style `ه‌ی`.

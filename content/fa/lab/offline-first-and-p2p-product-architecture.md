@@ -590,25 +590,25 @@ interface زیبا lifecycle مبهم داده را درست نمی‌کند.
 
 ## چک‌لیست بعدی
 
--  مدل local trip data در Safarnak را با مدل remote GraphQL مقایسه کن.
+- مدل local trip data در Safarnak را با مدل remote GraphQL مقایسه کن.
     
--  هر entity در Safarnak را به local-only، remote-backed، shared، public یا queued طبقه‌بندی کن.
+- هر entity در Safarnak را به local-only، remote-backed، shared، public یا queued طبقه‌بندی کن.
     
--  برای trip draft، saved place، itinerary edit، public trip و fork، sync labelهای قابل فهم برای کاربر تعریف کن.
+- برای trip draft، saved place، itinerary edit، public trip و fork، sync labelهای قابل فهم برای کاربر تعریف کن.
     
--  جدول policy برای mutationها بنویس: offline مجاز، offline queued، offline blocked، نیازمند confirmation.
+- جدول policy برای mutationها بنویس: offline مجاز، offline queued، offline blocked، نیازمند confirmation.
     
--  بخش‌های public پروژه PNews را بازیابی کن و فرض‌های RSS، JAMStack، GUNDB و P2P آن را مستند کن.
+- بخش‌های public پروژه PNews را بازیابی کن و فرض‌های RSS، JAMStack، GUNDB و P2P آن را مستند کن.
     
--  تصمیم بگیر کدام بخش‌های Bagche و تجربه‌های قدیمی P2P commerce برای انتشار امن‌اند.
+- تصمیم بگیر کدام بخش‌های Bagche و تجربه‌های قدیمی P2P commerce برای انتشار امن‌اند.
     
--  یک note جدا درباره conflict stateها و زبان sync برای کاربر بنویس.
+- یک note جدا درباره conflict stateها و زبان sync برای کاربر بنویس.
     
--  برای local write، queued mutation، remote sync، conflict و merge flow دیاگرام اضافه کن.
+- برای local write، queued mutation، remote sync، conflict و merge flow دیاگرام اضافه کن.
     
--  local-first، offline-first و P2P را به‌عنوان وعده محصولی مقایسه کن، نه فقط pattern فنی.
+- local-first، offline-first و P2P را به‌عنوان وعده محصولی مقایسه کن، نه فقط pattern فنی.
     
--  برای تجربه‌های آینده P2P commerce یک trust evidence checklist تعریف کن.
+- برای تجربه‌های آینده P2P commerce یک trust evidence checklist تعریف کن.
     
 
 Offline-first فقط درباره کار کردن بدون اینترنت نیست.

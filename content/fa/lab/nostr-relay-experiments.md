@@ -584,33 +584,33 @@ interoperable باش، اما درباره limitها صادق بمان.
 
 ## چک‌لیست کار
 
--  کد private relay را قبل از انتشار هر جزئیات implementation بررسی کن.
+- کد private relay را قبل از انتشار هر جزئیات implementation بررسی کن.
     
--  یادداشت‌های protocol-level را جدا کن، بدون expose کردن زیرساخت private.
+- یادداشت‌های protocol-level را جدا کن، بدون expose کردن زیرساخت private.
     
--  جریان پیام NIP-01 را به lifecycle diagram برای relay تبدیل کن.
+- جریان پیام NIP-01 را به lifecycle diagram برای relay تبدیل کن.
     
--  یک NIP-11 relay information document برای تجربه بنویس.
+- یک NIP-11 relay information document برای تجربه بنویس.
     
--  تصمیم بگیر NIP-42 authentication در نسخه عمومی اول جا دارد یا نه.
+- تصمیم بگیر NIP-42 authentication در نسخه عمومی اول جا دارد یا نه.
     
--  لیست NIPهای supported و unsupported را تعریف کن.
+- لیست NIPهای supported و unsupported را تعریف کن.
     
--  limitهای message size، filterها، subscriptionها، returned events و event size را بنویس.
+- limitهای message size، filterها، subscriptionها، returned events و event size را بنویس.
     
--  rate limit بر اساس IP، pubkey و connection طراحی کن.
+- rate limit بر اساس IP، pubkey و connection طراحی کن.
     
--  connection state، subscription state، event storage، policy state و relay metadata را جدا کن.
+- connection state، subscription state، event storage، policy state و relay metadata را جدا کن.
     
--  انتخاب‌های implementation در TypeScript و Erlang را در یک note فنی کوتاه مقایسه کن.
+- انتخاب‌های implementation در TypeScript و Erlang را در یک note فنی کوتاه مقایسه کن.
     
--  relay را با چند client تست کن، نه فقط fixtureهای داخلی.
+- relay را با چند client تست کن، نه فقط fixtureهای داخلی.
     
--  تصمیم بگیر Cloudflare Durable Objects باید مالک connection groupها، pubkey partitionها یا relay shardها باشند.
+- تصمیم بگیر Cloudflare Durable Objects باید مالک connection groupها، pubkey partitionها یا relay shardها باشند.
     
--  مستند کن چه چیزی باید بعد از WebSocket hibernation باقی بماند.
+- مستند کن چه چیزی باید بعد از WebSocket hibernation باقی بماند.
     
--  تصمیم بگیر این کار باید public lab series شود یا internal architecture note بماند.
+- تصمیم بگیر این کار باید public lab series شود یا internal architecture note بماند.
     
 
 یک Nostr relay قطعه کوچکی از نرم‌افزار است که سایه طراحی بزرگی دارد.

@@ -379,29 +379,29 @@ runtime همه این‌ها را همگام نگه می‌دارد.
 
 ## چک‌لیست بعدی
 
--  مدل timing segmentها را به‌صورت جدول خوانا بازیابی کن.
+- مدل timing segmentها را به‌صورت جدول خوانا بازیابی کن.
     
--  تمام transition ruleهای بین segmentها را مستند کن.
+- تمام transition ruleهای بین segmentها را مستند کن.
     
--  timeline map را از player runtime جدا کن.
+- timeline map را از player runtime جدا کن.
     
--  برای ویدئوهای تعاملی آینده، story package format تعریف کن.
+- برای ویدئوهای تعاملی آینده، story package format تعریف کن.
     
--  choice overlay را برای موبایل، fullscreen، و keyboard بهتر کن.
+- choice overlay را برای موبایل، fullscreen، و keyboard بهتر کن.
     
--  برای subtitle، contrast، focus، و reduced motion یادداشت accessibility اضافه کن.
+- برای subtitle، contrast، focus، و reduced motion یادداشت accessibility اضافه کن.
     
--  debug panel برای segment فعلی، decision window فعال، و target بعدی بساز.
+- debug panel برای segment فعلی، decision window فعال، و target بعدی بساز.
     
--  watch history و reset behavior محلی را بهتر کن.
+- watch history و reset behavior محلی را بهتر کن.
     
--  برای boundaryهای timestamp و transition ruleها تست اضافه کن.
+- برای boundaryهای timestamp و transition ruleها تست اضافه کن.
     
--  browser support و محدودیت codecها را شفاف‌تر مستند کن.
+- browser support و محدودیت codecها را شفاف‌تر مستند کن.
     
--  README را طوری تمیز کن که پروژه به‌عنوان یک local open-source interaction experiment معرفی شود.
+- README را طوری تمیز کن که پروژه به‌عنوان یک local open-source interaction experiment معرفی شود.
     
--  این پیاده‌سازی را با تجربه‌های بعدی interactive movie/player مقایسه کن.
+- این پیاده‌سازی را با تجربه‌های بعدی interactive movie/player مقایسه کن.
     
 
 Bandersnatch Interactive از یک HTML player کوچک برای یک الگوی خاص interactive film شروع شد.

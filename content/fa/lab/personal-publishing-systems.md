@@ -645,27 +645,27 @@ owner عملیات می‌خواهد: inbox، leads، comments، subscribers، a
 
 ## چک‌لیست کار
 
--  مدل Decap CMS در Totoro را با pipeline فعلی Velite مقایسه کن.
+- مدل Decap CMS در Totoro را با pipeline فعلی Velite مقایسه کن.
     
--  یک دیاگرام کوتاه برای publishing flow در Mohetios.dev اضافه کن.
+- یک دیاگرام کوتاه برای publishing flow در Mohetios.dev اضافه کن.
     
--  تصمیم بگیر `front`، `front_old` و `Inbox` کجای داستان عمومی قرار می‌گیرند.
+- تصمیم بگیر `front`، `front_old` و `Inbox` کجای داستان عمومی قرار می‌گیرند.
     
--  برای انتقال محتوای قدیمی به ساختار فعلی `content/en` و `content/fa` migration note بنویس.
+- برای انتقال محتوای قدیمی به ساختار فعلی `content/en` و `content/fa` migration note بنویس.
     
--  تعریف statusها را برای Lab و Project مشخص کن.
+- تعریف statusها را برای Lab و Project مشخص کن.
     
--  related-note linkها را بین blog، lab و project اضافه کن.
+- related-note linkها را بین blog، lab و project اضافه کن.
     
--  برای repositoryهای قدیمی content migration checklist بساز.
+- برای repositoryهای قدیمی content migration checklist بساز.
     
--  frontmatter schema پایدار برای blog، lab، projects و pages تعریف کن.
+- frontmatter schema پایدار برای blog، lab، projects و pages تعریف کن.
     
--  writing workflow سازگار با Obsidian اضافه کن که همچنان Git را source of truth نگه دارد.
+- writing workflow سازگار با Obsidian اضافه کن که همچنان Git را source of truth نگه دارد.
     
--  مسیر انتشار از فایل Markdown تا صفحه deployشده را مستند کن.
+- مسیر انتشار از فایل Markdown تا صفحه deployشده را مستند کن.
     
--  تجربه‌های قدیمی سایت شخصی را بررسی کن و به archive، lab یا project history برچسب بزن.
+- تجربه‌های قدیمی سایت شخصی را بررسی کن و به archive، lab یا project history برچسب بزن.
     
 
 پروژه تکرارشونده ساختن یک وب‌سایت دیگر نیست.
