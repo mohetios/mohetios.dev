@@ -41,5 +41,5 @@
     "jose",
     "shiki"
   ],
-  "ignoreBinaries": ["wrangler"]
+  "ignoreBinaries": ["wrangler", "python3"]
 }

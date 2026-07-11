@@ -1,20 +1,34 @@
 {
-  "version": "1.0.0",
+  "version": "3.0.0",
   "default_content_paths": [
-    "content/fa/**/*.md",
-    "content/fa/**/*.mdx",
-    "content/fa/**/*.yaml",
-    "content/fa/**/*.yml",
-    "i18n/locales/fa.json"
+    "**/*.md",
+    "**/*.mdx",
+    "**/*.txt",
+    "**/*.yaml",
+    "**/*.yml",
+    "**/*.json"
   ],
   "exclude_paths": [
     "node_modules/**",
     ".git/**",
     "dist/**",
+    "build/**",
     ".output/**",
     ".nuxt/**",
+    ".pnpm-store/**",
+    ".velite/**",
+    "coverage/**",
     "public/**",
-    "editorial/fa/examples/rejected/**"
+    "package.json",
+    "pnpm-lock.yaml",
+    "*/editorial-config.json",
+    "editorial/fa/evaluation/**",
+    "editorial/fa/profiles/ali/anti-patterns.md",
+    "editorial/fa/profiles/ali/corpus/contrastive/**",
+    "editorial/fa/profiles/ali/corpus/rejected/**",
+    "editorial/fa/_legacy/**",
+    ".editorial-engine-backups/**",
+    "persian-editorial-engine-v*/**"
   ],
   "forbidden_phrases": [
     "در دنیای امروز",
@@ -28,11 +42,7 @@
     "تحولی شگرف",
     "گامی بزرگ در راستای",
     "با افتخار اعلام می‌کنیم",
-    "همه‌چیز را تغییر می‌دهد",
-    "غیرقابل هک",
-    "امنیت صددرصد",
-    "ناشناس مطلق",
-    "توقف‌ناپذیر"
+    "همه‌چیز را تغییر می‌دهد"
   ],
   "suspicious_phrases": [
     "بدون شک",
@@ -44,16 +54,28 @@
     "نسل آینده",
     "فوق‌امن",
     "کاملاً مقیاس‌پذیر",
-    "قدرت فناوری",
-    "قدرت تکنولوژی"
+    "production-ready",
+    "آماده‌ی production",
+    "صددرصد",
+    "همیشه",
+    "هرگز"
   ],
-  "canonical_terms": {},
-  "hard_fail_patterns": [
-    "end-to-end encrypted",
-    "رمزنگاری سرتاسری",
+  "high_risk_claims": [
+    "غیرقابل هک",
+    "امنیت صددرصد",
+    "ناشناس مطلق",
+    "ناشناسی کامل",
     "کاملاً غیرقابل ردیابی",
-    "هیچ داده‌ای ذخیره نمی‌شود"
+    "هیچ داده‌ای ذخیره نمی‌شود",
+    "رمزنگاری سرتاسری",
+    "end-to-end encrypted"
   ],
-  "max_paragraph_chars_warning": 900,
-  "max_heading_depth": 4
+  "arabic_characters": {
+    "ي": "ی",
+    "ك": "ک"
+  },
+  "max_paragraph_chars_warning": 1000,
+  "max_heading_depth": 4,
+  "max_consecutive_blank_lines": 2,
+  "allowed_suppressions": ["editorial-lint-disable-next-line", "editorial-lint-disable-file"]
 }

@@ -6,12 +6,12 @@ Personal engineering notebook, portfolio, and lightweight operations surface for
 
 ## What It Is
 
-| Surface | Purpose |
-| --- | --- |
-| **Public site** | Blog, lab notes, project writeups, about/contact, tags, newsletter signup, moderated comments |
-| **Owner dashboard** | Inbox workspace, leads pipeline, comment moderation, newsletter subscribers, analytics, push notifications |
-| **Member area** | Authenticated members can manage profile and participate in comments/chat affordances |
-| **Background workers** | Inbound email ingestion and queue-driven email delivery + admin push notifications |
+| Surface                | Purpose                                                                                                    |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Public site**        | Blog, lab notes, project writeups, about/contact, tags, newsletter signup, moderated comments              |
+| **Owner dashboard**    | Inbox workspace, leads pipeline, comment moderation, newsletter subscribers, analytics, push notifications |
+| **Member area**        | Authenticated members can manage profile and participate in comments/chat affordances                      |
+| **Background workers** | Inbound email ingestion and queue-driven email delivery + admin push notifications                         |
 
 English is the default locale. Persian content and UI render RTL via `@nuxtjs/i18n`.
 
@@ -78,14 +78,14 @@ flowchart TB
 
 ## Runtime Topology
 
-| Component | Role | Config |
-| --- | --- | --- |
-| **Nuxt / Nitro** | SSR dashboard, prerendered public pages, GraphQL, push subscription API | `nuxt.config.ts`, `wrangler.jsonc` |
-| **Email worker** | Receives routed inbound mail, parses with PostalMime, writes inbox + notification rows, enqueues push job | `workers/email/` |
-| **System worker** | Consumes queues: sends Web Push to dashboard devices, delivers inbox replies and transactional emails via Cloudflare Email Sending; runs cron reminders | `workers/system/` |
-| **D1** | Users, inbox, replies, comments, newsletter, push subscriptions, admin notifications | `server/models/schema.ts`, `migrations/` |
-| **Queues** | `admin-notifications` (producer: Pages + email worker; consumer: system worker), `email-delivery` (producer: Pages; consumer: system worker) | `wrangler.jsonc` |
-| **KV** | Nitro cache binding for analytics dashboard snapshots (production) | `wrangler.jsonc` |
+| Component         | Role                                                                                                                                                    | Config                                   |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| **Nuxt / Nitro**  | SSR dashboard, prerendered public pages, GraphQL, push subscription API                                                                                 | `nuxt.config.ts`, `wrangler.jsonc`       |
+| **Email worker**  | Receives routed inbound mail, parses with PostalMime, writes inbox + notification rows, enqueues push job                                               | `workers/email/`                         |
+| **System worker** | Consumes queues: sends Web Push to dashboard devices, delivers inbox replies and transactional emails via Cloudflare Email Sending; runs cron reminders | `workers/system/`                        |
+| **D1**            | Users, inbox, replies, comments, newsletter, push subscriptions, admin notifications                                                                    | `server/models/schema.ts`, `migrations/` |
+| **Queues**        | `admin-notifications` (producer: Pages + email worker; consumer: system worker), `email-delivery` (producer: Pages; consumer: system worker)            | `wrangler.jsonc`                         |
+| **KV**            | Nitro cache binding for analytics dashboard snapshots (production)                                                                                      | `wrangler.jsonc`                         |
 
 Local development runs all four processes together:
 
@@ -99,13 +99,13 @@ pnpm dev:workers  # workers only
 
 Public content routes are **prerendered** at build time for fast, cache-friendly HTML. Dashboard and member routes use **SSR**. Login is a **client-only** route.
 
-| Route family | Strategy | Notes |
-| --- | --- | --- |
-| `/`, `/blog/**`, `/lab/**`, `/projects/**`, `/about`, `/contact`, `/tags/**` | Prerender | Localized via `prefix_except_default` (`/fa/...`) |
-| `/dashboard/**` | SSR | Auth middleware + `dashboard:view` permission |
-| `/member/**` | SSR | Authenticated member profile area |
-| `/login` | SPA (no SSR) | Redirects owners to dashboard, members to profile |
-| `/graph` | API | POST in production; GraphiQL in dev only |
+| Route family                                                                 | Strategy     | Notes                                             |
+| ---------------------------------------------------------------------------- | ------------ | ------------------------------------------------- |
+| `/`, `/blog/**`, `/lab/**`, `/projects/**`, `/about`, `/contact`, `/tags/**` | Prerender    | Localized via `prefix_except_default` (`/fa/...`) |
+| `/dashboard/**`                                                              | SSR          | Auth middleware + `dashboard:view` permission     |
+| `/member/**`                                                                 | SSR          | Authenticated member profile area                 |
+| `/login`                                                                     | SPA (no SSR) | Redirects owners to dashboard, members to profile |
+| `/graph`                                                                     | API          | POST in production; GraphiQL in dev only          |
 
 Velite output (`.velite/*.json`) is imported by `app/utils/content.ts` — the Vue layer never touches raw Markdown at runtime.
 
@@ -127,19 +127,70 @@ content/{locale}/
 
 UI labels stay in `i18n/locales/en.json` and `i18n/locales/fa.json`. Prose stays in the matching `content/{locale}` tree.
 
+## Persian Editorial Engine
+
+Persian Editorial Engine is the repository guide for creating, editing, translating, localizing, and auditing Persian output. Its canonical entrypoint is `editorial/fa/ENTRYPOINT.md`.
+
+The engine separates stable Persian writing rules from current project facts:
+
+- `editorial/fa/core/` defines language, reasoning, preservation, factual safety, and temporal integrity.
+- `editorial/fa/profiles/ali/` defines Ali's default author voice.
+- `editorial/fa/dimensions/` and `editorial/fa/workflows/` define task shape and transformation flow.
+- `editorial/fa/evaluation/` and `editorial/fa/tooling/` provide checks and review support.
+- `.agents/skills/persian-editorial/` and the other agent files are thin adapters that point back to the entrypoint.
+
+Daily workflow:
+
+```text
+Draft
+→ task dimensions
+→ factual/temporal inventory
+→ structural edit
+→ Ali voice pass
+→ preservation review
+→ lint/validation
+→ human approval
+```
+
+Commands:
+
+```bash
+pnpm editorial:validate
+pnpm editorial:lint -- content/fa/blog/example.md
+pnpm editorial:lint:fa
+pnpm editorial:check
+```
+
+Example prompt:
+
+```text
+Rewrite this Persian draft as a compact article ready for review.
+Use Ali's default voice, preserve frontmatter, links, code, dates, ownership, and uncertainty, and report any factual gaps instead of filling them in.
+```
+
+Important rules:
+
+- English counterparts are not line-by-line translation sources.
+- Nearby source code and current repository docs are stronger factual sources than older prose.
+- Do not create claims without a source.
+- Voice profile is not project context.
+- Mark text as publish-ready only after human review.
+
+Prerequisite: Python 3.x for editorial validation and lint tooling.
+
 ## Data & Domain Model
 
 Drizzle schema: `server/models/schema.ts`
 
-| Table | Domain |
-| --- | --- |
-| `users` | Dashboard auth (`OWNER` / `MEMBER`), PBKDF2 password hashes |
-| `inbox_messages` | Contact form + inbound email threads; lead fields co-located on message rows |
-| `inbox_replies` | Outbound replies (`DRAFT` → `QUEUED` → `SENT` / `FAILED`) |
-| `admin_notifications` | In-app notification feed for dashboard |
-| `push_subscriptions` | Web Push endpoints per user/device |
-| `newsletter_subscribers` | Consent-tracked newsletter list |
-| `comments` | Moderated public comments on blog posts |
+| Table                    | Domain                                                                       |
+| ------------------------ | ---------------------------------------------------------------------------- |
+| `users`                  | Dashboard auth (`OWNER` / `MEMBER`), PBKDF2 password hashes                  |
+| `inbox_messages`         | Contact form + inbound email threads; lead fields co-located on message rows |
+| `inbox_replies`          | Outbound replies (`DRAFT` → `QUEUED` → `SENT` / `FAILED`)                    |
+| `admin_notifications`    | In-app notification feed for dashboard                                       |
+| `push_subscriptions`     | Web Push endpoints per user/device                                           |
+| `newsletter_subscribers` | Consent-tracked newsletter list                                              |
+| `comments`               | Moderated public comments on blog posts                                      |
 
 Migrations live in `migrations/`. Apply locally with `pnpm db:push`.
 
@@ -227,17 +278,17 @@ Dashboard sidebar targets: Overview, Inbox, Leads, Content, Analytics, System, S
 
 ## Tech Stack
 
-| Layer | Choices |
-| --- | --- |
-| Frontend | Nuxt 4, Nuxt UI, Tailwind CSS 4, nuxt-charts |
-| Content | Velite, Shiki syntax highlighting |
-| API | GraphQL Yoga, nuxt-graphql-client |
-| Data | Cloudflare D1, Drizzle ORM |
-| Hosting | Cloudflare Pages (`cloudflare_pages` Nitro preset) |
-| Workers | Email inbound + system queue consumer |
-| Auth | JWT, PBKDF2 (Worker-safe iteration count), Turnstile |
-| i18n | `@nuxtjs/i18n` — English + Persian RTL |
-| PWA | `@vite-pwa/nuxt`, custom SW, Web Push (VAPID) |
+| Layer    | Choices                                                    |
+| -------- | ---------------------------------------------------------- |
+| Frontend | Nuxt 4, Nuxt UI, Tailwind CSS 4, nuxt-charts               |
+| Content  | Velite, Shiki syntax highlighting                          |
+| API      | GraphQL Yoga, nuxt-graphql-client                          |
+| Data     | Cloudflare D1, Drizzle ORM                                 |
+| Hosting  | Cloudflare Pages (`cloudflare_pages` Nitro preset)         |
+| Workers  | Email inbound + system queue consumer                      |
+| Auth     | JWT, PBKDF2 (Worker-safe iteration count), Turnstile       |
+| i18n     | `@nuxtjs/i18n` — English + Persian RTL                     |
+| PWA      | `@vite-pwa/nuxt`, custom SW, Web Push (VAPID)              |
 | Security | `nuxt-security` CSP, rate limits on `/graph` and `/api/**` |
 
 ## Project Layout
@@ -266,15 +317,15 @@ scripts/     GraphQL schema sync, seed, lint helpers
 cp .env.example .env
 ```
 
-| Variable | Purpose |
-| --- | --- |
-| `NUXT_JWT_SECRET` | Required — signs auth tokens |
-| `NUXT_AUTH_TOKEN_TTL_SECONDS` | Token lifetime (default 7 days) |
-| `NUXT_VAPID_*` | Web Push keys and subject |
-| `NUXT_MAIL_FROM` / `NUXT_MAIL_FROM_NAME` | Outbound email identity |
+| Variable                                                       | Purpose                                  |
+| -------------------------------------------------------------- | ---------------------------------------- |
+| `NUXT_JWT_SECRET`                                              | Required — signs auth tokens             |
+| `NUXT_AUTH_TOKEN_TTL_SECONDS`                                  | Token lifetime (default 7 days)          |
+| `NUXT_VAPID_*`                                                 | Web Push keys and subject                |
+| `NUXT_MAIL_FROM` / `NUXT_MAIL_FROM_NAME`                       | Outbound email identity                  |
 | `NUXT_PUBLIC_TURNSTILE_SITE_KEY` / `NUXT_TURNSTILE_SECRET_KEY` | Bot protection on login/register/contact |
-| `NUXT_BASE_URL` | Canonical site URL |
-| `NUXT_CLOUDFLARE_*` | Optional real analytics dashboard data |
+| `NUXT_BASE_URL`                                                | Canonical site URL                       |
+| `NUXT_CLOUDFLARE_*`                                            | Optional real analytics dashboard data   |
 
 Workers read the same `.env` in local `wrangler dev` via `--env-file .env`. Production secrets are configured on the Cloudflare Pages project and each Worker separately.
 

@@ -67,18 +67,18 @@ UI اصلی داخل تلگرام است. یک Worker واحد روی Cloudflare
 
 سه اصل محصول:
 
-| اصل | معنی در سیستم |
-| --- | --- |
-| تیکتینگ کم‌داده | پیام ناشناس transcript دائمی نیست؛ sealed ticket با `route_enc` و `payload_enc` موقت است. |
+| اصل                    | معنی در سیستم                                                                              |
+| ---------------------- | ------------------------------------------------------------------------------------------ |
+| تیکتینگ کم‌داده        | پیام ناشناس transcript دائمی نیست؛ sealed ticket با `route_enc` و `payload_enc` موقت است.  |
 | پیشنهاد گفت‌وگوی محتاط | سیستم کمک می‌کند شروع گفت‌وگو کمتر تصادفی باشد، اما سازگاری قطعی یا رابطه پیشنهاد نمی‌دهد. |
-| سرویس کوچک و پایدار | Worker، D1، Durable Object، KV و Queue هرکدام فقط همان کاری را انجام می‌دهند که لازم است. |
+| سرویس کوچک و پایدار    | Worker، D1، Durable Object، KV و Queue هرکدام فقط همان کاری را انجام می‌دهند که لازم است.  |
 
 ## ۳. نکونیموس چه چیزی نیست
 
 این مرزها عمداً در copy و معماری حفظ می‌شوند:
 
 - پیام‌رسان رمزنگاری سرتاسری (E2EE) نیست
-- zero-knowledge یا ناشناسی کامل ادعا نمی‌کند
+- zero-knowledge یا ادعای ناشناسی کامل ندارد
 - اپلیکیشن dating یا شبکه اجتماعی کامل نیست
 - تست شخصیت، تشخیص روان‌شناختی یا سیستم سازگاری دقیق نیست
 - وب‌اپ یا SPA عمومی در V1 ندارد
@@ -159,9 +159,9 @@ flowchart TD
 
 دو لایه جدا داریم:
 
-| لایه | محل | چه نگه می‌دارد؟ |
-| --- | --- | --- |
-| Ticket vault | `TicketVaultDO` | `route_enc` + `payload_enc` برای هر `ticketHash` |
+| لایه          | محل                          | چه نگه می‌دارد؟                                    |
+| ------------- | ---------------------------- | -------------------------------------------------- |
+| Ticket vault  | `TicketVaultDO`              | `route_enc` + `payload_enc` برای هر `ticketHash`   |
 | Inbox pointer | `UserStateDO.inbox_pointers` | اشاره‌گر sealed، وضعیت، انقضا — بدون متن plaintext |
 
 جریان:
@@ -295,11 +295,11 @@ APP_MASTER_KEY + ticketHash
   -> route_enc + payload_enc
 ```
 
-| داده رمزگذاری‌شده | معنی ساده | چرا لازم است؟ |
-| --- | --- | --- |
-| `payload_enc` | خود پیام | تا قبل از delivery پیام به شکل plaintext ذخیره نشود |
-| `route_enc` | RouteCapsule — مسیر relay | برای پاسخ، مسدودسازی، گزارش و نام خصوصی بعد از تحویل |
-| `sealedTicketRef` | ref رمزنگاری‌شده در pointer | callback کوتاه بدون ذخیره ref خام |
+| داده رمزگذاری‌شده | معنی ساده                   | چرا لازم است؟                                        |
+| ----------------- | --------------------------- | ---------------------------------------------------- |
+| `payload_enc`     | خود پیام                    | تا قبل از delivery پیام به شکل plaintext ذخیره نشود  |
+| `route_enc`       | RouteCapsule — مسیر relay   | برای پاسخ، مسدودسازی، گزارش و نام خصوصی بعد از تحویل |
+| `sealedTicketRef` | ref رمزنگاری‌شده در pointer | callback کوتاه بدون ذخیره ref خام                    |
 
 tradeoff آگاهانه:
 
@@ -324,19 +324,19 @@ Telegram Bot API
   → Telegram outbox
 ```
 
-| قطعه | نقش |
-| --- | --- |
-| Worker | webhook، routing، منطق ربات |
-| grammY | commands، callbacks، keyboards |
-| D1 | users، links، assessment، matching، `platform_daily_stats` |
-| UserStateDO | inbox pointers، drafts، blocks، labels، rate limits، assessment session، webhook idempotency |
-| TicketVaultDO | sealed tickets (`route_enc` + `payload_enc`) |
-| ReportLedgerDO | گزارش‌های کور (blind abuse tags) |
-| TelegramOutboxDO | ارسال idempotent به تلگرام |
-| KV | فقط cache: `tg:{hash}`، `link:{slug}` |
-| Queues | `NEKO_OUTBOX_QUEUE` + `NEKO_STATS_QUEUE` |
-| Workers AI + Vectorize | embedding پروفایل؛ کشف کاندید اولیه |
-| Web Crypto | HMAC، HKDF، AES-256-GCM |
+| قطعه                   | نقش                                                                                          |
+| ---------------------- | -------------------------------------------------------------------------------------------- |
+| Worker                 | webhook، routing، منطق ربات                                                                  |
+| grammY                 | commands، callbacks، keyboards                                                               |
+| D1                     | users، links، assessment، matching، `platform_daily_stats`                                   |
+| UserStateDO            | inbox pointers، drafts، blocks، labels، rate limits، assessment session، webhook idempotency |
+| TicketVaultDO          | sealed tickets (`route_enc` + `payload_enc`)                                                 |
+| ReportLedgerDO         | گزارش‌های کور (blind abuse tags)                                                             |
+| TelegramOutboxDO       | ارسال idempotent به تلگرام                                                                   |
+| KV                     | فقط cache: `tg:{hash}`، `link:{slug}`                                                        |
+| Queues                 | `NEKO_OUTBOX_QUEUE` + `NEKO_STATS_QUEUE`                                                     |
+| Workers AI + Vectorize | embedding پروفایل؛ کشف کاندید اولیه                                                          |
+| Web Crypto             | HMAC، HKDF، AES-256-GCM                                                                      |
 
 قاعده طراحی:
 
@@ -411,32 +411,32 @@ flowchart TD
   Settings --> Vectors
 ```
 
-| جریان | hot path چه می‌کند؟ | حقیقت داده کجاست؟ | چه چیزی عمداً نیست؟ |
-| --- | --- | --- | --- |
-| پیام ناشناس | پیش‌نویس یا sealed ticket می‌سازد | `TicketVaultDO` + `inbox_pointers`؛ D1 برای هویت و آمار | transcript پیام در D1 |
-| ارزیابی | جواب‌ها را مرحله‌به‌مرحله می‌گیرد | جلسه در DO؛ نتیجه در D1 | تشخیص پزشکی یا شخصیت‌شناسی |
-| پیشنهاد گفت‌وگو | Vectorize + فیلتر + ranking قطعی | workflow در D1؛ کشف در Vectorize | شروع گفت‌وگو بدون پذیرش |
-| ارسال خروجی | اعلان‌های غیرحیاتی را queue می‌کند | `TelegramOutboxDO` + idempotency key | ارسال تکراری در retry |
+| جریان           | hot path چه می‌کند؟                | حقیقت داده کجاست؟                                       | چه چیزی عمداً نیست؟        |
+| --------------- | ---------------------------------- | ------------------------------------------------------- | -------------------------- |
+| پیام ناشناس     | پیش‌نویس یا sealed ticket می‌سازد  | `TicketVaultDO` + `inbox_pointers`؛ D1 برای هویت و آمار | transcript پیام در D1      |
+| ارزیابی         | جواب‌ها را مرحله‌به‌مرحله می‌گیرد  | جلسه در DO؛ نتیجه در D1                                 | تشخیص پزشکی یا شخصیت‌شناسی |
+| پیشنهاد گفت‌وگو | Vectorize + فیلتر + ranking قطعی   | workflow در D1؛ کشف در Vectorize                        | شروع گفت‌وگو بدون پذیرش    |
+| ارسال خروجی     | اعلان‌های غیرحیاتی را queue می‌کند | `TelegramOutboxDO` + idempotency key                    | ارسال تکراری در retry      |
 
 ## ۱۱. مدل داده و مرزهای ذخیره‌سازی
 
-| داده | کجا ذخیره می‌شود؟ | توضیح |
-| --- | --- | --- |
-| هویت کاربر | D1 `users` | `telegram_user_hash` — نه id خام |
-| chat id | D1 `users` | AES ciphertext |
-| slug عمومی | D1 `public_links` + KV | D1 حقیقت؛ KV کش |
-| inbox pointer | UserStateDO `inbox_pointers` | sealed ref، وضعیت، انقضا |
-| sealed ticket | TicketVaultDO | `route_enc` + `payload_enc` |
-| پیش‌نویس‌ها | UserStateDO | پیام نیمه‌کاره |
-| مسدودسازی / nickname | UserStateDO | block hash + nickname رمزگذاری‌شده |
-| rate limits | UserStateDO | throttle ۱ ثانیه‌ای |
-| assessment session | UserStateDO | پیشرفت فعال |
-| assessment profile | D1 `assessment_profiles` | scoreها + `profile_summary_text` |
-| assessment answers | D1 `assessment_answers` | Likert — متن آزاد نیست |
-| match requests | D1 `match_requests` | workflow + intro رمزگذاری‌شده |
-| گزارش | ReportLedgerDO | blind abuse tags |
-| vector | Vectorize | id `profile:{userId}:v1` |
-| آمار تجمیعی | D1 `platform_daily_stats` | بدون user id |
+| داده                 | کجا ذخیره می‌شود؟            | توضیح                              |
+| -------------------- | ---------------------------- | ---------------------------------- |
+| هویت کاربر           | D1 `users`                   | `telegram_user_hash` — نه id خام   |
+| chat id              | D1 `users`                   | AES ciphertext                     |
+| slug عمومی           | D1 `public_links` + KV       | D1 حقیقت؛ KV کش                    |
+| inbox pointer        | UserStateDO `inbox_pointers` | sealed ref، وضعیت، انقضا           |
+| sealed ticket        | TicketVaultDO                | `route_enc` + `payload_enc`        |
+| پیش‌نویس‌ها          | UserStateDO                  | پیام نیمه‌کاره                     |
+| مسدودسازی / nickname | UserStateDO                  | block hash + nickname رمزگذاری‌شده |
+| rate limits          | UserStateDO                  | throttle ۱ ثانیه‌ای                |
+| assessment session   | UserStateDO                  | پیشرفت فعال                        |
+| assessment profile   | D1 `assessment_profiles`     | scoreها + `profile_summary_text`   |
+| assessment answers   | D1 `assessment_answers`      | Likert — متن آزاد نیست             |
+| match requests       | D1 `match_requests`          | workflow + intro رمزگذاری‌شده      |
+| گزارش                | ReportLedgerDO               | blind abuse tags                   |
+| vector               | Vectorize                    | id `profile:{userId}:v1`           |
+| آمار تجمیعی          | D1 `platform_daily_stats`    | بدون user id                       |
 
 **D1 نگه نمی‌دارد:** متن پیام ناشناس، گراف plaintext فرستنده→گیرنده، `ticketRef` خام callback.
 

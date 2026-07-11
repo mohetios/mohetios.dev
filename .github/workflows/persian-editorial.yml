@@ -1,0 +1,26 @@
+name: Persian editorial checks
+
+on:
+  pull_request:
+    paths:
+      - 'editorial/fa/**'
+      - 'content/fa/**'
+      - 'i18n/locales/fa.json'
+      - 'AGENTS.md'
+      - 'content/fa/AGENTS.md'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+  workflow_dispatch:
+
+jobs:
+  editorial:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.3
+      - run: pnpm editorial:check

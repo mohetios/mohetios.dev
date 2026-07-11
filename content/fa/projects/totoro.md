@@ -26,9 +26,9 @@ Repository:
 
 Publishing systemها معمولاً drift می‌کنند.
 
-اول یک پوشه Markdown وجود دارد.  
-بعد CMS اضافه می‌شود.  
-بعد CMS source of truth می‌شود.  
+اول یک پوشه Markdown وجود دارد.
+بعد CMS اضافه می‌شود.
+بعد CMS source of truth می‌شود.
 بعد جابه‌جایی سایت از نوشتن برای آن سخت‌تر می‌شود.
 
 Totoro تلاشی بود برای نگه داشتن یک خط کوچک‌تر: editor یک interface قابل استفاده داشته باشد، اما محتوا نزدیک repository بماند.

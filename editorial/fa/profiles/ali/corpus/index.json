@@ -1,0 +1,52 @@
+[
+  {
+    "path": "profiles/ali/corpus/contrastive/01-generic-opening.md",
+    "status": "synthesized",
+    "sha256": "27901679afa6c46ad90674aa01ed6d01a7d2cc0bcf1d22769910caab50b36e04"
+  },
+  {
+    "path": "profiles/ali/corpus/contrastive/02-overformal.md",
+    "status": "synthesized",
+    "sha256": "8483d73ee8e24443e9443a4d2c60f710fd1c0bef78b1183ea24189e48bd0025e"
+  },
+  {
+    "path": "profiles/ali/corpus/contrastive/03-literal-translation.md",
+    "status": "synthesized",
+    "sha256": "2764cad1b899da9c3d51f6dcaa8caa0b7d1ef2c424944c02312fba0b06060f8c"
+  },
+  {
+    "path": "profiles/ali/corpus/contrastive/04-feature-dump.md",
+    "status": "synthesized",
+    "sha256": "1efc4f35d7f023fdf7696ca331106c7338ee8cef89d0718b8e73ef099842f91d"
+  },
+  {
+    "path": "profiles/ali/corpus/contrastive/05-hype.md",
+    "status": "synthesized",
+    "sha256": "913bd1a16f632cdb763902b15a47bc35556c0a2eea96ef83d26c178429ef6b3a"
+  },
+  {
+    "path": "profiles/ali/corpus/contrastive/06-temporal-drift.md",
+    "status": "synthesized",
+    "sha256": "8f97ef13e2fbfbf94c69ee636c5eea780f1c77425f58013940d5b001cdaad7e0"
+  },
+  {
+    "path": "profiles/ali/corpus/contrastive/07-scope-drift.md",
+    "status": "synthesized",
+    "sha256": "ad8dae7a557bb58d537b0d13519200bd3b2df77d3b43f9bcb1da5396d61d5aeb"
+  },
+  {
+    "path": "profiles/ali/corpus/contrastive/08-ai-cadence.md",
+    "status": "synthesized",
+    "sha256": "271b4a26369acbc3c58b7c0083759ffcead771097d0005a404a5ae445c320e3a"
+  },
+  {
+    "path": "profiles/ali/corpus/contrastive/09-ownership.md",
+    "status": "synthesized",
+    "sha256": "2ab95b44c633705df2db0602c1124c8ff315c11fc72cbdfe08655274f27b6805"
+  },
+  {
+    "path": "profiles/ali/corpus/contrastive/10-ui-copy.md",
+    "status": "synthesized",
+    "sha256": "1c5ad2d7e046a1922a1950224e1b64961541a7fe6db9172f98e29cdfa863793f"
+  }
+]

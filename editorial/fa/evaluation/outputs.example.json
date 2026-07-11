@@ -1,0 +1,182 @@
+[
+  {
+    "id": "rewrite-generic-opening",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "proofread-scope",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "planned-not-current",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "historical-anchor",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "ownership-boundary",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "security-conservative",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "translate-natural",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "adapt-ui",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "summarize-caveat",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "expand-no-invention",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "social-adaptation",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "context-isolation-a",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "context-isolation-b",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "first-person-boundary",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "chat-natural",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "report-fact-interpretation",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "protected-literals",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "no-fake-quote",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "formal-not-bureaucratic",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  },
+  {
+    "id": "voice-not-catchphrase",
+    "output": "",
+    "review": {
+      "score": null,
+      "hard_gates": [],
+      "notes": ""
+    }
+  }
+]

@@ -1,30 +1,28 @@
 # Persian Content Instructions
 
-These rules apply to Persian editorial files in `content/fa/`.
+These instructions apply to Persian prose under `content/fa/`.
 
-## Required Workflow
+Before editing:
 
-Before changing prose, read `editorial/fa/README.md`, then use only the relevant canonical files under `editorial/fa/`.
+1. Read `../../editorial/fa/ENTRYPOINT.md`.
+2. Use the Ali author profile unless the task explicitly requests another voice.
+3. Infer and record the task dimensions before rewriting.
+4. Read the complete target file and the nearest relevant implementation or domain sources.
+5. Build a factual and temporal inventory before changing claims.
 
-For every Persian content edit:
+Preserve:
 
-- Identify the content mode from `editorial/fa/fa-content-modes.md`.
-- Build a factual inventory before rewriting: ownership, current status, shipped/planned scope, security/privacy claims, links, numbers, and limitations.
-- Keep the actual problem close to the opening.
-- Explain choices through constraints, decisions, and trade-offs.
-- Use first-person singular when one author made or owns the decision; do not inflate `من` into `ما`.
-- Keep project ownership explicit; do not turn client/commercial delivery into author-owned IP.
-- Keep security, privacy, anonymity, and retention wording within the verified threat model.
-- Distinguish shipped, tested, release-candidate, planned, and speculative work.
-- Preserve Markdown with runtime meaning: frontmatter, anchors, links, code fences, tables, embeds, image paths, and identifiers.
-- Use Persian characters, Persian punctuation, ZWNJ, and the house-style `ه‌ی`.
-- Keep canonical English technical terms from `editorial/fa/fa-lexicon.md`.
-- Avoid generic introductions, corporate phrases, decorative adjectives, fake vulnerability, literal translation, and repeated conclusions.
+- frontmatter schema and non-prose metadata;
+- slugs, dates, IDs, links, image paths, anchors, embeds and components;
+- code fences, inline code, commands, identifiers and placeholders;
+- ownership, shipped/planned state, uncertainty, security boundaries and limitations.
 
-## Completion
+Do not:
 
-```bash
-python3 editorial/fa/scripts/editorial_lint.py --strict <changed-files>
-```
+- translate line by line;
+- invent facts or current capabilities;
+- turn plans into implemented features;
+- add project context to the editorial core;
+- rewrite a file merely to create a larger diff.
 
-Self-score with `editorial/fa/fa-review-rubric.md`. Do not mark complete below 85/100 or when a hard gate fails. Report unresolved factual uncertainty instead of guessing.
+Before completion run the repository Persian editorial checks and report unresolved factual uncertainty.

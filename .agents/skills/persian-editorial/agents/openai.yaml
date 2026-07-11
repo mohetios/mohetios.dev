@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Persian Editorial'
+  short_description: "Create and edit natural, accurate Persian in Ali's voice"
+  default_prompt: 'Use the Persian editorial engine for this task.'

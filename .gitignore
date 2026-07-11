@@ -29,3 +29,8 @@ schema.graphql
 .wrangler/
 .pnpm-store
 Desighn
+
+# Local Persian editorial engine installer artifacts
+.editorial-engine-backups/
+persian-editorial-engine-v*/
+persian-editorial-engine-v*.zip

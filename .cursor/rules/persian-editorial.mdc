@@ -1,0 +1,11 @@
+---
+description: Persian editorial bridge for Persian content and UI copy
+globs: "content/fa/**/*,i18n/locales/fa.json"
+alwaysApply: false
+---
+
+When the task creates or changes Persian prose, read `editorial/fa/ENTRYPOINT.md` and follow its scoped load order.
+
+Use the Ali voice profile, but get all current facts and terminology from the target task and nearest local context. Do not load or reuse unrelated project context. Preserve code, URLs, identifiers, placeholders, frontmatter, dates, status, ownership and limitations.
+
+Run `pnpm editorial:check` before completion. This rule is only a bridge; `editorial/fa/` is canonical.

@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Persian Editorial Task Brief",
+  "type": "object",
+  "properties": {
+    "operation": {
+      "enum": [
+        "proofread",
+        "light-edit",
+        "structural-edit",
+        "rewrite",
+        "create",
+        "translate",
+        "localize",
+        "adapt",
+        "summarize",
+        "expand",
+        "audit"
+      ]
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "audience": {
+      "type": "string"
+    },
+    "surface": {
+      "type": "string"
+    },
+    "register": {
+      "type": "string"
+    },
+    "technical_depth": {
+      "enum": ["none", "low", "medium", "high", "expert"]
+    },
+    "stance": {
+      "type": "string"
+    },
+    "evidence_mode": {
+      "type": "string"
+    },
+    "temporal_mode": {
+      "type": "string"
+    },
+    "intervention_level": {
+      "type": "string"
+    },
+    "length_density": {
+      "type": "string"
+    },
+    "must_preserve": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "must_avoid": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "local_context": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": ["operation", "purpose", "audience", "surface", "temporal_mode"]
+}
