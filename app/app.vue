@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import * as locales from '@nuxt/ui/locale'
+import * as uiLocales from '@nuxt/ui/locale'
 import { formatSeoTitle, getSeoSiteName, normalizeSiteUrl, resolveSeoImageUrl } from '~/utils/seo'
 
-const { locale, t } = useI18n()
+const { locale, locales, t } = useI18n()
 const siteUrl = normalizeSiteUrl(String(useRuntimeConfig().public.siteUrl))
 
+const currentLocale = computed(() => locales.value.find((item) => item.code === locale.value))
 const appLocale = computed(() => {
-  const key = locale.value === 'fa' ? 'fa_ir' : 'en'
-  return locales[key] || locales.en
+  const key = currentLocale.value?.uiLocale
+
+  return typeof key === 'string' ? uiLocales[key as keyof typeof uiLocales] || uiLocales.en : uiLocales.en
 })
 
 useHead({

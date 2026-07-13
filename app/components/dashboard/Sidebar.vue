@@ -1,8 +1,9 @@
 <script setup lang="ts">
-const { locale, t } = useI18n()
+const { locale, locales, t } = useI18n()
 const brandName = computed(() => getSeoSiteName(t))
 const route = useRoute()
-const dashboardSidebarSide = computed(() => (locale.value === 'fa' ? 'right' : 'left'))
+const isRtl = computed(() => locales.value.find((item) => item.code === locale.value)?.dir === 'rtl')
+const dashboardSidebarSide = computed(() => (isRtl.value ? 'right' : 'left'))
 
 type DashboardNavItem = {
   label: string
@@ -78,11 +79,7 @@ const navItems = computed<DashboardNavItem[]>(() => [
   // }
 ])
 
-function stripLocale(path: string) {
-  return path.replace(/^\/(en|fa)(?=\/|$)/, '') || '/'
-}
-
-const currentPath = computed(() => stripLocale(route.path))
+const currentPath = computed(() => stripLocalePrefix(route.path))
 
 watch(
   () => route.fullPath,

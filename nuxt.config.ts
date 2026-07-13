@@ -2,6 +2,7 @@ import {
   defaultLocale,
   getLocalizedPublicPath,
   getPrerenderContentRoutes,
+  localeDefinitions,
   supportedLocales
 } from './app/utils/content'
 import {
@@ -427,24 +428,13 @@ export default defineNuxtConfig({
   i18n: {
     langDir: 'locales',
     defaultLocale,
-    strategy: 'prefix_except_default',
+    strategy: 'prefix_and_default',
+    rootRedirect: {
+      path: getLocalizedPublicPath('/', defaultLocale),
+      statusCode: 302
+    },
     detectBrowserLanguage: false,
-    locales: [
-      {
-        code: supportedLocales[0],
-        name: 'English',
-        file: 'en.json',
-        dir: 'ltr',
-        language: 'en-US'
-      },
-      {
-        code: supportedLocales[1],
-        name: 'فارسی',
-        file: 'fa.json',
-        dir: 'rtl',
-        language: 'fa-IR'
-      }
-    ]
+    locales: localeDefinitions.map((definition) => ({ ...definition }))
   },
 
   image: {

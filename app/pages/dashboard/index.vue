@@ -13,7 +13,7 @@ definePageMeta({
   middleware: ['auth']
 })
 
-const { t, locale } = useI18n()
+const { t, locale, locales } = useI18n()
 const toast = useToast()
 
 const range = useDashboardRangePreference()
@@ -146,9 +146,15 @@ const activityIconClass: Record<string, string> = {
   new_contact_message: 'text-primary'
 }
 
+const currentLanguage = computed(() => {
+  const language = locales.value.find((item) => item.code === locale.value)?.language
+
+  return typeof language === 'string' ? language : locale.value
+})
+
 const timeFormatter = computed(
   () =>
-    new Intl.DateTimeFormat(locale.value === 'fa' ? 'fa-IR' : 'en-US', {
+    new Intl.DateTimeFormat(currentLanguage.value, {
       dateStyle: 'medium',
       timeStyle: 'short'
     })

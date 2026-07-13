@@ -6,7 +6,7 @@ export type Lead = LeadItemDto & {
 }
 
 function createRelativeTimeFormatter(locale: string) {
-  return new Intl.RelativeTimeFormat(locale === 'fa' ? 'fa' : 'en', {
+  return new Intl.RelativeTimeFormat(locale || 'en-US', {
     numeric: 'auto'
   })
 }
@@ -94,7 +94,7 @@ export function formatLeadDate(timestamp?: number | null, locale = 'en') {
     return '—'
   }
 
-  return new Intl.DateTimeFormat(locale === 'fa' ? 'fa-IR' : 'en-US', {
+  return new Intl.DateTimeFormat(locale || 'en-US', {
     dateStyle: 'medium',
     timeStyle: 'short'
   }).format(new Date(timestamp))

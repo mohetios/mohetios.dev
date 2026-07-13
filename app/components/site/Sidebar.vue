@@ -4,7 +4,7 @@ const props = defineProps<{
   headerVisible?: boolean
 }>()
 
-const { locale, t } = useI18n()
+const { locale, locales, t } = useI18n()
 const route = useRoute()
 const {
   isDesktop,
@@ -16,12 +16,13 @@ const {
   closeSidebarOnMobile
 } = useSiteSidebar()
 
-const drawerDirection = computed(() => (locale.value === 'fa' ? 'right' : 'left'))
+const isRtl = computed(() => locales.value.find((item) => item.code === locale.value)?.dir === 'rtl')
+const drawerDirection = computed(() => (isRtl.value ? 'right' : 'left'))
 const mobileToggleVisibilityClass = computed(() => {
   return props.headerVisible === false ? '-translate-y-24 opacity-0' : 'translate-y-0 opacity-100'
 })
 const sidebarToggleIcon = computed(() => {
-  if (locale.value === 'fa') {
+  if (isRtl.value) {
     return isSidebarOpen.value ? 'i-lucide-panel-right-close' : 'i-lucide-panel-right-open'
   }
 

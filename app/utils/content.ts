@@ -2,6 +2,12 @@ import blogJson from '../../.velite/blog.json'
 import labJson from '../../.velite/lab.json'
 import pagesJson from '../../.velite/pages.json'
 import projectsJson from '../../.velite/projects.json'
+import {
+  defaultLocale,
+  supportedLocales
+} from '../../shared/constants/locales'
+
+export { defaultLocale, localeDefinitions, supportedLocales } from '../../shared/constants/locales'
 
 export type TocItem = {
   title: string
@@ -29,11 +35,11 @@ type BaseContent = {
   updated?: string
   thumbnail?: string
   draft?: boolean
-  tags: string[]
   path: string
   content: string
   raw: string
   tocData: TocItem[]
+  tags?: string[]
 }
 
 export type BlogPost = BaseContent & {
@@ -82,8 +88,14 @@ const blog = blogJson as BlogPost[]
 const lab = labJson as LabNote[]
 const projects = projectsJson as Project[]
 const pages = pagesJson as Page[]
-export const defaultLocale = 'en'
-export const supportedLocales = ['en', 'fa'] as const
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+const localePrefixRegex = new RegExp(
+  `^\\/(${supportedLocales.map((locale) => escapeRegExp(locale)).join('|')})(?=\\/|$)`
+)
 
 const publicSections = ['/', '/blog', '/lab', '/projects', '/about', '/contact']
 const staticPublicPaths = new Set(
@@ -112,31 +124,18 @@ function normalizeRoutePath(path: string) {
 
 export function stripLocalePrefix(path: string) {
   const normalized = normalizeRoutePath(path)
-  const localePattern = supportedLocales.join('|')
 
-  return normalized.replace(new RegExp(`^\\/(${localePattern})(?=\\/|$)`), '') || '/'
+  return normalized.replace(localePrefixRegex, '') || '/'
 }
 
 export function getRouteLocale(path: string) {
   const normalized = normalizeRoutePath(path)
-  const localePattern = supportedLocales.join('|')
-  const match = normalized.match(new RegExp(`^\\/(${localePattern})(?=\\/|$)`))
 
-  return match?.[1] || defaultLocale
+  return normalized.match(localePrefixRegex)?.[1] || defaultLocale
 }
 
 export function toPublicPath(path: string) {
-  const normalized = normalizeRoutePath(path)
-
-  if (normalized === `/${defaultLocale}`) {
-    return '/'
-  }
-
-  if (normalized.startsWith(`/${defaultLocale}/`)) {
-    return normalized.slice(defaultLocale.length + 1) || '/'
-  }
-
-  return normalized
+  return normalizeRoutePath(path)
 }
 
 export function toContentPath(path: string, locale = getRouteLocale(path)) {
@@ -151,10 +150,6 @@ export function toContentPath(path: string, locale = getRouteLocale(path)) {
 
 export function getLocalizedPublicPath(path: string, locale: string) {
   const suffix = stripLocalePrefix(toPublicPath(path))
-
-  if (locale === defaultLocale) {
-    return suffix
-  }
 
   return normalizeRoutePath(`/${locale}${suffix === '/' ? '' : suffix}`)
 }
@@ -196,7 +191,7 @@ export function getLocalizedRoutePath(
     return `/${targetLocale}/${section}`
   }
 
-  return targetLocale === defaultLocale ? '/' : `/${targetLocale}`
+  return `/${targetLocale}`
 }
 
 export const normalizeTagSlug = (value: string) =>

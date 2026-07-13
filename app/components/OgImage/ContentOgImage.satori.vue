@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { localeDefinitions } from '~~/shared/constants/locales'
+
 defineOptions({
   inheritAttrs: false
 })
@@ -16,7 +18,10 @@ const props = defineProps<{
 const OG_FONT_FAMILY =
   'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif'
 
-const isRtl = computed(() => props.locale === 'fa')
+const rtlLocales = localeDefinitions
+  .filter((definition) => definition.dir === 'rtl')
+  .map<string>((definition) => definition.code)
+const isRtl = computed(() => rtlLocales.includes(props.locale || ''))
 const textAlign = computed(() => (isRtl.value ? 'right' : 'left') as 'right' | 'left')
 
 const displayDescription = computed(() =>

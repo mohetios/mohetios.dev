@@ -6,11 +6,16 @@ defineProps<{
   loading?: boolean
 }>()
 
-const { t, locale } = useI18n()
+const { t, locale, locales } = useI18n()
+const currentLanguage = computed(() => {
+  const language = locales.value.find((item) => item.code === locale.value)?.language
+
+  return typeof language === 'string' ? language : locale.value
+})
 
 const timeFormatter = computed(
   () =>
-    new Intl.RelativeTimeFormat(locale.value === 'fa' ? 'fa' : 'en', {
+    new Intl.RelativeTimeFormat(currentLanguage.value, {
       numeric: 'auto'
     })
 )

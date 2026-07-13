@@ -1,3 +1,5 @@
+import { supportedLocales } from './locales'
+
 export type DashboardToolbarPresetAction = {
   id: string
   labelKey: string
@@ -12,8 +14,13 @@ export type DashboardToolbarPreset = {
   actions: DashboardToolbarPresetAction[]
 }
 
+const escapedLocales = supportedLocales.map((locale) =>
+  locale.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+)
+const localePrefixRegex = new RegExp(`^\\/(${escapedLocales.join('|')})(?=\\/|$)`)
+
 function normalizeDashboardPath(path: string) {
-  return path.replace(/^\/(en|fa)(?=\/|$)/, '') || '/'
+  return path.replace(localePrefixRegex, '') || '/'
 }
 
 const PRESETS: Record<string, DashboardToolbarPreset> = {

@@ -2,10 +2,7 @@ import type { Permission } from '~~/shared/constants/permissions'
 import { isAuthError } from '~/utils/graphql-error'
 
 function getLoginPath(toPath: string) {
-  const localeMatch = toPath.match(/^\/(en|fa)(?=\/|$)/)
-  const localePrefix = localeMatch?.[0] || ''
-
-  return `${localePrefix}/login`
+  return getLocalizedPublicPath('/login', getRouteLocale(toPath))
 }
 
 export default defineNuxtRouteMiddleware(async (to) => {

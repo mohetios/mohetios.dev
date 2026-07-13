@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { locale, t } = useI18n()
+const { locale, locales, t } = useI18n()
 
 const socialLinks = [
   { label: 'GitHub', to: 'https://github.com/mohetios', icon: 'i-lucide-github' },
@@ -9,9 +9,16 @@ const socialLinks = [
 ]
 
 const currentYear = computed(() => {
-  const calendar = locale.value === 'fa' ? 'persian' : 'gregory'
+  const currentLocale = locales.value.find((item) => item.code === locale.value)
+  const calendar = typeof currentLocale?.calendar === 'string' ? currentLocale.calendar : 'gregory'
+  const language =
+    calendar === 'persian'
+      ? 'fa-IR-u-ca-persian'
+      : typeof currentLocale?.language === 'string'
+        ? currentLocale.language
+        : locale.value
 
-  return new Intl.DateTimeFormat(locale.value === 'fa' ? 'fa-IR-u-ca-persian' : 'en-US', {
+  return new Intl.DateTimeFormat(language, {
     year: 'numeric',
     calendar
   }).format(new Date())

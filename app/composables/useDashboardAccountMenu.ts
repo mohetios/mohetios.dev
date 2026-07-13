@@ -17,9 +17,11 @@ export function useDashboardAccountMenu() {
       return ''
     }
 
-    return nextLocale.value.code === 'fa'
-      ? t('actions.switchToPersian')
-      : t('actions.switchToEnglish')
+    const switchLabelKey = nextLocale.value.switchLabelKey
+
+    return typeof switchLabelKey === 'string'
+      ? t(switchLabelKey)
+      : nextLocale.value.name || nextLocale.value.code
   })
 
   const accountLabel = computed(

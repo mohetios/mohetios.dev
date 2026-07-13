@@ -6,8 +6,7 @@ const localePath = useLocalePath()
 const toast = useToast()
 
 const path = computed(() => `/${locale.value}/contact`)
-const legacyPath = computed(() => `/${locale.value}/pages/contact`)
-const page = computed(() => getPage(path.value) || getPage(legacyPath.value))
+const page = computed(() => getPage(path.value))
 
 if (!page.value || page.value.draft) {
   throw createError({ statusCode: 404, statusMessage: 'Contact page not found', fatal: true })

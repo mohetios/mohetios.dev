@@ -2,8 +2,7 @@
 const { locale, t } = useI18n()
 const localePath = useLocalePath()
 const path = computed(() => `/${locale.value}/about`)
-const legacyPath = computed(() => `/${locale.value}/pages/about`)
-const page = computed(() => getPage(path.value) || getPage(legacyPath.value))
+const page = computed(() => getPage(path.value))
 const recentPosts = computed(() => getBlogPosts(locale.value, 3))
 const buildSteps = computed(() => [
   t('pages.aboutWorkshop.buildSteps.observe'),
