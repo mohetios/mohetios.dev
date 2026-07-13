@@ -894,7 +894,6 @@
       "title": "Lab",
       "description": "A place for prototypes, technical experiments, research fragments, and ideas before they become polished work.",
       "defaultStatus": "Exploring",
-      "workingNote": "This is a working note: useful enough to keep, but not final enough to present as a finished conclusion.",
       "stats": {
         "notes": "Notes",
         "active": "Active",

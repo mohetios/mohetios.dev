@@ -138,12 +138,6 @@ const { canonicalUrl: shareUrl } = useContentSeo({
       :summary="item.summary"
       :surround="surround"
     >
-      <template v-if="kind === 'lab'" #notice>
-        <p class="mh-paper-panel border-y border-default px-4 py-3 text-base leading-7 text-muted">
-          {{ t('content.lab.workingNote') }}
-        </p>
-      </template>
-
       <template #share>
         <ContentSocialShare :title="item.title" :description="item.description" :url="shareUrl" />
       </template>
