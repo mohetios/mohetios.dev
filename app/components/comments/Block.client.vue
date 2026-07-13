@@ -119,7 +119,7 @@ onMounted(() => {
               icon="i-lucide-message-square-plus"
               :label="isComposerOpen ? t('comments.closeFormShort') : t('comments.addComment')"
               :aria-label="isComposerOpen ? t('comments.closeForm') : t('comments.openForm')"
-              @click="isComposerOpen = !isComposerOpen"
+              @click="() => { isComposerOpen = !isComposerOpen }"
             />
           </UTooltip>
         </div>

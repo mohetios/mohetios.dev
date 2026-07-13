@@ -291,7 +291,7 @@ async function onSubmit() {
                 {{ t('contact.success.description') }}
               </p>
             </div>
-            <UButton variant="soft" icon="i-lucide-send" @click="isSubmitted = false">
+            <UButton variant="soft" icon="i-lucide-send" @click="() => { isSubmitted = false }">
               {{ t('contact.success.sendAnother') }}
             </UButton>
           </div>

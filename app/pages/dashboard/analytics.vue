@@ -312,7 +312,7 @@ watch(error, (currentError) => {
                     :key="item.value"
                     :variant="audienceMetric === item.value ? 'soft' : 'ghost'"
                     color="primary"
-                    @click="audienceMetric = item.value"
+                    @click="() => { audienceMetric = item.value }"
                   >
                     {{ item.label }}
                   </UButton>

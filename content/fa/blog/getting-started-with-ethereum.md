@@ -19,9 +19,9 @@ newsletter: true
 
 ## یادداشت خواندن
 
-این یادداشت درباره کتاب **Getting Started with Ethereum: A Step-by-Step Guide to Becoming a Blockchain Developer** است؛ کتابی برای شروع با Ethereum، Solidity و ابزارهای پایه Web3.
+**Getting Started with Ethereum: A Step-by-Step Guide to Becoming a Blockchain Developer** را باید با فاصله از hype خواند.
 
-برای من ارزش چنین کتابی وقتی روشن می‌شود که hype بلاکچین را کنار بگذاریم و فقط مسیر یادگیری را ببینیم: نصب ابزار، نوشتن قرارداد ساده، تست، ساخت توکن، و فهمیدن اینکه یک DApp واقعاً از چه قطعه‌هایی ساخته می‌شود.
+ارزش چنین کتابی وقتی روشن می‌شود که Ethereum را مثل یک مسئله مهندسی ببینیم: نصب ابزار، نوشتن قرارداد ساده، تست، ساخت توکن، و فهمیدن اینکه یک DApp واقعاً از چه قطعه‌هایی ساخته می‌شود.
 
 ## چیزی که باید زود روشن شود
 

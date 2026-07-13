@@ -490,7 +490,7 @@ onBeforeUnmount(() => {
             size="sm"
             icon="i-lucide-x"
             :aria-label="t('content.mermaid.close')"
-            @click="viewerOpen = false"
+            @click="() => { viewerOpen = false }"
           />
         </div>
 

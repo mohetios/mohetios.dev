@@ -36,7 +36,7 @@ watch(
         :color="composerMode === 'reply' ? 'primary' : 'neutral'"
         :variant="composerMode === 'reply' ? 'soft' : 'ghost'"
         size="sm"
-        @click="composerMode = 'reply'"
+        @click="() => { composerMode = 'reply' }"
       >
         {{ t('dashboard.inbox.composer.reply') }}
       </UButton>
@@ -45,7 +45,7 @@ watch(
         :color="composerMode === 'note' ? 'primary' : 'neutral'"
         :variant="composerMode === 'note' ? 'soft' : 'ghost'"
         size="sm"
-        @click="composerMode = 'note'"
+        @click="() => { composerMode = 'note' }"
       >
         {{ t('dashboard.inbox.composer.note') }}
       </UButton>

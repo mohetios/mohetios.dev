@@ -140,7 +140,7 @@ watch(
         </div>
 
         <div class="flex justify-end gap-2">
-          <UButton color="neutral" variant="ghost" size="sm" @click="dismissed = true">
+          <UButton color="neutral" variant="ghost" size="sm" @click="() => { dismissed = true }">
             {{ t('push.later') }}
           </UButton>
 

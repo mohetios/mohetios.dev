@@ -19,7 +19,7 @@ newsletter: true
 
 ## یادداشت خواندن
 
-این یادداشت درباره کتاب **Software Architecture Patterns for Serverless Systems** است؛ کتابی که serverless را فقط به معنی چند function جداگانه نمی‌بیند.
+**Software Architecture Patterns for Serverless Systems** را به خاطر یک نکته نگه می‌دارم: serverless فقط چند function جداگانه نیست.
 
 نقطه مفید کتاب برای من این است که معماری را از مسیر event، داده، استقلال سرویس‌ها و عملیات نگاه می‌کند. یعنی همان جاهایی که یک سیستم کوچک، اگر بی‌فکر رشد کند، خیلی زود سنگین و شکننده می‌شود.
 
