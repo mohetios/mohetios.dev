@@ -2,6 +2,12 @@
 title: درباره موهتیوس
 thumbnail: /content/physics.webp
 description: موهتیوس کارگاه شخصی مهندسی علی زمانی است؛ جایی که ایده‌ها، یادداشت‌ها، تجربه‌ها و سیستم‌های محصولی کم‌کم به نرم‌افزارهای قابل استفاده تبدیل می‌شوند.
+tags:
+- mohetios
+- personal-workshop
+- product-engineering
+- software-systems
+- technical-writing
 ---
 
 موهتیوس یک کارگاه شخصی مهندسی است.

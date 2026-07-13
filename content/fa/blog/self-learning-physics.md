@@ -4,10 +4,11 @@ date: 2023-01-16T16:07:56.966Z
 thumbnail: /content/physics.webp
 description: یادداشتی درباره مسیر خودآموزی فیزیک نوین؛ از ریاضی پایه و مکانیک کلاسیک تا نسبیت، کوانتوم، و منابعی که می‌توانند مسیر یادگیری را روشن‌تر کنند.
 tags:
-  - یادداشت
-  - فیزیک
-  - خودآموزی
-  - علوم
+- learning-notes
+- physics
+- self-learning
+- modern-physics
+- science
 
 cat: notes
 toc: true

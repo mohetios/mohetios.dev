@@ -4,11 +4,12 @@ description: 'In the first part of this educational series, you will get acquain
 date: 2025-04-28
 thumbnail: /content/jamstack-with-cloudflare-intro.webp
 tags:
-  - tutorial
-  - jamstack
-  - cloudflare-pages
-  - nuxt
-  - serverless
+- tutorial
+- jamstack
+- cloudflare-pages
+- nuxt
+- serverless-functions
+- web-architecture
 toc: true
 intro: true
 cat: tuts

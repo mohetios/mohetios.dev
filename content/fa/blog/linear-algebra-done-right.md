@@ -4,10 +4,11 @@ date: 2025-10-15
 thumbnail: /content/linear-algebra-done-right-cover.webp
 description: یادداشت‌هایی از کتاب جبر خطی شلدون اکسلر و ارزش فهم فضای برداری، نگاشت خطی، مقادیر ویژه و ساختار.
 tags:
-  - books
-  - linear-algebra
-  - mathematics
-  - physics
+- book-notes
+- linear-algebra
+- mathematics
+- vector-spaces
+- proofs
 ---
 
 ## یادداشت‌های مطالعه

@@ -4,9 +4,11 @@ date: 2026-03-22
 thumbnail: /content/let-us-c-cover.webp
 description: یادداشت‌هایی از راهنمای پرتکرار C یاشاونت کانتکار و نقشش به‌عنوان مسیر تمرین‌محور در زبان.
 tags:
-  - books
-  - c-programming
-  - programming-fundamentals
+- book-notes
+- c-programming
+- pointers
+- practice-notes
+- programming-fundamentals
 ---
 
 ## یادداشت‌های مطالعه

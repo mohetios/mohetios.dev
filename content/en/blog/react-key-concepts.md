@@ -4,10 +4,11 @@ date: 2025-08-24
 thumbnail: /content/react-key-concepts-cover.webp
 description: Notes on Maximilian Schwarzmuller's guide to React's core mental models, component structure, state, effects, and modern application patterns.
 tags:
-  - books
-  - react
-  - javascript
-  - frontend
+- book-notes
+- react
+- javascript
+- component-design
+- state-management
 ---
 
 ## Reading Notes

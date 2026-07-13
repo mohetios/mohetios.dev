@@ -2,6 +2,12 @@
 title: تماس
 thumbnail: /content/physics.webp
 description: راهی ساده برای ارتباط با علی زمانی درباره مهندسی محصول، سیستم‌های نرم‌افزاری، نوشتن فنی، همکاری متن‌باز، و کارهای عملی محصولی.
+tags:
+- contact
+- product-engineering
+- technical-writing
+- open-source
+- collaboration
 ---
 ساده‌ترین راه ارتباط با من، یک پیام کوتاه و مشخص است.
 

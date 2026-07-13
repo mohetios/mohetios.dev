@@ -5,11 +5,12 @@ date: 2021-09-07
 updated: 2026-05-14
 status: Exploring
 tags:
-  - offline-first
-  - p2p
-  - local-first
-  - product-architecture
-  - sync
+- offline-first
+- p2p
+- local-first
+- product-architecture
+- sync
+- resilient-ux
 ---
 
 Offline-first and peer-to-peer systems begin with the same uncomfortable question: what should still work when the center is unavailable?

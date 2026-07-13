@@ -5,12 +5,12 @@ date: 2019-01-16
 updated: 2026-06-12
 status: Refining
 tags:
-  - interactive-video
-  - html5-video
-  - state-machines
-  - javascript
-  - open-source
-  - media-tools
+- interactive-video
+- state-machines
+- html5-video
+- branching-narrative
+- media-tools
+- browser-apis
 ---
 
 Bandersnatch Interactive یک پروژه قدیمی و تجربی متن‌باز است، اما هنوز مسئله‌ای که لمس می‌کند برای من جالب است.

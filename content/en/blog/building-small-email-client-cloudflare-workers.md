@@ -4,11 +4,12 @@ description: A beginner-friendly walkthrough — route domain mail to a Worker, 
 date: 2026-06-08
 thumbnail: /content/cloudflare-email-worker-intro.webp
 tags:
-  - cloudflare-workers
-  - email-routing
-  - d1
-  - serverless
-  - tutorial
+- cloudflare-workers
+- email-routing
+- serverless-email
+- d1
+- queues
+- tutorial
 ---
 
 ## Opening + idea

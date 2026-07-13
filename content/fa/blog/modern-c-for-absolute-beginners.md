@@ -4,10 +4,11 @@ date: 2026-03-22
 thumbnail: /content/modern-c-for-absolute-beginners-cover.webp
 description: یادداشت‌هایی از مسیر مبتدی‌دوست اسلوبودان دمیتروویچ به C مدرن، حافظه، کامپایل و نظم برنامه‌نویسی سطح پایین.
 tags:
-  - books
-  - c-programming
-  - systems-programming
-  - beginners
+- book-notes
+- c-programming
+- systems-programming
+- beginner-programming
+- memory-management
 ---
 
 ## یادداشت‌های مطالعه

@@ -4,11 +4,12 @@ date: 2021-09-11T16:33:46.294Z
 thumbnail: /content/Building-Progressive-Web-Applications-with-Vuejs.webp
 description: 'یادداشتی درباره کتاب Building Progressive Web Applications with Vue.js و مسیر ساخت PWA با Vue.js؛ از service worker و manifest تا داده آفلاین و نصب‌پذیری.'
 tags:
-  - کتاب
-  - vue
-  - pwa
-  - service-workers
-  - فرانت‌اند
+- book-notes
+- vue
+- pwa
+- service-workers
+- offline-support
+- browser-storage
 
 cat: library
 toc: true

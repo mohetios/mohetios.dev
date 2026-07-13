@@ -4,9 +4,11 @@ date: 2026-05-28
 thumbnail: /content/writing-for-software-developers.webp
 description: یادداشت‌هایی از راهنمای فیلیپ کیلی برای نوشتن مقاله فنی، آموزش و محتوای developer-focused.
 tags:
-  - books
-  - technical-writing
-  - developer-content
+- book-notes
+- technical-writing
+- developer-content
+- documentation
+- clear-communication
 ---
 
 ## یادداشت‌های مطالعه

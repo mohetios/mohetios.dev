@@ -4,10 +4,11 @@ date: 2026-03-22
 thumbnail: /content/freescale-arm-cortex-m-embedded-programming-cover.webp
 description: Notes on Muhammad Ali Mazidi and coauthors' embedded C guide for ARM Cortex-M microcontrollers and low-level device programming.
 tags:
-  - books
-  - embedded-systems
-  - arm-cortex
-  - c-programming
+- book-notes
+- embedded-c
+- arm-cortex-m
+- microcontrollers
+- hardware-registers
 ---
 
 ## Reading Notes

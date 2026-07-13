@@ -4,10 +4,11 @@ date: 2026-05-28
 thumbnail: /content/learning-domain-driven-design.webp
 description: Notes on Vlad Khononov's practical guide to aligning software architecture with business domains.
 tags:
-  - books
-  - domain-driven-design
-  - software-architecture
-  - bounded-contexts
+- book-notes
+- domain-driven-design
+- software-architecture
+- bounded-contexts
+- domain-modeling
 ---
 
 ## Reading Notes

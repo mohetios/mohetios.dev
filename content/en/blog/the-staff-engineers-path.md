@@ -4,10 +4,11 @@ date: 2026-05-28
 thumbnail: /content/staff-engineers-path.webp
 description: Notes on Tanya Reilly's guide to technical leadership, strategy, execution, and influence as a senior individual contributor.
 tags:
-  - books
-  - staff-engineering
-  - technical-leadership
-  - career
+- book-notes
+- staff-engineering
+- technical-leadership
+- engineering-career
+- organizational-design
 ---
 
 ## Reading Notes

@@ -4,10 +4,11 @@ date: 2026-05-16
 thumbnail: /content/designing-data-intensive-applications-2e.webp
 description: یادداشت‌هایی از ویرایش دوم کتاب مارتین کلپمن و کریس ریکومینی — نقشه‌ای گسترده از سیستم‌های داده قابل اعتماد، مقیاس‌پذیر و قابل نگه‌داری.
 tags:
-  - books
-  - distributed-systems
-  - databases
-  - data-engineering
+- book-notes
+- data-systems
+- distributed-systems
+- replication
+- stream-processing
 ---
 
 ## یادداشت‌های مطالعه

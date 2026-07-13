@@ -5,11 +5,12 @@ date: 2025-10-23
 updated: 2026-05-14
 status: Active
 tags:
-  - travel
-  - offline-first
-  - react-native
-  - ai
-  - expo
+- travel-planning
+- ai-workspace
+- offline-first
+- forkable-content
+- react-native
+- expo
 repo: https://github.com/mohetios/safarnak.app
 website: https://safarnak.app
 featured: true

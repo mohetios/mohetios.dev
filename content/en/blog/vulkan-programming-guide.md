@@ -4,10 +4,11 @@ date: 2026-03-22
 thumbnail: /content/vulkan-programming-guide-cover.webp
 description: Notes on Graham Sellers and John Kessenich's guide to Vulkan, explicit graphics programming, rendering pipelines, and GPU control.
 tags:
-  - books
-  - vulkan
-  - gpu-programming
-  - graphics-api
+- book-notes
+- vulkan
+- gpu-programming
+- graphics-pipeline
+- explicit-apis
 ---
 
 ## Reading Notes

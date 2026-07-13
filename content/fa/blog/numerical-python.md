@@ -4,10 +4,11 @@ date: 2026-05-29
 thumbnail: /content/numerical-python-cover.webp
 description: یادداشت‌هایی از استفاده از Python، NumPy، SciPy و Matplotlib برای محاسبات علمی، آزمایش عددی و کار مهندسی داده‌محور.
 tags:
-  - books
-  - python
-  - numpy
-  - scientific-computing
+- book-notes
+- python
+- numpy
+- scientific-computing
+- data-analysis
 ---
 
 ## یادداشت‌های مطالعه

@@ -2,6 +2,12 @@
 title: Contact  
 thumbnail: /content/physics.webp  
 description: A simple way to reach Ali Zemani for product engineering, software systems, technical writing, open-source collaboration, and practical product work.
+tags:
+- contact
+- product-engineering
+- technical-writing
+- open-source
+- collaboration
 ---
 
 The best way to reach me is with a short, specific message.

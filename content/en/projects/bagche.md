@@ -5,11 +5,12 @@ date: 2024-10-31
 updated: 2025-05-19
 status: Private review
 tags:
-  - nuxt
-  - vue
-  - p2p-commerce
-  - jamstack
-  - cloudflare
+- p2p-commerce
+- jamstack
+- nuxt
+- vue
+- cloudflare
+- product-infrastructure
 repo: https://github.com/bagche/mamoochi
 website: https://mamoochi.mohetios.dev/
 ---

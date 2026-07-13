@@ -4,11 +4,11 @@ date: 2024-09-17T16:33:46.294Z
 thumbnail: /content/SoftwareArchitecture-Patterns-for-Serverless-Systems.webp
 description: 'یادداشتی درباره کتاب Software Architecture Patterns for Serverless Systems؛ مرور الگوهای serverless، event-driven و داده‌محور برای سیستم‌هایی که باید کوچک شروع شوند و قابل رشد بمانند.'
 tags:
-  - کتاب
-  - serverless
-  - event-driven
-  - microservices
-  - cqrs
+- book-notes
+- serverless-architecture
+- event-driven-systems
+- autonomous-services
+- cqrs
 
 cat: library
 toc: true

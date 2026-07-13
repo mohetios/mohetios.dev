@@ -4,10 +4,11 @@ date: 2023-09-01T16:33:46.294Z
 thumbnail: /content/wasm-in-actions.webp
 description: 'یادداشتی درباره کتاب WebAssembly in Action و مسیر آوردن کدهای C/C++/Rust به مرورگر با Wasm، با تمرکز روی کار عملکردی و اتصال به JavaScript.'
 tags:
-  - کتاب
-  - webassembly
-  - wasm
-  - browser-performance
+- book-notes
+- webassembly
+- browser-performance
+- native-modules
+- javascript-interop
 
 cat: library
 toc: true

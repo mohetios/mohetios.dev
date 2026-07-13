@@ -4,10 +4,11 @@ date: 2025-10-15
 thumbnail: /content/linear-algebra-done-right-cover.webp
 description: Notes on Sheldon Axler's linear algebra book and the value of understanding vector spaces, linear maps, eigenvalues, and structure.
 tags:
-  - books
-  - linear-algebra
-  - mathematics
-  - physics
+- book-notes
+- linear-algebra
+- mathematics
+- vector-spaces
+- proofs
 ---
 
 ## Reading Notes

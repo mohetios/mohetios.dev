@@ -5,10 +5,11 @@ date: 2017-07-05
 updated: 2022-12-16
 status: Reference
 tags:
-  - persian
-  - rtl
-  - typography
-  - i18n
+- persian
+- rtl
+- typography
+- localization
+- text-processing
 ---
 
 Persian text support often fails in small ways before it fails completely.

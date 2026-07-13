@@ -4,11 +4,11 @@ date: 2025-08-24
 thumbnail: /content/the-complete-developer-cover.webp
 description: یادداشت‌هایی از راهنمای full-stack مارتین کراوسه برای TypeScript، React، Next.js، MongoDB، Docker و شکل عملی اپلیکیشن‌های وب مدرن.
 tags:
-  - books
-  - full-stack
-  - typescript
-  - react
-  - nextjs
+- book-notes
+- full-stack-development
+- typescript
+- react
+- career-development
 ---
 
 ## یادداشت‌های مطالعه

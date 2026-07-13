@@ -4,10 +4,11 @@ date: 2026-05-28
 thumbnail: /content/refactoring-ui.webp
 description: Notes on Adam Wathan and Steve Schoger's tactical UI design guide for developers who need to make interfaces clearer and more polished.
 tags:
-  - books
-  - ui-design
-  - frontend
-  - product-design
+- book-notes
+- ui-design
+- visual-design
+- frontend
+- product-polish
 ---
 
 ## Reading Notes

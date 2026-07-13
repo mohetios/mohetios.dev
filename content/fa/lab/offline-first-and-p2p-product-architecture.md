@@ -5,12 +5,12 @@ date: 2021-09-07
 updated: 2026-06-12
 status: Refining
 tags:
-  - offline-first
-  - p2p
-  - local-first
-  - product-architecture
-  - sync
-  - trust
+- offline-first
+- p2p
+- local-first
+- product-architecture
+- sync
+- resilient-ux
 ---
 
 سیستم‌های offline-first و peer-to-peer از یک سؤال ناراحت‌کننده شروع می‌شوند:

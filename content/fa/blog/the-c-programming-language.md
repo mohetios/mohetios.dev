@@ -4,9 +4,11 @@ date: 2026-03-22
 thumbnail: /content/the-c-programming-language-cover.webp
 description: یادداشت‌هایی از کتاب کلاسیک C کرنیگان و ریچی و ارزش پایدار متن‌های برنامه‌نویسی فشرده و دقیق.
 tags:
-  - books
-  - c-programming
-  - systems-programming
+- book-notes
+- c-programming
+- unix
+- systems-programming
+- programming-fundamentals
 ---
 
 ## یادداشت‌های مطالعه

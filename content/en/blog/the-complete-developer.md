@@ -4,11 +4,11 @@ date: 2025-08-24
 thumbnail: /content/the-complete-developer-cover.webp
 description: Notes on Martin Krause's full-stack guide to TypeScript, React, Next.js, MongoDB, Docker, and the practical shape of modern web applications.
 tags:
-  - books
-  - full-stack
-  - typescript
-  - react
-  - nextjs
+- book-notes
+- full-stack-development
+- typescript
+- react
+- career-development
 ---
 
 ## Reading Notes

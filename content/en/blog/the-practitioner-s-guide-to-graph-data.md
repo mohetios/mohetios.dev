@@ -4,10 +4,11 @@ date: 2021-10-11T16:33:46.294Z
 thumbnail: /content/The-Practitioners-Guide-To-Graph-Data.webp
 description: Notes on applying graph thinking and graph technologies to relationship-heavy data problems.
 tags:
-  - books
-  - graph-databases
-  - neo4j
-  - data-modeling
+- book-notes
+- graph-databases
+- neo4j
+- data-modeling
+- connected-data
 ---
 
 ## Reading Notes

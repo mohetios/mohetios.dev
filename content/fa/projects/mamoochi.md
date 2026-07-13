@@ -5,11 +5,12 @@ date: 2024-10-31
 updated: 2025-05-19
 status: آرشیو فعال
 tags:
-  - jamstack
-  - nuxt
-  - vue
-  - cloudflare
-  - open-source
+- jamstack
+- nuxt
+- vue
+- content-systems
+- cloudflare
+- open-source
 repo: https://github.com/bagche/mamoochi
 website: https://mamoochi.mohetios.dev/
 featured: true

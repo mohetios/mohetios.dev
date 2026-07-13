@@ -4,9 +4,11 @@ date: 2026-05-28
 thumbnail: /content/writing-for-software-developers.webp
 description: Notes on Philip Kiely's guide to writing technical articles, tutorials, and developer-focused content.
 tags:
-  - books
-  - technical-writing
-  - developer-content
+- book-notes
+- technical-writing
+- developer-content
+- documentation
+- clear-communication
 ---
 
 ## Reading Notes

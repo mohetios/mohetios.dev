@@ -4,10 +4,11 @@ date: 2026-03-22
 thumbnail: /content/vulkan-cookbook-cover.webp
 description: Notes on Pawel Lapinski's recipe-based Vulkan book for solving practical rendering, resource, synchronization, and pipeline problems.
 tags:
-  - books
-  - vulkan
-  - gpu-programming
-  - rendering
+- book-notes
+- vulkan
+- gpu-programming
+- rendering-techniques
+- graphics-programming
 ---
 
 ## Reading Notes

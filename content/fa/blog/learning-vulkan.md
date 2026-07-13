@@ -4,10 +4,11 @@ date: 2026-03-22
 thumbnail: /content/learning-vulkan-cover.webp
 description: یادداشت‌هایی از مقدمه عملی پارمیندر سینگ به Vulkan و پایه‌های برنامه‌نویسی صریح GPU.
 tags:
-  - books
-  - vulkan
-  - gpu-programming
-  - graphics
+- book-notes
+- vulkan
+- gpu-programming
+- graphics-pipeline
+- resource-management
 ---
 
 ## یادداشت‌های مطالعه

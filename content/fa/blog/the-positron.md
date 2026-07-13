@@ -4,10 +4,11 @@ date: 2023-02-05T12:29:12.649Z
 thumbnail: /content/positrondiscovery.webp
 description: 'یادداشتی کوتاه درباره پوزیترون؛ پادذره الکترون، کشف آن در سال 1932، و اینکه چرا هنوز برای فهم پادماده و کاربردهایی مثل PET مهم است.'
 tags:
-  - یادداشت
-  - فیزیک
-  - فیزیک-ذرات
-  - پادماده
+- learning-notes
+- physics
+- particle-physics
+- antimatter
+- science-history
 
 cat: notes
 toc: true

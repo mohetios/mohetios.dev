@@ -4,10 +4,11 @@ date: 2026-03-22
 thumbnail: /content/freescale-arm-cortex-m-embedded-programming-cover.webp
 description: یادداشت‌هایی از راهنمای embedded C محمدعلی مزیدی و همکارانش برای میکروکنترلرهای ARM Cortex-M و برنامه‌نویسی سطح پایین دستگاه.
 tags:
-  - books
-  - embedded-systems
-  - arm-cortex
-  - c-programming
+- book-notes
+- embedded-c
+- arm-cortex-m
+- microcontrollers
+- hardware-registers
 ---
 
 ## یادداشت‌های مطالعه

@@ -5,11 +5,12 @@ date: 2017-12-07
 updated: 2018-01-03
 status: آرشیو پایدار
 tags:
-  - browser-extension
-  - persian
-  - rtl
-  - typography
-  - linkedin
+- browser-extension
+- persian
+- rtl
+- typography
+- localization
+- linkedin
 repo: https://github.com/mohetios/persian-linkedin
 ---
 

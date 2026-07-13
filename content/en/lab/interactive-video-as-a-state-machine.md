@@ -6,11 +6,11 @@ updated: 2026-06-12
 status: Refining  
 tags:
 - interactive-video
-- html5-video
 - state-machines
-- javascript
-- open-source
+- html5-video
+- branching-narrative
 - media-tools
+- browser-apis
 ---
 
 Bandersnatch Interactive is an old experimental open-source project, but I still like the problem it touches.

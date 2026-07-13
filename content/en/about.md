@@ -2,6 +2,12 @@
 title: About Mohetios  
 thumbnail: /content/physics.webp  
 description: Mohetios is the personal engineering workshop of Ali Zemani — a place where ideas, notes, experiments, and product systems slowly unfold into useful software.
+tags:
+- mohetios
+- personal-workshop
+- product-engineering
+- software-systems
+- technical-writing
 ---
 
 Mohetios is a personal engineering workshop.

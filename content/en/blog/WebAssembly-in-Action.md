@@ -8,10 +8,11 @@ description: WebAssembly in Action introduces the WebAssembly stack and walks
   API.
 date: 2023-09-01T16:33:46.294Z
 tags:
-  - books
-  - webassembly
-  - wasm
-  - browser-performance
+- book-notes
+- webassembly
+- browser-performance
+- native-modules
+- javascript-interop
 
 toc: false
 intro: false

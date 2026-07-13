@@ -5,11 +5,12 @@ date: 2017-07-05
 updated: 2021-12-20
 status: Stable archive
 tags:
-  - python
-  - nlp
-  - persian
-  - word-cloud
-  - visualization
+- persian
+- nlp
+- word-cloud
+- python
+- text-visualization
+- localization
 repo: https://github.com/mohetios/persian-word-cloud
 featured: true
 ---

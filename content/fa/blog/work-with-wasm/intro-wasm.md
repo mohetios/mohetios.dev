@@ -4,11 +4,12 @@ date: 2023-09-12T16:33:46.294Z
 thumbnail: /content/web-assembly-logo.webp
 description: 'شروع یک مسیر عملی با WebAssembly و TinyGo؛ ساخت ماژول‌های کوچک Wasm، اتصال آن‌ها به JavaScript، و فهمیدن مرز واقعی استفاده از آن در وب.'
 tags:
-  - آموزش
-  - webassembly
-  - tinygo
-  - go
-  - wasm
+- tutorial
+- webassembly
+- tinygo
+- go
+- browser-runtime
+- javascript-interop
 
 toc: true
 intro: false

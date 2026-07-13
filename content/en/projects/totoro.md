@@ -5,11 +5,12 @@ date: 2023-08-24
 updated: 2023-09-09
 status: Archive
 tags:
-  - nuxt
-  - jamstack
-  - decap-cms
-  - cloudflare-pages
-  - static-blog
+- jamstack
+- nuxt
+- decap-cms
+- git-backed-content
+- cloudflare-pages
+- static-publishing
 repo: https://github.com/mohetios/totoro
 website: https://totoro.mohetios.dev/
 ---

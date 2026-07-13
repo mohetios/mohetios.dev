@@ -4,9 +4,11 @@ date: 2026-03-22
 thumbnail: /content/let-us-c-cover.webp
 description: Notes on Yashavant Kanetkar's long-running C programming guide and its role as a practice-heavy route through the language.
 tags:
-  - books
-  - c-programming
-  - programming-fundamentals
+- book-notes
+- c-programming
+- pointers
+- practice-notes
+- programming-fundamentals
 ---
 
 ## Reading Notes

@@ -5,12 +5,12 @@ date: 2024-03-18
 updated: 2026-06-12
 status: Private review
 tags:
-  - nostr
-  - cloudflare-workers
-  - decentralized-protocols
-  - typescript
-  - websocket
-  - protocol-design
+- nostr
+- relay-architecture
+- decentralized-protocols
+- cloudflare-workers
+- websockets
+- protocol-design
 ---
 
 Repositoryهای مربوط به Nostr بیشتر از اینکه محصول تمام‌شده باشند، یک مطالعه پروتکل‌اند.

@@ -4,10 +4,11 @@ date: 2024-09-17T16:33:46.294Z
 thumbnail: /content/The-Jamstack-Book.webp
 description: 'یادداشتی درباره کتاب The Jamstack Book و اینکه معماری Jamstack چطور با JavaScript، API و Markup مسیر ساخت سایت‌های سریع‌تر و ساده‌تر را توضیح می‌دهد.'
 tags:
-  - کتاب
-  - jamstack
-  - static-site-generators
-  - headless-cms
+- book-notes
+- jamstack
+- static-site-generators
+- cdn-delivery
+- web-architecture
 
 cat: library
 toc: true

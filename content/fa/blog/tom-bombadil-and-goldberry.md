@@ -4,10 +4,10 @@ date: 2021-09-11T16:33:46.294Z
 thumbnail: /content/tom-bombadil-and-goldberry.webp
 description: 'یادداشتی درباره تام بامبادیل و گلدبری؛ دو چهره عجیب و آرام در جهان تالکین که بیرون از منطق معمول قدرت و حلقه می‌ایستند.'
 tags:
-  - یادداشت
-  - تالکین
-  - ارباب-حلقه‌ها
-  - ادبیات-فانتزی
+- literary-notes
+- tolkien
+- fantasy-literature
+- mythic-reading
 
 cat: library
 toc: true

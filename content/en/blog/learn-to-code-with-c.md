@@ -4,10 +4,11 @@ date: 2026-03-22
 thumbnail: /content/learn-to-code-with-c-cover.webp
 description: Notes on Simon Long's approachable C programming book, with an emphasis on small programs, Raspberry Pi context, and practical fundamentals.
 tags:
-  - books
-  - c-programming
-  - raspberry-pi
-  - beginners
+- book-notes
+- c-programming
+- beginner-programming
+- raspberry-pi
+- programming-fundamentals
 ---
 
 ## Reading Notes

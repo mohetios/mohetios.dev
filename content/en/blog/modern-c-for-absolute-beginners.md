@@ -4,10 +4,11 @@ date: 2026-03-22
 thumbnail: /content/modern-c-for-absolute-beginners-cover.webp
 description: Notes on Slobodan Dmitrovic's beginner-friendly path into modern C, memory, compilation, and the discipline of low-level programming.
 tags:
-  - books
-  - c-programming
-  - systems-programming
-  - beginners
+- book-notes
+- c-programming
+- systems-programming
+- beginner-programming
+- memory-management
 ---
 
 ## Reading Notes

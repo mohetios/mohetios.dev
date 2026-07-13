@@ -4,10 +4,11 @@ date: 2026-05-28
 thumbnail: /content/staff-engineers-path.webp
 description: یادداشت‌هایی از راهنمای تانیا رایلی برای رهبری فنی، استراتژی، اجرا و نفوذ به‌عنوان senior individual contributor.
 tags:
-  - books
-  - staff-engineering
-  - technical-leadership
-  - career
+- book-notes
+- staff-engineering
+- technical-leadership
+- engineering-career
+- organizational-design
 ---
 
 ## یادداشت‌های مطالعه

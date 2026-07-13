@@ -4,11 +4,12 @@ date: 2025-04-18
 thumbnail: /content/jamstack-with-cloudflare-intro.webp
 description: بخش اول یک مسیر آموزشی برای ساخت ابزار وب با Jamstack، Cloudflare Pages، Nuxt و اکوسیستم serverless Cloudflare؛ با تمرکز روی مدل ذهنی، محدوده کار، و مسیر MVP.
 tags:
-  - آموزش
-  - jamstack
-  - cloudflare-pages
-  - nuxt
-  - serverless
+- tutorial
+- jamstack
+- cloudflare-pages
+- nuxt
+- serverless-functions
+- web-architecture
 toc: true
 intro: true
 cat: tuts

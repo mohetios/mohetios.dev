@@ -4,11 +4,11 @@ date: 2024-09-17T16:33:46.294Z
 thumbnail: /content/SoftwareArchitecture-Patterns-for-Serverless-Systems.webp
 description: Software Architecture Patterns for Serverless Systems, by John Gilbert is a comprehensive guide for software architects designing scalable, flexible, and event-driven systems using serverless architecture. It covers modern architectural patterns like autonomous services, event-first approaches, data management with CQRS, and security in serverless systems. It also offers strategies like the Strangler Fig pattern for migrating legacy systems to modern architectures.
 tags:
-  - books
-  - serverless
-  - event-driven
-  - microservices
-  - cqrs
+- book-notes
+- serverless-architecture
+- event-driven-systems
+- autonomous-services
+- cqrs
 
 toc: false
 intro: true

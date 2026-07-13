@@ -4,10 +4,11 @@ date: 2021-08-11T12:29:12.649Z
 thumbnail: /content/Modern-Web-Development-on-the-JAMstack.webp
 description: 'یادداشتی درباره کتاب Modern Web Development on the JAMstack؛ مرور عملی معماری JAMstack، محتوای پیش‌تولیدشده، APIها و استقرار ساده‌تر وب.'
 tags:
-  - کتاب
-  - jamstack
-  - static-sites
-  - معماری-وب
+- book-notes
+- jamstack
+- static-sites
+- apis
+- web-performance
 
 cat: library
 toc: true

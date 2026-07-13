@@ -4,10 +4,11 @@ date: 2026-03-22
 thumbnail: /content/learning-vulkan-cover.webp
 description: Notes on Parminder Singh's practical introduction to Vulkan and the foundations of explicit GPU programming.
 tags:
-  - books
-  - vulkan
-  - gpu-programming
-  - graphics
+- book-notes
+- vulkan
+- gpu-programming
+- graphics-pipeline
+- resource-management
 ---
 
 ## Reading Notes

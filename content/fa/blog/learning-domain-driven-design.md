@@ -4,10 +4,11 @@ date: 2026-05-28
 thumbnail: /content/learning-domain-driven-design.webp
 description: یادداشت‌هایی از راهنمای عملی ولاد خونونوف برای هم‌راستا کردن معماری نرم‌افزار با دامنه‌های کسب‌وکار.
 tags:
-  - books
-  - domain-driven-design
-  - software-architecture
-  - bounded-contexts
+- book-notes
+- domain-driven-design
+- software-architecture
+- bounded-contexts
+- domain-modeling
 ---
 
 ## یادداشت‌های مطالعه

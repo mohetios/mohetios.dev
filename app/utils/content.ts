@@ -29,6 +29,7 @@ type BaseContent = {
   updated?: string
   thumbnail?: string
   draft?: boolean
+  tags: string[]
   path: string
   content: string
   raw: string

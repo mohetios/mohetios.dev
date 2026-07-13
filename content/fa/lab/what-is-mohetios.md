@@ -3,9 +3,10 @@ title: موهتیوس چیست؟
 description: یادداشتی درباره نام، شخصیت سازنده، و کارگاهی که پشت Mohetios.dev قرار دارد.
 date: 2026-05-27
 tags:
-  - mohetios
-  - engineering-notes
-  - personal-brand
+- mohetios
+- personal-workshop
+- engineering-notes
+- product-thinking
 ---
 
 موهتیوس یک شخصیت سازنده است؛ یک کارگاه شخصی مهندسی، و نامی برای شیوه‌ای که من با آن به ایده‌ها و سیستم‌ها فکر می‌کنم.

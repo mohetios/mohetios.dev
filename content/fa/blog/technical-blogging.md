@@ -4,10 +4,11 @@ date: 2026-05-28
 thumbnail: /content/technical-blogging.webp
 description: یادداشت‌هایی از راهنمای آنتونیو کانجیانو برای ساخت بلاگ فنی متمرکز و تبدیل تخصص به حضور آنلاین پایدار.
 tags:
-  - books
-  - technical-writing
-  - blogging
-  - content-strategy
+- book-notes
+- technical-writing
+- developer-content
+- blogging
+- editorial-workflow
 ---
 
 ## یادداشت‌های مطالعه

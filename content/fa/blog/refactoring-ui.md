@@ -4,10 +4,11 @@ date: 2026-05-28
 thumbnail: /content/refactoring-ui.webp
 description: یادداشت‌هایی از راهنمای tactical طراحی UI آدام واتان و استیو شوگر برای توسعه‌دهندگانی که باید interface را روشن‌تر و polishedتر کنند.
 tags:
-  - books
-  - ui-design
-  - frontend
-  - product-design
+- book-notes
+- ui-design
+- visual-design
+- frontend
+- product-polish
 ---
 
 ## یادداشت‌های مطالعه

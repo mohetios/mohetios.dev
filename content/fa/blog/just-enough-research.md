@@ -4,10 +4,11 @@ date: 2026-05-16
 thumbnail: /content/just-enough-research.webp
 description: یادداشت‌هایی از راهنمای فشرده اریکا هال برای کاهش ریسک محصول با research و تصمیم‌گیری بهتر در طراحی.
 tags:
-  - books
-  - user-research
-  - product-design
-  - ux
+- book-notes
+- user-research
+- product-design
+- decision-making
+- usability-testing
 ---
 
 ## یادداشت‌های مطالعه

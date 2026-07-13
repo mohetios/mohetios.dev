@@ -4,10 +4,11 @@ date: 2026-03-22
 thumbnail: /content/learn-to-code-with-c-cover.webp
 description: یادداشت‌هایی از کتاب C قابل‌دسترس سایمون لانگ، با تمرکز بر برنامه‌های کوچک، زمینه Raspberry Pi و اصول عملی.
 tags:
-  - books
-  - c-programming
-  - raspberry-pi
-  - beginners
+- book-notes
+- c-programming
+- beginner-programming
+- raspberry-pi
+- programming-fundamentals
 ---
 
 ## یادداشت‌های مطالعه

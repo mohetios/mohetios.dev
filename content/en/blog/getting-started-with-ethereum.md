@@ -4,11 +4,11 @@ date: 2023-01-18T19:14:50.978Z
 thumbnail: /content/6c2b5bfc492ab5d2c7bd898863c7a4db-d.webp
 description: Notes on Davi Bauer's beginner-friendly path through Ethereum development, Solidity contracts, local chains, IPFS, Filecoin, ENS, and oracle data.
 tags:
-  - books
-  - ethereum
-  - blockchain
-  - solidity
-  - smart-contracts
+- book-notes
+- ethereum
+- solidity
+- smart-contracts
+- dapp-architecture
 ---
 
 ## Reading Notes

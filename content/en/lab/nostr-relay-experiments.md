@@ -7,10 +7,10 @@ updated: 2026-06-12
 status: Private review  
 tags:
 - nostr
-- cloudflare-workers
+- relay-architecture
 - decentralized-protocols
-- typescript
-- websocket
+- cloudflare-workers
+- websockets
 - protocol-design
 ---
 

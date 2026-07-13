@@ -4,10 +4,11 @@ date: 2021-10-11T16:33:46.294Z
 thumbnail: /content/The-Practitioners-Guide-To-Graph-Data.webp
 description: "یادداشتی درباره کتاب The Practitioner's Guide to Graph Data و اینکه مدل گراف چطور روابط بین داده‌ها را برای مسئله‌هایی مثل پیشنهاد، کشف تقلب و تحلیل شبکه روشن‌تر می‌کند."
 tags:
-  - کتاب
-  - graph-databases
-  - neo4j
-  - data-modeling
+- book-notes
+- graph-databases
+- neo4j
+- data-modeling
+- connected-data
 
 cat: library
 toc: true

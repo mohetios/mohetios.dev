@@ -5,10 +5,12 @@ date: 2019-01-16
 updated: 2025-12-16
 status: آرشیو پایدار
 tags:
-  - interactive-video
-  - html5-video
-  - javascript
-  - branching-narrative
+- interactive-video
+- html5-video
+- state-machines
+- branching-narrative
+- javascript
+- browser-apps
 repo: https://github.com/mohetios/BandersnatchInteractive
 website: https://mohetios.github.io/BandersnatchInteractive/
 featured: true

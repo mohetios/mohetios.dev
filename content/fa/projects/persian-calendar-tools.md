@@ -5,10 +5,12 @@ date: 2023-12-16
 updated: 2024-03-07
 status: آرشیو
 tags:
-  - vue
-  - persian-calendar
-  - jalali
-  - date-picker
+- persian-calendar
+- jalali
+- vue
+- rtl
+- localization
+- date-picker
 repo: https://github.com/mohetios/zcalendar
 website: https://mohetios.github.io/zcalendar/
 ---

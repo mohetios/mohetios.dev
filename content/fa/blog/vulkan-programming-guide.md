@@ -4,10 +4,11 @@ date: 2026-03-22
 thumbnail: /content/vulkan-programming-guide-cover.webp
 description: یادداشت‌هایی از راهنمای گراهام سلرز و جان کسنیچ برای Vulkan، برنامه‌نویسی گرافیکی صریح، pipeline رندر و کنترل GPU.
 tags:
-  - books
-  - vulkan
-  - gpu-programming
-  - graphics-api
+- book-notes
+- vulkan
+- gpu-programming
+- graphics-pipeline
+- explicit-apis
 ---
 
 ## یادداشت‌های مطالعه

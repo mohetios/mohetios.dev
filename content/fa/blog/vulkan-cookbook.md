@@ -4,10 +4,11 @@ date: 2026-03-22
 thumbnail: /content/vulkan-cookbook-cover.webp
 description: یادداشت‌هایی از کتاب recipe-based پاول لاپینسکی برای حل مسئله‌های عملی rendering، resource، synchronization و pipeline در Vulkan.
 tags:
-  - books
-  - vulkan
-  - gpu-programming
-  - rendering
+- book-notes
+- vulkan
+- gpu-programming
+- rendering-techniques
+- graphics-programming
 ---
 
 ## یادداشت‌های مطالعه

@@ -7,13 +7,13 @@ updated: 2026-07-12
 status: Conversation Suggestions V2 + release hardening
 featured: true
 tags:
-  - telegram-bot
-  - cloudflare-workers
-  - durable-objects
-  - d1
-  - vectorize
-  - anonymous-messaging
-  - persian-product
+- technical-lab
+- anonymous-messaging
+- telegram-bot
+- cloudflare-workers
+- durable-objects
+- privacy-boundaries
+- vectorize
 ---
 
 ## ۱. چرا این پروژه ساخته شد

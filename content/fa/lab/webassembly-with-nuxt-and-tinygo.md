@@ -5,11 +5,12 @@ date: 2023-09-09
 updated: 2024-06-12
 status: Exploring
 tags:
-  - webassembly
-  - tinygo
-  - nuxt
-  - go
-  - wasm
+- webassembly
+- tinygo
+- nuxt
+- go
+- browser-runtime
+- teaching-notes
 ---
 
 مسیر WebAssembly برای من از یک سؤال آموزشی شروع شد:

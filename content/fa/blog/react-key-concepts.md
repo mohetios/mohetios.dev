@@ -4,10 +4,11 @@ date: 2025-08-24
 thumbnail: /content/react-key-concepts-cover.webp
 description: یادداشت‌هایی از راهنمای ماکسیمیلیان شوارتزمولر برای مدل‌های ذهنی اصلی React، ساختار component، state، effect و الگوهای اپلیکیشن مدرن.
 tags:
-  - books
-  - react
-  - javascript
-  - frontend
+- book-notes
+- react
+- javascript
+- component-design
+- state-management
 ---
 
 ## یادداشت‌های مطالعه

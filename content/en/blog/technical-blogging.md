@@ -4,10 +4,11 @@ date: 2026-05-28
 thumbnail: /content/technical-blogging.webp
 description: Notes on Antonio Cangiano's guide to building a focused technical blog and turning expertise into a durable online presence.
 tags:
-  - books
-  - technical-writing
-  - blogging
-  - content-strategy
+- book-notes
+- technical-writing
+- developer-content
+- blogging
+- editorial-workflow
 ---
 
 ## Reading Notes

@@ -4,10 +4,11 @@ date: 2026-05-29
 thumbnail: /content/numerical-python-cover.webp
 description: Notes on using Python, NumPy, SciPy, and Matplotlib for scientific computing, numerical experiments, and data-heavy engineering work.
 tags:
-  - books
-  - python
-  - numpy
-  - scientific-computing
+- book-notes
+- python
+- numpy
+- scientific-computing
+- data-analysis
 ---
 
 ## Reading Notes

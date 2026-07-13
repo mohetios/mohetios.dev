@@ -5,12 +5,12 @@ thumbnail: /content/nekonymous-blog.webp
 date: 2026-06-26
 updated: 2026-07-12
 tags:
-  - nekonymous
-  - anonymous-messaging
-  - telegram-bot
-  - privacy
-  - cloudflare-workers
-  - persian-product
+- anonymous-messaging
+- telegram-bot
+- privacy-boundaries
+- cloudflare-workers
+- durable-objects
+- blind-abuse-reporting
 ---
 
 گاهی یک ایده‌ی ساده در اینترنت، بیشتر از چیزی که در نگاه اول به نظر می‌رسد، درباره‌ی اعتماد حرف می‌زند.

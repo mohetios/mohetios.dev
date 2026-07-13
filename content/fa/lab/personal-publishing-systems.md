@@ -5,13 +5,12 @@ date: 2019-10-07
 updated: 2026-06-12
 status: Active
 tags:
-  - jamstack
-  - nuxt
-  - content-systems
-  - cloudflare-pages
-  - static-sites
-  - personal-publishing
-  - git-backed-content
+- personal-publishing
+- git-backed-content
+- jamstack
+- nuxt
+- content-systems
+- cloudflare-pages
 ---
 
 پروژه تکرارشونده هیچ‌وقت فقط «ساختن یک وب‌سایت» نبود.

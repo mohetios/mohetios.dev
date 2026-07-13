@@ -4,10 +4,11 @@ date: 2026-05-16
 thumbnail: /content/designing-data-intensive-applications-2e.webp
 description: Notes on Martin Kleppmann and Chris Riccomini's second edition of Designing Data-Intensive Applications, a broad map of reliable, scalable, and maintainable data systems.
 tags:
-  - books
-  - distributed-systems
-  - databases
-  - data-engineering
+- book-notes
+- data-systems
+- distributed-systems
+- replication
+- stream-processing
 ---
 
 ## Reading Notes

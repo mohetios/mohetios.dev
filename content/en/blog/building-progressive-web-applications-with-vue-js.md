@@ -4,11 +4,12 @@ thumbnail: /content/Building-Progressive-Web-Applications-with-Vuejs.webp
 date: 2021-09-11T16:33:46.294Z
 description: Notes on building Vue-powered progressive web apps with service workers, offline support, manifests, IndexedDB, background sync, and push notifications.
 tags:
-  - books
-  - vue
-  - pwa
-  - service-workers
-  - frontend
+- book-notes
+- vue
+- pwa
+- service-workers
+- offline-support
+- browser-storage
 ---
 
 ## Reading Notes

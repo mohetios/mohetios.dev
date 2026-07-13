@@ -4,9 +4,11 @@ date: 2026-03-22
 thumbnail: /content/the-c-programming-language-cover.webp
 description: Notes on Brian W. Kernighan and Dennis M. Ritchie's classic C book and the enduring value of compact, precise programming texts.
 tags:
-  - books
-  - c-programming
-  - systems-programming
+- book-notes
+- c-programming
+- unix
+- systems-programming
+- programming-fundamentals
 ---
 
 ## Reading Notes
