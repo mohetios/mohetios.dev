@@ -150,18 +150,78 @@
         "lead": "Lead"
       },
       "readerSignals": {
-        "empty": "No reader signals yet."
+        "empty": "No reader signals yet.",
+        "items": {
+          "inboxFocus": {
+            "label": "Inbox focus",
+            "helper": "Messages currently waiting for a reply"
+          },
+          "leadQuality": {
+            "label": "Lead quality",
+            "helper": "Potential work or collaboration messages"
+          },
+          "comments": {
+            "label": "Comments",
+            "helper": "Comments waiting for moderation"
+          }
+        }
       },
       "systemHealth": {
         "ok": "OK",
         "pending": "Pending",
-        "error": "Issue"
+        "error": "Issue",
+        "items": {
+          "inbox": {
+            "label": "Inbox",
+            "helper": {
+              "default": "Inbox messages are loaded from D1"
+            }
+          },
+          "analytics": {
+            "label": "Analytics",
+            "helper": {
+              "ok": "Traffic and edge metrics are loaded from Cloudflare Analytics.",
+              "pending": "Cloudflare Analytics is not connected yet.",
+              "default": "Cloudflare Analytics status"
+            }
+          },
+          "comments": {
+            "label": "Comments",
+            "helper": {
+              "ok": "No pending comments",
+              "pending": "Some comments are waiting for moderation",
+              "default": "Comment moderation status"
+            }
+          }
+        }
       },
       "recentActivity": {
         "empty": "No recent activity yet."
       },
       "quickLinks": {
-        "title": "Quick links"
+        "title": "Quick links",
+        "items": {
+          "inbox": {
+            "label": "Open inbox",
+            "description": "Review messages and replies"
+          },
+          "leads": {
+            "label": "Review leads",
+            "description": "Check potential freelance and collaboration leads"
+          },
+          "newsletter": {
+            "label": "Newsletter",
+            "description": "Review subscribers and list status"
+          },
+          "comments": {
+            "label": "Comments",
+            "description": "Moderate pending article comments"
+          },
+          "system": {
+            "label": "System status",
+            "description": "Check backend and delivery health"
+          }
+        }
       }
     },
     "analytics": {

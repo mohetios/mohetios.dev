@@ -19,13 +19,18 @@ const props = defineProps<{
   metric: DashboardSummaryCard
 }>()
 
+const localePath = useLocalePath()
 const pairedStat = computed(() => props.metric.stats?.length === 1 ? props.metric.stats[0] : null)
 const primaryLabel = computed(() => props.metric.valueLabel ?? props.metric.label)
 </script>
 
 <template>
   <UCard variant="outline" :ui="dashboardCardUi">
-    <component :is="metric.to ? 'NuxtLink' : 'div'" :to="metric.to" class="block">
+    <component
+      :is="metric.to ? 'NuxtLink' : 'div'"
+      :to="metric.to ? localePath(metric.to) : undefined"
+      class="block"
+    >
       <div class="flex items-start gap-4">
         <div class="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
           <UIcon :name="metric.icon" class="size-5" />

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { locale, locales, t } = useI18n()
+const localePath = useLocalePath()
 const brandName = computed(() => getSeoSiteName(t))
 const route = useRoute()
 const isRtl = computed(() => locales.value.find((item) => item.code === locale.value)?.dir === 'rtl')
@@ -8,6 +9,7 @@ const dashboardSidebarSide = computed(() => (isRtl.value ? 'right' : 'left'))
 type DashboardNavItem = {
   label: string
   icon: string
+  path: string
   to: string
   count?: number
 }
@@ -33,50 +35,41 @@ const navItems = computed<DashboardNavItem[]>(() => [
   {
     label: t('dashboard.nav.overview'),
     icon: 'i-lucide-house',
-    to: '/dashboard'
+    path: '/dashboard',
+    to: localePath('/dashboard')
   },
   {
     label: t('dashboard.nav.inbox'),
     icon: 'i-lucide-inbox',
-    to: '/dashboard/inbox',
+    path: '/dashboard/inbox',
+    to: localePath('/dashboard/inbox'),
     count: navCounts.value.inboxUnread
   },
   {
     label: t('dashboard.nav.leads'),
     icon: 'i-lucide-users',
-    to: '/dashboard/leads'
+    path: '/dashboard/leads',
+    to: localePath('/dashboard/leads')
   },
   {
     label: t('dashboard.nav.newsletter'),
     icon: 'i-lucide-mail-plus',
-    to: '/dashboard/newsletter'
+    path: '/dashboard/newsletter',
+    to: localePath('/dashboard/newsletter')
   },
   {
     label: t('dashboard.nav.comments'),
     icon: 'i-lucide-message-square',
-    to: '/dashboard/comments',
+    path: '/dashboard/comments',
+    to: localePath('/dashboard/comments'),
     count: navCounts.value.pendingComments
   },
-  // {
-  //   label: t('dashboard.nav.content'),
-  //   icon: 'i-lucide-file-text',
-  //   to: '/dashboard/content'
-  // },
   {
     label: t('dashboard.nav.analytics'),
     icon: 'i-lucide-chart-column',
-    to: '/dashboard/analytics'
+    path: '/dashboard/analytics',
+    to: localePath('/dashboard/analytics')
   }
-  // {
-  //   label: t('dashboard.nav.system'),
-  //   icon: 'i-lucide-server',
-  //   to: '/dashboard/system'
-  // },
-  // {
-  //   label: t('dashboard.nav.settings'),
-  //   icon: 'i-lucide-settings',
-  //   to: '/dashboard/settings'
-  // }
 ])
 
 const currentPath = computed(() => stripLocalePrefix(route.path))
@@ -122,7 +115,7 @@ function formatBadgeCount(count: number, max: number) {
         :class="collapsed ? 'justify-center' : 'justify-between'"
       >
         <NuxtLink
-          to="/dashboard"
+          :to="localePath('/dashboard')"
           class="group/logo inline-flex min-w-0 items-center text-inherit no-underline"
           :class="collapsed ? 'justify-center' : ''"
           :aria-label="`${brandName} ${t('dashboard.title')}`"
@@ -147,16 +140,16 @@ function formatBadgeCount(count: number, max: number) {
       <nav class="space-y-1" aria-label="Dashboard navigation">
         <NuxtLink
           v-for="item in navItems"
-          :key="item.to"
+          :key="item.path"
           :to="item.to"
           class="group relative flex min-h-10 items-center rounded-xl px-3 py-2 text-sm transition"
           :class="[
-            isActive(item.to)
+            isActive(item.path)
               ? 'bg-primary/10 text-primary'
               : 'text-muted hover:bg-mohstone-100 hover:text-highlighted dark:hover:bg-ink-900',
             collapsed ? 'justify-center px-2' : 'gap-3'
           ]"
-          :aria-current="isActive(item.to) ? 'page' : undefined"
+          :aria-current="isActive(item.path) ? 'page' : undefined"
           :title="collapsed ? item.label : undefined"
         >
           <span

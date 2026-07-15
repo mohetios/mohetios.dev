@@ -20,6 +20,7 @@ definePageMeta({
 })
 
 const { t, locale } = useI18n()
+const localePath = useLocalePath()
 const route = useRoute()
 const toast = useToast()
 
@@ -236,8 +237,8 @@ function closeLeadDetail() {
 function openInboxConversation() {
   if (!selectedLead.value) return
 
-  navigateTo({
-    path: '/dashboard/inbox',
+  return navigateTo({
+    path: localePath('/dashboard/inbox'),
     query: {
       tab: 'leads',
       message: selectedLead.value.inboxMessageId

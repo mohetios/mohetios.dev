@@ -6,7 +6,7 @@ defineProps<{
   loading?: boolean
 }>()
 
-const { t } = useI18n()
+const { t, te } = useI18n()
 
 const statusColor = {
   ok: 'success',
@@ -20,6 +20,21 @@ function statusLabel(status: string) {
   if (status === 'pending') return t('dashboard.home.systemHealth.pending')
   if (status === 'error' || status === 'offline') return t('dashboard.home.systemHealth.error')
   return status
+}
+
+function healthLabel(item: DashboardHome['systemHealth'][number]) {
+  const key = `dashboard.home.systemHealth.items.${item.key}.label`
+  return te(key) ? t(key) : item.label
+}
+
+function healthHelper(item: DashboardHome['systemHealth'][number]) {
+  const statusKey = `dashboard.home.systemHealth.items.${item.key}.helper.${item.status}`
+  if (te(statusKey)) {
+    return t(statusKey)
+  }
+
+  const key = `dashboard.home.systemHealth.items.${item.key}.helper.default`
+  return te(key) ? t(key) : item.helper
 }
 </script>
 
@@ -42,10 +57,10 @@ function statusLabel(status: string) {
       >
         <div class="min-w-0">
           <p class="text-sm font-medium text-highlighted">
-            {{ item.label }}
+            {{ healthLabel(item) }}
           </p>
           <p class="mt-0.5 text-xs text-muted">
-            {{ item.helper }}
+            {{ healthHelper(item) }}
           </p>
         </div>
 

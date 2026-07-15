@@ -7,6 +7,7 @@ defineProps<{
 }>()
 
 const { t, locale, locales } = useI18n()
+const localePath = useLocalePath()
 const currentLanguage = computed(() => {
   const language = locales.value.find((item) => item.code === locale.value)?.language
 
@@ -98,7 +99,7 @@ function kindBadge(kind: string) {
     <ul v-else class="divide-y divide-default">
       <li v-for="item in items" :key="item.id" class="py-3 first:pt-0 last:pb-0">
         <NuxtLink
-          :to="`/dashboard/inbox?message=${item.id}`"
+          :to="{ path: localePath('/dashboard/inbox'), query: { message: item.id } }"
           class="flex gap-3 rounded-lg transition-colors hover:bg-muted/30"
         >
           <div class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-muted/60">

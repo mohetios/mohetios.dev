@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { DashboardHome } from '~/composables/useDashboardHome'
 import type { DashboardSummaryCard } from '~/components/dashboard/Metric.vue'
 import {
   dashboardCardUi,
@@ -13,7 +14,8 @@ definePageMeta({
   middleware: ['auth']
 })
 
-const { t, locale, locales } = useI18n()
+const { t, te, locale, locales } = useI18n()
+const localePath = useLocalePath()
 const toast = useToast()
 
 const range = useDashboardRangePreference()
@@ -164,6 +166,24 @@ function formatActivityTime(timestamp: number) {
   return timeFormatter.value.format(new Date(timestamp))
 }
 
+function activityTarget(href?: string | null) {
+  if (!href) {
+    return localePath('/dashboard')
+  }
+
+  return href.startsWith('/') ? localePath(href) : href
+}
+
+function quickLinkLabel(link: DashboardHome['quickLinks'][number]) {
+  const key = `dashboard.home.quickLinks.items.${link.key}.label`
+  return te(key) ? t(key) : link.label
+}
+
+function quickLinkDescription(link: DashboardHome['quickLinks'][number]) {
+  const key = `dashboard.home.quickLinks.items.${link.key}.description`
+  return te(key) ? t(key) : link.description
+}
+
 async function refreshDashboard() {
   try {
     await withDashboardRefresh(isRefreshing, () => refresh())
@@ -312,7 +332,7 @@ watch(error, (currentError) => {
           <NuxtLink
             v-for="activity in dashboardHome.recentActivity"
             :key="activity.id"
-            :to="activity.href || '/dashboard'"
+            :to="activityTarget(activity.href)"
             class="flex items-start gap-3 rounded-lg transition-colors hover:bg-muted/30"
           >
             <div class="flex size-9 items-center justify-center rounded-full bg-muted/60">
@@ -358,15 +378,15 @@ watch(error, (currentError) => {
         <ul v-else class="space-y-2">
           <li v-for="link in dashboardHome.quickLinks" :key="link.key">
             <UButton
-              :to="link.to"
+              :to="localePath(link.to)"
               :icon="link.icon"
               color="neutral"
               variant="ghost"
               class="w-full justify-start"
             >
               <span class="min-w-0 text-start">
-                <span class="block text-sm font-medium">{{ link.label }}</span>
-                <span class="block text-xs text-muted">{{ link.description }}</span>
+                <span class="block text-sm font-medium">{{ quickLinkLabel(link) }}</span>
+                <span class="block text-xs text-muted">{{ quickLinkDescription(link) }}</span>
               </span>
             </UButton>
           </li>

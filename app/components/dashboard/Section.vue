@@ -10,6 +10,8 @@ defineProps<{
   to?: string
   linkLabel?: string
 }>()
+
+const localePath = useLocalePath()
 </script>
 
 <template>
@@ -22,7 +24,7 @@ defineProps<{
 
         <UButton
           v-if="to"
-          :to="to"
+          :to="localePath(to)"
           color="neutral"
           variant="ghost"
           size="xs"

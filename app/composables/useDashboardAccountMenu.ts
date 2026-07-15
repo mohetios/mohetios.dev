@@ -1,13 +1,11 @@
 import type { DropdownMenuItem } from '@nuxt/ui'
+import type { SupportedLocale } from '~~/shared/constants/locales'
 
 export function useDashboardAccountMenu() {
-  const { t, locale, locales, loadLocaleMessages } = useI18n()
+  const { t, locale, locales } = useI18n()
   const localePath = useLocalePath()
+  const switchLocalePath = useSwitchLocalePath()
   const auth = useAuth()
-  const localeCookie = useCookie<typeof locale.value | null>('mohetios_locale', {
-    path: '/',
-    sameSite: 'lax'
-  })
 
   const nextLocale = computed(() => {
     return locales.value.find((item) => item.code !== locale.value)
@@ -57,7 +55,7 @@ export function useDashboardAccountMenu() {
             {
               label: nextLocaleLabel.value,
               icon: 'i-lucide-languages',
-              onSelect: () => switchDashboardLocale(nextLocale.value?.code as typeof locale.value)
+              onSelect: () => switchDashboardLocale(nextLocale.value?.code)
             }
           ]
         : []),
@@ -74,14 +72,15 @@ export function useDashboardAccountMenu() {
     await navigateTo(localePath('/login'))
   }
 
-  async function switchDashboardLocale(code?: typeof locale.value) {
+  async function switchDashboardLocale(code?: SupportedLocale) {
     if (!code) {
       return
     }
 
-    await loadLocaleMessages(code)
-    localeCookie.value = code
-    locale.value = code
+    const path = switchLocalePath(code)
+    if (path) {
+      await navigateTo(path)
+    }
   }
 
   return {

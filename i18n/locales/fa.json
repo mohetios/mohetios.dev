@@ -150,18 +150,78 @@
         "lead": "لید"
       },
       "readerSignals": {
-        "empty": "هنوز سیگنال خواننده‌ای نیست."
+        "empty": "هنوز سیگنال خواننده‌ای نیست.",
+        "items": {
+          "inboxFocus": {
+            "label": "تمرکز اینباکس",
+            "helper": "پیام‌هایی که الان منتظر پاسخ هستند"
+          },
+          "leadQuality": {
+            "label": "کیفیت لیدها",
+            "helper": "پیام‌های احتمالی برای همکاری یا کار فریلنس"
+          },
+          "comments": {
+            "label": "نظرات",
+            "helper": "نظراتی که منتظر بررسی هستند"
+          }
+        }
       },
       "systemHealth": {
         "ok": "سالم",
         "pending": "در انتظار",
-        "error": "مشکل"
+        "error": "مشکل",
+        "items": {
+          "inbox": {
+            "label": "اینباکس",
+            "helper": {
+              "default": "پیام‌های اینباکس از D1 خوانده می‌شوند"
+            }
+          },
+          "analytics": {
+            "label": "تحلیل‌ها",
+            "helper": {
+              "ok": "متریک‌های ترافیک و Edge از Cloudflare Analytics خوانده می‌شوند.",
+              "pending": "Cloudflare Analytics هنوز متصل نیست.",
+              "default": "وضعیت Cloudflare Analytics"
+            }
+          },
+          "comments": {
+            "label": "نظرات",
+            "helper": {
+              "ok": "نظر در انتظار بررسی نیست",
+              "pending": "چند نظر منتظر بررسی هستند",
+              "default": "وضعیت بررسی نظرات"
+            }
+          }
+        }
       },
       "recentActivity": {
         "empty": "فعلاً رویداد مهمی ثبت نشده."
       },
       "quickLinks": {
-        "title": "میانبرها"
+        "title": "میانبرها",
+        "items": {
+          "inbox": {
+            "label": "باز کردن اینباکس",
+            "description": "پیام‌ها و پاسخ‌ها را مرور کن"
+          },
+          "leads": {
+            "label": "مرور لیدها",
+            "description": "پیام‌های احتمالی همکاری و کار فریلنس را ببین"
+          },
+          "newsletter": {
+            "label": "خبرنامه",
+            "description": "مشترک‌ها و وضعیت فهرست را مرور کن"
+          },
+          "comments": {
+            "label": "نظرات",
+            "description": "نظرات در انتظار بررسی را مدیریت کن"
+          },
+          "system": {
+            "label": "وضعیت سیستم",
+            "description": "سلامت بک‌اند و مسیر ارسال را بررسی کن"
+          }
+        }
       }
     },
     "analytics": {

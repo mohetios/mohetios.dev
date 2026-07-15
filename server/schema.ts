@@ -331,6 +331,7 @@ export const typeDefs = /* GraphQL */ `
   }
 
   type DashboardReaderSignal {
+    key: String!
     label: String!
     value: String!
     helper: String!

@@ -31,6 +31,7 @@ query DashboardHome($range: AnalyticsRange!) {
     }
 
     readerSignals {
+      key
       label
       value
       helper

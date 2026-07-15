@@ -164,18 +164,21 @@ export async function dashboardHome(
 
     readerSignals: [
       {
+        key: 'inboxFocus',
         label: 'Inbox focus',
         value: String(needsReply),
         helper: 'Messages currently waiting for a reply',
         icon: 'i-lucide-inbox'
       },
       {
+        key: 'leadQuality',
         label: 'Lead quality',
         value: String(leads),
         helper: 'Potential work or collaboration messages',
         icon: 'i-lucide-user-plus'
       },
       {
+        key: 'comments',
         label: 'Comments',
         value: String(pendingComments),
         helper: 'Comments waiting for moderation',
