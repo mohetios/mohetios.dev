@@ -1,74 +1,83 @@
 ---
-title: 'نِکونیموس: معماری یک صندوق ناشناس با تیکت‌های مستقل'
-description: آزمایشگاه فنی نِکونیموس؛ طراحی یک relay ناشناس فارسی‌محور با sealed ticket، صندوق تحویل کم‌داده، کنترل سوءاستفاده و پیشنهاد گفت‌وگوی اختیاری روی Cloudflare.
+title: 'نِکونیموس: از یک پیام ناشناس تا یک تیکت مهروموم‌شده'
+description: آزمایشگاه فنی نِکونیموس؛ روایت طراحی یک relay ناشناس فارسی‌محور با capabilityهای مستقل، صندوق تحویل کم‌داده، کنترل سوءاستفاده و پیشنهاد گفت‌وگوی اختیاری روی Cloudflare.
 thumbnail: /content/nekonymous-lab.webp
 date: 2026-07-07
-updated: 2026-07-14
-status: Release candidate · Sealed Inbox · Conversation Suggestions V2
+updated: 2026-07-15
+status: V1 آماده‌ی انتشار · Sealed Inbox · Conversation Suggestions V2
 featured: true
 tags:
-- technical-lab
-- anonymous-messaging
-- telegram-bot
-- cloudflare-workers
-- durable-objects
-- sealed-capabilities
-- privacy-boundaries
-- vectorize
-- threat-model
+  - technical-lab
+  - anonymous-messaging
+  - telegram-bot
+  - cloudflare-workers
+  - durable-objects
+  - sealed-capabilities
+  - privacy-boundaries
+  - vectorize
+  - threat-model
 ---
 
-## ۱. مسئله‌ی اصلی «رساندن پیام» نبود
+## مسئله از جایی شروع شد که پیام رسیده بود
 
-ساخت یک ربات پیام ناشناس در ساده‌ترین شکل چند مرحله بیشتر ندارد:
+ساختن ساده‌ترین نسخه‌ی یک ربات پیام ناشناس کار عجیبی نیست:
 
 ```txt
 یک لینک شخصی
 → یک پیام
-→ تحویل به صاحب لینک
-→ یک پاسخ ناشناس
+→ پیدا کردن صاحب لینک
+→ ارسال پیام
 ```
 
-اما محصول واقعی از لحظه‌ای شروع می‌شود که این مسیر باید در برابر retry، race، حذف حساب، بلاک، گزارش، پیام‌های هم‌زمان و failureهای زیرساختی رفتار قابل پیش‌بینی داشته باشد.
+حتی پاسخ ناشناس هم در نگاه اول پیچیدگی زیادی ندارد:
 
-سؤال‌های مهم‌تر این‌ها بودند:
+```txt
+فرستنده
+→ بات
+→ گیرنده
+→ بات
+→ فرستنده
+```
 
-- پیام پیش از تحویل کجا می‌ماند؟
-- آیا برای ادامه‌ی گفت‌وگو باید یک جدول دائمی از رابطه‌ی فرستنده و گیرنده ساخت؟
-- اگر storage export شود، چه میزان از ارتباط کاربران قابل بازسازی است؟
-- اگر Telegram یا Queue یک event را دوباره ارسال کند، آیا پیام یا اعلان تکراری ساخته می‌شود؟
-- اگر ارسال به تلگرام موقتاً شکست بخورد، چه چیزی باید باقی بماند و چه چیزی نباید حذف شود؟
-- بلاک و گزارش چطور بدون تبدیل‌شدن به یک social graph عمومی نگه‌داری شوند؟
-- reset چطور هویت عملیاتی قبلی را واقعاً بی‌اعتبار کند؟
-- پیشنهاد گفت‌وگو چطور مفید باشد، بدون ادعای تشخیص شخصیت یا «درصد سازگاری»؟
+مسئله از جایی شروع می‌شود که این جریان ساده را با یک جدول معمولی پیاده کنیم:
 
-نِکونیموس از پاسخ به همین سؤال‌ها ساخته شد.
+```txt
+sender_id
+recipient_id
+message_body
+conversation_id
+created_at
+```
 
-هدف پروژه ساخت یک پیام‌رسان جدید یا ادعای «ناشناسی کامل» نبود. تعریف محدودتر و قابل دفاع‌تری انتخاب شد:
+این مدل از نظر برنامه‌نویسی تمیز و قابل فهم است. با چند query می‌شود inbox ساخت، پاسخ‌ها را دنبال کرد و تاریخچه‌ی گفت‌وگو را نشان داد.
 
-> نِکونیموس یک relay ناشناس میزبانی‌شده در تلگرام است که هر پیام را به یک تیکت مستقل تبدیل می‌کند، داده‌ی قابل اتصال را تا جای ممکن کم نگه می‌دارد و state لازم برای تحویل را عمر‌دار و محدود طراحی می‌کند.
+اما هم‌زمان، چیزی ساخته‌ایم که اصلاً قرار نبود وجود داشته باشد:
 
-این نوشته روایت تبلیغاتی پروژه نیست. تمرکز آن روی معماری، جریان داده، قابلیت‌ها، failure semantics و محدودیت‌های واقعی سیستم است.
+> یک دفترچه‌ی منظم از اینکه چه کسی، به چه کسی، در چه زمانی و چند بار پیام فرستاده است.
 
-## ۲. محصول امروز دقیقاً چیست؟
+حتی اگر متن پیام‌ها را رمزنگاری کنیم، خود رابطه هنوز داخل دیتابیس وجود دارد.
 
-نِکونیموس یک ربات تلگرام فارسی‌محور و متن‌باز است برای:
+از همین‌جا سؤال اصلی نِکونیموس برای من تغییر کرد.
 
-- ساخت لینک ناشناس شخصی؛
-- دریافت پیام متنی و رسانه‌های پشتیبانی‌شده‌ی تلگرام؛
-- اعلان تعداد پیام‌های تحویل‌نشده؛
-- تحویل صفی پیام‌ها از داخل صندوق؛
-- پاسخ ناشناس؛
-- بلاک و رفع بلاک؛
-- گزارش سوءاستفاده؛
-- نام خصوصی برای یک فرستنده‌ی ناشناس؛
-- توقف و ادامه‌ی دریافت پیام؛
-- پاک‌کردن حساب و ساخت هویت و لینک تازه؛
-- ساخت پروفایل سبک گفت‌وگو؛
-- دریافت پیشنهاد گفت‌وگوی اختیاری؛
-- فرستادن درخواست گفت‌وگو با رضایت دوطرفه.
+دیگر سؤال این نبود:
 
-سطح اصلی محصول خود Telegram است:
+> چطور یک پیام ناشناس را در تلگرام ارسال کنیم؟
+
+سؤال دقیق‌تر این شد:
+
+> چطور پیام را برسانیم، امکان پاسخ و کنترل سوءاستفاده را هم حفظ کنیم، اما برای انجام این کار یک آرشیو دائمی و قابل اتصال از آدم‌ها و رابطه‌هایشان نسازیم؟
+
+معماری امروز نِکونیموس پاسخ فعلی من به همین سؤال است.
+
+---
+
+## محصولی که عمداً محدود نگه داشته شد
+
+نِکونیموس یک ربات تلگرام فارسی‌محور و متن‌باز است.
+
+سطح اصلی محصول خود Telegram است و Worker یک وب‌اپلیکیشن، dashboard عمومی یا API محصولی مستقل ارائه نمی‌کند.
+
+فرمان‌های اصلی:
 
 ```txt
 /start
@@ -78,98 +87,120 @@ tags:
 /match
 ```
 
-صفحه‌ی وب فقط معرفی، مستندات و مسیر ورود به ربات است. هسته‌ی Worker یک dashboard عمومی یا REST API محصولی ارائه نمی‌کند.
+جریان پیام‌رسانی شامل این قابلیت‌هاست:
 
-دو جریان اصلی وجود دارد.
+- ساخت لینک شخصی پیام ناشناس؛
+- دریافت متن و رسانه‌های پشتیبانی‌شده‌ی تلگرام؛
+- اعلان پیام‌های تحویل‌نشده؛
+- بازکردن صندوق و تحویل صفی پیام‌ها؛
+- پاسخ ناشناس؛
+- نام خصوصی برای فرستنده؛
+- بلاک و رفع بلاک؛
+- گزارش سوءاستفاده؛
+- توقف یا ادامه‌ی دریافت پیام؛
+- پاک‌کردن حساب و ساخت هویت تازه.
 
-### پیام ناشناس
+بخش پیشنهاد گفت‌وگو نیز این قابلیت‌ها را اضافه می‌کند:
+
+- ارزیابی سبک گفت‌وگو؛
+- ساخت پروفایل محدود مکالمه؛
+- فعال‌سازی اختیاری نمایش در پیشنهادها؛
+- دریافت گزینه‌های گفت‌وگو؛
+- نوشتن پیام شروع؛
+- پذیرش یا رد درخواست؛
+- تبدیل درخواست پذیرفته‌شده به یک پیام ناشناس معمولی.
+
+این دو بخش در نهایت از یک primitive مشترک استفاده می‌کنند:
 
 ```txt
-لینک شخصی
-→ پیام ناشناس
-→ sealed ticket
-→ unread موقت در صندوق
-→ اعلان با شمارنده‌ی زنده
-→ تحویل
-→ پاسخ / نام خصوصی / بلاک / گزارش
-→ انقضای تیکت
+هر پیام = یک تیکت مستقل
 ```
 
-### پیشنهاد گفت‌وگو
+نِکونیموس قرار نیست پیام‌رسان جدیدی با تاریخچه‌ی دائمی باشد. قرار است یک relay میزبانی‌شده باشد که پیام را از یک مرز به مرز دیگر می‌رساند و بعد تا جای ممکن از سر راه کنار می‌رود.
 
-```txt
-پروفایل گفت‌وگو
-→ opt-in discoverability
-→ retrieval محدود در Vectorize
-→ رتبه‌بندی متقابل و قطعی
-→ suggestion مهروموم‌شده
-→ request مهروموم‌شده
-→ پذیرش
-→ تبدیل intro به یک sealed ticket معمولی
-```
+---
 
-پیشنهاد گفت‌وگو یک سیستم پیام‌رسانی دوم نیست. بعد از پذیرش درخواست، دوباره همان primitive اصلی وارد عمل می‌شود: یک تیکت مستقل.
+## قبل از معماری، مرز اعتماد
 
-## ۳. چیزی که نِکونیموس ادعا نمی‌کند
+اول باید چیزی را روشن کنیم که هیچ معماری داخلی نمی‌تواند آن را تغییر دهد.
 
-این پروژه:
+نِکونیموس:
 
 - E2EE نیست؛
 - zero-knowledge نیست؛
-- ناشناسی کامل یا untraceability تضمین نمی‌کند؛
-- شبکه‌ی اجتماعی یا dating app نیست؛
-- تست شخصیت یا تشخیص روان‌شناختی نیست؛
-- هویت طرف مقابل را تأیید نمی‌کند؛
-- امنیت یا سلامت یک گفت‌وگو را تضمین نمی‌کند.
+- ناشناسی کامل یا untraceability را تضمین نمی‌کند؛
+- مستقل از اعتماد به Telegram و Cloudflare نیست؛
+- هویت یا سلامت طرف مقابل را تأیید نمی‌کند؛
+- جلوی screenshot، forward یا انتشار پیام توسط گیرنده را نمی‌گیرد.
 
-مرز اعتماد ساده است: Telegram و Worker برای انتقال و پردازش، متن یا رسانه را در مسیر عادی می‌بینند. رمزنگاری application-level برای حذف این واقعیت نیست؛ برای کم‌کردن plaintext ذخیره‌شده و کاهش ارزش یک storage dump است.
+فرستنده متن را در Telegram وارد می‌کند. Telegram آن را می‌بیند.
 
-این مرز فقط یک بار باید روشن گفته شود. باقی معماری درباره‌ی این است که سیستم بعد از پردازش چه چیزی را نگه می‌دارد و چه چیزی را عمداً نمی‌سازد.
+Worker متن را برای پردازش، رمزنگاری و تحویل دریافت می‌کند. Worker هم آن را می‌بیند.
 
-## ۴. اصول طراحی
+در سمت دیگر، پیام دوباره از Bot API وارد Telegram می‌شود و در تاریخچه‌ی حساب گیرنده قرار می‌گیرد.
 
-معماری فعلی روی چند اصل ثابت بنا شده است.
+پس رمزنگاری application-level نِکو قرار نیست plaintext را از کل مسیر حذف کند.
 
-### ۴.۱ هر پیام یک capability مستقل است
+نقش آن محدودتر است:
 
-پیام‌ها عضو یک conversation row دائمی نیستند. هر پیام capability، lookup، کلیدها، lifecycle و idempotency مستقل دارد.
+> کم‌کردن plaintext ذخیره‌شده، کاهش قابلیت اتصال storageها و محدودکردن طول عمر داده‌ای که نِکو برای انجام وظیفه‌اش لازم دارد.
 
-### ۴.۲ صندوق آرشیو نیست
+این مرز به نظرم مهم‌تر از جمله‌هایی مثل «امنیت مطلق» یا «ناشناسی بی‌قیدوشرط» است.
 
-Inbox در نکو یک **صف تحویل موقت** است؛ نه صفحه‌ای برای مرور دائمی تاریخچه.
+معماری خوب نباید با یک ادعای بزرگ شروع شود. باید با توضیح دقیق چیزهایی شروع شود که هنوز مجبوریم به آن‌ها اعتماد کنیم.
 
-### ۴.۳ ذخیره‌سازی باید رابطه‌ی کمتری بسازد
+---
 
-D1 نباید به جدولی از این جنس تبدیل شود:
+## تغییر مدل ذهنی: پیام یک row نیست
 
-```txt
-sender_id | recipient_id | message | created_at
-```
+نقطه‌ی اصلی معماری زمانی شکل گرفت که پیام را دیگر یک رکورد متعلق به دو کاربر ندیدم.
 
-### ۴.۴ state باید توسط مالک مناسب هماهنگ شود
-
-Transitionهای حساس در Durable Objectها انجام می‌شوند؛ جایی که storage تراکنشی و strongly consistent برای هر object وجود دارد.
-
-### ۴.۵ Queue دقیقاً یک‌بار نیست
-
-Cloudflare Queues at-least-once است. بنابراین duplicate delivery یک حالت عادی طراحی است و effectهای محصول باید idempotent باشند.
-
-### ۴.۶ failure موقت نباید destructive باشد
-
-خطای شبکه، DO، D1، runtime crypto یا Telegram نباید باعث حذف یک تیکت سالم شود. اصل پیش‌فرض:
+در مدل معمول:
 
 ```txt
-خطای ناشناخته یا موقت
-→ release
-→ retry
-→ داده را حذف نکن
+Message belongs to Sender
+Message belongs to Recipient
+Message belongs to Conversation
 ```
 
-### ۴.۷ retrieval با تصمیم یکی نیست
+در مدل نِکو:
 
-Vectorize فقط candidateهای نزدیک را پیدا می‌کند. eligibility و ranking نهایی در TypeScript قطعی و قابل تست انجام می‌شود.
+```txt
+Message is an independent sealed capability
+```
 
-## ۵. تصویر کلی معماری
+هر پیام:
+
+- lookup مستقل دارد؛
+- کلیدهای مستقل دارد؛
+- lifecycle مستقل دارد؛
+- وضعیت تحویل مستقل دارد؛
+- idempotency مستقل دارد؛
+- و بدون نیاز به یک conversation row دائمی می‌تواند reply، block، report و nickname را پشتیبانی کند.
+
+این تیکت مثل یک پاکت مهروموم‌شده است.
+
+داخل پاکت اطلاعاتی وجود دارد که سیستم برای رساندن پیام و انجام actionهای محدود بعدی لازم دارد؛ اما روی خود پاکت نوشته نشده که این پیام متعلق به کدام دو account داخلی است.
+
+فرمول فشرده‌ی معماری:
+
+```txt
+Message
+= Blind lookup
++ Encrypted route
++ Temporary encrypted payload
++ Encrypted metadata
++ Recipient-bound capability
++ Bounded lifecycle
+```
+
+---
+
+## تصویر کلی سیستم
+
+نِکونیموس یک Worker واحد دارد، نه مجموعه‌ای از microserviceهای مستقل.
+
+اما داخل همان runtime، state و مسئولیت‌ها میان چند storage plane جدا شده‌اند.
 
 ```mermaid
 flowchart TD
@@ -195,116 +226,225 @@ flowchart TD
   ST --> D1
 ```
 
-Worker سه مسئولیت runtime دارد:
+Worker سه ورودی اصلی دارد:
 
 ```txt
 fetch()
-  → پذیرش webhook تلگرام روی POST /bot
+  → دریافت webhook تلگرام روی POST /bot
 
 queue()
-  → dispatch صف‌های outbox، stats و profile-index
+  → پردازش outbox، stats و profile-index
 
 Durable Object exports
-  → stateful coordination و storageهای محدود
+  → stateful storage و coordination
 ```
 
-### مرز هر storage plane
+این تقسیم‌بندی صرفاً استفاده از چند سرویس Cloudflare نیست.
 
-| Plane | مسئولیت | نباید تبدیل شود به |
-|---|---|---|
-| D1 | کاربران فعال، لینک عمومی و آمار تجمیعی | متن پیام، inbox، پروفایل کامل یا social graph |
-| UserState DO | unread موقت، draft، block، nickname، rate state و profile session | دیتابیس عمومی کاربران یا plaintext inbox |
-| TicketVault DO | route/payload/meta رمزنگاری‌شده و lifecycle تیکت | جدول پیام با sender/recipient مستقیم |
-| SafetyState DO | eventهای blind گزارش و sanction یک abuse subject | گراف قابل برگشت گزارش‌دهنده و گزارش‌شونده |
-| ProfileVault DO | پروفایل نهایی رمزنگاری‌شده و revision | جدول D1 از پروفایل کاربران |
-| ConversationVault DO | suggestion، request و intro رمزنگاری‌شده | relationship table عمومی |
-| PairLedger DO | lock، cooldown، block و exposure کور | دایرکتوری قابل برگشت زوج‌ها |
-| TelegramOutbox DO | ارسال idempotent و paced برای یک chat | transcript یا log نامحدود ارسال |
-| KV | cache مسیریابی و cache کوتاه‌عمر | source of truth محصول |
-| Queues | کار asynchronous و retryپذیر | exactly-once authority |
-| Vectorize | retrieval محدود روی بردارهای کنترل‌شده | ranker نهایی یا identity store |
+هر بخش به این دلیل انتخاب شده که نوع مشخصی از state را بهتر مدیریت می‌کند.
 
-قاعده‌ی ساده:
+---
+
+## هر storage فقط بخشی از تصویر را می‌بیند
+
+### D1
+
+D1 مرجع ساختارهای relational است:
+
+- حساب‌های فعال؛
+- لینک‌های عمومی؛
+- داده‌های ساختاری محصول؛
+- آمار روزانه‌ی تجمیعی.
+
+اما D1 نباید تبدیل شود به:
+
+- transcript پیام‌ها؛
+- inbox کاربران؛
+- پروفایل کامل گفت‌وگو؛
+- جدول فرستنده و گیرنده؛
+- graph درخواست‌ها و پیشنهادها.
+
+### UserState Durable Object
+
+هر account یک محدوده‌ی state محلی دارد:
+
+- unreadهای موقت؛
+- draftها؛
+- pause state؛
+- block tagها؛
+- نام‌های خصوصی رمزنگاری‌شده؛
+- rate limit؛
+- session فعال ارزیابی؛
+- تنظیمات discoverability و exposure.
+
+این state به خود گیرنده محدود است و قرار نیست یک دیتابیس global از کاربران بسازد.
+
+### TicketVault Durable Object
+
+مرجع اصلی تیکت‌های ناشناس:
+
+- blind ticket hash؛
+- owner proof؛
+- route رمزنگاری‌شده؛
+- payload رمزنگاری‌شده؛
+- metadata رمزنگاری‌شده؛
+- status و expiry.
+
+TicketVault نه inbox است و نه message table.
+
+### SafetyState Durable Object
+
+برای هر abuse subject یک state جدا نگه می‌دارد:
+
+- گزارش‌های کور؛
+- reporterهای متمایز؛
+- strikeها؛
+- suspension؛
+- probation؛
+- ban.
+
+بدون اینکه یک جدول عمومی از گزارش‌دهنده و گزارش‌شونده بسازد.
+
+### ProfileVault Durable Object
+
+نسخه‌ی نهایی پروفایل گفت‌وگو و revision آن را رمزنگاری‌شده نگه می‌دارد.
+
+### ConversationVault و PairLedger
+
+Suggestionها، requestها، introهای رمزنگاری‌شده، pair lock، cooldown و blockهای زوجی را مدیریت می‌کنند.
+
+این stateها نباید به یک relationship table قابل برگشت در D1 تبدیل شوند.
+
+### TelegramOutbox Durable Object
+
+ارسال پیام به Telegram یک side effect خارجی است.
+
+Outbox برای هر chat:
+
+- ارسال‌ها را pace می‌کند؛
+- idempotency را enforce می‌کند؛
+- lock و lease دارد؛
+- retry را کنترل می‌کند؛
+- و تاریخچه‌ی محدود خودش را پاک می‌کند.
+
+### KV
+
+KV فقط cache است:
 
 ```txt
-D1 برای ساختار قابل query.
-Durable Objects برای state ترتیبی و atomic.
-KV برای cache.
-Queues برای side effectهای retryپذیر.
-Vectorize برای retrieval، نه تصمیم.
+tg:{telegramActorHash}
+link:{publicSlug}
 ```
 
-## ۶. هویت داخلی و لینک عمومی
+اگر KV fail شود، سیستم باید به D1 برگردد.
 
-هر کاربر یک شناسه‌ی داخلی و یک public slug دارد:
+KV برای inbox، ticket، profile یا request authority مناسبی نیست.
+
+### Queues
+
+Queueها برای کارهای asynchronous استفاده می‌شوند:
+
+- اعلان‌ها و ارسال‌های Telegram؛
+- تحویل inbox؛
+- آمار؛
+- profile indexing.
+
+Queue source of truth محصول نیست و duplicate delivery یک حالت طبیعی طراحی محسوب می‌شود.
+
+### Vectorize
+
+Vectorize فقط candidateهای نزدیک را پیدا می‌کند.
+
+نه profile authority است، نه identity store و نه تصمیم‌گیرنده‌ی نهایی.
+
+قاعده‌ی خلاصه:
 
 ```txt
-t.me/{bot_username}?start={slug}
+D1        → ساختار relational
+DO        → state ترتیبی و atomic
+KV        → cache و routing
+Queues    → side effect retryپذیر
+Vectorize → retrieval محدود
 ```
 
-شناسه‌ی خام Telegram به public ID یا join key عمومی تبدیل نمی‌شود. مدل مفهومی:
+---
+
+## هویت داخلی بدون استفاده‌ی مستقیم از Telegram ID
+
+کاربر با Telegram وارد سیستم می‌شود، اما Telegram ID خام نباید تبدیل به شناسه‌ی عمومی یا join key اصلی شود.
+
+مدل مفهومی:
 
 ```txt
 telegram_user_id
 → HMAC با application pepper
-→ telegram_user_hash
+→ stable actor hash
 → internal account
 ```
 
-D1 مرجع اصلی کاربر و لینک است. KV فقط cache best-effort برای lookup سریع‌تر است:
+هر account یک شناسه‌ی داخلی و یک public slug دارد:
 
 ```txt
-KV read failure
-→ fallback به D1
-
-KV write/delete failure
-→ log و ادامه
+https://t.me/{bot_username}?start={slug}
 ```
 
-ساخت کاربر و لینک عمومی در یک D1 batch انجام می‌شود تا account بدون لینک یا لینک بدون account ساخته نشود.
+Public slug برای پیدا کردن صاحب لینک استفاده می‌شود، ولی identity داخلی کاربر را آشکار نمی‌کند.
 
-`chat_id` لازم برای ارسال تلگرام به‌صورت رمزنگاری‌شده نگه‌داری می‌شود.
+`chat_id` برای ارسال پیام به Telegram لازم است، اما در storage به‌صورت رمزنگاری‌شده نگه‌داری می‌شود.
 
-## ۷. capability اصلی تیکت
+ساخت account و public link نیز در یک batch انجام می‌شود تا هیچ‌کدام بدون دیگری ساخته نشوند.
 
-هسته‌ی مدل پیام، `TicketCapability` است.
+این تفکیک بعداً در reset، block و Safety اهمیت زیادی پیدا می‌کند:
 
-### ۷.۱ قالب canonical
+- internal account قابل تعویض است؛
+- stable actor hash با reset معمولی عوض نمی‌شود؛
+- public link قابل باطل‌شدن است؛
+- بعضی stateها باید با reset پاک شوند؛
+- بعضی sanctionها نباید با reset دور زده شوند.
 
-Capability دقیقاً ۳۲ بایت است:
+---
+
+## قلب تیکت: یک capability سی‌ودوبایتی
+
+هر تیکت یک `TicketCapability` مستقل دارد.
+
+قالب canonical آن دقیقاً ۳۲ بایت است:
 
 ```txt
 bytes 0..15   lookupNonce
 bytes 16..31  keySeed
 ```
 
-نمایش canonical آن:
+نمایش Base64URL بدون padding:
 
 ```txt
-43 کاراکتر Base64URL بدون padding
+43 characters
 [A-Za-z0-9_-]{43}
 ```
 
-فرمت legacy یا version byte وجود ندارد.
+این اندازه تصادفی انتخاب نشده است.
 
-این capability دو بخش را عمداً جدا می‌کند:
+دکمه‌های inline تلگرام فقط فضای محدودی برای `callback_data` دارند. capability باید همراه prefixهایی مثل `r:` یا `rp:` داخل همان محدودیت جا شود.
 
-- `lookupNonce` برای پیدا کردن record؛
-- `keySeed` برای مشتق‌کردن کلیدهای بازکردن capsuleها.
+### چرا capability دو قسمت دارد؟
 
-### ۷.۲ lookup کور
+اگر یک token واحد هم record را پیدا کند و هم مستقیماً کلید رمزنگاری باشد، storage و key material بیش از حد به هم نزدیک می‌شوند.
+
+در نِکو دو مسئولیت جدا شده‌اند.
+
+`lookupNonce` فقط برای ساخت lookup کور استفاده می‌شود:
 
 ```txt
 ticketHash =
-  HMAC(APP_HMAC_PEPPER,
-       "nekonymous:ticket:lookup" || lookupNonce)
+  HMAC(
+    APP_HMAC_PEPPER,
+    "nekonymous:ticket:lookup" || lookupNonce
+  )
 ```
 
-TicketVault با `ticketHash` جست‌وجو می‌شود. storage برای lookup نیازی به `keySeed` ندارد و capability خام را نگه نمی‌دارد.
+TicketVault با `ticketHash` record را پیدا می‌کند.
 
-### ۷.۳ کلیدهای مستقل
-
-ریشه‌ی کلید از secret پایدار Worker و context تیکت مشتق می‌شود:
+اما برای بازکردن capsuleها، `keySeed` هم لازم است:
 
 ```txt
 APP_MASTER_KEY
@@ -313,7 +453,7 @@ APP_MASTER_KEY
 → HKDF
 ```
 
-از این ریشه، کلیدهای مجزا برای capsuleهای زیر ساخته می‌شوند:
+از این root چند کلید domain-separated ساخته می‌شود:
 
 ```txt
 route key
@@ -321,11 +461,31 @@ payload key
 metadata key
 ```
 
-هر capsule AES-GCM و AAD مستقل دارد. جابه‌جایی ciphertext میان دو تیکت یا دو domain باید authentication failure تولید کند.
+هر capsule:
 
-### ۷.۴ owner proof
+- AES-GCM مستقل دارد؛
+- IV مستقل دارد؛
+- AAD مخصوص domain خودش دارد.
 
-داشتن capability به‌تنهایی کافی نیست. proof ذخیره‌شده به این context bind می‌شود:
+در نتیجه جابه‌جاکردن ciphertext میان دو ticket یا میان route و payload باید به authentication failure برسد.
+
+### capability در vault ذخیره نمی‌شود
+
+TicketVault این‌ها را ندارد:
+
+- capability خام؛
+- `lookupNonce`؛
+- `keySeed`.
+
+فقط blind lookup و envelopeهای رمزنگاری‌شده را نگه می‌دارد.
+
+---
+
+## capability به‌تنهایی مجوز نیست
+
+قرارگرفتن capability در callback یک پیام Telegram به این معنی نیست که هرکسی با دیدن آن بتواند action را اجرا کند.
+
+هر ticket یک `ownerProofTag` دارد که به سه چیز bind شده است:
 
 ```txt
 recipient stable actor hash
@@ -333,47 +493,51 @@ recipient stable actor hash
 + ticketHash
 ```
 
-در هر action، Worker proof را برای actor فعلی دوباره محاسبه می‌کند. hard reset شناسه‌ی داخلی تازه می‌سازد؛ بنابراین callbackهای قدیمی بلافاصله authorization خود را از دست می‌دهند.
-
-## ۸. TicketVault چه چیزی نگه می‌دارد؟
-
-record اصلی:
+هنگام اجرای callback:
 
 ```txt
-ticket_hash
-owner_proof_tag
-route_enc
-payload_enc
-meta_enc
-status
-created_at
-expires_at
+capability
+→ parse
+→ derive ticketHash
+→ load record
+→ calculate current owner proof
+→ constant-time comparison
+→ derive keys
+→ decrypt required capsule
+→ apply action
 ```
 
-TicketVault نگه نمی‌دارد:
+این‌جا `current internal account id` نقش مهمی دارد.
 
-- capability خام؛
-- `lookupNonce` یا `keySeed`؛
-- Telegram user ID یا chat ID به‌شکل plaintext؛
-- sender/recipient account ID مستقیم؛
-- transcript گفت‌وگو؛
-- conversation graph.
+وقتی کاربر hard reset انجام می‌دهد، internal account تازه‌ای ساخته می‌شود.
+
+در نتیجه callbackهای قدیمی، حتی اگر هنوز داخل تاریخچه‌ی Telegram باشند، owner proof معتبر ندارند.
+
+یعنی reset فقط public link را عوض نمی‌کند؛ authorization تیکت‌های قدیمی را هم می‌شکند.
+
+---
+
+## داخل تیکت چه چیزی وجود دارد؟
+
+TicketVault سه capsule جدا نگه می‌دارد.
 
 ### route capsule
 
-Route فقط اطلاعات لازم برای actionهای بعدی را حمل می‌کند:
+Route اطلاعات لازم برای actionهای بعدی را حمل می‌کند:
 
 - مسیر رمزنگاری‌شده‌ی برگشت به فرستنده؛
 - `replyRouteTag`؛
 - `contactTag`؛
 - `blockTag`؛
 - `abuseSubjectTag`؛
-- policy محدود پاسخ؛
-- context حداقلی reply در Telegram.
+- policy محدود reply؛
+- context لازم برای Telegram.
+
+این capsule همان بخشی است که اجازه می‌دهد بعد از پاک‌شدن متن، reply یا block همچنان کار کند.
 
 ### payload capsule
 
-Payload محتوای قابل تحویل را نگه می‌دارد. کد فعلی این نوع‌ها را پشتیبانی می‌کند:
+محتوای قابل تحویل:
 
 ```txt
 text
@@ -387,15 +551,29 @@ sticker
 video_note
 ```
 
-برای رسانه، file identifier تلگرام و caption محدود ذخیره می‌شود؛ نه فایل باینری مستقل.
+برای media، نِکو فایل را دوباره در storage خودش کپی نمی‌کند.
+
+شناسه‌ی قابل استفاده‌ی فایل Telegram و caption محدود در payload قرار می‌گیرند.
+
+پس storage نِکو شامل یک blob باینری جدا از ویدیو، صدا یا عکس نیست.
 
 ### metadata capsule
 
-Metadata شامل داده‌ی غیرمسیری مورد نیاز نمایش، مانند شماره‌ی کوتاه تیکت و زمان ساخت است و جداگانه رمزنگاری می‌شود.
+اطلاعات غیرمسیری لازم برای نمایش:
 
-## ۹. ساخت یک پیام ناشناس
+- شناسه‌ی کوتاه قابل نمایش تیکت؛
+- زمان ساخت؛
+- metadata محدود محصول.
 
-مسیر hot path فرستنده:
+جدا نگه‌داشتن این capsuleها باعث می‌شود برای هر action فقط داده‌ی لازم decrypt شود.
+
+مثلاً block یا report نباید برای اجرا مجبور به بازکردن متن پیام باشد.
+
+---
+
+## ساخت یک پیام: جایی که تیکت پذیرفته می‌شود
+
+مسیر ارسال پیام از دید فرستنده ساده است، اما پشت آن چند gate وجود دارد.
 
 ```mermaid
 sequenceDiagram
@@ -407,239 +585,366 @@ sequenceDiagram
   participant T as Telegram
 
   S->>W: متن یا رسانه
-  W->>W: resolve identity + draft + recipient
-  W->>SS: sender safety decision
-  W->>US: pause/block/capacity gate
+  W->>W: resolve sender, draft and recipient
+  W->>SS: check sender safety state
+  W->>US: check pause, block and capacity
   W->>W: derive capability, tags and keys
   W->>TV: store encrypted ticket
   W->>US: insert sealed unread capability
-  W->>T: «پیام فرستاده شد»
-  W-->>W: defer notification + stats
+  W->>T: acknowledge sender
+  W-->>W: defer notification and stats
+```
+
+قبل از پذیرش پیام، سیستم بررسی می‌کند:
+
+- account فرستنده معتبر است؛
+- draft فعال و recipient درست است؛
+- فرستنده suspended یا banned نیست؛
+- گیرنده دریافت پیام را متوقف نکرده؛
+- فرستنده در block list گیرنده نیست؛
+- unread capacity پر نشده؛
+- نوع و اندازه‌ی محتوا قابل قبول است.
+
+بعد از آن:
+
+```txt
+generate capability
+→ derive ticketHash
+→ derive owner proof
+→ encrypt route
+→ encrypt payload
+→ encrypt metadata
+→ store TicketVault record
+→ store sealed unread pointer
 ```
 
 نقطه‌ی پذیرش durable این است:
 
 ```txt
-TicketVault accepted
+TicketVault storage succeeds
 +
-Unread insertion accepted
+Unread insertion succeeds
 ```
 
-بعد از این نقطه، اعلان و آمار side effect هستند. شکست آن‌ها نباید تیکت پذیرفته‌شده را rollback کند.
+بعد از این نقطه پیام پذیرفته شده است.
 
-### compensation
+اعلان و آمار side effect هستند. شکست آن‌ها نباید پیام پذیرفته‌شده را rollback کند.
 
-`storeTicket` مشخص می‌کند record در همین invocation ساخته شده یا از قبل وجود داشته است:
+---
+
+## compensation بدون پاک‌کردن تیکت سالم
+
+بعضی failureها دقیقاً بین دو write اتفاق می‌افتند.
+
+مثلاً:
+
+```txt
+TicketVault store succeeds
+→ UserState unread insertion fails
+```
+
+در این وضعیت باید ticket جدید پاک شود، چون هیچ unread pointer معتبری برای تحویل آن وجود ندارد.
+
+اما یک مسئله‌ی مهم‌تر وجود دارد:
+
+ممکن است همان ticket در retry قبلی ساخته شده باشد.
+
+برای همین `storeTicket` فقط success برنمی‌گرداند. مشخص می‌کند record:
 
 ```txt
 created
+یا
 existing
 ```
 
-اگر unread insertion شکست بخورد، فقط recordی پاک می‌شود که همان invocation ساخته است. این تفاوت برای عملیات deterministic مثل قبول درخواست گفت‌وگو حیاتی است؛ retry نباید تیکت سالم قبلی را حذف کند.
+compensation فقط اجازه دارد recordی را حذف کند که در همان invocation ساخته شده باشد.
 
-## ۱۰. UserState و unread موقت
+این تفاوت کوچک، accept request و عملیات deterministic را از حذف اشتباه یک ticket سالم نجات می‌دهد.
 
-برای هر تیکت تحویل‌نشده، UserState گیرنده فقط این state را دارد:
+---
+
+## inbox یک صفحه نیست؛ یک صف تحویل است
+
+در نسخه‌های اولیه، inbox شبیه صفحه‌ای برای دیدن پیام‌های نگه‌داری‌شده تصور می‌شد.
+
+در معماری فعلی این مدل کنار گذاشته شده است.
+
+Inbox نِکو:
+
+- list دائمی ندارد؛
+- pagination ندارد؛
+- viewed shell ندارد؛
+- delivered registry دائمی ندارد؛
+- تاریخچه‌ی مکالمه نیست.
+
+Inbox فقط unreadهای تحویل‌نشده را نگه می‌دارد.
+
+برای هر unread، UserState این state را دارد:
 
 ```txt
-item_id                  random UUID
-sealed_capability_enc    capability رمزنگاری‌شده و authenticated
-dedupe_tag               blind dedupe value
-delivery_state           active | delivering
-delivery_attempt_id      مالک lease
-delivery_lease_until     زمان انقضای lease
+item_id
+sealed_capability_enc
+dedupe_tag
+delivery_state
+delivery_attempt_id
+delivery_lease_until
 created_at
 expires_at
 ```
 
-UserState نگه نمی‌دارد:
+UserState این‌ها را ندارد:
 
 - `ticketHash`؛
 - capability plaintext؛
-- متن یا رسانه‌ی پیام؛
-- route capsule؛
+- message body؛
+- route؛
 - sender account ID.
 
 محدودیت فعلی:
 
 ```txt
-حداکثر unread فعال: 50
-حداکثر آیتم در یک drain: 50
-lease تحویل: 60 ثانیه
+max active unread: 50
+max items per drain: 50
+delivery lease: 60 seconds
 ```
 
-این سقف هم هزینه را bounded نگه می‌دارد و هم جلوی تبدیل‌شدن صندوق به archive را می‌گیرد.
+صف عمداً bounded است.
 
-## ۱۱. اعلان هر پیام با شمارنده‌ی زنده
+قرار نیست کسی نِکو را به‌عنوان فضای نگه‌داری بلندمدت پیام‌هایش استفاده کند.
 
-تصمیم محصولی فعلی این است:
+---
+
+## اعلان‌ها count را حمل نمی‌کنند
+
+وقتی unread تازه‌ای پذیرفته می‌شود، یک notification event مستقل ساخته می‌شود.
+
+اما Queue job تعداد unreadها را داخل خودش حمل نمی‌کند.
 
 ```txt
-هر unread پذیرفته‌شده
-→ یک notification event مستقل
+new unread
+→ eventId
+→ inbox-notification job
+→ load current unread count
+→ send fresh notification
 ```
 
-Queue job شامل شمارنده نیست. هنگام اجرای consumer، عدد واقعی از UserState خوانده می‌شود:
+Job شامل این‌ها نیست:
+
+- capability؛
+- `ticketHash`؛
+- متن؛
+- route؛
+- sender identity؛
+- count authoritative.
+
+Consumer درست قبل از ارسال، count زنده را از UserState می‌خواند.
+
+اگر inbox قبلاً خالی شده باشد:
 
 ```txt
-inbox-notification(accountId, eventId)
-→ getUnreadSummary()
-→ اگر count > 0:
-   «X پیام تحویل‌نشده داری»
-→ callback: ib:d
+count = 0
+→ notification skipped
 ```
 
-ویژگی‌ها:
+اگر Queue همان job را دوباره تحویل دهد، Outbox با idempotency key مبتنی بر account و event ID جلوی ارسال منطقی تکراری را می‌گیرد.
 
-- job هیچ capability، `ticketHash`، متن، route یا sender identity ندارد؛
-- count هنگام ارسال محاسبه می‌شود، نه هنگام enqueue؛
-- Outbox idempotency با account و event ID ساخته می‌شود؛
-- اگر صندوق قبل از اجرای job خالی شده باشد، اعلان ارسال نمی‌شود؛
-- اعلان قبلی edit نمی‌شود؛
-- notification cycle، revision، generation یا message-id registry وجود ندارد.
+این انتخاب یک tradeoff دارد.
 
-پیام‌های سریع می‌توانند چند اعلان با count مشابه بسازند. این هزینه‌ی مستقیم انتخاب «یک اعلان تازه برای هر پیام» است؛ اما authority تیکت‌ها را به هم متصل نمی‌کند.
+اگر ده پیام سریع برسد، ممکن است چند اعلان تازه با count مشابه ساخته شود.
 
-## ۱۲. Inbox یک صف تحویل است
+نِکو آن‌ها را به یک پیام قابل edit و یک notification cycle مشترک تبدیل نمی‌کند، چون چنین مدلی خودش state و registry تازه‌ای می‌خواهد.
 
-`/inbox`، دکمه‌ی اصلی صندوق و callback عمومی `ib:d` همگی صندوق فعلی actor را drain می‌کنند.
+---
+
+## بازکردن inbox
+
+کاربر با `/inbox`، دکمه‌ی اصلی صندوق یا callback عمومی `ib:d` درخواست drain می‌دهد.
 
 ```txt
-کاربر صندوق را باز می‌کند
-→ cleanup محدود unreadهای منقضی
-→ خواندن count زنده
-→ اگر صفر: پیام خالی
+open inbox
+→ cleanup expired unread rows
+→ read live count
+→ if empty, show empty state
 → enqueue inbox-drain
-→ پاسخ فوری «در حال باز کردن پیام‌ها»
+→ immediately acknowledge
 ```
 
-تحویل واقعی در Queue consumer انجام می‌شود:
+تحویل در Queue consumer انجام می‌شود:
 
 ```txt
-claim one
-→ open sealed capability
-→ resolve one TicketVault record
+claim unread
+→ assign lease
+→ decrypt sealed capability in memory
+→ resolve TicketVault record
 → verify owner proof
-→ decrypt required capsules
+→ derive keys
+→ decrypt route/payload/meta
 → send through TelegramOutbox
-→ finalize one
-→ repeat up to 50
+→ clear payload
+→ remove unread row
 ```
 
-در معماری فعلی:
+هر آیتم جدا claim و finalize می‌شود.
 
-- لیست inbox وجود ندارد؛
-- pagination وجود ندارد؛
-- viewed shell وجود ندارد؛
-- delivered registry دائمی وجود ندارد؛
-- هر تیکت مستقل claim و finalize می‌شود.
-
-### بعد از تحویل موفق
+اگر تحویل موفق باشد:
 
 ```txt
-Telegram send succeeds
-→ payload_enc پاک می‌شود
-→ ticket viewed می‌شود
-→ unread attempt کامل و row حذف می‌شود
+payload_enc = null
+ticket.status = viewed
+unread row = deleted
 ```
 
-Route و metadata تا انقضای محدود باقی می‌مانند تا دکمه‌های reply، nickname، block و report کار کنند.
+route و metadata تا انقضای محدود ticket باقی می‌مانند، چون دکمه‌های زیر هنوز باید کار کنند:
 
-Capability بعد از تحویل در callbackهای پیام Telegram کاربر حضور دارد؛ نه در یک index قابل بازیابی داخل UserState.
+- پاسخ؛
+- نام خصوصی؛
+- بلاک؛
+- گزارش.
 
-## ۱۳. failure semantics صندوق
+بعد از تحویل، capability داخل callbackهای پیام Telegram قرار دارد.
 
-### خطاهای retryable
+UserState یک index بازیابی از ticketهای تحویل‌شده نگه نمی‌دارد.
 
-این خطاها نباید داده را حذف کنند:
+---
 
-- شکست موقت Durable Object یا D1؛
-- failure در Queue consumer؛
-- خطای runtime یا configuration در crypto؛
-- Telegram network/5xx؛
+## چرا payload فقط بعد از ارسال موفق پاک می‌شود؟
+
+پاک‌کردن زودهنگام ممکن است privacy-friendly به نظر برسد، اما پیام را از بین می‌برد.
+
+ترتیب اشتباه:
+
+```txt
+decrypt payload
+→ clear payload
+→ call Telegram
+→ Telegram fails
+```
+
+در این وضعیت نه storage پیام را دارد و نه Telegram آن را تحویل گرفته است.
+
+ترتیب درست:
+
+```txt
+decrypt payload
+→ send through Outbox
+→ Telegram accepts
+→ clear payload
+→ finalize unread
+```
+
+یعنی data minimization نباید به قیمت ازبین‌رفتن داده قبل از تحویل تمام شود.
+
+کم‌نگه‌داشتن داده مهم است، اما lifecycle آن باید با نقطه‌ی واقعی success هماهنگ باشد.
+
+---
+
+## در سیستم توزیع‌شده، retry حالت استثنایی نیست
+
+Queue، Telegram API، Worker و Durable Objectها می‌توانند در نقاط مختلف fail شوند.
+
+حتی ممکن است Telegram یک پیام را پذیرفته باشد، اما Worker قبل از ثبت success متوقف شود.
+
+برای همین failure semantics نِکو با یک اصل محافظه‌کارانه ساخته شده است:
+
+```txt
+unknown or temporary failure
+→ release
+→ retry
+→ do not delete healthy data
+```
+
+خطاهای retryable:
+
+- Queue failure؛
+- Durable Object یا D1 موقتاً unavailable؛
+- خطای runtime crypto؛
+- Telegram network error؛
+- Telegram 5xx؛
 - پاسخ `429`؛
 - Outbox lock یا pacing delay.
 
-رفتار:
+در این حالت lease unread آزاد می‌شود و Queue دوباره تلاش می‌کند.
 
-```txt
-release unread lease
-→ Queue retry
-```
-
-### orphan دائمی
-
-Cleanup دائمی فقط برای وضعیت‌های صریح انجام می‌شود:
+cleanup دائمی فقط برای وضعیت‌های مشخص انجام می‌شود:
 
 - capability واقعاً malformed؛
-- ticket missing یا expired؛
-- payload غیرقابل تحویل یا terminal؛
-- فرمت پشتیبانی‌نشده؛
-- rejection دائمی Telegram.
+- ticket پیدا نمی‌شود؛
+- ticket منقضی شده؛
+- payload terminal یا غیرقابل تحویل است؛
+- فرمت پشتیبانی نمی‌شود؛
+- Telegram rejection دائمی برگردانده است.
 
-قبل از حذف TicketVault، ابتدا باید همان `deliveryAttemptId` هنوز مالک unread row باشد. Worker قدیمی یا lease منقضی اجازه ندارد تیکتی را که claim جدید گرفته حذف کند.
+حتی orphan cleanup نیز ابتدا باید ثابت کند همان `deliveryAttemptId` هنوز مالک unread است.
 
-### اصل محافظه‌کارانه
+یک worker قدیمی یا lease منقضی حق ندارد recordی را حذف کند که invocation تازه‌ای آن را claim کرده است.
+
+---
+
+## Queue دقیقاً یک‌بار اجرا نمی‌شود
+
+Cloudflare Queues مدل at-least-once دارد.
+
+پس این فرض اشتباه است:
 
 ```txt
-unknown exception
-→ retry
-نه delete
+job received once
+→ effect happens once
 ```
 
-این اصل یکی از مهم‌ترین تغییرات release hardening بود.
+فرض درست:
 
-## ۱۴. TelegramOutbox و idempotency
+```txt
+job may be delivered again
+→ effect must remain logically once
+```
 
-ارسال Telegram داخل transaction محلی Worker نیست. ممکن است API پیام را بپذیرد و Worker قبل از ثبت success متوقف شود. بنابراین ارسال باید با ambiguity خارجی کنار بیاید.
+در نِکو idempotency فقط در consumer نوشته نشده است. در operationهای اصلی نیز وجود دارد:
 
-هر chat یک `TelegramOutboxDO` دارد:
+- ticket creation؛
+- notification؛
+- inbox delivery؛
+- request accept؛
+- profile indexing؛
+- statistics aggregation.
 
-- idempotency key پایدار؛
-- lock و lease برای send؛
-- ارسال اول بدون delay مصنوعی؛
-- حدود یک ثانیه فاصله میان sendهای واقعی یک chat؛
-- اولویت با `retry_after` تلگرام؛
-- retry عمومی پنج‌ثانیه‌ای؛
-- retention محدود رکوردهای idempotency؛
-- cleanup با alarm.
+Queue مسئول تلاش برای تحویل است.
 
-Queue consumer کارها را برای هر chat در lane ترتیبی اجرا می‌کند، اما chatهای مختلف می‌توانند موازی باشند.
+خود application مسئول جلوگیری از effect تکراری است.
 
-نمونه‌ی idempotency تحویل تیکت:
+---
+
+## TelegramOutbox: مرز میان state داخلی و API خارجی
+
+ارسال Telegram نمی‌تواند داخل transaction محلی Worker قرار بگیرد.
+
+برای هر chat یک `TelegramOutboxDO` استفاده می‌شود.
+
+این object:
+
+- idempotency key پایدار دریافت می‌کند؛
+- lease و lock می‌سازد؛
+- ارسال اول را بدون delay مصنوعی انجام می‌دهد؛
+- میان sendهای واقعی یک chat تقریباً یک ثانیه فاصله می‌گذارد؛
+- `retry_after` تلگرام را به‌عنوان backoff اصلی می‌پذیرد؛
+- برای خطاهای موقت retry عمومی دارد؛
+- خطاهای دائمی را terminal می‌کند؛
+- رکوردهای idempotency را با retention محدود پاک می‌کند.
+
+نمونه‌ی key تحویل ticket:
 
 ```txt
 ticket-delivery:{ticketHash}
 ```
 
-اصل:
+کارهای یک chat به‌ترتیب اجرا می‌شوند، ولی chatهای مختلف می‌توانند موازی باشند.
 
-```txt
-Queue تلاش برای تحویل را تضمین می‌کند.
-Application effect تکراری را مهار می‌کند.
-```
+seen receipt نیز در نسخه‌ی فعلی پیش‌فرض خاموش است؛ چون برای هر پیام یک send دیگر تولید می‌کند و بار Outbox را تقریباً دو برابر می‌سازد.
 
-Seen receipt در نسخه‌ی انتشار به‌صورت پیش‌فرض غیرفعال است تا بار Outbox برای هر پیام دو برابر نشود.
+---
 
-## ۱۵. reply، nickname، block و report
+## پاسخ ناشناس conversation row نمی‌سازد
 
-Actionهای پیام از همان capability تحویل‌شده استفاده می‌کنند:
-
-```txt
-callback capability
-→ parse canonical format
-→ derive ticketHash
-→ load TicketVault
-→ verify current actor/account
-→ derive keys
-→ decrypt only required capsule
-→ enforce action policy
-```
-
-### پاسخ ناشناس
-
-Reply ادامه‌ی همان database row نیست:
+وقتی گیرنده روی «پاسخ دادن» می‌زند، ticket قبلی به یک thread دائمی تبدیل نمی‌شود.
 
 ```txt
 Ticket A
@@ -647,49 +952,105 @@ Ticket A
 → Ticket B
 ```
 
-قبل از ساخت reply تازه، Safety، pause و block دوباره بررسی می‌شوند. یک تیکت قدیمی مجوز دائمی برای تماس ایجاد نمی‌کند.
+Route تیکت اول فقط مسیر لازم برای ساخت یک پیام تازه را می‌دهد.
 
-### نام خصوصی
+قبل از ساخت reply جدید، همه‌ی gateهای اصلی دوباره بررسی می‌شوند:
 
-`contactTag` به account فعلی دو طرف وابسته است:
+- Safety فرستنده؛
+- pause گیرنده‌ی جدید؛
+- block؛
+- capacity؛
+- expiry و policy تیکت.
+
+پس داشتن یک ticket قدیمی مجوز دائمی برای تماس ایجاد نمی‌کند.
+
+هر پاسخ دوباره یک capability مستقل، payload مستقل و lifecycle مستقل دارد.
+
+---
+
+## نام خصوصی بدون پروفایل‌سازی فرستنده
+
+گیرنده می‌تواند برای یک فرستنده‌ی ناشناس نام خصوصی بگذارد.
+
+برای این کار `contactTag` از context دو account فعلی ساخته می‌شود:
 
 ```txt
 recipient current account
 + sender current account
+→ contactTag
 ```
 
-گیرنده می‌تواند یک label رمزنگاری‌شده برای این tag ذخیره کند. reset هر طرف continuity نام خصوصی را می‌شکند.
+label به‌صورت رمزنگاری‌شده داخل UserState گیرنده ذخیره می‌شود.
 
-Nickname فقط داخل UserState گیرنده است و به پروفایل عمومی تبدیل نمی‌شود.
+این نام:
 
-### بلاک
+- فقط برای همان گیرنده قابل مشاهده است؛
+- برای فرستنده ارسال نمی‌شود؛
+- داخل پروفایل عمومی قرار نمی‌گیرد؛
+- با reset هر طرف continuity خودش را از دست می‌دهد.
 
-`blockTag` از این context مشتق می‌شود:
+این ویژگی برای تشخیص چند پیام از یک مسیر مفید است، اما نباید به identity واقعی یا پروفایل جهانی تبدیل شود.
+
+---
+
+## block باید با reset فرستنده دور زده نشود
+
+اگر block فقط به internal account فعلی فرستنده bind شود، فرستنده می‌تواند reset کند و دوباره پیام بفرستد.
+
+برای همین `blockTag` از این context ساخته می‌شود:
 
 ```txt
 recipient current account
 + sender stable actor hash
 ```
 
-بنابراین reset فرستنده block را دور نمی‌زند. reset گیرنده عمداً block list محلی خودش را پاک می‌کند.
+نتیجه:
 
-receive gate برای این مسیرها اجرا می‌شود:
+- reset فرستنده block را دور نمی‌زند؛
+- reset گیرنده block list خودش را پاک می‌کند؛
+- block همچنان recipient-scoped باقی می‌ماند.
 
-- پیام مستقیم از لینک؛
-- reply؛
-- conversation request.
+receive gate برای هر سه مسیر اجرا می‌شود:
 
-### گزارش و SafetyState
+```txt
+direct anonymous message
+anonymous reply
+conversation request
+```
 
-گزارش از چند tag domain-separated استفاده می‌کند:
+پیشنهاد گفت‌وگو راه فرعی برای عبور از block یا pause نیست.
 
-- `abuseSubjectTag` برای subject پایدار سوءاستفاده؛
-- `reportEventTag` برای جلوگیری از گزارش تکراری همان ticket توسط همان reporter؛
-- `reporterSubjectTag` برای شمردن reporterهای متمایز در محدوده‌ی یک subject.
+---
 
-هر abuse subject یک `SafetyStateDO` مستقل دارد. این object eventهای blind و sanction state را نگه می‌دارد؛ نه sender/recipient graph عمومی.
+## گزارش کور و SafetyState
 
-Policy فعلی thresholdهای زمانی و distinct reporter دارد و می‌تواند actor را به حالت‌های زیر ببرد:
+گزارش‌کردن نیاز به continuity دارد.
+
+سیستم باید بفهمد چند گزارش مستقل درباره‌ی یک actor ثبت شده، ولی نباید برای این کار یک جدول عمومی از رابطه‌ی reporter و subject بسازد.
+
+برای این کار چند tag domain-separated ساخته می‌شود:
+
+### abuseSubjectTag
+
+به stable actor فرستنده bind می‌شود.
+
+Sanction با reset account پاک نمی‌شود.
+
+### reportEventTag
+
+از ticket و reporter ساخته می‌شود.
+
+جلوی گزارش دوباره‌ی همان ticket توسط همان reporter را می‌گیرد.
+
+### reporterSubjectTag
+
+برای تشخیص reporterهای متمایز در محدوده‌ی همان abuse subject استفاده می‌شود.
+
+یک identity عمومی و قابل join برای reporter نمی‌سازد.
+
+هر abuse subject یک `SafetyStateDO` مستقل دارد.
+
+Policy فعلی می‌تواند actor را میان این حالت‌ها جابه‌جا کند:
 
 ```txt
 clear
@@ -698,109 +1059,199 @@ probation
 banned
 ```
 
-Sanction به stable actor material وابسته است و با reset عادی حساب پاک نمی‌شود.
-
-## ۱۶. hard reset
-
-Reset فقط `status = deleted` نیست.
-
-جریان کلی:
+Thresholdهای فعلی:
 
 ```txt
-invalidate profile/discovery
-→ cleanup شناخته‌شده‌ی unread ticketها
-→ purge UserState
-→ hard-delete user و public links از D1
-→ پاک‌کردن best-effort cacheهای KV
-→ ساخت internal account و لینک تازه
+5 distinct reporters in 24h
+→ 72h suspension
+
+after suspension
+→ 30d probation
+
+3 distinct reporters in 7d during probation
+→ indefinite ban
 ```
 
-نتیجه‌های مهم:
+این سیستم اثبات قطعی سوءاستفاده نیست.
 
-- internal account ID عوض می‌شود؛
-- owner proof callbackهای قدیمی fail می‌شود؛
-- draft، block، nickname و unread state قبلی پاک می‌شوند؛
-- profile indexing قدیمی نباید revision حذف‌شده را برگرداند؛
-- Safety sanction باقی می‌ماند.
+یک heuristic عملیاتی است برای اینکه product بتواند بدون نگه‌داری یک moderation graph کامل، رفتارهای پرتکرار و پرریسک را محدود کند.
 
-Reset نمی‌تواند پیام‌های تحویل‌شده در Telegram، screenshot یا forward را حذف کند.
+---
 
-## ۱۷. پروفایل سبک گفت‌وگو
+## hard reset باید واقعاً هویت عملیاتی را بشکند
 
-این پروفایل یک assessment بالینی نیست. هدف، ساخت representation محدود و قابل محاسبه از ترجیحات گفت‌وگو است.
+Reset ساده می‌توانست فقط این باشد:
+
+```txt
+user.status = deleted
+```
+
+اما در این مدل:
+
+- public link قدیمی ممکن بود باقی بماند؛
+- callbackهای قبلی همچنان معتبر می‌ماندند؛
+- profile index ممکن بود دوباره برگردد؛
+- draft، block یا unread state قبلی می‌توانست زنده بماند.
+
+Hard reset فعلی یک flow چندمرحله‌ای است:
+
+```txt
+invalidate profile and discoverability
+→ cleanup known unread tickets
+→ purge UserState
+→ hard-delete user and public links from D1
+→ remove routing cache
+→ create new internal account
+→ create new public link
+```
+
+تغییر internal account باعث می‌شود owner proof تیکت‌های قدیمی fail شود.
+
+در عین حال Safety sanction به stable actor وابسته است و با reset پاک نمی‌شود.
+
+Reset نمی‌تواند:
+
+- پیام تحویل‌شده‌ی Telegram را حذف کند؛
+- screenshot را پاک کند؛
+- forward یا copy را پس بگیرد؛
+- اطلاعاتی را که قبلاً توسط طرف مقابل ذخیره شده از بین ببرد.
+
+---
+
+## پروفایل گفت‌وگو، نه تست شخصیت
+
+بخش پیشنهاد گفت‌وگو از یک سؤال محصولی دیگر شروع شد.
+
+صرفاً پیداکردن دو آدم «شبیه» لزوماً گفت‌وگوی خوبی تولید نمی‌کند.
+
+ممکن است کسی مستقیم حرف بزند ولی طرف مقابل لحن آرام‌تری بخواهد. یک نفر پاسخ سریع دوست داشته باشد و دیگری با فاصله فکر کند.
+
+برای همین profile دو چیز را جدا می‌کند:
+
+```txt
+من معمولاً چطور گفت‌وگو می‌کنم؟
+در حال حاضر چه نوع گفت‌وگویی می‌خواهم؟
+```
 
 نسخه‌ی فعلی:
 
 ```txt
-25 سؤال
-8 بُعد
+25 questions
+8 dimensions
 Conversation Profile V2
 ```
 
 ابعاد:
 
-| بُعد | موضوع |
-|---|---|
-| `depth` | سبک یا عمیق‌بودن گفت‌وگو |
-| `replyPace` | ریتم پاسخ |
-| `directness` | مستقیم یا غیرمستقیم‌بودن |
-| `energy` | انرژی مکالمه |
-| `playfulness` | شوخی و سبکی |
-| `supportStyle` | شنیده‌شدن یا راه‌حل‌محوری |
+| بُعد             | موضوع                       |
+| ---------------- | --------------------------- |
+| `depth`          | سبک یا عمیق‌بودن گفت‌وگو    |
+| `replyPace`      | ریتم پاسخ                   |
+| `directness`     | مستقیم یا غیرمستقیم‌بودن    |
+| `energy`         | انرژی مکالمه                |
+| `playfulness`    | شوخی و سبکی                 |
+| `supportStyle`   | شنیده‌شدن یا راه‌حل‌محوری   |
 | `disclosurePace` | سرعت بازشدن در موضوعات شخصی |
-| `repairStyle` | نحوه‌ی ترمیم سوءتفاهم |
+| `repairStyle`    | نحوه‌ی ترمیم سوءتفاهم       |
 
 ساختار سؤال‌ها:
 
 ```txt
-16 سؤال self style
-8 سؤال desired style
-1 سؤال current intent
+16 self-style questions
+8 desired-style questions
+1 current-intent question
 ```
 
-پاسخ‌های خام فقط در session رمزنگاری‌شده‌ی فعال داخل UserState وجود دارند. بعد از finalization:
+پاسخ‌های خام فقط در session فعال و رمزنگاری‌شده‌ی UserState وجود دارند.
+
+هنگام finalization:
 
 ```txt
-validate
-→ normalize
-→ importance / uncertainty
-→ finalized profile در ProfileVault
-→ حذف raw active answers
+validate answers
+→ normalize values
+→ derive importance and uncertainty
+→ build controlled summary
+→ store encrypted profile in ProfileVault
+→ delete raw active answers
 → enqueue sealed index job
 ```
 
-## ۱۸. پیشنهاد گفت‌وگو
+سیستم از این پاسخ‌ها ویژگی‌های جمعیتی، سیاسی، مذهبی، جنسی یا تشخیص بالینی استخراج نمی‌کند.
 
-Discoverability خاموش است مگر کاربر صریحاً آن را فعال کند.
+---
 
-دو بردار کنترل‌شده‌ی ۸بعدی ساخته می‌شود:
+## چرا Workers AI در پیشنهادها استفاده نشد؟
+
+برای این feature به مدل زبانی یا embedding model نیاز نبود.
+
+از profile دو بردار کنترل‌شده‌ی ۸بعدی ساخته می‌شود:
 
 ```txt
 self vector
 desired vector
 ```
 
-Vectorize فقط candidate set محدود را برمی‌گرداند. retrieval دوطرفه است:
+Vectorize دو retrieval محدود انجام می‌دهد:
 
 ```txt
-A.self نزدیک B.desired
-A.desired نزدیک B.self
+A.self
+→ نزدیک‌ترین desired vectors
+
+A.desired
+→ نزدیک‌ترین self vectors
 ```
 
-بعد از retrieval، profileهای authoritative از ProfileVault resolve می‌شوند و فیلترهای سخت اعمال می‌شوند:
+این مرحله فقط candidate set می‌سازد.
 
-- profile معتبر و فعال؛
+بعد profileهای authoritative از ProfileVault resolve می‌شوند و hard filterها اجرا می‌شوند:
+
+- profile و revision معتبر؛
 - discoverability روشن؛
 - self-candidate حذف؛
-- block و pair block؛
-- pending conflict؛
+- pair block؛
 - cooldown؛
-- exposure budget؛
-- revision معتبر.
+- pending conflict؛
+- pause؛
+- Safety؛
+- exposure و rate budget؛
+- stale state.
 
-Ranker نهایی pure TypeScript است و score فقط برای ordering داخلی استفاده می‌شود. UI «درصد سازگاری» نشان نمی‌دهد.
+رتبه‌بندی نهایی pure TypeScript است و هر دو جهت را در نظر می‌گیرد:
 
-### زنجیره‌ی capability
+```txt
+requester self ↔ candidate desired
+candidate self ↔ requester desired
+```
+
+در ranking عوامل زیر وارد می‌شوند:
+
+- importance هر dimension؛
+- no-preference flag؛
+- uncertainty؛
+- current intent؛
+- freshness؛
+- exposure fairness؛
+- policy constraints.
+
+Vector similarity score به کاربر نمایش داده نمی‌شود.
+
+محصول نمی‌گوید:
+
+```txt
+۹۳٪ سازگاری
+مچ کامل
+بهترین فرد برای تو
+```
+
+فقط نزدیک‌ترین گزینه‌های قابل ارائه در وضعیت فعلی را نشان می‌دهد.
+
+---
+
+## suggestion خودش capability دارد
+
+پیشنهاد گفت‌وگو فقط یک row با دو user ID نیست.
+
+زنجیره‌ی capabilityها:
 
 ```txt
 Profile Capability
@@ -809,123 +1260,262 @@ Profile Capability
 → Message Ticket
 ```
 
-Request intro رمزنگاری‌شده است. accept با `dedupeKey` deterministic انجام می‌شود تا retry دو تیکت نسازد.
+Suggestion برای requester و candidate state مهروموم می‌شود.
+
+وقتی requester پیام شروع می‌نویسد:
 
 ```txt
-pending
-→ accepting
-→ accepted(ticketHash)
+validate profiles
+→ check discoverability
+→ check Safety
+→ check pause and block
+→ acquire blind pair lock
+→ encrypt intro
+→ create sealed request
 ```
 
-Notification و stats بعد از commit اصلی deferred هستند و failure آن‌ها state محصول را rollback نمی‌کند.
+طرف مقابل می‌تواند request را:
 
-## ۱۹. آمار بدون اسکن vaultها
+- بپذیرد؛
+- رد کند؛
+- و requester نیز می‌تواند آن را لغو کند.
 
-آمار عمومی از eventهای best-effort ساخته می‌شود:
+هیچ مکالمه‌ای قبل از پذیرش ساخته نمی‌شود.
+
+---
+
+## پذیرش request باید در retry دو پیام نسازد
+
+Accept یکی از حساس‌ترین operationهای سیستم است.
+
+ممکن است:
+
+```txt
+request accepted
+→ ticket created
+→ Worker fails before request status is finalized
+→ Queue or callback retries
+```
+
+بدون idempotency، retry می‌تواند intro را دو بار به inbox بفرستد.
+
+برای جلوگیری از این وضعیت:
+
+```txt
+operationId =
+  conversation-request:{requestHash}
+```
+
+همین operation ID به‌عنوان `dedupeKey` برای sealed ticket استفاده می‌شود.
+
+پس یک request با همان `operationId`، capability و `ticketHash` یکسانی تولید می‌کند.
+
+TicketVault نیز مشخص می‌کند ticket:
+
+```txt
+created
+یا
+existing
+```
+
+نتیجه:
+
+- retry تیکت دوم نمی‌سازد؛
+- compensation تیکت deterministic قبلی را پاک نمی‌کند؛
+- repeated callback success قبلی را برمی‌گرداند؛
+- accepted intro وارد همان pipeline معمول inbox می‌شود.
+
+Conversation Suggestions یک کانال پیام‌رسانی دوم ندارد.
+
+بعد از consent دوباره همان primitive اصلی کار می‌کند:
+
+```txt
+normal sealed ticket
+```
+
+---
+
+## آمار بدون اسکن‌کردن زندگی کاربران
+
+برای ساخت آمار عمومی نباید TicketVault یا UserState کاربران scan شود.
+
+مسیر آمار event-driven است:
 
 ```txt
 product event
-→ neko-stats queue
-→ batch aggregate
+→ stats queue
+→ batch aggregation
 → D1 daily counters
 ```
 
-TicketVault، UserState، ConversationVault، PairLedger یا SafetyState برای آمار global scan نمی‌شوند.
+رویدادها می‌توانند شامل این موارد باشند:
 
-آمار عمومی نباید شامل این‌ها باشد:
+- ساخت کاربر؛
+- ساخت لینک؛
+- ایجاد یا تحویل پیام؛
+- پاسخ؛
+- block یا report؛
+- تکمیل profile؛
+- جست‌وجوی پیشنهاد؛
+- ارسال یا پذیرش request؛
+- reset.
+
+اما dashboard عمومی نباید این موارد را نشان دهد:
 
 - کاربران برتر؛
-- timeline کاربر؛
-- تعداد پیام یک لینک مشخص؛
+- تعداد پیام یک فرد؛
+- activity یک لینک مشخص؛
 - ticket detail؛
-- message body؛
-- sender-recipient graph.
+- timeline کاربر؛
+- sender-recipient graph؛
+- متن پیام.
 
-## ۲۰. اگر storage export شود چه دیده می‌شود؟
+آمار باید درباره‌ی رفتار کلی محصول باشد، نه درباره‌ی کاربران خاص.
 
-معماری metadata را ناپدید نمی‌کند. export ممکن است این‌ها را نشان دهد:
+---
 
-- ciphertext size؛
-- timestamps؛
-- count؛
-- status؛
-- expiry؛
-- coarse vector values؛
-- الگوی دسترسی در سطح platform.
+## logging نیز بخشی از معماری حریم خصوصی است
 
-اما هدف این است که یک export ساده، دفترچه‌ی مرتب زیر را تولید نکند:
+حتی storage model خوب هم می‌تواند با log اشتباه خراب شود.
+
+نِکو نباید این‌ها را log کند:
 
 ```txt
-چه کسی
-به چه کسی
-چه گفته است
-و بعد چه پاسخی گرفته است
+message body
+caption
+ticket capability
+lookupNonce
+keySeed
+raw Telegram user id
+raw chat id
+decrypted route
+decrypted profile
+request intro
+application secrets
 ```
 
-D1 متن پیام، route، capability، پروفایل کامل، intro یا pair graph را نگه نمی‌دارد. در DOها نیز اطلاعات حساس به capsuleهای رمزنگاری‌شده و tagهای کور تقسیم شده‌اند.
+logهای مجاز باید stage-based و محدود باشند:
 
-این طراحی «حذف کامل metadata» نیست؛ کاهش joinability است.
+```txt
+operation
+status
+error code
+bounded hash prefix
+duration bucket
+queue attempt
+```
 
-## ۲۱. تهدیدهای مهم
+هدف log این است که failure قابل بررسی باشد، نه اینکه یک storage موازی و کنترل‌نشده از داده‌های حساس ساخته شود.
 
-### compromise شدن Worker یا secretها
+---
 
-ریسک high-impact است. مهاجم می‌تواند plaintext در حال پردازش را ببیند و بخشی از داده‌های encrypted-at-rest را باز کند.
+## اگر storageها export شوند چه اتفاقی می‌افتد؟
 
-### compromise شدن حساب Telegram گیرنده
+این معماری metadata را ناپدید نمی‌کند.
 
-Callbackهای موجود در chat history همان account تا پایان lifecycle ممکن است قابل استفاده باشند.
+یک storage export ممکن است همچنان نشان دهد:
 
-### recipient behavior
+- تعداد recordها؛
+- timestampها؛
+- اندازه‌ی ciphertext؛
+- status؛
+- expiry؛
+- event count؛
+- vectorهای کنترل‌شده؛
+- access pattern در سطح زیرساخت.
 
-گیرنده می‌تواند screenshot بگیرد، forward کند یا متن را بیرون از نکو منتشر کند.
+همه‌ی storage planeها نیز در نهایت داخل trust boundary حساب Cloudflare قرار دارند.
 
-### coordinated abuse
+اما هدف این است که یک export ساده مستقیماً چنین تصویری نسازد:
 
-Blind reporting مانع ساخت چند حساب Telegram و هماهنگی بیرون از سیستم نمی‌شود. sanction یک heuristic عملیاتی است، نه اثبات تخلف.
+```txt
+User A
+→ sent 14 messages
+→ to User B
+→ received 9 replies
+→ message history
+```
+
+در نِکو:
+
+- D1 متن پیام ندارد؛
+- D1 graph مستقیم پیام‌های ناشناس ندارد؛
+- KV authority نیست؛
+- UserState payload یا `ticketHash` ندارد؛
+- TicketVault direct sender/recipient ID ندارد؛
+- SafetyState graph عمومی reporterها ندارد؛
+- ConversationVault relationship table عمومی نیست.
+
+اسم دقیق این ویژگی «حذف metadata» نیست.
+
+اسم دقیق‌ترش:
+
+```txt
+reducing joinability
+```
+
+---
+
+## تهدیدهایی که معماری نمی‌تواند حذف کند
+
+### compromise شدن Worker
+
+اگر deployment یا secretهای runtime در اختیار مهاجم باشد، او می‌تواند plaintext در حال پردازش را ببیند و ciphertextهای قابل دسترس را باز کند.
+
+### compromise شدن حساب Telegram
+
+اگر حساب گیرنده در اختیار فرد دیگری قرار بگیرد، پیام‌ها و callbackهای موجود در history همان حساب نیز ممکن است در دسترس او قرار بگیرند.
+
+### اپراتور پروژه
+
+کسی که deployment credential و application key دارد، قدرت زیادی دارد.
+
+معماری accidental exposure و joinability را کم می‌کند؛ قدرت operator را حذف نمی‌کند.
+
+### رفتار گیرنده
+
+هیچ پروتکل داخلی نمی‌تواند مانع screenshot، copy یا بازنشر پیام توسط گیرنده شود.
 
 ### traffic analysis
 
-Cloudflare و Telegram در سطح زیرساخت metadata و access pattern خودشان را دارند. نکو ادعای پنهان‌کردن آن لایه را ندارد.
+Telegram و Cloudflare metadata و access patternهای زیرساخت خودشان را دارند.
 
-## ۲۲. performance و tradeoffهای آگاهانه
+نِکو برای پنهان‌کردن این لایه طراحی نشده است.
 
-معماری privacy-first اگر کنترل نشود می‌تواند به تعداد زیادی round trip تبدیل شود. release hardening مسیر hot path را محدود کرد:
+### coordinated abuse
 
-```txt
-identity
-→ draft
-→ recipient
-→ slug
-→ sealed acceptance
-→ sender acknowledgement
-→ deferred notification + stats
-```
+گزارش کور جلوی ساخت چند حساب Telegram یا هماهنگی بیرون از سیستم را نمی‌گیرد.
 
-Queue outbox با `max_batch_timeout: 0` تنظیم شده تا jobهای user-facing برای پرشدن batch منتظر نمانند.
+SafetyState فقط هزینه و سرعت بعضی abuseها را محدود می‌کند.
 
-Pacing per-chat حدود یک ثانیه باقی مانده است. بنابراین انتخاب «یک اعلان برای هر پیام» در burst بزرگ هزینه‌ی قابل مشاهده دارد:
+---
 
-```txt
-10 پیام سریع
-→ 10 notification event
-→ ارسال ترتیبی همان chat
-```
+## performance بخشی از threat model است
 
-این bug نیست؛ tradeoff محصولی است. در مقابل، count هر اعلان هنگام send زنده است و اعلان‌ها editable state یا cycle مشترک نمی‌سازند.
+سیستم privacy-sensitive اگر بدون محدودیت ساخته شود، خودش می‌تواند با مصرف CPU، تعداد round trip یا هزینه‌ی storage به نقطه‌ی failure برسد.
 
-قواعد performance:
+قواعد اصلی:
 
-- همه‌ی loopها bounded؛
-- inbox حداکثر ۵۰؛
-- retrieval و profile resolution محدود؛
-- nickname در یک drain cache می‌شود؛
-- statistics vault scan ندارد؛
+- همه‌ی loopها bounded هستند؛
+- unread حداکثر ۵۰ است؛
+- هر drain حداکثر ۵۰ آیتم دارد؛
+- profile دقیقاً ۲۵ پاسخ و ۸ dimension دارد؛
+- retrieval محدود است؛
+- profile resolution batch و bounded است؛
+- ranking قطعی و CPU-bounded است؛
 - Queue payloadها کوچک‌اند؛
+- vaultها برای آمار scan نمی‌شوند؛
 - promise رهاشده وجود ندارد؛
-- side effect غیرحیاتی با `waitUntil` جدا می‌شود.
+- side effectهای غیرحیاتی با `waitUntil` جدا می‌شوند؛
+- request-scoped mutable state در module scope قرار نمی‌گیرد.
 
-## ۲۳. ساختار کد
+نقطه‌ی اصلی این نیست که هر operation کمترین تعداد سرویس ممکن را لمس کند.
+
+هدف این است که هر round trip مسئولیت مشخصی داشته باشد و هیچ query یا loop بدون سقف وارد مسیر کاربر نشود.
+
+---
+
+## ساختار کد
 
 ```txt
 src/
@@ -952,134 +1542,183 @@ src/
 └── utils/
 ```
 
-مرزها:
+مرزهای کد:
 
-- handler ورودی Telegram را parse و خروجی را render می‌کند؛
-- crypto و storage detail وارد UI handler نمی‌شود؛
+- handler فقط input تلگرام را parse و response را render می‌کند؛
+- crypto داخل UI handler قرار نمی‌گیرد؛
+- storage detail پشت clientهای typed می‌ماند؛
 - contractهای canonical در `src/contracts` هستند؛
-- Durable Object clientها typed و مرکزی‌اند؛
-- ranker و profile calculation pure باقی می‌مانند؛
-- لاگ‌ها stage-based و بدون content حساس‌اند.
+- profile calculation و ranking pure هستند؛
+- Durable Objectها transitionهای atomic خودشان را مالک‌اند؛
+- لاگ‌ها نباید content حساس دریافت کنند.
 
-## ۲۴. verification
+---
 
-فرمان‌های اصلی:
+## معماری فقط با مستندات enforce نمی‌شود
+
+یک جمله داخل Threat Model نمی‌تواند جلوی اضافه‌شدن اشتباهی `message_body` به D1 را بگیرد.
+
+برای همین repository علاوه بر testهای رفتاری، auditهای معماری هم دارد.
+
+فرمان اصلی:
 
 ```bash
+pnpm check
+```
+
+بررسی‌های جزئی‌تر:
+
+```bash
+pnpm types:check
 pnpm typecheck
 pnpm lint
 pnpm knip
 pnpm test
 pnpm test:workers
-pnpm test:release-hardening
 pnpm audit:d1
 pnpm audit:ticket-storage
 pnpm audit:types
-pnpm run check
 ```
 
-تست‌ها و auditها روی این invariants متمرکزند:
+verificationها روی این invariantها متمرکزند:
 
-- نبود message body در D1؛
-- capability canonical؛
-- lifecycle تیکت و unread؛
-- Queue و Outbox idempotency؛
-- retry غیرمخرب؛
-- stale claim safety؛
-- Safety thresholdها؛
-- request accept idempotency؛
-- profile revision و indexing؛
-- retrieval و deterministic ranking؛
-- reset hardening؛
-- log redaction؛
-- storage boundaries.
+- capability فقط فرمت canonical دارد؛
+- D1 message body ندارد؛
+- TicketVault direct sender/recipient column ندارد؛
+- payload بعد از تحویل موفق پاک می‌شود؛
+- temporary failure destructive نیست؛
+- stale claim نمی‌تواند ticket جدیدتر را پاک کند؛
+- duplicate Queue effect منطقی تازه نمی‌سازد؛
+- request accept idempotent است؛
+- stale profile revision دوباره index نمی‌شود؛
+- reset callbackهای قبلی را بی‌اعتبار می‌کند؛
+- Safety thresholdها درست transition می‌دهند؛
+- log و storage leakهای شناخته‌شده شناسایی می‌شوند.
 
-این‌ها اثبات امنیت مطلق نیستند. هدف این است که تصمیم‌های معماری فقط در متن باقی نمانند و بخشی از آن‌ها توسط repository enforce شوند.
+این testها اثبات امنیت کامل نیستند.
 
-## ۲۵. تصمیم‌هایی که عمداً نگرفتیم
-
-- transcript دائمی در D1؛
-- جدول sender-recipient؛
-- KV به‌عنوان inbox authority؛
-- inbox list و pagination؛
-- delivered shell registry؛
-- notification قابل edit با message ID؛
-- Workers AI برای inference یا ranking؛
-- compatibility percentage؛
-- شروع خودکار مکالمه بعد از suggestion؛
-- reset به‌شکل soft-delete ساده؛
-- moderation dashboard پیش از نیاز واقعی؛
-- key rotation پیچیده بدون migration plan؛
-- ادعای E2EE، zero-knowledge یا perfect anonymity.
-
-سادگی این پروژه به معنی کم‌بودن componentها نیست؛ به معنی محدودبودن مسئولیت هر component است.
-
-## ۲۶. وضعیت فعلی
-
-خط پشتیبانی‌شده `master` است و شامل این بخش‌هاست:
-
-- Telegram-only Worker runtime؛
-- deep-link anonymous messaging؛
-- پیام متنی و رسانه‌های پشتیبانی‌شده؛
-- sealed ticket capability؛
-- unread delivery queue؛
-- اعلان per-message با count زنده؛
-- anonymous reply؛
-- block / unblock؛
-- blind reporting و SafetyState؛
-- private nickname؛
-- pause / resume؛
-- hard account reset؛
-- Conversation Profile V2؛
-- opt-in Conversation Suggestions V2؛
-- controlled Vectorize retrieval؛
-- deterministic reciprocal ranking؛
-- sealed suggestions and requests؛
-- idempotent Telegram outbox؛
-- aggregate product statistics؛
-- release hardening برای retry، cleanup، reset، races و logging.
-
-## جمع‌بندی
-
-نِکونیموس با سؤال ساده‌ی «چطور یک پیام ناشناس را برسانیم؟» شروع شد، اما معماری واقعی با سؤال دقیق‌تری شکل گرفت:
-
-```txt
-چطور پیام را برسانیم
-بدون اینکه برای انجام این کار
-یک آرشیو دائمی و قابل اتصال
-از آدم‌ها و رابطه‌هایشان بسازیم؟
-```
-
-پاسخ فعلی:
-
-```txt
-پیام = capability مستقل
-lookup = blind
-payload = موقت
-route = رمزنگاری‌شده و عمر‌دار
-inbox = صف تحویل محدود
-notification = event مستقل با count زنده
-block = recipient-scoped blind tag
-report = blind safety signal
-Queue = at-least-once
-Outbox = idempotent
-Vectorize = retrieval
-ranking = deterministic
-conversation = بعد از consent
-```
-
-اصل نهایی پروژه:
-
-> حریم خصوصی با ادعای بزرگ‌تر ساخته نمی‌شود؛ با داده‌ی کمتر، مرز روشن‌تر، state محدودتر و failureهای قابل پیش‌بینی ساخته می‌شود.
+اما کمک می‌کنند تصمیم‌های معماری فقط داخل یک فایل Markdown باقی نمانند.
 
 ---
 
-### مسیرهای مرجع
+## چیزهایی که عمداً نساختم
 
-- [Repository](https://github.com/mohetios/Nekonymous)
-- [Architecture](https://github.com/mohetios/Nekonymous/blob/master/docs/architecture.md)
-- [Sealed Ticketing](https://github.com/mohetios/Nekonymous/blob/master/docs/sealed-ticketing.md)
-- [Conversation Suggestions](https://github.com/mohetios/Nekonymous/blob/master/docs/conversation-suggestions.md)
+در طول طراحی، چند راه ساده‌تر یا جذاب‌تر عمداً کنار گذاشته شدند:
+
+- transcript دائمی در D1؛
+- جدول مستقیم sender-recipient؛
+- conversation row برای replyها؛
+- KV به‌عنوان source of truth؛
+- inbox archive و pagination؛
+- viewed shell دائمی؛
+- registry پیام‌های تحویل‌شده؛
+- notification قابل edit و cycle مشترک؛
+- Workers AI برای ranking؛
+- compatibility percentage؛
+- ساخت خودکار مکالمه بعد از suggestion؛
+- reset به‌شکل soft delete؛
+- moderation dashboard پیش از نیاز واقعی؛
+- scanکردن vaultها برای analytics؛
+- key rotation نمایشی بدون migration واقعی؛
+- ادعای ناشناسی کامل یا رمزنگاری سرتاسری.
+
+سادگی در این پروژه به معنی کم‌بودن componentها نیست.
+
+سادگی برای من این‌جا یعنی:
+
+> هر component فقط همان چیزی را بداند که برای انجام مسئولیت خودش لازم دارد.
+
+---
+
+## وضعیت نسخه‌ی اول
+
+نسخه‌ی فعلی `master` شامل این بخش‌هاست:
+
+- Telegram-only Worker runtime؛
+- لینک شخصی پیام ناشناس؛
+- متن و رسانه‌های پشتیبانی‌شده؛
+- capability canonical برای هر پیام؛
+- sealed TicketVault؛
+- unread delivery queue؛
+- اعلان مستقل با count زنده؛
+- پاسخ ناشناس؛
+- نام خصوصی؛
+- block و unblock؛
+- blind reporting؛
+- SafetyState و sanctionهای ماندگار؛
+- pause و resume؛
+- hard account reset؛
+- Conversation Profile V2؛
+- پیشنهاد گفت‌وگوی opt-in؛
+- retrieval محدود در Vectorize؛
+- reciprocal deterministic ranking؛
+- sealed suggestion و request؛
+- accept idempotent؛
+- Telegram Outbox paced و idempotent؛
+- آمار تجمیعی؛
+- audit و release hardening برای race، retry، cleanup و logging.
+
+---
+
+## جمع‌بندی
+
+نِکونیموس با یک flow خیلی ساده شروع شد:
+
+```txt
+یک نفر پیام می‌فرستد
+یک نفر پیام را می‌گیرد
+```
+
+اما وقتی حریم خصوصی را از سطح متن به سطح storage model ببریم، سؤال عوض می‌شود:
+
+```txt
+برای رساندن این پیام
+واقعاً لازم است چه چیزی را بدانیم؟
+
+چه چیزی را باید موقتاً نگه داریم؟
+
+چه چیزی را نباید هیچ‌وقت
+به‌شکل قابل اتصال بسازیم؟
+```
+
+پاسخ فعلی نِکو:
+
+```txt
+identity      = hashed and separated
+message       = independent capability
+lookup        = blind
+route         = encrypted and bounded
+payload       = temporary
+inbox         = delivery queue
+callback      = capability + owner proof
+reply         = a new independent ticket
+block         = recipient-scoped blind tag
+report        = blind safety signal
+Queue         = at-least-once
+Outbox        = idempotent
+Vectorize     = candidate retrieval
+ranking       = deterministic
+conversation  = only after consent
+reset         = new operational identity
+```
+
+حریم خصوصی با بزرگ‌ترکردن ادعاها ساخته نمی‌شود.
+
+با داده‌ی کمتر، storageهای محدودتر، مرزهای روشن‌تر و failureهایی ساخته می‌شود که از قبل برایشان تصمیم گرفته‌ایم.
+
+نِکو هنوز به Telegram، Cloudflare و operator خودش اعتماد دارد.
+
+اما تلاش می‌کند داخل همین مرز واقعی، چیزی بیشتر از نیازش درباره‌ی آدم‌ها و حرف‌هایشان نگه ندارد.
+
+---
+
+## مسیرهای مرجع
+
+- [مخزن نِکونیموس](https://github.com/mohetios/Nekonymous)
+- [معماری canonical](https://github.com/mohetios/Nekonymous/blob/master/docs/architecture.md)
+- [پروتکل Sealed Ticketing](https://github.com/mohetios/Nekonymous/blob/master/docs/sealed-ticketing.md)
+- [Conversation Suggestions V2](https://github.com/mohetios/Nekonymous/blob/master/docs/conversation-suggestions.md)
 - [Threat Model](https://github.com/mohetios/Nekonymous/blob/master/docs/threat-model.md)
-- [صفحه‌ی معرفی](https://mohetios.github.io/Nekonymous/)
+- [صفحه‌ی معرفی پروژه](https://mohetios.github.io/Nekonymous/)
+- [داستان ساخت نِکونیموس](https://mohetios.dev/fa/blog/building-nekonymous-anonymous-telegram-bot)
 - [ربات تلگرام](https://t.me/nekonymous_bot)
