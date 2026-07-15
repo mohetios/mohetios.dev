@@ -97,7 +97,7 @@ const localePrefixRegex = new RegExp(
   `^\\/(${supportedLocales.map((locale) => escapeRegExp(locale)).join('|')})(?=\\/|$)`
 )
 
-const publicSections = ['/', '/blog', '/lab', '/projects', '/about', '/contact']
+const publicSections = ['/', '/blog', '/lab', '/projects', '/tags', '/about', '/contact']
 const staticPublicPaths = new Set(
   supportedLocales.flatMap((locale) =>
     publicSections.map((section) => getLocalizedPublicPath(section, locale))
@@ -185,7 +185,7 @@ export function getLocalizedRoutePath(
     return undefined
   }
 
-  const section = suffix.match(/^\/(blog|lab|projects)(?=\/|$)/)?.[1]
+  const section = suffix.match(/^\/(blog|lab|projects|tags)(?=\/|$)/)?.[1]
 
   if (section) {
     return `/${targetLocale}/${section}`

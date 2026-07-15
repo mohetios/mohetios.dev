@@ -71,7 +71,9 @@ async function onSubmit(event: FormSubmitEvent<LoginInput | RegisterInput>) {
 
     const payload = isSetupMode.value ? await auth.register(input) : await auth.login(input)
 
-    await navigateTo(payload.user.role === 'OWNER' ? '/dashboard' : localePath('/member/profile'))
+    await navigateTo(
+      payload.user.role === 'OWNER' ? localePath('/dashboard') : localePath('/member/profile')
+    )
   } catch (error) {
     toast.add({
       color: 'error',

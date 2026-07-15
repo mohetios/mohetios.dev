@@ -31,7 +31,7 @@ const immutableAssetHeaders = {
 
 const turnstileSiteKey = process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || ''
 
-const staticRouteSections = ['/', '/blog', '/lab', '/projects', '/about', '/contact']
+const staticRouteSections = ['/', '/blog', '/lab', '/projects', '/tags', '/about', '/contact']
 const authRouteSections = ['/login']
 const authRedirectSections = ['/register', '/reset-password']
 const contentRoutePatterns = ['/blog/**', '/lab/**', '/projects/**', '/tags/**']
@@ -428,7 +428,7 @@ export default defineNuxtConfig({
   i18n: {
     langDir: 'locales',
     defaultLocale,
-    strategy: 'prefix_and_default',
+    strategy: 'prefix',
     rootRedirect: {
       path: getLocalizedPublicPath('/', defaultLocale),
       statusCode: 302
@@ -487,13 +487,13 @@ export default defineNuxtConfig({
     injectRegister: 'script',
 
     manifest: {
-      id: '/dashboard',
+      id: getLocalizedPublicPath('/dashboard', defaultLocale),
       name: 'Mohetios.dev Dashboard',
       short_name: 'Mohetios',
       description: 'Owner console for Mohetios.dev inbox, leads, analytics, and system signals.',
       display: 'standalone',
       display_override: ['window-controls-overlay', 'standalone'],
-      start_url: '/dashboard',
+      start_url: getLocalizedPublicPath('/dashboard', defaultLocale),
       scope: '/',
       theme_color: '#FCFBF8',
       background_color: '#FCFBF8',
