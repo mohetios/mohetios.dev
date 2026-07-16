@@ -3,7 +3,7 @@ title: Nekonymous
 description: Nekonymous is a Persian-first open-source Telegram bot for personal anonymous links, sealed anonymous messages and replies, privacy controls, and optional conversation suggestions, built around independent sealed tickets on Cloudflare.
 thumbnail: /content/nekonymous-lab.webp
 date: 2026-07-15
-updated: 2026-07-15
+updated: 2026-07-16
 status: Active
 featured: true
 tags:
@@ -81,6 +81,8 @@ Block, report, and Safety sanctions still need to work, but they should not requ
 
 Users can complete a 25-question assessment that builds a limited profile of their conversation style and what they currently want from a conversation. Discoverability is off until the user explicitly enables it.
 
+The current Telegram flow puts assessment progress, discoverability, profile summary, and suggestion readiness in one hub. Progress can be saved and resumed. Starting a retake turns discoverability off, and the find action stays unavailable until both profile vectors exist and indexing has been verified.
+
 Vectorize retrieves bounded initial candidates. Final ranking is deterministic TypeScript. The system does not expose a fit percentage, diagnose personality, or decide automatically who should talk to whom.
 
 ### Privacy With Clear Boundaries
@@ -131,6 +133,8 @@ Cloudflare Worker + grammY
             HMAC, HKDF, and AES-GCM
 ```
 
+The public source tree mirrors those boundaries with shallow product folders directly under `src/`: `identity/`, `ticketing/`, `profile/`, `suggestions/`, and the other runtime areas. Shared types and Durable Object clients stay visible in flat `types/` and `storage/` folders. The July 16, 2026 source cleanup changed navigation and import paths, not the runtime model.
+
 D1 is the relational source for account structure, public links, and aggregate statistics. It does not store anonymous message bodies or a direct anonymous sender-recipient graph.
 
 Durable Objects own state that needs local ordering, leases, transactions, or coordination. KV is cache only; the main path must still work through authoritative storage when KV misses.
@@ -180,6 +184,7 @@ The supported `master` line includes:
 - pause and resume for incoming messages;
 - hard account reset;
 - conversation style profile;
+- unified profile and Suggestions hub with saved progress and verified readiness;
 - optional conversation suggestions;
 - accept-gated conversation requests;
 - TelegramOutbox with pacing and idempotency;
@@ -191,7 +196,7 @@ Nekonymous is still a hosted relay. It trusts Telegram, Cloudflare, and the proj
 ## Next Steps
 
 - publish the first public release;
-- finish aligning the project page, build story, lab note, README, and Telegram bot profile;
+- keep the project page, build story, lab note, README, and Telegram bot copy synchronized with `master`;
 - observe real inbox, Queue, and Outbox behavior after users arrive;
 - collect feedback on the cat-language copy, privacy controls, and conversation suggestions;
 - evaluate abuse patterns before adding heavier moderation tools;

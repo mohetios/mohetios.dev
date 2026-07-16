@@ -3,7 +3,7 @@ title: 'Nekonymous: The Cat That Was Supposed To Only Deliver The Message'
 description: The rebuild story behind Nekonymous, from anonymous bot data risks to sealed tickets, blind storage, conversation suggestions, and honest privacy boundaries.
 thumbnail: /content/nekonymous-blog.webp
 date: 2026-07-15
-updated: 2026-07-15
+updated: 2026-07-16
 tags:
   - anonymous-messaging
   - telegram-bot
@@ -130,7 +130,7 @@ The goal was for the system itself to know no more than it needs to know in orde
 
 ## Rebuilding Neko
 
-Recently I decided to take Neko out of the raw first idea and rebuild it across architecture, code, security, failure handling, and user experience.
+During the July 2026 rebuild, I took Neko out of the raw first idea and rebuilt it across architecture, code, security, failure handling, and user experience.
 
 The point was not to place a pile of new Cloudflare services next to each other.
 
@@ -195,6 +195,12 @@ What kind of conversation do I currently want from the other side?
 
 Entry into suggestions is fully optional, and discoverability is off by default.
 
+The July 15, 2026 UX cleanup made the assessment and suggestions feel like one flow instead of separate tools. The Suggestions hub now keeps assessment progress, discoverability, index readiness, and the user's controlled profile summary in one place.
+
+The first 16 questions use a simple self-style scale. The next 8 explain the two ends of each dimension — very light to very deep, very slow to very fast, indirect to direct — instead of reusing one vague scale for every preference. Progress can be saved and resumed, and starting over turns discoverability off.
+
+The search action appears only after both profile vectors exist and the index has been verified. A profile can be stored before that work finishes, so the UI says it is still being prepared instead of pretending it is ready.
+
 Vectorize retrieves only a limited initial set of options.
 
 Final ranking is deterministic TypeScript. There is no model deciding in the background who is "right" for whom.
@@ -233,13 +239,19 @@ I did not want that name to stay only in the logo.
 
 I tried to make the bot's behavior, wording, errors, and even confused moments carry the same character.
 
-When you start the bot for the first time, instead of a long formal text, you see something like:
+When you start the bot for the first time, instead of a long formal text, the current Persian opening says roughly:
 
-> Meow, here is your anonymous message link:
+> Meow, you're here 🐾
+>
+> I'm Nekonymous — the orange cat of anonymous messages.
+>
+> Here is your anonymous-message link:
 >
 > `https://t.me/nekonymous_bot?start=...`
 >
 > Anyone who opens it can send you an anonymous message.
+
+In the same cleanup, I shortened the send, inbox, settings, and error states. Each one should say what happened and what the user can do next. The cat voice stays, but it should not get in the way of a privacy boundary or a failure message.
 
 Sometimes, if you send the wrong command, get lost in the middle of a flow, or there is nothing to show, the bot may answer in cat language too.
 
@@ -294,6 +306,7 @@ But it is a real, tested, reviewable system:
 - pause for incoming messages;
 - full account reset with a new identity;
 - conversation style assessment;
+- a unified profile and Suggestions hub with saved progress and readiness states;
 - optional conversation suggestions;
 - independent sealed-ticket architecture.
 

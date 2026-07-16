@@ -3,7 +3,7 @@ title: 'Nekonymous: From Anonymous Message To Sealed Ticket'
 description: A technical lab on Nekonymous, a Persian-first anonymous relay with independent capabilities, a low-data delivery inbox, abuse controls, and optional conversation suggestions on Cloudflare.
 thumbnail: /content/nekonymous-lab.webp
 date: 2026-07-07
-updated: 2026-07-15
+updated: 2026-07-16
 status: V1 ready for release · Sealed Inbox · Conversation Suggestions
 featured: true
 tags:
@@ -102,6 +102,7 @@ Conversation Suggestions adds:
 
 - conversation style assessment;
 - limited conversation profile creation;
+- one hub for profile status, summary, and suggestion readiness;
 - optional discoverability;
 - conversation options;
 - intro writing;
@@ -780,6 +781,20 @@ desired style
 current intent
 ```
 
+The current Telegram flow keeps the assessment and suggestion state in one place.
+
+The first 16 self-style questions share a simple five-point scale. The next 8 desired-style questions still use the same five buttons, but each dimension now explains its own ends:
+
+```txt
+depth       -> very light ... very deep
+reply pace  -> very slow  ... very fast
+directness  -> indirect   ... direct
+```
+
+The last question asks for current intent.
+
+Assessment progress can be saved and resumed. Starting a retake clears the active session and turns discoverability off before the first new answer is stored.
+
 Raw answers exist only in the active encrypted session in UserState.
 
 Finalization:
@@ -796,6 +811,18 @@ Finalization:
 10. issues a sealed profile-index Queue job.
 
 Completing a profile does not make the user discoverable. Discoverability is off by default.
+
+The Suggestions hub shows the assessment state, discoverability state, index readiness, and a controlled profile summary together. There is no separate "view profile" screen.
+
+The UI also does not treat a stored profile as search-ready too early. Search stays unavailable while the vault is indexing or failed, and only becomes available when:
+
+```txt
+vault status is private or discoverable
++
+profile route contains both self and desired Vectorize ids
+```
+
+That check matters because a finalized profile record can exist before both vectors are written and verified.
 
 The product does not infer demographic, clinical, political, religious, sexual, or identity attributes.
 
@@ -972,14 +999,21 @@ The codebase keeps the Worker-native boundary visible:
 src/
   index.ts       Worker entry, queue dispatch, DO exports
   bot/           grammY wiring, commands, keyboards, callbacks
-  contracts/     canonical domain and runtime contracts
-  features/      identity, ticketing, moderation, settings, conversation
-  storage/       Durable Objects and typed RPC clients
+  types/         shared runtime and domain types
+  identity/      users, public links, display names, reset
+  ticketing/     sealed tickets, inbox, replies, block, report
+  moderation/    blind report creation
+  settings/      privacy controls, settings, aggregate statistics
+  profile/       assessment, profile lifecycle, readiness, summary
+  suggestions/   retrieval, ranking, suggestions, requests
+  storage/       flat Durable Object clients and implementations
   queues/        Queue consumers
   stats/         aggregate event emission and readers
   i18n/          Persian-first visible copy
   utils/         small shared runtime helpers
 ```
+
+The July 16, 2026 source cleanup removed the older `contracts/` and `features/` nesting. Product areas now sit directly under `src/`, while shared types and storage files remain easy to scan. This changed source navigation and import paths, not the runtime or storage model.
 
 Handlers parse Telegram input, call product logic, and render responses.
 
@@ -1045,6 +1079,7 @@ The supported `master` line includes:
 - TelegramOutbox idempotency and pacing;
 - aggregate stats;
 - conversation profiles;
+- one profile and suggestion hub with verified index readiness;
 - optional suggestions;
 - sealed suggestions and requests;
 - deterministic request acceptance;
@@ -1088,7 +1123,7 @@ For me, that is the interesting part of the project: not that an anonymous bot c
 - [Nekonymous repository](https://github.com/mohetios/Nekonymous)
 - [Canonical architecture](https://github.com/mohetios/Nekonymous/blob/master/docs/architecture.md)
 - [Sealed Ticketing protocol](https://github.com/mohetios/Nekonymous/blob/master/docs/sealed-ticketing.md)
-- [Conversation Suggestions V2](https://github.com/mohetios/Nekonymous/blob/master/docs/conversation-suggestions.md)
+- [Conversation Suggestions](https://github.com/mohetios/Nekonymous/blob/master/docs/conversation-suggestions.md)
 - [Threat Model](https://github.com/mohetios/Nekonymous/blob/master/docs/threat-model.md)
 - [Project intro page](https://mohetios.github.io/Nekonymous/)
 - [Build story](https://mohetios.dev/en/blog/building-nekonymous-anonymous-telegram-bot)
