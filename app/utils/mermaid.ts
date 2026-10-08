@@ -165,6 +165,8 @@ export function getMermaidConfig(): MermaidConfig {
     startOnLoad: false,
     securityLevel: 'strict',
     look: 'classic',
+    // Mermaid 12 defaults to ELK; dagre keeps the spacing tuned below.
+    layout: 'dagre',
     theme: 'base',
     fontFamily: getFontFamily(),
     fontSize: 15,

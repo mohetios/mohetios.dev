@@ -20,7 +20,7 @@ const props = defineProps<{
 }>()
 
 const localePath = useLocalePath()
-const pairedStat = computed(() => props.metric.stats?.length === 1 ? props.metric.stats[0] : null)
+const pairedStat = computed(() => (props.metric.stats?.length === 1 ? props.metric.stats[0] : null))
 const primaryLabel = computed(() => props.metric.valueLabel ?? props.metric.label)
 </script>
 
@@ -46,9 +46,7 @@ const primaryLabel = computed(() => props.metric.valueLabel ?? props.metric.labe
               <span class="text-3xl font-semibold tracking-tight text-highlighted">
                 {{ metric.value }}
               </span>
-              <span class="text-lg font-medium text-muted">
-                /
-              </span>
+              <span class="text-lg font-medium text-muted"> / </span>
               <span class="text-2xl font-semibold tracking-tight text-highlighted">
                 {{ pairedStat.value }}
               </span>
@@ -58,9 +56,7 @@ const primaryLabel = computed(() => props.metric.valueLabel ?? props.metric.labe
               <span class="min-w-0 truncate">
                 {{ primaryLabel }}
               </span>
-              <span aria-hidden="true" class="shrink-0">
-                /
-              </span>
+              <span aria-hidden="true" class="shrink-0"> / </span>
               <span class="min-w-0 truncate">
                 {{ pairedStat.label }}
               </span>

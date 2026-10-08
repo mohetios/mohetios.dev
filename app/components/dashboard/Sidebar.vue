@@ -3,7 +3,9 @@ const { locale, locales, t } = useI18n()
 const localePath = useLocalePath()
 const brandName = computed(() => getSeoSiteName(t))
 const route = useRoute()
-const isRtl = computed(() => locales.value.find((item) => item.code === locale.value)?.dir === 'rtl')
+const isRtl = computed(
+  () => locales.value.find((item) => item.code === locale.value)?.dir === 'rtl'
+)
 const dashboardSidebarSide = computed(() => (isRtl.value ? 'right' : 'left'))
 
 type DashboardNavItem = {
@@ -126,12 +128,7 @@ function formatBadgeCount(count: number, max: number) {
           >
             {{ brandName.charAt(0) }}
           </span>
-          <SiteLogo
-            v-else
-            show-tagline
-            caption-key="dashboard.title"
-            size="dashboard"
-          />
+          <SiteLogo v-else show-tagline caption-key="dashboard.title" size="dashboard" />
         </NuxtLink>
       </div>
     </template>

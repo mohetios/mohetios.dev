@@ -108,7 +108,9 @@ useMohetiosSeo({
       <template v-if="sections.length">
         <section
           v-for="(section, sectionIndex) in sections"
-          :id="section.type === 'project' ? 'systems' : section.type === 'blog' ? 'notebook' : 'lab'"
+          :id="
+            section.type === 'project' ? 'systems' : section.type === 'blog' ? 'notebook' : 'lab'
+          "
           :key="section.type"
           class="grid gap-8 lg:grid-cols-[0.28fr_0.72fr]"
         >

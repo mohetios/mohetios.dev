@@ -30,8 +30,8 @@ Paths:
 - [Open-source repository](https://github.com/mohetios/Nekonymous)
 - [Project intro page](https://mohetios.github.io/Nekonymous/)
 - [Telegram bot](https://t.me/nekonymous_bot)
-- [Build story](https://mohetios.dev/en/blog/building-nekonymous-anonymous-telegram-bot)
-- [Technical architecture lab](https://mohetios.dev/en/lab/nekonymous-anonymous-messaging-technical-lab)
+- [Build story](https://mohetios.ir/en/blog/building-nekonymous-anonymous-telegram-bot)
+- [Technical architecture lab](https://mohetios.ir/en/lab/nekonymous-anonymous-messaging-technical-lab)
 
 ## Why It Exists
 

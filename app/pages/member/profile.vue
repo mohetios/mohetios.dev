@@ -60,7 +60,11 @@ const roleColor = computed(() => {
         <div v-else class="space-y-6">
           <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div class="flex items-center gap-4">
-              <UAvatar :alt="auth.user.value?.username || 'Member'" size="lg" icon="i-lucide-user" />
+              <UAvatar
+                :alt="auth.user.value?.username || 'Member'"
+                size="lg"
+                icon="i-lucide-user"
+              />
 
               <div>
                 <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
@@ -101,7 +105,9 @@ const roleColor = computed(() => {
 
               <p class="mt-2 text-base font-medium text-highlighted">
                 {{
-                  auth.isAuthenticated.value ? t('auth.status.authenticated') : t('auth.status.guest')
+                  auth.isAuthenticated.value
+                    ? t('auth.status.authenticated')
+                    : t('auth.status.guest')
                 }}
               </p>
             </div>

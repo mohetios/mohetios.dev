@@ -47,7 +47,9 @@ function getStatusColor(status: CommentStatus): BadgeColor {
 }
 
 function getStatusLabel(status: CommentStatus) {
-  return t(`dashboard.comments.status.${status.toLowerCase() as 'pending' | 'approved' | 'spam' | 'deleted'}`)
+  return t(
+    `dashboard.comments.status.${status.toLowerCase() as 'pending' | 'approved' | 'spam' | 'deleted'}`
+  )
 }
 
 function formatDate(value?: number | null) {

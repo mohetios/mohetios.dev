@@ -32,7 +32,9 @@ const pageCopy = computed(() => ({
               <p class="text-sm font-medium tracking-[0.14em] text-primary uppercase">
                 {{ pageCopy.eyebrow }}
               </p>
-              <h1 class="text-4xl font-semibold tracking-tight text-balance text-highlighted sm:text-5xl">
+              <h1
+                class="text-4xl font-semibold tracking-tight text-balance text-highlighted sm:text-5xl"
+              >
                 {{ pageCopy.title }}
               </h1>
               <p class="text-lg text-pretty leading-7 text-muted">

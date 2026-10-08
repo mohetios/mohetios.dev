@@ -57,7 +57,10 @@ function toggleReply(commentId: string) {
         class="inline-flex self-start items-center gap-1 text-sm font-medium text-muted transition-colors duration-150 hover:text-primary"
         @click="toggleReply(comment.id)"
       >
-        <UIcon :name="replyingTo === comment.id ? 'i-lucide-x' : 'i-lucide-reply'" class="size-3.5" />
+        <UIcon
+          :name="replyingTo === comment.id ? 'i-lucide-x' : 'i-lucide-reply'"
+          class="size-3.5"
+        />
         {{ replyingTo === comment.id ? t('comments.cancelReply') : t('comments.replyAction') }}
       </button>
 
@@ -80,11 +83,7 @@ function toggleReply(commentId: string) {
           class="absolute start-[-1px] top-0 h-4 w-3 rounded-es-md border-b border-s border-primary/35"
           aria-hidden="true"
         />
-        <article
-          v-for="reply in comment.replies"
-          :key="reply.id"
-          class="py-1"
-        >
+        <article v-for="reply in comment.replies" :key="reply.id" class="py-1">
           <header class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
             <p class="text-sm font-semibold text-highlighted">
               {{ reply.authorName }}

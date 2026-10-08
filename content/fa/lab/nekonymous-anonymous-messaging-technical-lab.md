@@ -1745,5 +1745,5 @@ reset         = new operational identity
 - [Conversation Suggestions](https://github.com/mohetios/Nekonymous/blob/master/docs/conversation-suggestions.md)
 - [Threat Model](https://github.com/mohetios/Nekonymous/blob/master/docs/threat-model.md)
 - [صفحه‌ی معرفی پروژه](https://mohetios.github.io/Nekonymous/)
-- [داستان ساخت نِکونیموس](https://mohetios.dev/fa/blog/building-nekonymous-anonymous-telegram-bot)
+- [داستان ساخت نِکونیموس](https://mohetios.ir/fa/blog/building-nekonymous-anonymous-telegram-bot)
 - [ربات تلگرام](https://t.me/nekonymous_bot)

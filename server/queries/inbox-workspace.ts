@@ -10,14 +10,7 @@ import {
 } from '../utils/inbox-map'
 
 type InboxFilter =
-  | 'UNREAD'
-  | 'ALL'
-  | 'NEEDS_REPLY'
-  | 'LEAD'
-  | 'REPLIED'
-  | 'ARCHIVED'
-  | 'SPAM'
-  | 'TRASH'
+  'UNREAD' | 'ALL' | 'NEEDS_REPLY' | 'LEAD' | 'REPLIED' | 'ARCHIVED' | 'SPAM' | 'TRASH'
 
 type InboxWorkspaceInput = {
   filter?: InboxFilter | null
@@ -140,7 +133,7 @@ async function getInboxSummary(db: GraphQLContext['db']) {
   }
 }
 
-export async function inboxWorkspace(
+async function inboxWorkspace(
   _parent: unknown,
   args: { input?: InboxWorkspaceInput | null },
   context: GraphQLContext

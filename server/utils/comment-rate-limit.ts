@@ -45,10 +45,7 @@ export async function enforceCommentRateLimit(db: AppDb, input: RateLimitInput) 
     .where(
       and(
         eq(comments.authorEmailHash, input.emailHash),
-        gte(
-          comments.createdAt,
-          getRateLimitWindowStart(now, commentRateLimits.commentsPerEmail)
-        )
+        gte(comments.createdAt, getRateLimitWindowStart(now, commentRateLimits.commentsPerEmail))
       )
     )
 
@@ -67,10 +64,7 @@ export async function enforceCommentRateLimit(db: AppDb, input: RateLimitInput) 
         and(
           eq(comments.ipHash, input.ipHash),
           eq(comments.depth, 1),
-          gte(
-            comments.createdAt,
-            getRateLimitWindowStart(now, commentRateLimits.repliesPerIp)
-          )
+          gte(comments.createdAt, getRateLimitWindowStart(now, commentRateLimits.repliesPerIp))
         )
       )
 

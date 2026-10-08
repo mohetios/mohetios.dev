@@ -184,7 +184,9 @@ export async function adminComments(
     .limit(limit)
     .offset(offset)
 
-  const parentIds = rows.map((row) => row.parentId).filter((value): value is string => Boolean(value))
+  const parentIds = rows
+    .map((row) => row.parentId)
+    .filter((value): value is string => Boolean(value))
 
   const parentPreviewById = new Map<string, string>()
 
@@ -224,7 +226,10 @@ export async function adminComments(
 
   return {
     items: rows.map((row) =>
-      normalizeAdminCommentRow(row, row.parentId ? parentPreviewById.get(row.parentId) || null : null)
+      normalizeAdminCommentRow(
+        row,
+        row.parentId ? parentPreviewById.get(row.parentId) || null : null
+      )
     ),
     total: totalRow?.value ?? 0,
     limit,

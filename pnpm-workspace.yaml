@@ -4,7 +4,7 @@ allowBuilds:
   core-js-pure: true
   esbuild: false
   maplibre-gl: false
-  sharp: true
+  sharp: false
   ttf2woff2: false
   unrs-resolver: false
   vue-demi: false
@@ -21,3 +21,5 @@ minimumReleaseAgeExclude:
   - '@nuxt/eslint@1.16.0'
   - miniflare@4.20260710.0
   - wrangler@4.111.0
+  - postal-mime@4.0.5
+  - satori@0.37.0 || 0.37.1

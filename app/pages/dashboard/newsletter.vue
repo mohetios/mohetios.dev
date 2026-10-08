@@ -20,12 +20,7 @@ useMohetiosSeo({
   noindex: true
 })
 
-type SubscriberStatus =
-  | 'PENDING'
-  | 'SUBSCRIBED'
-  | 'UNSUBSCRIBED'
-  | 'BOUNCED'
-  | 'COMPLAINED'
+type SubscriberStatus = 'PENDING' | 'SUBSCRIBED' | 'UNSUBSCRIBED' | 'BOUNCED' | 'COMPLAINED'
 
 type SubscriberRow = {
   id: string
@@ -138,11 +133,7 @@ function getStatusColor(status: string): BadgeColor {
 
 function getStatusLabel(status: string) {
   const key = status.toLowerCase() as
-    | 'pending'
-    | 'subscribed'
-    | 'unsubscribed'
-    | 'bounced'
-    | 'complained'
+    'pending' | 'subscribed' | 'unsubscribed' | 'bounced' | 'complained'
 
   return t(`dashboard.newsletter.status.${key}`)
 }

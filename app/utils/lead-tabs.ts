@@ -76,13 +76,7 @@ export function getLeadTabI18nKey(tab: LeadTabKey) {
 }
 
 export type LeadEmptyStateKey =
-  | 'new'
-  | 'qualified'
-  | 'followUp'
-  | 'won'
-  | 'lost'
-  | 'all'
-  | 'archived'
+  'new' | 'qualified' | 'followUp' | 'won' | 'lost' | 'all' | 'archived'
 
 export function getLeadEmptyStateKey(tab: LeadTabKey): LeadEmptyStateKey {
   if (tab === 'follow-up') return 'followUp'

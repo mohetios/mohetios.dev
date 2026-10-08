@@ -124,7 +124,7 @@ async function getLeadSummary(db: GraphQLContext['db']) {
   }
 }
 
-export async function leadsWorkspace(
+async function leadsWorkspace(
   _parent: unknown,
   args: { input?: LeadsWorkspaceInput | null },
   context: GraphQLContext

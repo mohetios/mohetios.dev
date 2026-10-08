@@ -103,7 +103,7 @@ export function getAnalyticsConfig(event: H3Event): AnalyticsConfig {
     ),
     cloudflareHostname:
       readString(runtimeConfig.cloudflareHostname, cloudflareEnv.NUXT_CLOUDFLARE_HOSTNAME) ||
-      'mohetios.dev'
+      'mohetios.ir'
   }
 }
 
@@ -127,8 +127,7 @@ export function getServerEnv(event: H3Event): ServerEnv {
     DB,
 
     ADMIN_NOTIFICATION_QUEUE: cloudflareEnv.ADMIN_NOTIFICATION_QUEUE as
-      | Queue<AdminNotificationJob>
-      | undefined,
+      Queue<AdminNotificationJob> | undefined,
 
     EMAIL_DELIVERY_QUEUE: cloudflareEnv.EMAIL_DELIVERY_QUEUE as Queue<EmailDeliveryJob> | undefined,
 

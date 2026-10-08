@@ -21,31 +21,9 @@ const defaults = {
   dryRun: false
 }
 
-const enNames = [
-  'Ava',
-  'Noah',
-  'Liam',
-  'Emma',
-  'Mia',
-  'Ethan',
-  'Aria',
-  'Leo',
-  'Nora',
-  'Mason'
-]
+const enNames = ['Ava', 'Noah', 'Liam', 'Emma', 'Mia', 'Ethan', 'Aria', 'Leo', 'Nora', 'Mason']
 
-const faNames = [
-  'علی',
-  'سارا',
-  'رضا',
-  'نگار',
-  'امیر',
-  'مهسا',
-  'پارسا',
-  'نرگس',
-  'مانی',
-  'الهام'
-]
+const faNames = ['علی', 'سارا', 'رضا', 'نگار', 'امیر', 'مهسا', 'پارسا', 'نرگس', 'مانی', 'الهام']
 
 const enBodies = [
   'Very clear breakdown. The structure made the idea easier to follow.',
@@ -89,10 +67,13 @@ function parseArgs(argv) {
   for (const arg of argv) {
     if (arg === '--reset') options.reset = true
     if (arg === '--dry-run') options.dryRun = true
-    if (arg.startsWith('--count=')) options.count = Math.max(1, Number(arg.split('=')[1] || defaults.count))
+    if (arg.startsWith('--count='))
+      options.count = Math.max(1, Number(arg.split('=')[1] || defaults.count))
     if (arg.startsWith('--reply-ratio=')) {
       const parsed = Number(arg.split('=')[1])
-      options.replyRatio = Number.isFinite(parsed) ? Math.min(1, Math.max(0, parsed)) : defaults.replyRatio
+      options.replyRatio = Number.isFinite(parsed)
+        ? Math.min(1, Math.max(0, parsed))
+        : defaults.replyRatio
     }
   }
 
@@ -122,7 +103,10 @@ function randomTimeInLastDays(days) {
 }
 
 async function hashEmail(email) {
-  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`seed-comment:${email}`))
+  const digest = await crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(`seed-comment:${email}`)
+  )
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('')
 }
 
@@ -130,7 +114,9 @@ function readVeliteCollection(name) {
   const fullPath = join(veliteDir, `${name}.json`)
   const raw = readFileSync(fullPath, 'utf8')
   const data = JSON.parse(raw)
-  return Array.isArray(data) ? data.filter((item) => item && item.path && item.title && !item.draft) : []
+  return Array.isArray(data)
+    ? data.filter((item) => item && item.path && item.title && !item.draft)
+    : []
 }
 
 function buildTargets() {

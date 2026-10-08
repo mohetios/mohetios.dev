@@ -60,13 +60,9 @@ const {
   pending: isLoading,
   error: loadError,
   refresh
-} = await useAsyncData(
-  'admin-comments',
-  () => GqlAdminComments(queryInput.value),
-  {
-    watch: [queryInput]
-  }
-)
+} = await useAsyncData('admin-comments', () => GqlAdminComments(queryInput.value), {
+  watch: [queryInput]
+})
 
 const connection = computed(() => commentsData.value?.adminComments)
 const comments = computed(() => (connection.value?.items ?? []) as CommentRow[])
@@ -219,7 +215,11 @@ const columns = computed<TableColumn<CommentRow>[]>(() => [
     accessorKey: 'createdAt',
     header: t('dashboard.comments.table.createdAt'),
     cell: ({ row }) =>
-      h('span', { class: 'whitespace-nowrap text-xs text-muted tabular-nums' }, formatDate(row.original.createdAt))
+      h(
+        'span',
+        { class: 'whitespace-nowrap text-xs text-muted tabular-nums' },
+        formatDate(row.original.createdAt)
+      )
   },
   {
     id: 'author',
@@ -289,17 +289,14 @@ const columns = computed<TableColumn<CommentRow>[]>(() => [
     cell: ({ row }) => {
       const UButton = resolveComponent('UButton')
 
-      return h(
-        UButton,
-        {
-          size: 'xs',
-          variant: 'ghost',
-          color: 'neutral',
-          icon: 'i-lucide-panel-right-open',
-          'aria-label': t('dashboard.comments.actions.open'),
-          onClick: () => openDetail(row.original)
-        }
-      )
+      return h(UButton, {
+        size: 'xs',
+        variant: 'ghost',
+        color: 'neutral',
+        icon: 'i-lucide-panel-right-open',
+        'aria-label': t('dashboard.comments.actions.open'),
+        onClick: () => openDetail(row.original)
+      })
     }
   }
 ])

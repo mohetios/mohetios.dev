@@ -27,9 +27,7 @@ export function createCommentFormSchema(messages: CommentFormValidationMessages)
       .trim()
       .min(COMMENT_LIMITS.authorNameMin, messages.name)
       .max(COMMENT_LIMITS.authorNameMax, messages.nameMax),
-    authorEmail: z
-      .email(messages.email)
-      .max(COMMENT_LIMITS.emailMax, messages.emailMax),
+    authorEmail: z.email(messages.email).max(COMMENT_LIMITS.emailMax, messages.emailMax),
     body: z
       .string()
       .trim()

@@ -124,7 +124,7 @@ export function useMohetiosSeo(input: MohetiosSeoInput) {
         return localizedPath
           ? [
               {
-                rel: 'alternate',
+                rel: 'alternate' as const,
                 hreflang: code,
                 href: buildCanonicalUrl(localizedPath, siteUrl)
               }
@@ -135,14 +135,18 @@ export function useMohetiosSeo(input: MohetiosSeoInput) {
       const defaultAlternate = defaultLocalizedPath
         ? [
             {
-              rel: 'alternate',
+              rel: 'alternate' as const,
               hreflang: 'x-default',
               href: buildCanonicalUrl(defaultLocalizedPath, siteUrl)
             }
           ]
         : []
 
-      return [{ rel: 'canonical', href: canonicalUrl.value }, ...alternates, ...defaultAlternate]
+      return [
+        { rel: 'canonical' as const, href: canonicalUrl.value },
+        ...alternates,
+        ...defaultAlternate
+      ]
     }),
     meta: computed(() => {
       const currentLocale = locales.value.find((item) => getLocaleCode(item) === locale.value)

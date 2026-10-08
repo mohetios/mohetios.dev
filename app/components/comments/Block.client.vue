@@ -26,7 +26,9 @@ const isComposerOpen = ref(false)
 const sortMode = ref<'recent' | 'oldest'>('recent')
 
 const commentCount = computed(() => comments.value.length)
-const localizedCommentCount = computed(() => formatLocalizedNumber(commentCount.value, locale.value))
+const localizedCommentCount = computed(() =>
+  formatLocalizedNumber(commentCount.value, locale.value)
+)
 
 const sortItems = computed(() => [
   { label: t('comments.sortRecent'), value: 'recent' as const },
@@ -119,7 +121,11 @@ onMounted(() => {
               icon="i-lucide-message-square-plus"
               :label="isComposerOpen ? t('comments.closeFormShort') : t('comments.addComment')"
               :aria-label="isComposerOpen ? t('comments.closeForm') : t('comments.openForm')"
-              @click="() => { isComposerOpen = !isComposerOpen }"
+              @click="
+                () => {
+                  isComposerOpen = !isComposerOpen
+                }
+              "
             />
           </UTooltip>
         </div>

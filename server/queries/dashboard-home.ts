@@ -1,12 +1,14 @@
 import { and, desc, eq, inArray, isNull, sql } from 'drizzle-orm'
 
-import { adminNotifications, comments, inboxMessages, newsletterSubscribers } from '../models/schema'
+import {
+  adminNotifications,
+  comments,
+  inboxMessages,
+  newsletterSubscribers
+} from '../models/schema'
 import type { GraphQLContext } from '../routes/graph'
 import { requirePermission } from '../utils/auth'
-import {
-  getCachedCloudflareAnalytics,
-  type AnalyticsRange
-} from '../utils/cloudflare-analytics'
+import { getCachedCloudflareAnalytics, type AnalyticsRange } from '../utils/cloudflare-analytics'
 
 // D1 remains source of truth. KV can cache dashboardHome as dashboard:home:v1 (60s TTL)
 // later for snapshots and external analytics rollups only — not inbox truth or auth state.
@@ -69,40 +71,40 @@ export async function dashboardHome(
     inboxPreviewRows,
     notificationRows
   ] = await Promise.all([
-      db
-        .select({ count: sql<number>`count(*)` })
-        .from(inboxMessages)
-        .where(and(activeOnly, eq(inboxMessages.status, 'NEW'))),
+    db
+      .select({ count: sql<number>`count(*)` })
+      .from(inboxMessages)
+      .where(and(activeOnly, eq(inboxMessages.status, 'NEW'))),
 
-      db
-        .select({ count: sql<number>`count(*)` })
-        .from(inboxMessages)
-        .where(and(activeOnly, inArray(inboxMessages.status, ['NEW', 'OPEN']))),
+    db
+      .select({ count: sql<number>`count(*)` })
+      .from(inboxMessages)
+      .where(and(activeOnly, inArray(inboxMessages.status, ['NEW', 'OPEN']))),
 
-      db
-        .select({ count: sql<number>`count(*)` })
-        .from(inboxMessages)
-        .where(and(activeOnly, eq(inboxMessages.kind, 'LEAD'))),
+    db
+      .select({ count: sql<number>`count(*)` })
+      .from(inboxMessages)
+      .where(and(activeOnly, eq(inboxMessages.kind, 'LEAD'))),
 
-      db
-        .select({ count: sql<number>`count(*)` })
-        .from(newsletterSubscribers)
-        .where(eq(newsletterSubscribers.status, 'subscribed')),
+    db
+      .select({ count: sql<number>`count(*)` })
+      .from(newsletterSubscribers)
+      .where(eq(newsletterSubscribers.status, 'subscribed')),
 
-      db
-        .select({ count: sql<number>`count(*)` })
-        .from(comments)
-        .where(eq(comments.status, 'PENDING')),
+    db
+      .select({ count: sql<number>`count(*)` })
+      .from(comments)
+      .where(eq(comments.status, 'PENDING')),
 
-      db
-        .select()
-        .from(inboxMessages)
-        .where(activeOnly)
-        .orderBy(desc(inboxMessages.createdAt))
-        .limit(5),
+    db
+      .select()
+      .from(inboxMessages)
+      .where(activeOnly)
+      .orderBy(desc(inboxMessages.createdAt))
+      .limit(5),
 
-      db.select().from(adminNotifications).orderBy(desc(adminNotifications.createdAt)).limit(8)
-    ])
+    db.select().from(adminNotifications).orderBy(desc(adminNotifications.createdAt)).limit(8)
+  ])
 
   const inboxUnread = Number(unreadRows[0]?.count || 0)
   const needsReply = Number(needsReplyRows[0]?.count || 0)
@@ -204,9 +206,7 @@ export async function dashboardHome(
         label: 'Comments',
         status: pendingComments > 0 ? 'pending' : 'ok',
         helper:
-          pendingComments > 0
-            ? 'Some comments are waiting for moderation'
-            : 'No pending comments'
+          pendingComments > 0 ? 'Some comments are waiting for moderation' : 'No pending comments'
       }
     ],
 

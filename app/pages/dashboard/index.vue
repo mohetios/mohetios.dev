@@ -234,12 +234,7 @@ watch(error, (currentError) => {
           <USkeleton class="h-[6.75rem] w-full" />
         </UCard>
       </template>
-      <DashboardMetric
-        v-for="metric in summaryCards"
-        v-else
-        :key="metric.key"
-        :metric="metric"
-      />
+      <DashboardMetric v-for="metric in summaryCards" v-else :key="metric.key" :metric="metric" />
     </section>
 
     <section class="grid items-stretch gap-4 xl:grid-cols-5">
@@ -273,7 +268,11 @@ watch(error, (currentError) => {
                 :key="item.value"
                 :variant="audienceMetric === item.value ? 'soft' : 'ghost'"
                 color="primary"
-                @click="() => { audienceMetric = item.value }"
+                @click="
+                  () => {
+                    audienceMetric = item.value
+                  }
+                "
               >
                 {{ item.label }}
               </UButton>
@@ -306,10 +305,7 @@ watch(error, (currentError) => {
         :signals="dashboardHome.readerSignals"
         :loading="isInitialDashboardLoading"
       />
-      <DashboardHealth
-        :items="dashboardHome.systemHealth"
-        :loading="isInitialDashboardLoading"
-      />
+      <DashboardHealth :items="dashboardHome.systemHealth" :loading="isInitialDashboardLoading" />
     </section>
 
     <section class="grid gap-4 lg:grid-cols-3">

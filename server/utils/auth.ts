@@ -41,7 +41,7 @@ export function normalizeUserRole(role: unknown): Exclude<UserRole, 'GUEST'> {
   return 'MEMBER'
 }
 
-export function requireAuth(context: GraphQLContext) {
+function requireAuth(context: GraphQLContext) {
   if (!context.userId) {
     throw new GraphQLError('Authentication required', {
       extensions: {

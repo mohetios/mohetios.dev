@@ -9,7 +9,9 @@ const currentLocale = computed(() => locales.value.find((item) => item.code === 
 const appLocale = computed(() => {
   const key = currentLocale.value?.uiLocale
 
-  return typeof key === 'string' ? uiLocales[key as keyof typeof uiLocales] || uiLocales.en : uiLocales.en
+  return typeof key === 'string'
+    ? uiLocales[key as keyof typeof uiLocales] || uiLocales.en
+    : uiLocales.en
 })
 
 useHead({

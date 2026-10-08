@@ -3,10 +3,7 @@ import { GraphQLError } from 'graphql'
 
 import type { GraphQLContext } from '../routes/graph'
 import { comments } from '../models/schema'
-import {
-  createPendingComment,
-  queueCommentStatusEmail
-} from '../services/comments/create-comment'
+import { createPendingComment, queueCommentStatusEmail } from '../services/comments/create-comment'
 import { normalizeAdminCommentRow } from '../utils/comment-map'
 import { normalizeCommentBody } from '../utils/comment-text'
 import { requirePermission } from '../utils/auth'
@@ -39,11 +36,7 @@ type UpdateCommentArgs = {
 }
 
 async function getCommentOrThrow(context: GraphQLContext, id: string) {
-  const [comment] = await context.db
-    .select()
-    .from(comments)
-    .where(eq(comments.id, id))
-    .limit(1)
+  const [comment] = await context.db.select().from(comments).where(eq(comments.id, id)).limit(1)
 
   if (!comment) {
     throw new GraphQLError('Comment not found')

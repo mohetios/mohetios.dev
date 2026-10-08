@@ -67,10 +67,7 @@ const viewNotificationAction: NotificationActionOption = {
 }
 
 function getNotificationActions(payload: AdminPushPayload) {
-  const inboxTypes = new Set<AdminPushPayload['type']>([
-    'NEW_INBOUND_EMAIL',
-    'NEW_CONTACT_MESSAGE'
-  ])
+  const inboxTypes = new Set<AdminPushPayload['type']>(['NEW_INBOUND_EMAIL', 'NEW_CONTACT_MESSAGE'])
 
   const actions =
     payload.entityId && inboxTypes.has(payload.type)

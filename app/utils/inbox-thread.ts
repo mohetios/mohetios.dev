@@ -27,11 +27,7 @@ export type InboxMessage = {
 export type InboxThreadStatus = 'new' | 'open' | 'needs_reply' | 'replied' | 'archived' | 'spam'
 
 export type InboxThreadEventType =
-  | 'inbound'
-  | 'outbound_reply'
-  | 'internal_note'
-  | 'ai_draft'
-  | 'status_change'
+  'inbound' | 'outbound_reply' | 'internal_note' | 'ai_draft' | 'status_change'
 
 export type InboxThreadEvent = {
   id: string
@@ -113,10 +109,6 @@ export function getSourceLabel(source: InboxSource) {
       email: 'Email'
     } satisfies Record<InboxSource, string>
   )[source]
-}
-
-export function getSourceIcon(source: InboxSource) {
-  return source === 'email' ? 'i-lucide-mail' : 'i-lucide-inbox'
 }
 
 export function formatMessageTime(value: number) {

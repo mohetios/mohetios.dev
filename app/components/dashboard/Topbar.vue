@@ -11,7 +11,9 @@ const route = useRoute()
 const preset = useDashboardToolbarPreset()
 const runtime = useDashboardToolbarRuntime()
 const range = useDashboardRangePreference()
-const isRtl = computed(() => locales.value.find((item) => item.code === locale.value)?.dir === 'rtl')
+const isRtl = computed(
+  () => locales.value.find((item) => item.code === locale.value)?.dir === 'rtl'
+)
 const dashboardSidebarSide = computed(() => (isRtl.value ? 'right' : 'left'))
 
 watch(
@@ -112,7 +114,7 @@ async function handleRefresh() {
 
         <USeparator orientation="vertical" class="hidden h-6 sm:block" />
 
-        <UColorModeButton   size="sm" />
+        <UColorModeButton size="sm" />
       </div>
 
       <UColorModeButton v-else color="neutral" variant="soft" size="sm" />

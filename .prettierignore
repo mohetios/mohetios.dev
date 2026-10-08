@@ -3,3 +3,10 @@
 dist
 node_modules
 pnpm-lock.yaml
+graphify-out
+.serena
+.ai
+# Prose is governed by the editorial engine, not Prettier.
+content
+editorial
+migrations

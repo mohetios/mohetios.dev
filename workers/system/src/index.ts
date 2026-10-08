@@ -461,7 +461,10 @@ and technical writing.
   return { text, html }
 }
 
-async function handleNewsletterWelcome(job: Extract<EmailDeliveryJob, { type: 'SEND_NEWSLETTER_WELCOME' }>, env: Env) {
+async function handleNewsletterWelcome(
+  job: Extract<EmailDeliveryJob, { type: 'SEND_NEWSLETTER_WELCOME' }>,
+  env: Env
+) {
   const subscriber = await env.DB.prepare(
     `SELECT id, email, status, last_email_sent_at
      FROM newsletter_subscribers

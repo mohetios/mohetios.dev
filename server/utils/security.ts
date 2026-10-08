@@ -33,8 +33,8 @@ function getAllowedOrigins(event: H3Event): Set<string> {
   const origins = new Set<string>([getRequestURL(event).origin])
 
   if (process.env.NODE_ENV === 'production') {
-    origins.add('https://mohetios.dev')
-    origins.add('https://www.mohetios.dev')
+    origins.add('https://mohetios.ir')
+    origins.add('https://www.mohetios.ir')
   } else {
     origins.add('http://localhost:3000')
     origins.add('http://127.0.0.1:3000')

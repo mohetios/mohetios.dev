@@ -1,7 +1,7 @@
 import { inboxMessages } from '../../models/schema'
 import type { AppDb } from '../../models/client'
 import { createId } from '../../utils/id'
-import { createThreadKey } from '../email/normalize-email'
+import { createThreadKey } from '../../../shared/utils/email-thread'
 
 export async function createInboxMessage(
   db: AppDb,

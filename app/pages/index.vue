@@ -1,7 +1,5 @@
 <script setup lang="ts">
 const { locale, t } = useI18n()
-const hydrate = useBoosterHydrate()
-const HomeIndexSections = hydrate(() => import('~/components/home/IndexSections.vue'))
 
 useMohetiosSeo({
   description: () => t('site.description'),
@@ -55,7 +53,7 @@ useMohetiosSeo({
         </figure>
       </section>
 
-      <HomeIndexSections />
+      <LazyHomeIndexSections hydrate-on-visible />
     </UPageBody>
   </UPage>
 </template>

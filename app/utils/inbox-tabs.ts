@@ -1,14 +1,7 @@
 import type { InboxWorkspaceFilter } from '~/composables/useInboxWorkspace'
 
 export type InboxTabKey =
-  | 'unread'
-  | 'all'
-  | 'needs-reply'
-  | 'leads'
-  | 'replied'
-  | 'archived'
-  | 'spam'
-  | 'trash'
+  'unread' | 'all' | 'needs-reply' | 'leads' | 'replied' | 'archived' | 'spam' | 'trash'
 
 export const inboxTabToFilter: Record<InboxTabKey, InboxWorkspaceFilter> = {
   unread: 'UNREAD',

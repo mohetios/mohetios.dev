@@ -1,5 +1,5 @@
 {
-  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "$schema": "https://unpkg.com/knip@6/schema.json",
   "nuxt": {
     "entry": [
       "app.config.ts",
@@ -23,23 +23,24 @@
     "workers/system/src/index.ts"
   ],
   "project": [
-    "app/**/*.{ts,vue,tsx,jsx}",
+    "app/**/*.{ts,vue,tsx,jsx,css}",
     "server/**/*.ts",
     "shared/**/*.ts",
     "workers/**/*.ts",
     "scripts/**/*.{ts,mjs,js}",
-    "velite/**/*.{ts,mjs,js}",
-    "velite.config.ts"
+    "velite/**/*.{ts,mjs,js}"
   ],
-  "ignore": ["content/**", "migrations/**", "public/**"],
   "ignoreDependencies": [
-    "nitro-cloudflare-dev",
     "vue-tsc",
     "@iconify-json/lucide",
-    "@graphql-tools/schema",
     "graphql-request",
-    "jose",
-    "shiki"
+    "shiki",
+    "h3",
+    "vue",
+    "cloudflare"
   ],
-  "ignoreBinaries": ["wrangler", "python3"]
+  "ignoreExportsUsedInFile": {
+    "type": true,
+    "interface": true
+  }
 }

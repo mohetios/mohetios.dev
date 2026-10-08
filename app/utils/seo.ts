@@ -1,6 +1,6 @@
 export type MaybeString = string | null | undefined
 
-export const DEFAULT_OG_IMAGE_PATH = '/page-images/home.webp'
+const DEFAULT_OG_IMAGE_PATH = '/page-images/home.webp'
 
 function isLatinWordmark(value: string) {
   return /^[a-z0-9]+$/i.test(value)
@@ -55,7 +55,9 @@ export function getSeoSiteName(t: (key: string) => string) {
   const wordmark = `${t('site.logo.part1')}${t('site.logo.part2')}`.trim()
 
   if (!wordmark) {
-    return t('site.name').replace(/\.dev$/i, '').trim()
+    return t('site.name')
+      .replace(/\.dev$/i, '')
+      .trim()
   }
 
   if (isLatinWordmark(wordmark)) {

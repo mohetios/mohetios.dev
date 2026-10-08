@@ -10,12 +10,7 @@
 // Depends on .nuxt/components.d.ts from `nuxt prepare`.
 
 import { spawnSync } from 'node:child_process'
-import {
-  existsSync,
-  readdirSync,
-  readFileSync,
-  statSync
-} from 'node:fs'
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { dirname, extname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -167,10 +162,7 @@ function readLayouts() {
 }
 
 function resolveVueImport(specifier) {
-  const normalized = specifier
-    .replace(/^~\//, 'app/')
-    .replace(/^@\//, 'app/')
-    .replace(/^\.\//, '')
+  const normalized = specifier.replace(/^~\//, 'app/').replace(/^@\//, 'app/').replace(/^\.\//, '')
 
   if (specifier.startsWith('../') || specifier.startsWith('./')) {
     return resolve(root, normalized)

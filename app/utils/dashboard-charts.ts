@@ -6,7 +6,7 @@ export type AudienceTrendChartPoint = {
   pageViews: number
 }
 
-export const audienceMetricColors = {
+const audienceMetricColors = {
   visitors: {
     name: 'Visitors',
     color: '#2f628a'
@@ -51,8 +51,4 @@ export function getAudienceCategories(metric: AudienceMetricMode): Record<string
     visitors: { ...audienceMetricColors.visitors },
     pageViews: { ...audienceMetricColors.pageViews }
   }
-}
-
-export function rankedBarHeight(itemCount: number, min = 220, row = 34) {
-  return Math.max(min, itemCount * row)
 }

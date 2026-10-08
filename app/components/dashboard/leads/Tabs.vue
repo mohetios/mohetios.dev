@@ -32,10 +32,7 @@ const moreMenuItems = computed(() =>
 
 <template>
   <nav class="shrink-0 border-b border-default bg-default" aria-label="Lead filters">
-    <div
-      class="flex min-w-0 items-stretch overflow-x-auto scrollbar-none"
-      role="tablist"
-    >
+    <div class="flex min-w-0 items-stretch overflow-x-auto scrollbar-none" role="tablist">
       <button
         v-for="tab in primaryTabs"
         :key="tab.key"

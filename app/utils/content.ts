@@ -2,12 +2,9 @@ import blogJson from '../../.velite/blog.json'
 import labJson from '../../.velite/lab.json'
 import pagesJson from '../../.velite/pages.json'
 import projectsJson from '../../.velite/projects.json'
-import {
-  defaultLocale,
-  supportedLocales
-} from '../../shared/constants/locales'
+import { defaultLocale, supportedLocales } from '#locales'
 
-export { defaultLocale, localeDefinitions, supportedLocales } from '../../shared/constants/locales'
+export { defaultLocale, localeDefinitions, supportedLocales } from '#locales'
 
 export type TocItem = {
   title: string
@@ -66,7 +63,6 @@ export type Project = BlogPost & {
 }
 
 export type Page = BaseContent
-export type ContentItem = BlogPost | LabNote | Project | Page
 export type TaggedContentType = 'blog' | 'lab' | 'project'
 
 export type TaggedContentItem = {
@@ -162,7 +158,7 @@ function localizedContentPaths() {
   )
 }
 
-export function routeExists(path: string) {
+function routeExists(path: string) {
   const publicPath = toPublicPath(path)
   const contentPath = toContentPath(publicPath, getRouteLocale(publicPath))
 
@@ -269,23 +265,6 @@ export function getLabNote(path: string) {
   return lab.find((note) => note.path === path.toLowerCase())
 }
 
-export function getHomeFeaturedItem(locale: string) {
-  const items = [
-    ...visible(blog)
-      .filter((post) => post.path.startsWith(`/${locale}/blog/`))
-      .map((post) => toTaggedContentItem(post, 'blog')),
-    ...visible(lab)
-      .filter((note) => note.path.startsWith(`/${locale}/lab/`))
-      .map((note) => toTaggedContentItem(note, 'lab')),
-    ...visible(projects)
-      .filter((project) => project.path.startsWith(`/${locale}/projects/`))
-      .map((project) => toTaggedContentItem(project, 'project'))
-  ].filter((item) => item.featured)
-  const sorted = byActivityDesc(items)
-
-  return sorted[0]
-}
-
 export function getProjects(locale: string, limit?: number) {
   const items = visible(
     projects.filter((project) => project.path.startsWith(`/${locale}/projects/`))
@@ -309,7 +288,7 @@ export function getTaggedContent(locale: string) {
   ])
 }
 
-export function getTagRoutes(locales: readonly string[] = supportedLocales) {
+function getTagRoutes(locales: readonly string[] = supportedLocales) {
   return locales.flatMap((locale) => {
     const tagSlugs = new Set(
       getTaggedContent(locale).flatMap((item) => item.tags.map((tag) => normalizeTagSlug(tag)))

@@ -21,7 +21,10 @@ export default defineEventHandler((event) => {
   const path = url.pathname
   const firstSegment = path.split('/').filter(Boolean)[0]
 
-  if (!firstSegment || supportedLocales.includes(firstSegment as typeof supportedLocales[number])) {
+  if (
+    !firstSegment ||
+    supportedLocales.includes(firstSegment as (typeof supportedLocales)[number])
+  ) {
     return
   }
 

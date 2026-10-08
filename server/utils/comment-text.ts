@@ -37,9 +37,7 @@ export function normalizeCommentAuthorName(value: string) {
   const normalized = value.trim()
 
   if (normalized.length < COMMENT_LIMITS.authorNameMin) {
-    throw new GraphQLError(
-      `Name must be at least ${COMMENT_LIMITS.authorNameMin} characters`
-    )
+    throw new GraphQLError(`Name must be at least ${COMMENT_LIMITS.authorNameMin} characters`)
   }
 
   if (normalized.length > COMMENT_LIMITS.authorNameMax) {

@@ -289,7 +289,6 @@ function handleUpdateNotes(notes: string | null) {
 
   runLeadMutation(() => updateLeadNotes(selectedLead.value!.id, notes))
 }
-
 </script>
 
 <template>

@@ -19,7 +19,7 @@ const graphApiRateLimiter = {
   ...(isProduction ? { ipHeader: 'CF-Connecting-IP' as const } : {})
 }
 
-const siteUrl = process.env.NUXT_PUBLIC_SITE_URL || 'https://mohetios.dev'
+const siteUrl = process.env.NUXT_PUBLIC_SITE_URL || 'https://mohetios.ir'
 
 const htmlCacheHeaders = {
   'Cache-Control': 'public, max-age=0, must-revalidate'
@@ -130,7 +130,6 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     'nuxt-charts',
     '@nuxt/image',
-    'nuxt-booster',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots',
     '@nuxtjs/turnstile',
@@ -143,6 +142,27 @@ export default defineNuxtConfig({
 
   devtools: {
     enabled: isDev
+  },
+
+  hooks: {
+    // Pages use ContentOgImage; bundled gallery templates need browser-only theme variables.
+    'components:extend': (components) => {
+      for (let index = components.length - 1; index >= 0; index--) {
+        if (
+          components[index]?.filePath.includes(
+            '/nuxt-og-image/dist/runtime/app/components/Templates/Community/'
+          )
+        ) {
+          components.splice(index, 1)
+        }
+      }
+    },
+    // Prefetching every async chunk added ~1.2 MB per page (Mermaid, charts, dashboard).
+    'build:manifest': (manifest) => {
+      for (const entry of Object.values(manifest)) {
+        entry.prefetch = false
+      }
+    }
   },
 
   typescript: {
@@ -208,6 +228,20 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    $client: {
+      build: {
+        rolldownOptions: {
+          // Replaces nuxt-security's removeLoggers, whose esbuild `drop` Vite 8 ignores.
+          output: {
+            minify: {
+              compress: { dropConsole: true, dropDebugger: true },
+              mangle: true,
+              codegen: true
+            }
+          }
+        }
+      }
+    },
     optimizeDeps: {
       include: ['mermaid', 'zod']
     },
@@ -247,7 +281,7 @@ export default defineNuxtConfig({
     cloudflareAnalyticsToken: process.env.NUXT_CLOUDFLARE_ANALYTICS_TOKEN || '',
     cloudflareAccountId: process.env.NUXT_CLOUDFLARE_ACCOUNT_ID || '',
     cloudflareZoneId: process.env.NUXT_CLOUDFLARE_ZONE_ID || '',
-    cloudflareHostname: process.env.NUXT_CLOUDFLARE_HOSTNAME || 'mohetios.dev',
+    cloudflareHostname: process.env.NUXT_CLOUDFLARE_HOSTNAME || 'mohetios.ir',
     enableRealAnalytics: process.env.NUXT_ENABLE_REAL_ANALYTICS || 'false',
     public: {
       siteUrl,
@@ -290,6 +324,7 @@ export default defineNuxtConfig({
 
   security: {
     nonce: false,
+    removeLoggers: false,
     // Host allowlists work better than SRI hashes for Turnstile + @nuxt/scripts on prerendered pages.
     sri: false,
     ssg: {
@@ -415,6 +450,8 @@ export default defineNuxtConfig({
       gzip: true
     },
     minify: isProduction,
+    // Workers run modern JS; the es2019 default warns on BigInt literals in image deps.
+    esbuild: { options: { target: 'es2022' } },
     sourceMap: false,
     timing: false,
     prerender: {
@@ -454,28 +491,6 @@ export default defineNuxtConfig({
     },
     cloudflare: {
       baseURL: process.env.NUXT_BASE_URL || siteUrl
-    }
-  },
-
-  booster: {
-    crossorigin: 'anonymous',
-    disableNuxtFontaine: true,
-    disableNuxtImage: false,
-    detection: {
-      performance: false,
-      browserSupport: false,
-      battery: false
-    },
-    optimizeSSR: {
-      cleanPreloads: true,
-      cleanPrefetches: true,
-      inlineStyles: true
-    },
-    targetFormats: ['webp', 'avif', 'jpg|jpeg|png|gif'],
-    densities: 'x1 x2',
-    lazyOffset: {
-      component: '120px',
-      asset: '120px'
     }
   },
 

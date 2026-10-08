@@ -11,7 +11,7 @@ export type Permission =
   | 'profile:view'
   | 'profile:update'
 
-export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
+const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
   OWNER: [
     'dashboard:view',
     'leads:manage',

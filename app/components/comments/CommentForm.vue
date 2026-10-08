@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import {
-  createCommentFormSchema,
-  type CommentFormState
-} from '~~/shared/validation/comment-form'
+import { createCommentFormSchema, type CommentFormState } from '~~/shared/validation/comment-form'
 import { COMMENT_ERROR_CODES } from '~~/shared/constants/comments'
 import {
   getGraphqlErrorCode,
@@ -70,13 +67,11 @@ const bodyPlaceholder = computed(() =>
   props.parentId ? t('comments.replyPlaceholder') : t('comments.commentPlaceholder')
 )
 
-const commentErrorMessages = computed(
-  (): Record<string, string> => ({
-    [COMMENT_ERROR_CODES.RATE_LIMIT_IP]: t('comments.validation.rateLimitIp'),
-    [COMMENT_ERROR_CODES.RATE_LIMIT_EMAIL]: t('comments.validation.rateLimitEmail'),
-    [COMMENT_ERROR_CODES.RATE_LIMIT_REPLY]: t('comments.validation.rateLimitReply')
-  })
-)
+const commentErrorMessages = computed((): Record<string, string> => ({
+  [COMMENT_ERROR_CODES.RATE_LIMIT_IP]: t('comments.validation.rateLimitIp'),
+  [COMMENT_ERROR_CODES.RATE_LIMIT_EMAIL]: t('comments.validation.rateLimitEmail'),
+  [COMMENT_ERROR_CODES.RATE_LIMIT_REPLY]: t('comments.validation.rateLimitReply')
+}))
 
 const fieldUi = {
   label: 'text-base font-medium text-muted'

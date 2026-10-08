@@ -1,7 +1,9 @@
 <script setup lang="ts">
 const { locale, locales, t } = useI18n()
 const localePath = useLocalePath()
-const isRtl = computed(() => locales.value.find((item) => item.code === locale.value)?.dir === 'rtl')
+const isRtl = computed(
+  () => locales.value.find((item) => item.code === locale.value)?.dir === 'rtl'
+)
 const sourceSeparator = computed(() => (isRtl.value ? '، ' : ', '))
 const items = computed(() => getTaggedContent(locale.value))
 const tags = computed(() => {

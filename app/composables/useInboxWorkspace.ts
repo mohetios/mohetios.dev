@@ -12,7 +12,6 @@ export type InboxWorkspaceKind = InboxKind
 
 export type InboxWorkspace = InboxWorkspaceQuery['inboxWorkspace']
 export type InboxMessageDto = InboxWorkspace['messages'][number]
-export type InboxReplyDto = InboxWorkspace['replies'][number]
 export type InboxThreadEventDto = InboxWorkspace['threadEvents'][number]
 
 function createDefaultInboxWorkspace(): InboxWorkspace {

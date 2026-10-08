@@ -66,7 +66,7 @@ const yFormatter = (value: number) => formatChartNumber(value)
           :y-grid-line="true"
           :x-grid-line="false"
           :curve-type="CurveType.MonotoneX"
-          :legend-position="LegendPosition.Bottom"
+          :legend-position="LegendPosition.BottomCenter"
           :hide-legend="metric !== 'both'"
         />
 

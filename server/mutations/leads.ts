@@ -43,7 +43,7 @@ function parseFollowUpAt(value?: string | null) {
   return parsed
 }
 
-export async function updateLeadStatus(
+async function updateLeadStatus(
   _parent: unknown,
   args: { id: string; status: LeadStatus },
   context: GraphQLContext
@@ -67,7 +67,7 @@ export async function updateLeadStatus(
   return normalizeLeadRow(rows[0]!)
 }
 
-export async function updateLeadPriority(
+async function updateLeadPriority(
   _parent: unknown,
   args: { id: string; priority?: LeadPriority | null },
   context: GraphQLContext
@@ -88,7 +88,7 @@ export async function updateLeadPriority(
   return normalizeLeadRow(rows[0]!)
 }
 
-export async function updateLeadFollowUp(
+async function updateLeadFollowUp(
   _parent: unknown,
   args: { id: string; nextFollowUpAt?: string | null },
   context: GraphQLContext
@@ -116,7 +116,7 @@ export async function updateLeadFollowUp(
   return normalizeLeadRow(rows[0]!)
 }
 
-export async function updateLeadNotes(
+async function updateLeadNotes(
   _parent: unknown,
   args: { id: string; notes?: string | null },
   context: GraphQLContext

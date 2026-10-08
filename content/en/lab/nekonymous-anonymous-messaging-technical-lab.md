@@ -1126,5 +1126,5 @@ For me, that is the interesting part of the project: not that an anonymous bot c
 - [Conversation Suggestions](https://github.com/mohetios/Nekonymous/blob/master/docs/conversation-suggestions.md)
 - [Threat Model](https://github.com/mohetios/Nekonymous/blob/master/docs/threat-model.md)
 - [Project intro page](https://mohetios.github.io/Nekonymous/)
-- [Build story](https://mohetios.dev/en/blog/building-nekonymous-anonymous-telegram-bot)
+- [Build story](https://mohetios.ir/en/blog/building-nekonymous-anonymous-telegram-bot)
 - [Telegram bot](https://t.me/nekonymous_bot)

@@ -608,5 +608,3 @@ export const typeDefs = /* GraphQL */ `
     commentId: ID!
   }
 `
-
-export const schema = typeDefs

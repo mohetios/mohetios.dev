@@ -7,6 +7,7 @@ import type {
 } from '@cloudflare/workers-types'
 
 import type { AdminNotificationJob } from '../../../shared/contracts/notifications'
+import { createThreadKey } from '../../../shared/utils/email-thread'
 
 type Env = {
   DB: D1Database
@@ -36,13 +37,6 @@ function normalizeSubject(value?: string | null) {
   return (value || 'No subject').trim() || 'No subject'
 }
 
-function normalizeThreadSubject(subject: string) {
-  return normalizeSubject(subject)
-    .replace(/^(\s*(re|fw|fwd):\s*)+/i, '')
-    .trim()
-    .toLowerCase()
-}
-
 function createNotificationPreview(value: string, maxLength = 140) {
   const preview = value.replace(/\s+/g, ' ').trim()
 
@@ -53,25 +47,11 @@ function createNotificationPreview(value: string, maxLength = 140) {
   return `${preview.slice(0, maxLength - 1).trim()}...`
 }
 
-function createThreadKey(senderEmail: string, subject: string, messageId?: string | null) {
-  if (messageId) return `message:${messageId}`
-
-  return `${normalizeEmail(senderEmail)}:${normalizeThreadSubject(subject)}`
-}
-
 async function parseEmail(message: ForwardableEmailMessage): Promise<ParsedInboundEmail> {
   const raw = await new Response(message.raw).arrayBuffer()
 
   try {
     const parsed = await PostalMime.parse(raw)
-    const headers = parsed.headers || []
-
-    const getHeader = (name: string) => {
-      const header = headers.find((item) => item.key.toLowerCase() === name.toLowerCase())
-
-      return header?.value || message.headers.get(name) || null
-    }
-
     const senderEmail = normalizeEmail(parsed.from?.address || message.from)
     const subject = normalizeSubject(parsed.subject || message.headers.get('subject'))
 
@@ -81,8 +61,8 @@ async function parseEmail(message: ForwardableEmailMessage): Promise<ParsedInbou
       subject,
       bodyText: parsed.text?.trim() || '(No plain text body)',
       bodyHtml: parsed.html || null,
-      rawMessageId: getHeader('message-id'),
-      inReplyTo: getHeader('in-reply-to')
+      rawMessageId: parsed.messageId || message.headers.get('message-id'),
+      inReplyTo: parsed.inReplyTo || message.headers.get('in-reply-to')
     }
   } catch (error) {
     console.error('Email parsing failed', error)

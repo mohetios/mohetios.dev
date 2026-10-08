@@ -2,19 +2,13 @@ import { GraphQLError } from 'graphql'
 
 import type { EmailDeliveryJob } from '../../../shared/contracts/email'
 import type { AdminNotificationJob } from '../../../shared/contracts/notifications'
-import {
-  isCommentTargetType,
-  type CommentTargetType
-} from '../../../shared/constants/comments'
+import { isCommentTargetType, type CommentTargetType } from '../../../shared/constants/comments'
 import type { GraphQLContext } from '../../routes/graph'
 import { comments } from '../../models/schema'
 import { createAdminNotification } from '../notifications/create-admin-notification'
 import { createId } from '../../utils/id'
 import { hashCommentEmail, getCommentRequestHashes } from '../../utils/comment-hash'
-import {
-  assertValidCommentParent,
-  enforceCommentRateLimit
-} from '../../utils/comment-rate-limit'
+import { assertValidCommentParent, enforceCommentRateLimit } from '../../utils/comment-rate-limit'
 import {
   createCommentPreview,
   normalizeCommentAuthorName,
@@ -67,11 +61,7 @@ export async function createPendingComment(context: GraphQLContext, input: Creat
 
   await requireTurnstileToken(input.turnstileToken, context)
 
-  const { parentId, depth } = await assertValidCommentParent(
-    context.db,
-    input.parentId,
-    targetPath
-  )
+  const { parentId, depth } = await assertValidCommentParent(context.db, input.parentId, targetPath)
 
   const { ipHash, userAgentHash } = await getCommentRequestHashes(context)
   const authorEmailHash = await hashCommentEmail(authorEmail, context.env.NUXT_JWT_SECRET)
@@ -156,10 +146,7 @@ export async function createPendingComment(context: GraphQLContext, input: Creat
 export async function queueCommentStatusEmail(
   context: GraphQLContext,
   commentId: string,
-  type: Extract<
-    EmailDeliveryJob['type'],
-    'COMMENT_APPROVED_EMAIL' | 'COMMENT_MARKED_SPAM_EMAIL'
-  >
+  type: Extract<EmailDeliveryJob['type'], 'COMMENT_APPROVED_EMAIL' | 'COMMENT_MARKED_SPAM_EMAIL'>
 ) {
   if (!context.env.EMAIL_DELIVERY_QUEUE) {
     console.warn('EMAIL_DELIVERY_QUEUE binding is missing')

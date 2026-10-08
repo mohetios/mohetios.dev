@@ -1,8 +1,5 @@
 export type AdminNotificationType =
-  | 'NEW_INBOUND_EMAIL'
-  | 'NEW_CONTACT_MESSAGE'
-  | 'NEW_COMMENT'
-  | 'UNREAD_INBOX_REMINDER'
+  'NEW_INBOUND_EMAIL' | 'NEW_CONTACT_MESSAGE' | 'NEW_COMMENT' | 'UNREAD_INBOX_REMINDER'
 
 export type AdminNotificationJob =
   | {

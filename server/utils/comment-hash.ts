@@ -13,7 +13,7 @@ export async function hashCommentEmail(email: string, secret: string) {
   return hashValue(email.toLowerCase(), secret, 'email')
 }
 
-export async function hashCommentIp(event: H3Event, secret: string) {
+async function hashCommentIp(event: H3Event, secret: string) {
   const ip =
     getRequestIP(event, { xForwardedFor: true }) ||
     getHeader(event, 'cf-connecting-ip') ||
@@ -23,7 +23,7 @@ export async function hashCommentIp(event: H3Event, secret: string) {
   return hashValue(ip, secret, 'ip')
 }
 
-export async function hashCommentUserAgent(event: H3Event, secret: string) {
+async function hashCommentUserAgent(event: H3Event, secret: string) {
   const userAgent = getHeader(event, 'user-agent') || 'unknown'
 
   return hashValue(userAgent, secret, 'user-agent')

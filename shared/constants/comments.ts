@@ -1,4 +1,4 @@
-export const COMMENT_TARGET_TYPES = ['BLOG_POST', 'LAB_NOTE', 'PROJECT'] as const
+const COMMENT_TARGET_TYPES = ['BLOG_POST', 'LAB_NOTE', 'PROJECT'] as const
 
 export type CommentTargetType = (typeof COMMENT_TARGET_TYPES)[number]
 

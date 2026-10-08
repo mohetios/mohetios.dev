@@ -16,7 +16,9 @@ const {
   closeSidebarOnMobile
 } = useSiteSidebar()
 
-const isRtl = computed(() => locales.value.find((item) => item.code === locale.value)?.dir === 'rtl')
+const isRtl = computed(
+  () => locales.value.find((item) => item.code === locale.value)?.dir === 'rtl'
+)
 const drawerDirection = computed(() => (isRtl.value ? 'right' : 'left'))
 const mobileToggleVisibilityClass = computed(() => {
   return props.headerVisible === false ? '-translate-y-24 opacity-0' : 'translate-y-0 opacity-100'
@@ -78,7 +80,9 @@ watch(
 
   <aside
     class="fixed inset-y-0 start-0 z-40 hidden w-72 flex-col overflow-hidden border-e border-default bg-default px-6 py-8 text-highlighted transition-transform duration-200 ease-out sm:w-80 sm:px-8 lg:flex"
-    :class="desktopOpen ? 'translate-x-0' : '-translate-x-full rtl:translate-x-full pointer-events-none'"
+    :class="
+      desktopOpen ? 'translate-x-0' : '-translate-x-full rtl:translate-x-full pointer-events-none'
+    "
     @click.capture="closeSidebarAfterLinkClick"
   >
     <SiteSidebarContent />

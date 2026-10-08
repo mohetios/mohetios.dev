@@ -22,7 +22,10 @@ function writePreference(value: SidebarPreference) {
 
 export function useSiteSidebar() {
   const isDesktop = useState('site-sidebar:is-desktop', () => false)
-  const desktopPreference = useState<SidebarPreference | null>('site-sidebar:preference', () => null)
+  const desktopPreference = useState<SidebarPreference | null>(
+    'site-sidebar:preference',
+    () => null
+  )
   const mobileOpen = useState('site-sidebar:mobile-open', () => false)
   const initialized = useState('site-sidebar:initialized', () => false)
   const mediaCleanup = useState<null | (() => void)>('site-sidebar:media-cleanup', () => null)

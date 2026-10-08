@@ -28,8 +28,8 @@ tags:
 - [مخزن متن‌باز نِکونیموس](https://github.com/mohetios/Nekonymous)
 - [صفحه‌ی معرفی پروژه](https://mohetios.github.io/Nekonymous/)
 - [ربات تلگرام](https://t.me/nekonymous_bot)
-- [داستان ساخت نِکونیموس](https://mohetios.dev/fa/blog/building-nekonymous-anonymous-telegram-bot)
-- [آزمایشگاه فنی معماری نِکو](https://mohetios.dev/fa/lab/nekonymous-anonymous-messaging-technical-lab)
+- [داستان ساخت نِکونیموس](https://mohetios.ir/fa/blog/building-nekonymous-anonymous-telegram-bot)
+- [آزمایشگاه فنی معماری نِکو](https://mohetios.ir/fa/lab/nekonymous-anonymous-messaging-technical-lab)
 
 ## چرا وجود دارد
 

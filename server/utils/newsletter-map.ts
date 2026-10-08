@@ -1,11 +1,7 @@
 import type { NewsletterSubscriber } from '../models/schema'
 
 export type NewsletterSubscriberStatus =
-  | 'PENDING'
-  | 'SUBSCRIBED'
-  | 'UNSUBSCRIBED'
-  | 'BOUNCED'
-  | 'COMPLAINED'
+  'PENDING' | 'SUBSCRIBED' | 'UNSUBSCRIBED' | 'BOUNCED' | 'COMPLAINED'
 
 const statusToGraphql: Record<NewsletterSubscriber['status'], NewsletterSubscriberStatus> = {
   pending: 'PENDING',
@@ -15,7 +11,7 @@ const statusToGraphql: Record<NewsletterSubscriber['status'], NewsletterSubscrib
   complained: 'COMPLAINED'
 }
 
-export function normalizeNewsletterStatus(
+function normalizeNewsletterStatus(
   status: NewsletterSubscriber['status']
 ): NewsletterSubscriberStatus {
   return statusToGraphql[status]
