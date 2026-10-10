@@ -106,10 +106,10 @@ const sidebarTitle = computed(() =>
   />
   <img
     aria-hidden="true"
-    src="/page-images/projects-dark.webp"
+    src="/page-images/sidebar-dark.webp"
     alt=""
     class="pointer-events-none absolute bottom-32 left-1/2 z-0 hidden w-56 -translate-x-1/2 dark:block sm:w-64"
-    :class="shouldDimSidebarLamp ? 'opacity-20' : 'opacity-40'"
+    :class="shouldDimSidebarLamp ? 'opacity-20' : 'opacity-55'"
   />
 
   <div class="relative z-10 flex min-h-0 flex-1 flex-col gap-6">
