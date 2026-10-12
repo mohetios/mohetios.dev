@@ -136,6 +136,7 @@ The engine separates stable Persian writing rules from current project facts:
 - `editorial/fa/core.md` defines language, reasoning, preservation, factual safety, and temporal integrity.
 - `editorial/fa/profiles/ali/` defines Ali's default author voice (`voice.md`), contrastive examples, and the approved corpus.
 - `editorial/fa/reference.md` defines task dimensions, workflows, recipes, and templates.
+- `content/fa/editorial-context.md` holds site-specific terminology, digit/quote policy, and voice references.
 - `editorial/fa/evaluation/` and `editorial/fa/tooling/` provide checks and review support.
 - The `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md` bridge blocks are managed by `scripts/setup-ai-coding-stack.sh`; `.agents/skills/persian-editorial/` is the on-demand skill.
 
@@ -159,6 +160,8 @@ pnpm editorial:validate
 pnpm editorial:lint -- content/fa/blog/example.md
 pnpm editorial:lint:fa
 pnpm editorial:check
+pnpm editorial:fix -- content/fa/blog/example.md   # safe mechanical fixes
+pnpm editorial:preserve                           # changed files vs HEAD: literals and numbers
 ```
 
 Example prompt:

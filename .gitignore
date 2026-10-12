@@ -34,3 +34,6 @@ Desighn
 .editorial-engine-backups/
 persian-editorial-engine-v*/
 persian-editorial-engine-v*.zip
+
+# Python bytecode (editorial tooling)
+__pycache__/

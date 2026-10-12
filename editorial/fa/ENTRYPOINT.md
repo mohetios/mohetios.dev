@@ -6,7 +6,6 @@
 core.md               قواعد پایدار زبان، صحت و زمان
 profiles/ali/         صدای نویسنده (voice.md) و نمونه‌ها
 reference.md          dimensions، workflow، recipe و template
-context/              context محلی و تاریخ‌دار
 evaluation/           rubric و eval caseها
 tooling/              lint، preservation و validation
 ```
@@ -31,7 +30,7 @@ tooling/              lint، preservation و validation
 - `reference.md`: dimension، workflow و recipe مرتبط (recipe فقط پیشنهاد است)؛
 - `profiles/ali/examples.md`: وقتی تشخیص الگوی نامطلوب لازم است؛
 - `profiles/ali/approved/`: وقتی calibration لحن لازم است؛
-- نزدیک‌ترین context معتبر.
+- نزدیک‌ترین context معتبر؛ برای سایت: `content/fa/editorial-context.md` (واژه‌ها، سیاست عدد، مرجع لحن).
 
 ### Context
 
@@ -131,10 +130,12 @@ length_density: compact-rich
 برای فایل‌ها، ابزارهای زیر را اجرا کن:
 
 ```bash
-python3 editorial/fa/tooling/editorial_lint.py --strict <changed-files>
-python3 editorial/fa/tooling/preserve_check.py <before> <after>
-pnpm editorial:check
+pnpm editorial:fix <files>     # حروف عربی، نیم‌فاصله، ویرگول و ؟ لاتین (بیرون از code و URL)
+pnpm editorial:preserve        # هر فایل تغییرکرده در برابر HEAD: frontmatter، code، لینک، عدد
+pnpm editorial:check           # validation + self-test + lint --strict
 ```
+
+`preserve` اگر literal یا عددی گم شده باشد fail می‌شود؛ رقم فارسی و لاتین را یکسان می‌بیند. یافته‌های `info` در lint (ترجمه‌زدگی) قضاوتی‌اند و build را نمی‌شکنند.
 
 ## 7. گزارش
 

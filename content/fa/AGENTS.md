@@ -6,9 +6,10 @@ Before editing:
 
 1. Read `../../editorial/fa/ENTRYPOINT.md`.
 2. Use the Ali author profile unless the task explicitly requests another voice.
-3. Infer and record the task dimensions before rewriting.
-4. Read the complete target file and the nearest relevant implementation or domain sources.
-5. Build a factual and temporal inventory before changing claims.
+3. Read `editorial-context.md` in this folder for site terminology, digit/quote policy and voice references.
+4. Infer and record the task dimensions before rewriting.
+5. Read the complete target file and the nearest relevant implementation or domain sources.
+6. Build a factual and temporal inventory before changing claims.
 
 Preserve:
 
@@ -25,4 +26,4 @@ Do not:
 - add project context to the editorial core;
 - rewrite a file merely to create a larger diff.
 
-Before completion run the repository Persian editorial checks and report unresolved factual uncertainty.
+Before completion run `pnpm editorial:check` and `pnpm editorial:preserve` and report unresolved factual uncertainty.
