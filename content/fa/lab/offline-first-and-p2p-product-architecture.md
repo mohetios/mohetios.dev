@@ -444,7 +444,7 @@ merge خودکار ممکن است؟
 استراتژی درست conflict به هزینه اشتباه بستگی دارد.
 
 برای state کم‌ریسک، merge خودکار خوب است.
-برای content نوشته‌شده توسط کاربر، review state نشان بده.
+برای محتوایی که کاربر نوشته، review state نشان بده.
 برای پول، identity یا public publishing، confirmation صریح لازم است.
 برای claimهای حساس، audit trail نگه دار.
 

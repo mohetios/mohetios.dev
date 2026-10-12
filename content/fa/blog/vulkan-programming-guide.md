@@ -13,27 +13,27 @@ tags:
 
 ## یادداشت‌های مطالعه
 
-_Vulkan Programming Guide_ درباره برنامه‌نویسی گرافیکی صریح است. Vulkan کنترل بیشتری از APIهای گرافیکی قدیمی‌تر می‌دهد، اما آن کنترل با مسئولیت بیشتر همراه است.
+_Vulkan Programming Guide_ درباره‌ی برنامه‌نویسی گرافیکی صریح است. Vulkan کنترلی بیشتر از APIهای گرافیکی قدیمی‌تر می‌دهد، اما این کنترل مسئولیت بیشتری هم می‌آورد.
 
-مفید است چون rendering را سیستم می‌داند: راه‌اندازی instance، device، queue، command buffer، حافظه، synchronization، shader و presentation همه باید با هم جور شوند.
+کتاب rendering را یک سیستم می‌بیند: instance، device، queue، command buffer، حافظه، synchronization، shader و presentation همه باید با هم جور شوند.
 
 ## ایده‌های مفید
 
 ### کنترل صریح هزینه دارد
 
-Vulkan خیلی تصمیم‌های پنهان را برمی‌دارد. قدرتمند است، اما یعنی اپلیکیشن باید جزئیاتی را مدیریت کند که APIهای دیگر قبلاً نرم می‌کردند.
+Vulkan خیلی از تصمیم‌های پنهان را حذف می‌کند. این قدرت می‌دهد، اما یعنی برنامه باید جزئیاتی را خودش مدیریت کند که APIهای دیگر پشت صحنه حل می‌کردند.
 
-### synchronization مرکزی است
+### synchronization در مرکز است
 
-باگ گرافیکی اغلب باگ timing است. Vulkan synchronization را بخش اول طراحی می‌کند.
+باگ گرافیکی اغلب باگ timing است. Vulkan synchronization را از همان اول بخشی از طراحی می‌کند.
 
-### pipeline خود برنامه است
+### pipeline خودش برنامه است
 
-rendering فقط کد shader نیست. کل pipeline داده، state، command و اجرای GPU است.
+rendering فقط کد shader نیست؛ کل pipeline است: داده، state، command و اجرای GPU.
 
 ## چرا نزدیک نگهش می‌دارم
 
-مرجع برای فهم کار گرافیکی زیر لایه engine. وقتی performance، کنترل یا debug عمیق مهم است مفید است.
+مرجعی برای فهم کار گرافیکی زیر لایه‌ی engine؛ به‌خصوص وقتی performance، کنترل یا debug عمیق مهم است.
 
 ## دریافت کتاب
 
