@@ -555,7 +555,7 @@
     },
     "newsletter": {
       "title": "Newsletter",
-      "description": "People who subscribed to Mohetios.dev updates.",
+      "description": "Write issues, schedule them, and look after the list.",
       "refresh": "Refresh",
       "searchPlaceholder": "Search by email or name",
       "statusFilter": "Status",
@@ -582,7 +582,105 @@
         "unsubscribed": "Unsubscribed",
         "bounced": "Bounced",
         "complained": "Complained"
-      }
+      },
+      "tabs": {
+        "issues": "Issues",
+        "subscribers": "Subscribers"
+      },
+      "summaryExtra": {
+        "issuesSent": "Issues sent",
+        "issuesSentHelper": "Delivered issues so far",
+        "nextIssue": "Next issue",
+        "nothingScheduled": "Nothing scheduled"
+      },
+      "issues": {
+        "new": "New issue",
+        "emptyTitle": "No issues yet",
+        "empty": "Pick a template to write the first one.",
+        "audience": "{count} subscribers",
+        "status": {
+          "draft": "Draft",
+          "scheduled": "Scheduled",
+          "sending": "Sending",
+          "sent": "Sent"
+        },
+        "scheduledFor": "Scheduled for {date}",
+        "sentOn": "Sent {date}",
+        "editedOn": "Edited {date}",
+        "delivered": "{sent} of {total} delivered",
+        "failed": "{count} failed",
+        "loadFailed": "Issues could not be loaded."
+      },
+      "templates": {
+        "pick": "Choose a template",
+        "language": "Issue language",
+        "WEEKLY": {
+          "label": "Weekly digest",
+          "description": "The week's posts, collected for you, with a short intro."
+        },
+        "MONTHLY": {
+          "label": "Monthly roundup",
+          "description": "Everything published this month in one email."
+        },
+        "LETTER": {
+          "label": "Letter",
+          "description": "A personal note, with optional further reading."
+        },
+        "ANNOUNCEMENT": {
+          "label": "Announcement",
+          "description": "One launch or update with a clear button."
+        }
+      },
+      "composer": {
+        "back": "All issues",
+        "subject": "Subject",
+        "preheader": "Preview text",
+        "preheaderHint": "Shown next to the subject in most inboxes.",
+        "heading": "Heading",
+        "intro": "Body",
+        "introHint": "A blank line starts a new paragraph. Links: [label](https://…)",
+        "links": "Links",
+        "addLink": "Add link",
+        "fillRecent": "Fill from recent posts",
+        "fillEmpty": "Nothing was published in this period.",
+        "fillDone": "Added {count} posts.",
+        "linkTitle": "Title",
+        "linkUrl": "URL",
+        "linkDescription": "Description",
+        "linkMeta": "Label",
+        "removeLink": "Remove link",
+        "cta": "Button",
+        "ctaLabel": "Button label",
+        "ctaUrl": "Button link",
+        "outro": "Closing",
+        "preview": "Preview",
+        "desktop": "Desktop",
+        "mobile": "Mobile",
+        "saveDraft": "Save draft",
+        "saved": "Draft saved.",
+        "saveFailed": "Issue could not be saved.",
+        "sendTest": "Send test",
+        "testEmail": "Send a test to",
+        "testEmailHint": "Leave empty to use the site's sender address.",
+        "testSent": "Test email queued.",
+        "schedule": "Schedule",
+        "unschedule": "Back to draft",
+        "delete": "Delete",
+        "deleteConfirm": "Delete this issue? This cannot be undone.",
+        "deleted": "Issue deleted.",
+        "readOnly": "This issue has been sent and can't be edited.",
+        "scheduleTitle": "When should it go out?",
+        "scheduleAudience": "Goes to {count} subscribers who read in {language}.",
+        "scheduleNow": "Send now",
+        "scheduleNowHint": "Sending starts within 5 minutes.",
+        "scheduleWeekly": "Next weekly slot",
+        "scheduleMonthly": "Next monthly slot",
+        "scheduleCustom": "Pick a date and time",
+        "scheduleConfirm": "Schedule issue",
+        "scheduled": "Issue scheduled for {date}.",
+        "cancel": "Cancel"
+      },
+      "pagination": "{from}–{to} of {total}"
     },
     "comments": {
       "title": "Comments",

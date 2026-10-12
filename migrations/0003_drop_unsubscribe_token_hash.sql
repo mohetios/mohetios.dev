@@ -1,0 +1,2 @@
+ALTER TABLE `newsletter_subscribers` DROP COLUMN `unsubscribe_token_hash`;--> statement-breakpoint
+UPDATE `newsletter_subscribers` SET `unsubscribe_token` = lower(hex(randomblob(16))) WHERE `unsubscribe_token` IS NULL;

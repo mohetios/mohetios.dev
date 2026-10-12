@@ -1,0 +1,3 @@
+mutation DeleteNewsletterIssue($id: ID!) {
+  deleteNewsletterIssue(id: $id)
+}

@@ -1,0 +1,5 @@
+mutation SaveNewsletterIssue($input: SaveNewsletterIssueInput!) {
+  saveNewsletterIssue(input: $input) {
+    ...NewsletterIssueFields
+  }
+}

@@ -1,0 +1,26 @@
+fragment NewsletterIssueFields on NewsletterIssue {
+  id
+  template
+  locale
+  subject
+  preheader
+  heading
+  intro
+  items {
+    title
+    url
+    description
+    meta
+  }
+  ctaLabel
+  ctaUrl
+  outro
+  status
+  scheduledAt
+  sentAt
+  recipientCount
+  sentCount
+  failedCount
+  createdAt
+  updatedAt
+}

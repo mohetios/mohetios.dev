@@ -1,0 +1,11 @@
+query NewsletterIssues {
+  newsletterIssues {
+    items {
+      ...NewsletterIssueFields
+    }
+    audience {
+      locale
+      subscribed
+    }
+  }
+}

@@ -9,6 +9,11 @@ export type EmailDeliveryJob =
       subscriberId: string
     }
   | {
+      type: 'SEND_NEWSLETTER_TEST'
+      issueId: string
+      toEmail: string
+    }
+  | {
       type: 'COMMENT_RECEIVED_CONFIRMATION_EMAIL'
       commentId: string
     }

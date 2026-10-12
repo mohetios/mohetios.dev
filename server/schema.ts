@@ -8,6 +8,8 @@ export const typeDefs = /* GraphQL */ `
     dashboardNavCounts: DashboardNavCounts!
     analyticsDashboard(range: AnalyticsRange!): AnalyticsDashboard!
     newsletterSubscribers(input: NewsletterSubscribersFilterInput): NewsletterSubscribersConnection!
+    newsletterIssues: NewsletterIssuesPayload!
+    newsletterIssue(id: ID!): NewsletterIssue
     publicComments(targetType: CommentTargetType!, targetPath: String!): [PublicComment!]!
     adminComments(
       status: CommentStatus
@@ -24,6 +26,9 @@ export const typeDefs = /* GraphQL */ `
     logout: Boolean!
     createContactMessage(input: CreateContactMessageInput!): InboxMessage!
     subscribeToNewsletter(input: SubscribeToNewsletterInput!): SubscribeToNewsletterPayload!
+    saveNewsletterIssue(input: SaveNewsletterIssueInput!): NewsletterIssue!
+    deleteNewsletterIssue(id: ID!): Boolean!
+    sendNewsletterTest(id: ID!, email: String): Boolean!
     updateInboxMessageStatus(input: UpdateInboxMessageStatusInput!): InboxMessage!
     updateInboxMessageKind(input: UpdateInboxMessageKindInput!): InboxMessage!
     replyToInboxMessage(input: ReplyToInboxMessageInput!): ReplyToInboxMessageResult!
@@ -523,6 +528,82 @@ export const typeDefs = /* GraphQL */ `
     limit: Int!
     offset: Int!
     summary: NewsletterSubscribersSummary!
+  }
+
+  enum NewsletterTemplate {
+    WEEKLY
+    MONTHLY
+    LETTER
+    ANNOUNCEMENT
+  }
+
+  enum NewsletterIssueStatus {
+    DRAFT
+    SCHEDULED
+    SENDING
+    SENT
+  }
+
+  type NewsletterLink {
+    title: String!
+    url: String!
+    description: String
+    meta: String
+  }
+
+  input NewsletterLinkInput {
+    title: String!
+    url: String!
+    description: String
+    meta: String
+  }
+
+  type NewsletterIssue {
+    id: ID!
+    template: NewsletterTemplate!
+    locale: String!
+    subject: String!
+    preheader: String
+    heading: String!
+    intro: String!
+    items: [NewsletterLink!]!
+    ctaLabel: String
+    ctaUrl: String
+    outro: String!
+    status: NewsletterIssueStatus!
+    scheduledAt: Float
+    sentAt: Float
+    recipientCount: Int!
+    sentCount: Int!
+    failedCount: Int!
+    createdAt: Float!
+    updatedAt: Float!
+  }
+
+  type NewsletterAudience {
+    locale: String!
+    subscribed: Int!
+  }
+
+  type NewsletterIssuesPayload {
+    items: [NewsletterIssue!]!
+    audience: [NewsletterAudience!]!
+  }
+
+  "scheduledAt null keeps the issue as a draft; a timestamp schedules it (now = send now)."
+  input SaveNewsletterIssueInput {
+    id: ID
+    template: NewsletterTemplate!
+    locale: String!
+    subject: String!
+    preheader: String
+    heading: String!
+    intro: String!
+    items: [NewsletterLinkInput!]!
+    ctaLabel: String
+    ctaUrl: String
+    outro: String!
+    scheduledAt: Float
   }
 
   enum CommentTargetType {

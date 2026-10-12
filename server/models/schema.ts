@@ -1,4 +1,4 @@
-import { index, integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core'
+import { index, integer, primaryKey, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core'
 
 export const users = sqliteTable('users', {
   id: text('id').primaryKey(),
@@ -143,7 +143,7 @@ export const newsletterSubscribers = sqliteTable(
     lastEmailSentAt: integer('last_email_sent_at'),
     lastOpenedAt: integer('last_opened_at'),
     lastClickedAt: integer('last_clicked_at'),
-    unsubscribeTokenHash: text('unsubscribe_token_hash'),
+    unsubscribeToken: text('unsubscribe_token'),
     ipHash: text('ip_hash'),
     userAgentHash: text('user_agent_hash'),
     turnstileVerifiedAt: integer('turnstile_verified_at'),
@@ -154,12 +154,68 @@ export const newsletterSubscribers = sqliteTable(
     uniqueIndex('newsletter_subscribers_email_idx').on(table.email),
     uniqueIndex('newsletter_subscribers_normalized_email_idx').on(table.normalizedEmail),
     index('newsletter_subscribers_status_idx').on(table.status),
-    index('newsletter_subscribers_created_at_idx').on(table.createdAt)
+    index('newsletter_subscribers_created_at_idx').on(table.createdAt),
+    uniqueIndex('newsletter_subscribers_unsubscribe_token_idx').on(table.unsubscribeToken)
   ]
 )
 
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect
 export type NewNewsletterSubscriber = typeof newsletterSubscribers.$inferInsert
+
+export const newsletterIssues = sqliteTable(
+  'newsletter_issues',
+  {
+    id: text('id').primaryKey(),
+    template: text('template', { enum: ['WEEKLY', 'MONTHLY', 'LETTER', 'ANNOUNCEMENT'] }).notNull(),
+    locale: text('locale', { enum: ['fa', 'en'] }).notNull(),
+    subject: text('subject').notNull(),
+    preheader: text('preheader'),
+    heading: text('heading').notNull(),
+    intro: text('intro').notNull(),
+    items: text('items', { mode: 'json' })
+      .$type<
+        Array<{ title: string; url: string; description?: string | null; meta?: string | null }>
+      >()
+      .notNull(),
+    ctaLabel: text('cta_label'),
+    ctaUrl: text('cta_url'),
+    outro: text('outro').notNull(),
+    status: text('status', { enum: ['DRAFT', 'SCHEDULED', 'SENDING', 'SENT'] })
+      .notNull()
+      .default('DRAFT'),
+    scheduledAt: integer('scheduled_at'),
+    sentAt: integer('sent_at'),
+    recipientCount: integer('recipient_count').notNull().default(0),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull()
+  },
+  (table) => [index('newsletter_issues_status_scheduled_idx').on(table.status, table.scheduledAt)]
+)
+
+export type NewsletterIssue = typeof newsletterIssues.$inferSelect
+
+export const newsletterDeliveries = sqliteTable(
+  'newsletter_deliveries',
+  {
+    issueId: text('issue_id')
+      .notNull()
+      .references(() => newsletterIssues.id, { onDelete: 'cascade' }),
+    subscriberId: text('subscriber_id')
+      .notNull()
+      .references(() => newsletterSubscribers.id, { onDelete: 'cascade' }),
+    status: text('status', { enum: ['QUEUED', 'SENT', 'FAILED', 'SKIPPED'] })
+      .notNull()
+      .default('QUEUED'),
+    error: text('error'),
+    sentAt: integer('sent_at'),
+    createdAt: integer('created_at').notNull()
+  },
+  (table) => [
+    primaryKey({ columns: [table.issueId, table.subscriberId] }),
+    index('newsletter_deliveries_status_idx').on(table.status),
+    index('newsletter_deliveries_issue_status_idx').on(table.issueId, table.status)
+  ]
+)
 
 export const comments = sqliteTable(
   'comments',

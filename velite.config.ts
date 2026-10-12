@@ -117,6 +117,18 @@ const pages = defineCollection({
 
 export default defineConfig({
   collections: { blog, lab, projects, pages },
+  // Small index for the newsletter composer, so the dashboard never ships full post bodies.
+  prepare: (data) => {
+    const sections = { blog: data.blog, lab: data.lab } as const
+
+    Object.assign(data, {
+      digest: Object.entries(sections).flatMap(([type, items]) =>
+        items
+          .filter((item) => !item.draft)
+          .map(({ title, description, path, date }) => ({ type, title, description, path, date }))
+      )
+    })
+  },
   markdown: {
     rehypePlugins: [
       rehypeMermaidBlocks,

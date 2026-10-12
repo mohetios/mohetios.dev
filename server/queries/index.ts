@@ -6,6 +6,7 @@ import { inboxFieldResolvers } from './inbox'
 import { inboxWorkspaceQueries } from './inbox-workspace'
 import { leadsWorkspaceQueries } from './lead-workspace'
 import { me } from './me'
+import { newsletterIssueQueries } from './newsletter-issues'
 import { newsletterSubscribersQuery } from './newsletter-subscribers'
 import { adminComments, publicComments } from './public-comments'
 export const Query = {
@@ -15,6 +16,7 @@ export const Query = {
   dashboardNavCounts,
   analyticsDashboard,
   newsletterSubscribers: newsletterSubscribersQuery,
+  ...newsletterIssueQueries,
   publicComments,
   adminComments,
   ...inboxWorkspaceQueries,

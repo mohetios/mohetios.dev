@@ -1,0 +1,3 @@
+mutation SendNewsletterTest($id: ID!, $email: String) {
+  sendNewsletterTest(id: $id, email: $email)
+}

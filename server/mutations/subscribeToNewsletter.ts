@@ -56,17 +56,9 @@ function normalizeEmail(value: string) {
   return email.toLowerCase()
 }
 
-async function hashUnsubscribeToken(token: string, secret: string) {
-  const data = new TextEncoder().encode(`${secret}:newsletter-unsubscribe:${token}`)
-  const digest = await crypto.subtle.digest('SHA-256', data)
-  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('')
-}
-
-async function createUnsubscribeTokenHash(secret: string) {
-  const token = crypto.randomUUID()
-  const tokenHash = await hashUnsubscribeToken(token, secret)
-
-  return tokenHash
+// Stored raw: it only authorizes unsubscribing, and the system worker needs it to build links.
+function createUnsubscribeToken() {
+  return crypto.randomUUID().replaceAll('-', '')
 }
 
 async function queueWelcomeEmail(context: GraphQLContext, subscriberId: string) {
@@ -133,8 +125,6 @@ export const subscribeToNewsletter = async (
   }
 
   if (existing?.status === 'unsubscribed') {
-    const unsubscribeTokenHash = await createUnsubscribeTokenHash(context.env.NUXT_JWT_SECRET)
-
     const [updated] = await context.db
       .update(newsletterSubscribers)
       .set({
@@ -148,7 +138,7 @@ export const subscribeToNewsletter = async (
         consentAt: now,
         confirmedAt: now,
         unsubscribedAt: null,
-        unsubscribeTokenHash,
+        unsubscribeToken: createUnsubscribeToken(),
         turnstileVerifiedAt,
         updatedAt: now
       })
@@ -173,8 +163,6 @@ export const subscribeToNewsletter = async (
     throw new GraphQLError('This email cannot be subscribed at this time')
   }
 
-  const unsubscribeTokenHash = await createUnsubscribeTokenHash(context.env.NUXT_JWT_SECRET)
-
   const subscriber = {
     id: createId(),
     email,
@@ -192,7 +180,7 @@ export const subscribeToNewsletter = async (
     lastEmailSentAt: null,
     lastOpenedAt: null,
     lastClickedAt: null,
-    unsubscribeTokenHash,
+    unsubscribeToken: createUnsubscribeToken(),
     ipHash: null,
     userAgentHash: null,
     turnstileVerifiedAt,

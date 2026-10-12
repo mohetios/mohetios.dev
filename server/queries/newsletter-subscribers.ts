@@ -57,28 +57,17 @@ function buildSearchCondition(search?: string | null): SQL | undefined {
 }
 
 async function getSummary(db: GraphQLContext['db']) {
-  const [totalRows, subscribedRows, pendingRows, unsubscribedRows] = await Promise.all([
-    db.select({ count: sql<number>`count(*)` }).from(newsletterSubscribers),
-    db
-      .select({ count: sql<number>`count(*)` })
-      .from(newsletterSubscribers)
-      .where(eq(newsletterSubscribers.status, 'subscribed')),
-    db
-      .select({ count: sql<number>`count(*)` })
-      .from(newsletterSubscribers)
-      .where(eq(newsletterSubscribers.status, 'pending')),
-    db
-      .select({ count: sql<number>`count(*)` })
-      .from(newsletterSubscribers)
-      .where(eq(newsletterSubscribers.status, 'unsubscribed'))
-  ])
+  const status = newsletterSubscribers.status
+  const [row] = await db
+    .select({
+      total: sql<number>`count(*)`.mapWith(Number),
+      subscribed: sql<number>`count(*) filter (where ${status} = 'subscribed')`.mapWith(Number),
+      pending: sql<number>`count(*) filter (where ${status} = 'pending')`.mapWith(Number),
+      unsubscribed: sql<number>`count(*) filter (where ${status} = 'unsubscribed')`.mapWith(Number)
+    })
+    .from(newsletterSubscribers)
 
-  return {
-    total: Number(totalRows[0]?.count ?? 0),
-    subscribed: Number(subscribedRows[0]?.count ?? 0),
-    pending: Number(pendingRows[0]?.count ?? 0),
-    unsubscribed: Number(unsubscribedRows[0]?.count ?? 0)
-  }
+  return row ?? { total: 0, subscribed: 0, pending: 0, unsubscribed: 0 }
 }
 
 export const newsletterSubscribersQuery = async (
@@ -115,11 +104,6 @@ export const newsletterSubscribersQuery = async (
     total: Number(countRows[0]?.count ?? 0),
     limit,
     offset,
-    summary: {
-      total: summary.total,
-      subscribed: summary.subscribed,
-      pending: summary.pending,
-      unsubscribed: summary.unsubscribed
-    }
+    summary
   }
 }

@@ -9,6 +9,12 @@ import type {
 } from '@cloudflare/workers-types'
 
 import type { EmailDeliveryJob } from '../../../shared/contracts/email'
+import {
+  getNewsletterWelcomeContent,
+  renderNewsletterEmail,
+  toNewsletterLocale,
+  type NewsletterIssueContent
+} from '../../../shared/utils/newsletter-email'
 import type {
   AdminNotificationJob,
   AdminPushPayload
@@ -27,9 +33,13 @@ type Env = {
 
   NUXT_MAIL_FROM?: string
   NUXT_MAIL_FROM_NAME?: string
+  NUXT_PUBLIC_SITE_URL?: string
 }
 
 type WorkerJob = AdminNotificationJob | EmailDeliveryJob
+
+// Must match `triggers.crons` in wrangler.jsonc; every other cron runs the newsletter tick.
+const INBOX_REMINDER_CRON = '0 */12 * * *'
 
 type NotificationRow = {
   id: string
@@ -67,7 +77,33 @@ type NewsletterSubscriberRow = {
   id: string
   email: string
   status: string
+  locale: string | null
+  unsubscribe_token: string | null
   last_email_sent_at: number | null
+}
+
+type NewsletterIssueRow = {
+  id: string
+  template: NewsletterIssueContent['template']
+  locale: string
+  subject: string
+  preheader: string | null
+  heading: string
+  intro: string
+  items: string
+  cta_label: string | null
+  cta_url: string | null
+  outro: string
+  scheduled_at: number | null
+}
+
+type NewsletterDeliveryRow = {
+  issue_id: string
+  subscriber_id: string
+  email: string
+  subscriber_status: string
+  locale: string | null
+  unsubscribe_token: string | null
 }
 
 type CommentRow = {
@@ -100,6 +136,33 @@ function getMailFrom(env: Env) {
 
 function getMailFromName(env: Env) {
   return readString(env.NUXT_MAIL_FROM_NAME) || 'Mohetios.dev'
+}
+
+function getSiteUrl(env: Env) {
+  return (readString(env.NUXT_PUBLIC_SITE_URL) || 'https://mohetios.ir').replace(/\/$/, '')
+}
+
+function getUnsubscribeUrl(env: Env, token: string | null, locale: string | null) {
+  return `${getSiteUrl(env)}/api/newsletter/unsubscribe?token=${token ?? ''}&lang=${toNewsletterLocale(locale)}`
+}
+
+// List-Unsubscribe + one-click POST (RFC 8058) is what Gmail/Yahoo expect from bulk senders.
+function getUnsubscribeHeaders(unsubscribeUrl: string) {
+  return {
+    'List-Unsubscribe': `<${unsubscribeUrl}>`,
+    'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'
+  }
+}
+
+// mimetext writes bodies as-is; base64 keeps UTF-8 (Persian, em dashes) intact in transit.
+function toBase64Body(value: string) {
+  let binary = ''
+
+  for (const byte of new TextEncoder().encode(value)) {
+    binary += String.fromCharCode(byte)
+  }
+
+  return btoa(binary).replace(/.{76}(?=.)/g, '$&\r\n')
 }
 
 function getVapidConfig(env: Env) {
@@ -294,6 +357,7 @@ async function sendEmail(
     subject: string
     text: string
     html?: string
+    headers?: Record<string, string>
   }
 ) {
   const fromEmail = input.fromEmail.trim()
@@ -317,20 +381,21 @@ async function sendEmail(
   msg.setRecipient(toEmail)
   msg.setSubject(input.subject || 'No subject')
 
+  for (const [name, value] of Object.entries(input.headers ?? {})) {
+    msg.setHeader(name, value)
+  }
+
+  msg.addMessage({
+    contentType: 'text/plain',
+    encoding: 'base64',
+    data: toBase64Body(input.text)
+  })
+
   if (input.html) {
     msg.addMessage({
-      contentType: 'text/plain',
-      data: input.text
-    })
-
-    msg.addMessage({
       contentType: 'text/html',
-      data: input.html
-    })
-  } else {
-    msg.addMessage({
-      contentType: 'text/plain',
-      data: input.text
+      encoding: 'base64',
+      data: toBase64Body(input.html)
     })
   }
 
@@ -436,37 +501,12 @@ async function handleEmailDelivery(job: EmailDeliveryJob, env: Env) {
   }
 }
 
-function getNewsletterWelcomeEmailContent() {
-  const text = `Thanks for subscribing to Mohetios.dev.
-
-You'll receive occasional notes about product engineering, Cloudflare-native systems, AI workflows, open-source experiments, and technical writing.
-
-No spam. You can unsubscribe anytime.
-
-— Ali
-Mohetios.dev`
-
-  const html = `<p>Thanks for subscribing to <strong>Mohetios.dev</strong>.</p>
-
-<p>
-You'll receive occasional notes about product engineering,
-Cloudflare-native systems, AI workflows, open-source experiments,
-and technical writing.
-</p>
-
-<p>No spam. You can unsubscribe anytime.</p>
-
-<p>— Ali<br />Mohetios.dev</p>`
-
-  return { text, html }
-}
-
 async function handleNewsletterWelcome(
   job: Extract<EmailDeliveryJob, { type: 'SEND_NEWSLETTER_WELCOME' }>,
   env: Env
 ) {
   const subscriber = await env.DB.prepare(
-    `SELECT id, email, status, last_email_sent_at
+    `SELECT id, email, status, locale, unsubscribe_token, last_email_sent_at
      FROM newsletter_subscribers
      WHERE id = ?`
   )
@@ -486,16 +526,22 @@ async function handleNewsletterWelcome(
     return
   }
 
-  const { text, html } = getNewsletterWelcomeEmailContent()
+  const content = getNewsletterWelcomeContent(subscriber.locale)
+  const unsubscribeUrl = getUnsubscribeUrl(env, subscriber.unsubscribe_token, subscriber.locale)
+  const { text, html } = renderNewsletterEmail(content, {
+    siteUrl: getSiteUrl(env),
+    unsubscribeUrl
+  })
 
   try {
     await sendEmail(env, {
       fromEmail: getMailFrom(env),
       fromName: getMailFromName(env),
       toEmail: subscriber.email,
-      subject: 'Welcome to Mohetios.dev',
+      subject: content.subject,
       text,
-      html
+      html,
+      headers: getUnsubscribeHeaders(unsubscribeUrl)
     })
 
     const now = Date.now()
@@ -516,6 +562,209 @@ async function handleNewsletterWelcome(
 
     throw error
   }
+}
+
+// ponytail: 50 emails per 5-minute tick (~600/hour) and no retry for failed rows;
+// raise the batch or add a retry pass when the list or failure rate outgrows it.
+const NEWSLETTER_BATCH_SIZE = 50
+const UNSUBSCRIBE_PLACEHOLDER = '%%UNSUBSCRIBE_URL%%'
+
+function toIssueContent(row: NewsletterIssueRow): NewsletterIssueContent {
+  return {
+    template: row.template,
+    locale: toNewsletterLocale(row.locale),
+    subject: row.subject,
+    preheader: row.preheader,
+    heading: row.heading,
+    intro: row.intro,
+    items: JSON.parse(row.items),
+    ctaLabel: row.cta_label,
+    ctaUrl: row.cta_url,
+    outro: row.outro
+  }
+}
+
+async function getNewsletterIssue(env: Env, issueId: string) {
+  return env.DB.prepare(
+    `SELECT id, template, locale, subject, preheader, heading, intro, items,
+            cta_label, cta_url, outro, scheduled_at
+     FROM newsletter_issues
+     WHERE id = ?`
+  )
+    .bind(issueId)
+    .first<NewsletterIssueRow>()
+}
+
+async function handleNewsletterTest(
+  job: Extract<EmailDeliveryJob, { type: 'SEND_NEWSLETTER_TEST' }>,
+  env: Env
+) {
+  const issue = await getNewsletterIssue(env, job.issueId)
+
+  if (!issue) {
+    console.warn('Newsletter issue not found for test', job)
+    return
+  }
+
+  const content = toIssueContent(issue)
+  const { text, html } = renderNewsletterEmail(content, {
+    siteUrl: getSiteUrl(env),
+    unsubscribeUrl: getUnsubscribeUrl(env, null, content.locale),
+    date: issue.scheduled_at ?? undefined
+  })
+
+  await sendEmail(env, {
+    fromEmail: getMailFrom(env),
+    fromName: getMailFromName(env),
+    toEmail: job.toEmail,
+    subject: `[Test] ${content.subject}`,
+    text,
+    html
+  })
+}
+
+// Snapshot the audience into delivery rows. One D1 batch runs as one transaction and the
+// insert only matches while the issue is still SCHEDULED, so overlapping ticks can't double it.
+async function dispatchDueNewsletterIssues(env: Env, now: number) {
+  const due = await env.DB.prepare(
+    `SELECT id, locale FROM newsletter_issues
+     WHERE status = 'SCHEDULED' AND scheduled_at <= ?
+     ORDER BY scheduled_at
+     LIMIT 5`
+  )
+    .bind(now)
+    .all<{ id: string; locale: string }>()
+
+  for (const issue of due.results) {
+    await env.DB.batch([
+      env.DB.prepare(
+        `INSERT OR IGNORE INTO newsletter_deliveries (issue_id, subscriber_id, status, created_at)
+         SELECT ?, id, 'QUEUED', ?
+         FROM newsletter_subscribers
+         WHERE status = 'subscribed'
+           AND coalesce(locale, ?) = ?
+           AND EXISTS (SELECT 1 FROM newsletter_issues WHERE id = ? AND status = 'SCHEDULED')`
+      ).bind(issue.id, now, toNewsletterLocale(null), issue.locale, issue.id),
+      env.DB.prepare(
+        `UPDATE newsletter_issues
+         SET status = 'SENDING',
+             recipient_count = (SELECT count(*) FROM newsletter_deliveries WHERE issue_id = ?),
+             updated_at = ?
+         WHERE id = ? AND status = 'SCHEDULED'`
+      ).bind(issue.id, now, issue.id)
+    ])
+  }
+}
+
+async function sendNewsletterBatch(env: Env, now: number) {
+  const deliveries = await env.DB.prepare(
+    `SELECT d.issue_id, d.subscriber_id, s.email, s.status AS subscriber_status,
+            s.locale, s.unsubscribe_token
+     FROM newsletter_deliveries d
+     INNER JOIN newsletter_subscribers s ON s.id = d.subscriber_id
+     WHERE d.status = 'QUEUED'
+     LIMIT ?`
+  )
+    .bind(NEWSLETTER_BATCH_SIZE)
+    .all<NewsletterDeliveryRow>()
+
+  if (!deliveries.results.length) return
+
+  // Render each issue once, then swap in the per-subscriber unsubscribe link.
+  const rendered = new Map<string, { subject: string; text: string; html: string } | null>()
+
+  for (const issueId of new Set(deliveries.results.map((row) => row.issue_id))) {
+    const issue = await getNewsletterIssue(env, issueId)
+    const content = issue ? toIssueContent(issue) : null
+
+    rendered.set(
+      issueId,
+      issue && content
+        ? {
+            subject: content.subject,
+            ...renderNewsletterEmail(content, {
+              siteUrl: getSiteUrl(env),
+              unsubscribeUrl: UNSUBSCRIBE_PLACEHOLDER,
+              date: issue.scheduled_at ?? now
+            })
+          }
+        : null
+    )
+  }
+
+  const results = await Promise.allSettled(
+    deliveries.results.map(async (row) => {
+      const email = rendered.get(row.issue_id)
+
+      if (!email || row.subscriber_status !== 'subscribed') return 'SKIPPED' as const
+
+      const unsubscribeUrl = getUnsubscribeUrl(env, row.unsubscribe_token, row.locale)
+
+      await sendEmail(env, {
+        fromEmail: getMailFrom(env),
+        fromName: getMailFromName(env),
+        toEmail: row.email,
+        subject: email.subject,
+        text: email.text.replaceAll(UNSUBSCRIBE_PLACEHOLDER, unsubscribeUrl),
+        html: email.html.replaceAll(UNSUBSCRIBE_PLACEHOLDER, unsubscribeUrl),
+        headers: getUnsubscribeHeaders(unsubscribeUrl)
+      })
+
+      return 'SENT' as const
+    })
+  )
+
+  const sentAt = Date.now()
+
+  await env.DB.batch(
+    deliveries.results.flatMap((row, index) => {
+      const result = results[index]!
+      const status = result.status === 'fulfilled' ? result.value : 'FAILED'
+      const error =
+        result.status === 'rejected'
+          ? String(result.reason instanceof Error ? result.reason.message : result.reason).slice(
+              0,
+              500
+            )
+          : null
+
+      const update = env.DB.prepare(
+        `UPDATE newsletter_deliveries SET status = ?, error = ?, sent_at = ?
+         WHERE issue_id = ? AND subscriber_id = ?`
+      ).bind(status, error, status === 'SENT' ? sentAt : null, row.issue_id, row.subscriber_id)
+
+      return status === 'SENT'
+        ? [
+            update,
+            env.DB.prepare(
+              `UPDATE newsletter_subscribers SET last_email_sent_at = ? WHERE id = ?`
+            ).bind(sentAt, row.subscriber_id)
+          ]
+        : [update]
+    })
+  )
+}
+
+async function finishSentNewsletterIssues(env: Env, now: number) {
+  await env.DB.prepare(
+    `UPDATE newsletter_issues
+     SET status = 'SENT', sent_at = ?, updated_at = ?
+     WHERE status = 'SENDING'
+       AND NOT EXISTS (
+         SELECT 1 FROM newsletter_deliveries
+         WHERE issue_id = newsletter_issues.id AND status = 'QUEUED'
+       )`
+  )
+    .bind(now, now)
+    .run()
+}
+
+async function runNewsletterTick(env: Env) {
+  const now = Date.now()
+
+  await dispatchDueNewsletterIssues(env, now)
+  await sendNewsletterBatch(env, now)
+  await finishSentNewsletterIssues(env, Date.now())
 }
 
 async function getCommentRow(env: Env, commentId: string) {
@@ -651,6 +900,11 @@ async function handleJob(job: WorkerJob, env: Env) {
     return
   }
 
+  if (job.type === 'SEND_NEWSLETTER_TEST') {
+    await handleNewsletterTest(job, env)
+    return
+  }
+
   if (job.type === 'COMMENT_RECEIVED_CONFIRMATION_EMAIL') {
     await handleCommentReceivedEmail(job, env)
     return
@@ -670,8 +924,13 @@ async function handleJob(job: WorkerJob, env: Env) {
 }
 
 export default {
-  async scheduled(_controller: ScheduledController, env: Env, _ctx: ExecutionContext) {
-    await sendUnreadInboxReminder(env)
+  async scheduled(controller: ScheduledController, env: Env, _ctx: ExecutionContext) {
+    if (controller.cron === INBOX_REMINDER_CRON) {
+      await sendUnreadInboxReminder(env)
+      return
+    }
+
+    await runNewsletterTick(env)
   },
 
   async queue(batch: MessageBatch<WorkerJob>, env: Env) {

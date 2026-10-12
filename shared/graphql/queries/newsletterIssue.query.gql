@@ -1,0 +1,5 @@
+query NewsletterIssue($id: ID!) {
+  newsletterIssue(id: $id) {
+    ...NewsletterIssueFields
+  }
+}

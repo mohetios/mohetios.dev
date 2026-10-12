@@ -555,7 +555,7 @@
     },
     "newsletter": {
       "title": "خبرنامه",
-      "description": "افرادی که برای دریافت به‌روزرسانی‌های Mohetios.dev عضو شده‌اند.",
+      "description": "شماره‌ها را بنویس، زمان‌بندی کن و فهرست مشترکان را مرتب نگه دار.",
       "refresh": "به‌روزرسانی",
       "searchPlaceholder": "جستجو با ایمیل یا نام",
       "statusFilter": "وضعیت",
@@ -582,7 +582,105 @@
         "unsubscribed": "لغو شده",
         "bounced": "برگشتی",
         "complained": "شکایت"
-      }
+      },
+      "tabs": {
+        "issues": "شماره‌ها",
+        "subscribers": "مشترکان"
+      },
+      "summaryExtra": {
+        "issuesSent": "شماره‌های فرستاده‌شده",
+        "issuesSentHelper": "شماره‌هایی که تا امروز فرستاده شده‌اند",
+        "nextIssue": "شماره‌ی بعدی",
+        "nothingScheduled": "چیزی زمان‌بندی نشده"
+      },
+      "issues": {
+        "new": "شماره‌ی جدید",
+        "emptyTitle": "هنوز شماره‌ای نیست",
+        "empty": "یک قالب انتخاب کن و اولین شماره را بنویس.",
+        "audience": "{count} مشترک",
+        "status": {
+          "draft": "پیش‌نویس",
+          "scheduled": "زمان‌بندی‌شده",
+          "sending": "در حال ارسال",
+          "sent": "فرستاده شد"
+        },
+        "scheduledFor": "زمان ارسال: {date}",
+        "sentOn": "فرستاده‌شده در {date}",
+        "editedOn": "ویرایش: {date}",
+        "delivered": "{sent} از {total} تحویل شد",
+        "failed": "{count} ناموفق",
+        "loadFailed": "امکان دریافت شماره‌ها نبود."
+      },
+      "templates": {
+        "pick": "یک قالب انتخاب کن",
+        "language": "زبان شماره",
+        "WEEKLY": {
+          "label": "مرور هفتگی",
+          "description": "نوشته‌های هفته خودکار جمع می‌شوند و تو فقط مقدمه را می‌نویسی."
+        },
+        "MONTHLY": {
+          "label": "مرور ماهانه",
+          "description": "همه‌ی نوشته‌های ماه در یک ایمیل."
+        },
+        "LETTER": {
+          "label": "نامه",
+          "description": "یادداشتی شخصی، با چند لینک اختیاری برای خواندن بیشتر."
+        },
+        "ANNOUNCEMENT": {
+          "label": "اعلان",
+          "description": "یک انتشار یا خبر با یک دکمه‌ی روشن."
+        }
+      },
+      "composer": {
+        "back": "همه‌ی شماره‌ها",
+        "subject": "موضوع",
+        "preheader": "متن پیش‌نمایش",
+        "preheaderHint": "بیشتر اینباکس‌ها این متن را کنار موضوع نشان می‌دهند.",
+        "heading": "تیتر",
+        "intro": "متن اصلی",
+        "introHint": "یک خط خالی پاراگراف تازه می‌سازد. لینک: [label](https://…)",
+        "links": "لینک‌ها",
+        "addLink": "افزودن لینک",
+        "fillRecent": "پر کردن از نوشته‌های اخیر",
+        "fillEmpty": "در این بازه چیزی منتشر نشده.",
+        "fillDone": "{count} نوشته اضافه شد.",
+        "linkTitle": "عنوان",
+        "linkUrl": "نشانی",
+        "linkDescription": "توضیح",
+        "linkMeta": "برچسب",
+        "removeLink": "حذف لینک",
+        "cta": "دکمه",
+        "ctaLabel": "متن دکمه",
+        "ctaUrl": "لینک دکمه",
+        "outro": "پایان‌بندی",
+        "preview": "پیش‌نمایش",
+        "desktop": "دسکتاپ",
+        "mobile": "موبایل",
+        "saveDraft": "ذخیره‌ی پیش‌نویس",
+        "saved": "پیش‌نویس ذخیره شد.",
+        "saveFailed": "امکان ذخیره‌ی شماره نبود.",
+        "sendTest": "ارسال آزمایشی",
+        "testEmail": "ارسال آزمایشی به",
+        "testEmailHint": "اگر خالی بماند، به نشانی فرستنده‌ی سایت می‌رود.",
+        "testSent": "ایمیل آزمایشی در صف ارسال قرار گرفت.",
+        "schedule": "زمان‌بندی",
+        "unschedule": "برگرداندن به پیش‌نویس",
+        "delete": "حذف",
+        "deleteConfirm": "این شماره حذف شود؟ این کار برگشت‌پذیر نیست.",
+        "deleted": "شماره حذف شد.",
+        "readOnly": "این شماره فرستاده شده و دیگر ویرایش نمی‌شود.",
+        "scheduleTitle": "کی فرستاده شود؟",
+        "scheduleAudience": "برای {count} مشترکی که {language} می‌خوانند فرستاده می‌شود.",
+        "scheduleNow": "همین حالا",
+        "scheduleNowHint": "ارسال تا ۵ دقیقه‌ی بعد شروع می‌شود.",
+        "scheduleWeekly": "نوبت هفتگی بعدی",
+        "scheduleMonthly": "نوبت ماهانه‌ی بعدی",
+        "scheduleCustom": "انتخاب تاریخ و ساعت",
+        "scheduleConfirm": "زمان‌بندی شماره",
+        "scheduled": "شماره برای {date} زمان‌بندی شد.",
+        "cancel": "انصراف"
+      },
+      "pagination": "{from} تا {to} از {total}"
     },
     "comments": {
       "title": "نظرات",
