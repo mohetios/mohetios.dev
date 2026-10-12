@@ -133,11 +133,11 @@ Persian Editorial Engine is the repository guide for creating, editing, translat
 
 The engine separates stable Persian writing rules from current project facts:
 
-- `editorial/fa/core/` defines language, reasoning, preservation, factual safety, and temporal integrity.
-- `editorial/fa/profiles/ali/` defines Ali's default author voice.
-- `editorial/fa/dimensions/` and `editorial/fa/workflows/` define task shape and transformation flow.
+- `editorial/fa/core.md` defines language, reasoning, preservation, factual safety, and temporal integrity.
+- `editorial/fa/profiles/ali/` defines Ali's default author voice (`voice.md`), contrastive examples, and the approved corpus.
+- `editorial/fa/reference.md` defines task dimensions, workflows, recipes, and templates.
 - `editorial/fa/evaluation/` and `editorial/fa/tooling/` provide checks and review support.
-- `.agents/skills/persian-editorial/` and the other agent files are thin adapters that point back to the entrypoint.
+- The `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md` bridge blocks are managed by `scripts/setup-ai-coding-stack.sh`; `.agents/skills/persian-editorial/` is the on-demand skill.
 
 Daily workflow:
 

@@ -1,5 +1,5 @@
 {
-  "version": "3.0.0",
+  "version": "4.0.0",
   "default_content_paths": [
     "**/*.md",
     "**/*.mdx",
@@ -23,12 +23,10 @@
     "pnpm-lock.yaml",
     "*/editorial-config.json",
     "editorial/fa/evaluation/**",
-    "editorial/fa/profiles/ali/anti-patterns.md",
-    "editorial/fa/profiles/ali/corpus/contrastive/**",
-    "editorial/fa/profiles/ali/corpus/rejected/**",
-    "editorial/fa/_legacy/**",
     ".editorial-engine-backups/**",
-    "persian-editorial-engine-v*/**"
+    "persian-editorial-engine-v*/**",
+    "editorial/fa/core.md",
+    "editorial/fa/profiles/ali/**"
   ],
   "forbidden_phrases": [
     "در دنیای امروز",
@@ -77,5 +75,8 @@
   "max_paragraph_chars_warning": 1000,
   "max_heading_depth": 4,
   "max_consecutive_blank_lines": 2,
-  "allowed_suppressions": ["editorial-lint-disable-next-line", "editorial-lint-disable-file"]
+  "allowed_suppressions": [
+    "editorial-lint-disable-next-line",
+    "editorial-lint-disable-file"
+  ]
 }
