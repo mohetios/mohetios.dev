@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const { t } = useI18n()
-const route = useRoute()
 const auth = useAuth()
 const toast = useToast()
 const { ensureSubscribed, isSupported, permission, refreshPermission, subscribe } =
@@ -10,11 +9,6 @@ const busy = ref(false)
 const dismissed = useState('admin-push:prompt-dismissed', () => false)
 const setupAttempted = useState('admin-push:setup-attempted', () => false)
 
-const pathWithoutLocale = computed(() => stripLocalePrefix(route.path))
-const isDashboardRoute = computed(
-  () =>
-    pathWithoutLocale.value === '/dashboard' || pathWithoutLocale.value.startsWith('/dashboard/')
-)
 const shouldShow = computed(() => {
   return (
     auth.user.value?.role === 'OWNER' &&
@@ -25,8 +19,6 @@ const shouldShow = computed(() => {
 })
 
 function getDeviceLabel() {
-  if (!import.meta.client) return 'Browser'
-
   const currentNavigator = navigator as Navigator & {
     userAgentData?: {
       platform?: string
@@ -67,9 +59,7 @@ async function syncGrantedSubscription() {
   try {
     await ensureSubscribed(getDeviceLabel())
   } catch (error) {
-    if (import.meta.dev || isDashboardRoute.value) {
-      console.warn('[push:setup-failed]', error)
-    }
+    console.warn('[push:setup-failed]', error)
   }
 }
 
@@ -119,45 +109,43 @@ watch(
 </script>
 
 <template>
-  <ClientOnly>
-    <UCard
-      v-if="shouldShow"
-      class="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-sm shadow-lg sm:left-auto"
-      :ui="{ body: 'p-4' }"
-    >
-      <div class="space-y-4">
-        <div class="flex items-start gap-3">
-          <div
-            class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
-          >
-            <UIcon name="i-lucide-bell" class="size-4" />
-          </div>
-
-          <div class="min-w-0">
-            <p class="text-sm font-medium text-highlighted">{{ t('push.title') }}</p>
-            <p class="mt-1 text-sm leading-6 text-muted">{{ t('push.description') }}</p>
-          </div>
+  <UCard
+    v-if="shouldShow"
+    class="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-sm shadow-lg sm:left-auto"
+    :ui="{ body: 'p-4' }"
+  >
+    <div class="space-y-4">
+      <div class="flex items-start gap-3">
+        <div
+          class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
+        >
+          <UIcon name="i-lucide-bell" class="size-4" />
         </div>
 
-        <div class="flex justify-end gap-2">
-          <UButton
-            color="neutral"
-            variant="ghost"
-            size="sm"
-            @click="
-              () => {
-                dismissed = true
-              }
-            "
-          >
-            {{ t('push.later') }}
-          </UButton>
-
-          <UButton size="sm" icon="i-lucide-bell" :loading="busy" @click="enableNotifications">
-            {{ t('push.enable') }}
-          </UButton>
+        <div class="min-w-0">
+          <p class="text-sm font-medium text-highlighted">{{ t('push.title') }}</p>
+          <p class="mt-1 text-sm leading-6 text-muted">{{ t('push.description') }}</p>
         </div>
       </div>
-    </UCard>
-  </ClientOnly>
+
+      <div class="flex justify-end gap-2">
+        <UButton
+          color="neutral"
+          variant="ghost"
+          size="sm"
+          @click="
+            () => {
+              dismissed = true
+            }
+          "
+        >
+          {{ t('push.later') }}
+        </UButton>
+
+        <UButton size="sm" icon="i-lucide-bell" :loading="busy" @click="enableNotifications">
+          {{ t('push.enable') }}
+        </UButton>
+      </div>
+    </div>
+  </UCard>
 </template>

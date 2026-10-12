@@ -1,3 +1,5 @@
+import { readdirSync } from 'node:fs'
+
 import {
   defaultLocale,
   getLocalizedPublicPath,
@@ -10,6 +12,7 @@ import {
   CLOUDFLARE_CSP_ORIGINS,
   REQUEST_SIZE_LIMIT_BYTES
 } from './shared/constants/security'
+import { GRAPHQL_ENDPOINT, LOCALIZED_ROUTE_SECTIONS } from './shared/constants/routes'
 
 const isDev = process.env.NODE_ENV !== 'production'
 const isProduction = process.env.NODE_ENV === 'production'
@@ -25,46 +28,40 @@ const htmlCacheHeaders = {
   'Cache-Control': 'public, max-age=0, must-revalidate'
 }
 
+const appShellHeaders = {
+  ...htmlCacheHeaders,
+  'X-Robots-Tag': 'noindex, nofollow'
+}
+
 const immutableAssetHeaders = {
   'Cache-Control': 'public, max-age=31536000, immutable'
 }
 
 const turnstileSiteKey = process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || ''
 
-const staticRouteSections = ['/', '/blog', '/lab', '/projects', '/tags', '/about', '/contact']
-const authRouteSections = ['/login']
+// Rendering policy:
+//   public site  -> prerendered HTML (Jamstack), data baked in at build time
+//   app routes   -> client-only SPA; the shells are prerendered so the CDN serves them
+//                   and the Worker only handles /graph and /api
+const publicSections = ['/', '/blog', '/lab', '/projects', '/tags', '/about', '/contact']
+const publicPatterns = ['/blog/**', '/lab/**', '/projects/**', '/tags/**']
+// One shell per page file, so new dashboard/member pages are prerendered without config edits.
+const pageSections = (dir: string) =>
+  readdirSync(new URL(`./app/pages/${dir}`, import.meta.url))
+    .filter((file) => file.endsWith('.vue'))
+    .map((file) => (file === 'index.vue' ? `/${dir}` : `/${dir}/${file.slice(0, -4)}`))
+const appSections = ['/login', ...pageSections('member'), ...pageSections('dashboard')]
+const appPatterns = ['/login', '/member/**', '/dashboard', '/dashboard/**']
 const authRedirectSections = ['/register', '/reset-password']
-const contentRoutePatterns = ['/blog/**', '/lab/**', '/projects/**', '/tags/**']
-const memberRoutePatterns = ['/member/**']
 
-const staticRoutes = supportedLocales.flatMap((locale) =>
-  staticRouteSections.map((section) => getLocalizedPublicPath(section, locale))
-)
+const localize = (paths: readonly string[]) =>
+  supportedLocales.flatMap((locale) => paths.map((path) => getLocalizedPublicPath(path, locale)))
 
-const localizedHtmlRouteRules = Object.fromEntries(
-  [
-    ...staticRoutes,
-    ...supportedLocales.flatMap((locale) =>
-      contentRoutePatterns.map((pattern) => getLocalizedPublicPath(pattern, locale))
-    )
-  ].map((route) => [route, { prerender: true, headers: htmlCacheHeaders }])
-)
+const staticRoutes = localize(publicSections)
+const appShellRoutes = localize(appSections)
 
-const localizedSsrRouteRules = Object.fromEntries(
-  supportedLocales
-    .flatMap((locale) =>
-      memberRoutePatterns.map((pattern) => getLocalizedPublicPath(pattern, locale))
-    )
-    .map((route) => [route, { ssr: true, prerender: false }])
-)
-
-const localizedClientAuthRouteRules = Object.fromEntries(
-  supportedLocales
-    .flatMap((locale) =>
-      authRouteSections.map((section) => getLocalizedPublicPath(section, locale))
-    )
-    .map((route) => [route, { ssr: false, prerender: false }])
-)
+const routeRuleMap = <T>(paths: readonly string[], rule: T) =>
+  Object.fromEntries(paths.map((path) => [path, rule]))
 
 const localizedAuthRedirectRouteRules = Object.fromEntries(
   supportedLocales.flatMap((locale) =>
@@ -81,7 +78,7 @@ function getContentRoutes() {
   return [...routes].sort()
 }
 
-const prerenderRoutes = [...getContentRoutes(), '/robots.txt', '/sitemap.xml']
+const prerenderRoutes = [...getContentRoutes(), ...appShellRoutes, '/robots.txt', '/sitemap.xml']
 
 const contentSecurityPolicy = {
   'default-src': ["'self'"],
@@ -139,10 +136,6 @@ export default defineNuxtConfig({
     '@stefanobartoletti/nuxt-social-share',
     'nuxt-og-image'
   ],
-
-  devtools: {
-    enabled: isDev
-  },
 
   hooks: {
     // Pages use ContentOgImage; bundled gallery templates need browser-only theme variables.
@@ -246,10 +239,9 @@ export default defineNuxtConfig({
       include: ['mermaid', 'zod']
     },
     build: {
-      sourcemap: false,
       // Mermaid lazy-loads as a ~2 MB async chunk on content pages with diagrams only.
       chunkSizeWarningLimit: 2048,
-      rollupOptions: {
+      rolldownOptions: {
         onwarn(warning, warn) {
           // Tailwind/Nuxt CSS transforms don't emit sourcemaps; harmless when maps are off.
           if (warning.code === 'SOURCEMAP_BROKEN') {
@@ -365,28 +357,12 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    ...localizedHtmlRouteRules,
-    ...localizedClientAuthRouteRules,
+    ...routeRuleMap(localize([...publicSections, ...publicPatterns]), {
+      prerender: true,
+      headers: htmlCacheHeaders
+    }),
+    ...routeRuleMap(localize(appPatterns), { ssr: false, headers: appShellHeaders }),
     ...localizedAuthRedirectRouteRules,
-
-    '/dashboard': {
-      ssr: true,
-      prerender: false,
-      security: {
-        headers: {
-          xFrameOptions: 'DENY'
-        }
-      }
-    },
-    '/dashboard/**': {
-      ssr: true,
-      prerender: false,
-      security: {
-        headers: {
-          xFrameOptions: 'DENY'
-        }
-      }
-    },
 
     '/graph': {
       security: {
@@ -402,8 +378,6 @@ export default defineNuxtConfig({
         rateLimiter: graphApiRateLimiter
       }
     },
-
-    ...localizedSsrRouteRules,
 
     '/content/**': { headers: immutableAssetHeaders },
     '/icons/**': { headers: immutableAssetHeaders },
@@ -434,6 +408,25 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'cloudflare_pages',
+    // Only these paths invoke the Worker; everything else (all HTML, shells, assets) is served
+    // by the CDN. Nitro's default list hits Cloudflare's 100-rule cap and leaks pages to the Worker.
+    cloudflare: {
+      pages: {
+        defaultRoutes: false,
+        routes: {
+          version: 1,
+          include: [
+            '/',
+            GRAPHQL_ENDPOINT,
+            '/api/*',
+            '/_og/d/*',
+            '/_og/r/*',
+            ...LOCALIZED_ROUTE_SECTIONS.flatMap((section) => [`/${section}`, `/${section}/*`])
+          ],
+          exclude: []
+        }
+      }
+    },
     ...(isProduction
       ? {
           storage: {
@@ -452,8 +445,6 @@ export default defineNuxtConfig({
     minify: isProduction,
     // Workers run modern JS; the es2019 default warns on BigInt literals in image deps.
     esbuild: { options: { target: 'es2022' } },
-    sourceMap: false,
-    timing: false,
     prerender: {
       autoSubfolderIndex: false,
       concurrency: 4,

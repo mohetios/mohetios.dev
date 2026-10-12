@@ -56,24 +56,18 @@ const yFormatter = (value: number) => formatChartNumber(value)
     </div>
 
     <div v-else :ref="chartContainer.containerRef" class="absolute inset-0 overflow-hidden">
-      <ClientOnly>
-        <AreaChart
-          :data="chartData"
-          :categories="categories"
-          :height="chartHeight"
-          :x-formatter="xFormatter"
-          :y-formatter="yFormatter"
-          :y-grid-line="true"
-          :x-grid-line="false"
-          :curve-type="CurveType.MonotoneX"
-          :legend-position="LegendPosition.BottomCenter"
-          :hide-legend="metric !== 'both'"
-        />
-
-        <template #fallback>
-          <USkeleton class="h-full w-full" />
-        </template>
-      </ClientOnly>
+      <AreaChart
+        :data="chartData"
+        :categories="categories"
+        :height="chartHeight"
+        :x-formatter="xFormatter"
+        :y-formatter="yFormatter"
+        :y-grid-line="true"
+        :x-grid-line="false"
+        :curve-type="CurveType.MonotoneX"
+        :legend-position="LegendPosition.BottomCenter"
+        :hide-legend="metric !== 'both'"
+      />
     </div>
   </div>
 </template>

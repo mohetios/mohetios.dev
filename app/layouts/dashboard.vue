@@ -27,5 +27,6 @@ const { groups, searchTerm } = useDashboardSearch()
     </UDashboardPanel>
 
     <PwaPrompt />
+    <AdminPushPrompt />
   </UDashboardGroup>
 </template>

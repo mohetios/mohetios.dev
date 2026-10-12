@@ -68,26 +68,20 @@ const yFormatter = (value: number) =>
     </div>
 
     <div v-else :ref="chartContainer.containerRef" class="absolute inset-0 overflow-hidden">
-      <ClientOnly>
-        <BarChart
-          :data="chartData"
-          :categories="categories"
-          :height="chartHeight"
-          :y-axis="['value']"
-          x-axis="label"
-          :x-formatter="xFormatter"
-          :y-formatter="yFormatter"
-          :y-grid-line="true"
-          :hide-legend="true"
-          :radius="4"
-          :x-num-ticks="chartData.length"
-          :min-max-ticks-only="chartData.length > 6"
-        />
-
-        <template #fallback>
-          <USkeleton class="h-full w-full" />
-        </template>
-      </ClientOnly>
+      <BarChart
+        :data="chartData"
+        :categories="categories"
+        :height="chartHeight"
+        :y-axis="['value']"
+        x-axis="label"
+        :x-formatter="xFormatter"
+        :y-formatter="yFormatter"
+        :y-grid-line="true"
+        :hide-legend="true"
+        :radius="4"
+        :x-num-ticks="chartData.length"
+        :min-max-ticks-only="chartData.length > 6"
+      />
     </div>
   </div>
 </template>

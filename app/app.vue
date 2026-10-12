@@ -50,7 +50,5 @@ useSeoMeta({
         <NuxtPage />
       </NuxtLayout>
     </UMain>
-
-    <AdminPushPrompt />
   </UApp>
 </template>

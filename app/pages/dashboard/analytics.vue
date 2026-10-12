@@ -246,7 +246,7 @@ async function refreshAnalytics() {
 }
 
 watch(error, (currentError) => {
-  if (!currentError || import.meta.server) return
+  if (!currentError) return
 
   toast.add({
     color: 'error',

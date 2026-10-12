@@ -154,10 +154,6 @@ watch(leadsLoadError, (error) => {
 })
 
 onMounted(() => {
-  if (!import.meta.client) {
-    return
-  }
-
   const mediaQuery = window.matchMedia('(max-width: 1023px)')
 
   const syncDrawerViewport = () => {

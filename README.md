@@ -80,7 +80,7 @@ flowchart TB
 
 | Component         | Role                                                                                                                                                    | Config                                   |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| **Nuxt / Nitro**  | SSR dashboard, prerendered public pages, GraphQL, push subscription API                                                                                 | `nuxt.config.ts`, `wrangler.jsonc`       |
+| **Nuxt / Nitro**  | SPA dashboard, prerendered public pages, GraphQL, push subscription API                                                                                 | `nuxt.config.ts`, `wrangler.jsonc`       |
 | **Email worker**  | Receives routed inbound mail, parses with PostalMime, writes inbox + notification rows, enqueues push job                                               | `workers/email/`                         |
 | **System worker** | Consumes queues: sends Web Push to dashboard devices, delivers inbox replies and transactional emails via Cloudflare Email Sending; runs cron reminders | `workers/system/`                        |
 | **D1**            | Users, inbox, replies, comments, newsletter, push subscriptions, admin notifications                                                                    | `server/models/schema.ts`, `migrations/` |
@@ -97,15 +97,20 @@ pnpm dev:workers  # workers only
 
 ## Request & Rendering Model
 
-Public content routes are **prerendered** at build time for fast, cache-friendly HTML. Dashboard and member routes use **SSR**. Login is a **client-only** route.
+Two rendering modes, set in `routeRules` in `nuxt.config.ts`:
 
-| Route family                                                                 | Strategy     | Notes                                             |
-| ---------------------------------------------------------------------------- | ------------ | ------------------------------------------------- |
-| `/`, `/blog/**`, `/lab/**`, `/projects/**`, `/about`, `/contact`, `/tags/**` | Prerender    | Localized via `prefix_except_default` (`/fa/...`) |
-| `/dashboard/**`                                                              | SSR          | Auth middleware + `dashboard:view` permission     |
-| `/member/**`                                                                 | SSR          | Authenticated member profile area                 |
-| `/login`                                                                     | SPA (no SSR) | Redirects owners to dashboard, members to profile |
-| `/graph`                                                                     | API          | POST in production; GraphiQL in dev only          |
+- **Public site (Jamstack):** every content route is prerendered at build time, with data baked into the HTML and `_payload.json`.
+- **App (SPA):** dashboard, member and login are `ssr: false`. One shell per page file is prerendered, and data loads from `/graph` after boot. Auth runs in client-side middleware; `X-Robots-Tag: noindex` is set on these routes.
+
+On Cloudflare Pages, `_routes.json` sends only `/graph`, `/api/*`, OG endpoints, `/` and unprefixed locale redirects to the Worker. All HTML and assets are served by the CDN.
+
+| Route family                                                                 | Strategy                | Notes                                             |
+| ---------------------------------------------------------------------------- | ----------------------- | ------------------------------------------------- |
+| `/`, `/blog/**`, `/lab/**`, `/projects/**`, `/about`, `/contact`, `/tags/**` | Prerender               | Localized with the `prefix` strategy (`/fa/...`)  |
+| `/dashboard/**`                                                              | SPA (prerendered shell) | Auth middleware + `dashboard:view` permission     |
+| `/member/**`                                                                 | SPA (prerendered shell) | Authenticated member profile area                 |
+| `/login`                                                                     | SPA (prerendered shell) | Redirects owners to dashboard, members to profile |
+| `/graph`                                                                     | API                     | POST in production; GraphiQL in dev only          |
 
 Velite output (`.velite/*.json`) is imported by `app/utils/content.ts` — the Vue layer never touches raw Markdown at runtime.
 

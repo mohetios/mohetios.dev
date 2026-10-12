@@ -32,7 +32,6 @@ const { data: setupAvailable, pending: setupPending } = await useAsyncData(
     return result.authSetupAvailable
   },
   {
-    server: false,
     default: () => false
   }
 )

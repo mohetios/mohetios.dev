@@ -1,20 +1,9 @@
 import { getRequestURL, sendRedirect } from 'h3'
 
 import { defaultLocale, supportedLocales } from '../../shared/constants/locales'
+import { LOCALIZED_ROUTE_SECTIONS } from '../../shared/constants/routes'
 
-const appRouteSections = new Set([
-  'about',
-  'blog',
-  'contact',
-  'dashboard',
-  'lab',
-  'login',
-  'member',
-  'projects',
-  'register',
-  'reset-password',
-  'tags'
-])
+const appRouteSections = new Set<string>(LOCALIZED_ROUTE_SECTIONS)
 
 export default defineEventHandler((event) => {
   const url = getRequestURL(event)

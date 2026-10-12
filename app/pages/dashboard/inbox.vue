@@ -205,7 +205,7 @@ watch(isConversationDrawerOpen, (open) => {
 })
 
 watch(inboxLoadError, (error) => {
-  if (!error || import.meta.server) {
+  if (!error) {
     return
   }
 
@@ -614,26 +614,24 @@ function isInboxPushActionMessage(value: unknown): value is InboxPushActionMessa
 }
 
 onMounted(() => {
-  if (import.meta.client) {
-    const mediaQuery = window.matchMedia('(max-width: 1023px)')
+  const mediaQuery = window.matchMedia('(max-width: 1023px)')
 
-    const syncDrawerViewport = () => {
-      canUseConversationDrawer.value = mediaQuery.matches
+  const syncDrawerViewport = () => {
+    canUseConversationDrawer.value = mediaQuery.matches
 
-      if (mediaQuery.matches) {
-        isConversationDrawerOpen.value = Boolean(selectedMessageId.value)
-      } else {
-        isConversationDrawerOpen.value = false
-      }
+    if (mediaQuery.matches) {
+      isConversationDrawerOpen.value = Boolean(selectedMessageId.value)
+    } else {
+      isConversationDrawerOpen.value = false
     }
-
-    syncDrawerViewport()
-    mediaQuery.addEventListener('change', syncDrawerViewport)
-
-    onBeforeUnmount(() => {
-      mediaQuery.removeEventListener('change', syncDrawerViewport)
-    })
   }
+
+  syncDrawerViewport()
+  mediaQuery.addEventListener('change', syncDrawerViewport)
+
+  onBeforeUnmount(() => {
+    mediaQuery.removeEventListener('change', syncDrawerViewport)
+  })
 
   if (!('serviceWorker' in navigator)) {
     return
