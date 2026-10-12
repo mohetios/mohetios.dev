@@ -13,18 +13,18 @@ useMohetiosSeo({
 </script>
 
 <template>
-  <UPage class="mh-page">
+  <UPage>
     <UPageBody :ui="{ base: 'space-y-10 pb-16 sm:space-y-12' }">
       <section
         id="systems"
         class="grid gap-8 border-b border-default pb-8 lg:grid-cols-[0.6fr_0.4fr] lg:items-end"
       >
         <div class="max-w-4xl space-y-5">
-          <p class="mh-kicker">
+          <p class="text-xs font-semibold uppercase tracking-widest text-primary">
             {{ t('pages.systems.kicker') }}
           </p>
           <h1
-            class="mh-display max-w-4xl text-4xl leading-tight font-semibold text-balance text-highlighted sm:text-5xl lg:text-6xl"
+            class="font-serif tracking-tight max-w-4xl text-4xl leading-tight font-semibold text-balance text-highlighted sm:text-5xl"
           >
             {{ t('pages.systems.title') }}
           </h1>
@@ -53,7 +53,7 @@ useMohetiosSeo({
           </figure>
 
           <div class="border-y border-default py-4">
-            <p class="mh-kicker">
+            <p class="text-xs font-semibold uppercase tracking-widest text-primary">
               {{ t('pages.systems.status.title') }}
             </p>
             <p class="mt-2 text-sm leading-6 text-muted">
@@ -69,7 +69,7 @@ useMohetiosSeo({
             <UIcon name="i-lucide-folder-kanban" class="size-5" />
             <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(1) }}</span>
           </div>
-          <h2 class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
+          <h2 class="font-serif tracking-tight text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
             {{ t('pages.systems.filesTitle') }}
           </h2>
           <p class="text-sm leading-6 text-muted">
@@ -138,7 +138,7 @@ useMohetiosSeo({
             <UIcon name="i-lucide-wrench" class="size-5" />
             <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(2) }}</span>
           </div>
-          <h2 class="mh-display text-2xl font-semibold text-highlighted">
+          <h2 class="font-serif tracking-tight text-2xl font-semibold text-highlighted">
             {{ t('pages.systems.status.title') }}
           </h2>
         </div>
@@ -157,7 +157,7 @@ useMohetiosSeo({
             <UIcon name="i-lucide-book-open" class="size-5" />
             <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(3) }}</span>
           </div>
-          <h2 class="mh-display text-2xl font-semibold text-highlighted">
+          <h2 class="font-serif tracking-tight text-2xl font-semibold text-highlighted">
             {{ t('pages.systems.relatedTitle') }}
           </h2>
           <UButton

@@ -212,17 +212,17 @@ async function onSubmit() {
 </script>
 
 <template>
-  <UPage v-if="page" class="mh-page">
+  <UPage v-if="page">
     <UPageBody :ui="{ base: 'space-y-10 pb-16 sm:space-y-12' }">
       <section
         class="grid gap-8 border-b border-default pb-8 lg:grid-cols-[0.6fr_0.4fr] lg:items-end"
       >
         <div class="max-w-4xl space-y-5">
-          <p class="mh-kicker">
+          <p class="text-xs font-semibold uppercase tracking-widest text-primary">
             {{ t('pages.contactGate.kicker') }}
           </p>
           <h1
-            class="mh-display max-w-4xl text-4xl leading-tight font-semibold text-balance text-highlighted sm:text-5xl lg:text-6xl"
+            class="font-serif tracking-tight max-w-4xl text-4xl leading-tight font-semibold text-balance text-highlighted sm:text-5xl"
           >
             {{ t('pages.contactGate.title') }}
           </h1>
@@ -251,7 +251,7 @@ async function onSubmit() {
           </figure>
 
           <div class="border-y border-default py-4">
-            <p class="mh-kicker">
+            <p class="text-xs font-semibold uppercase tracking-widest text-primary">
               {{ t('pages.contactGate.response.title') }}
             </p>
             <p class="mt-2 text-sm leading-6 text-muted">
@@ -271,7 +271,7 @@ async function onSubmit() {
       <section class="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
         <div
           id="contact"
-          class="mh-paper-panel min-w-0 border border-default bg-muted/10 p-5 sm:p-6"
+          class="min-w-0 border border-default bg-muted/10 p-5 sm:p-6"
         >
           <div v-if="isSubmitted" class="space-y-5">
             <div
@@ -430,10 +430,10 @@ async function onSubmit() {
         </div>
 
         <aside
-          class="mh-index-sidebar space-y-6 border-t border-default pt-5 lg:sticky lg:top-24 lg:self-start lg:border-s lg:border-t-0 lg:ps-6 lg:pt-0"
+          class="space-y-6 border-t border-default pt-5 lg:sticky lg:top-24 lg:self-start lg:border-s lg:border-t-0 lg:ps-6 lg:pt-0"
         >
           <section id="useful-context" class="border-y border-default py-4">
-            <h2 class="mh-kicker">
+            <h2 class="text-xs font-semibold uppercase tracking-widest text-primary">
               {{ t('contact.sidebar.label') }}
             </h2>
             <p class="mt-3 text-sm leading-6 text-muted">
@@ -463,7 +463,7 @@ async function onSubmit() {
           </section>
 
           <section id="response-note" class="border-y border-default py-4">
-            <h2 class="mh-kicker">
+            <h2 class="text-xs font-semibold uppercase tracking-widest text-primary">
               {{ t('pages.contactGate.response.title') }}
             </h2>
             <p class="mt-3 text-sm leading-6 text-muted">

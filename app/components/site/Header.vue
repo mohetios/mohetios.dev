@@ -1,9 +1,9 @@
 <script setup lang="ts">
-const { locale, locales, t } = useI18n()
+const { locale, locales, localeProperties, t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 const { navigation, isActive } = useSiteNavigation()
-const { closeSidebar } = useSiteSidebar()
+const { closeSidebar, desktopOpen, toggleSidebar } = useSiteSidebar()
 
 const mobileMenuLinkClass =
   'flex items-center justify-between py-3 text-base leading-6 no-underline transition hover:text-primary'
@@ -39,6 +39,11 @@ function toggleMainMenu() {
 
 function closeMainMenu() {
   mainMenuOpen.value = false
+}
+
+function toggleSidebarFromHeader() {
+  closeMainMenu()
+  toggleSidebar()
 }
 
 function syncHeaderVisibility() {
@@ -89,14 +94,16 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <SiteSidebar :close-main-menu="closeMainMenu" :header-visible="isHeaderVisible" />
+  <SiteSidebar :close-main-menu="closeMainMenu" />
 
   <div
-    class="fixed inset-x-0 top-0 z-30 transition-transform duration-200"
-    :class="isHeaderVisible ? 'translate-y-0' : '-translate-y-full'"
+    class="fixed inset-x-0 top-0 z-30 transition-[transform,padding] duration-200"
+    :class="[isHeaderVisible ? 'translate-y-0' : '-translate-y-full', { 'lg:ps-80': desktopOpen }]"
   >
     <header class="hidden bg-default lg:block">
-      <div class="site-shell flex h-20 items-stretch justify-between gap-6 border-b border-default">
+      <div
+        class="mx-auto w-full max-w-(--ui-container) px-4 sm:px-6 lg:px-8 flex h-20 items-stretch justify-between gap-6 border-b border-default"
+      >
         <nav class="flex items-stretch gap-10" :aria-label="t('footer.navigationLabel')">
           <NuxtLink
             v-for="item in navigation"
@@ -138,7 +145,9 @@ onBeforeUnmount(() => {
     </header>
 
     <header class="border-b border-default bg-default lg:hidden">
-      <div class="site-shell flex h-16 items-center justify-between gap-4">
+      <div
+        class="mx-auto w-full max-w-(--ui-container) px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between gap-4"
+      >
         <NuxtLink
           :to="localePath('/')"
           class="group/logo inline-flex min-w-0 items-center text-inherit no-underline"
@@ -148,6 +157,19 @@ onBeforeUnmount(() => {
         </NuxtLink>
 
         <div class="flex items-center gap-1" dir="ltr">
+          <UButton
+            color="neutral"
+            variant="ghost"
+            size="sm"
+            :icon="
+              localeProperties.dir === 'rtl'
+                ? 'i-lucide-panel-right-open'
+                : 'i-lucide-panel-left-open'
+            "
+            class="text-muted hover:text-primary"
+            :aria-label="t('actions.openSidebar')"
+            @click="toggleSidebarFromHeader"
+          />
           <UButton
             color="neutral"
             variant="ghost"
@@ -178,7 +200,7 @@ onBeforeUnmount(() => {
       </div>
       <nav
         v-if="mainMenuOpen"
-        class="site-shell border-t border-default pb-3 pt-12"
+        class="mx-auto w-full max-w-(--ui-container) px-4 sm:px-6 lg:px-8 border-t border-default pb-3 pt-12"
         :aria-label="t('footer.navigationLabel')"
       >
         <ul class="divide-y divide-default">

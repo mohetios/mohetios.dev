@@ -118,10 +118,10 @@ const sidebarTitle = computed(() =>
     </NuxtLink>
 
     <nav class="flex min-h-0 flex-1 flex-col gap-4" :aria-label="sidebarTitle">
-      <p class="mh-kicker text-highlighted">
+      <p class="text-xs font-semibold uppercase tracking-widest text-highlighted">
         {{ sidebarTitle }}
       </p>
-      <div class="mh-sidebar-scroll min-h-0 flex-1 overflow-y-auto pe-1">
+      <div class="scrollbar-thin min-h-0 flex-1 overflow-y-auto pe-1">
         <ContentTocList v-if="hasPageToc" :links="pageTocLinks" ordered compact />
         <ul v-else class="space-y-2.5">
           <li v-for="item in sidebarIndex" :key="item.to">

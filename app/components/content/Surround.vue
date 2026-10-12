@@ -19,7 +19,7 @@ const { t } = useI18n()
       :to="surround[0].path"
       class="group flex min-w-0 flex-col gap-1 py-2 no-underline transition-colors duration-150"
     >
-      <span class="mh-kicker inline-flex items-center gap-1.5 text-muted">
+      <span class="text-xs font-semibold uppercase tracking-widest inline-flex items-center gap-1.5 text-muted">
         <UIcon name="i-lucide-arrow-left" class="size-3.5 rtl:rotate-180" />
         {{ t('content.article.previous') }}
       </span>
@@ -36,7 +36,7 @@ const { t } = useI18n()
       :to="surround[1].path"
       class="group flex min-w-0 flex-col gap-1 py-2 no-underline transition-colors duration-150 sm:items-end sm:text-end"
     >
-      <span class="mh-kicker inline-flex items-center gap-1.5 text-muted sm:justify-end">
+      <span class="text-xs font-semibold uppercase tracking-widest inline-flex items-center gap-1.5 text-muted sm:justify-end">
         {{ t('content.article.next') }}
         <UIcon name="i-lucide-arrow-right" class="size-3.5 rtl:rotate-180" />
       </span>

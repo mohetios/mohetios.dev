@@ -22,14 +22,14 @@ const pageCopy = computed(() => ({
   <div class="flex min-h-svh flex-col">
     <SiteHeader />
 
-    <main class="site-shell flex flex-1 items-center py-10 sm:py-12">
+    <main class="mx-auto w-full max-w-(--ui-container) px-4 sm:px-6 lg:px-8 flex flex-1 items-center py-10 sm:py-12">
       <div class="w-full">
         <div
           class="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-16 xl:gap-20"
         >
           <section class="space-y-8">
             <div class="space-y-3">
-              <p class="text-sm font-medium tracking-[0.14em] text-primary uppercase">
+              <p class="text-sm font-medium tracking-widest text-primary uppercase">
                 {{ pageCopy.eyebrow }}
               </p>
               <h1

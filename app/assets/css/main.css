@@ -5,12 +5,163 @@
 
 @import './prose-embeds.css';
 
+/* Fonts are self-hosted from public/fonts; @nuxt/fonts skips families declared here.
+   Farhang covers Arabic script only, so Latin inside Persian text uses the English stack.
+   It draws small for its em box, so size-adjust brings it to the Latin faces' scale. */
+@font-face {
+  font-family: 'Farhang';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  size-adjust: 112%;
+  src: url('/fonts/farhang2-variable.woff2') format('woff2');
+  unicode-range:
+    U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+200C-200F, U+00AB, U+00BB;
+}
+
+/* Static copies for OG images only: Satori can't read variable WOFF2, and nuxt-og-image picks
+   faces up from this file. No rule uses these families, so browsers never download them. */
+@font-face {
+  font-family: 'Instrument Sans OG';
+  font-weight: 400;
+  src: url('/fonts/og/InstrumentSansOG-400.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Instrument Sans OG';
+  font-weight: 500;
+  src: url('/fonts/og/InstrumentSansOG-500.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Instrument Sans OG';
+  font-weight: 600;
+  src: url('/fonts/og/InstrumentSansOG-600.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Farhang OG';
+  font-weight: 400;
+  src: url('/fonts/og/FarhangOG-400.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Farhang OG';
+  font-weight: 500;
+  src: url('/fonts/og/FarhangOG-500.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Farhang OG';
+  font-weight: 600;
+  src: url('/fonts/og/FarhangOG-600.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-stretch: 75% 100%;
+  font-display: swap;
+  src: url('/fonts/instrument-sans-latin-ext.woff2') format('woff2');
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-stretch: 75% 100%;
+  font-display: swap;
+  src: url('/fonts/instrument-sans-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-latin-ext.woff2') format('woff2');
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Source Serif 4';
+  font-style: italic;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url('/fonts/source-serif-4-italic-latin-ext.woff2') format('woff2');
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Source Serif 4';
+  font-style: italic;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url('/fonts/source-serif-4-italic-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Source Serif 4';
+  font-style: normal;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url('/fonts/source-serif-4-latin-ext.woff2') format('woff2');
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Source Serif 4';
+  font-style: normal;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url('/fonts/source-serif-4-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 @theme static {
   --font-sans:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif,
-    'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji';
-  --font-fa: 'Vazirmatn', 'Noto Sans Arabic', Tahoma, Arial, sans-serif;
-  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    'Instrument Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji';
+  --font-serif: 'Source Serif 4', ui-serif, Georgia, serif;
+  --font-fa: 'Farhang', 'Instrument Sans', 'Noto Sans Arabic', Tahoma, sans-serif;
+  --font-mono:
+    'JetBrains Mono', 'Farhang', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  --container-reading: 46rem;
+  --container-wide: 64rem;
 
   /* Persian tile blue / primary brand */
   --color-tileblue-50: #ecfbfe;
@@ -107,9 +258,6 @@
   --mh-rule-muted: color-mix(in oklab, var(--mh-brand) 9%, var(--mh-surface));
   --mh-rule-craft: color-mix(in oklab, var(--mh-craft) 42%, var(--mh-surface));
 
-  --font-mh-display: 'Newsreader', ui-serif, Georgia, serif;
-  --font-mh-body: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
-
   --ui-primary: var(--ui-color-primary-600);
   --ui-secondary: var(--ui-color-secondary-500);
   --ui-bg: var(--mh-paper);
@@ -125,11 +273,7 @@
   --ui-text-toned: color-mix(in oklab, var(--mh-ink) 78%, var(--mh-ink-muted));
   --ui-text-highlighted: var(--mh-ink);
 
-  --mohetios-site-width: 72rem;
-  --mohetios-reading-width: 46rem;
-  --mohetios-article-wide-width: 64rem;
-
-  --ui-container: var(--mohetios-site-width);
+  --ui-container: 72rem;
 }
 
 .dark,
@@ -170,184 +314,42 @@ html {
 
 body {
   color: var(--ui-text);
-  background: var(--ui-bg);
-  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
-}
-
-code,
-kbd,
-samp,
-pre {
-  font-family: var(--font-mono);
 }
 
 :where(a[href], button, [role='button']):not(:disabled, [aria-disabled='true']) {
   cursor: pointer;
 }
 
-html[lang^='fa'],
-html[dir='rtl'] {
-  font-family: var(--font-fa);
-}
-
+/* Persian remaps the theme tokens instead of overriding components: every font utility
+   resolves to Farhang, tracking is dropped because it breaks letter joins, and leadings
+   open up for dots and ascenders. */
 html[lang^='fa'] {
-  font-size: 104%;
-  line-height: 1.75;
+  --font-sans: var(--font-fa);
+  --font-serif: var(--font-fa);
+  --tracking-tight: normal;
+  --tracking-wide: normal;
+  --tracking-wider: normal;
+  --tracking-widest: normal;
+  --leading-tight: var(--leading-normal);
+  --leading-snug: var(--leading-relaxed);
+  line-height: var(--leading-relaxed);
 }
 
-html[lang^='fa'] :where(.leading-5, .leading-6, .leading-7, .leading-8) {
-  line-height: inherit;
+html[lang^='fa'] .prose {
+  line-height: var(--leading-loose);
 }
 
-html[lang^='fa'] :where(h1, h2, h3, .mh-display) {
-  line-height: inherit;
-}
-
-[dir='rtl'] body {
-  font-feature-settings: normal;
+html[lang^='fa'] .prose :where(h1, h2, h3, h4) {
+  line-height: var(--leading-normal);
 }
 
 html[lang^='fa'] :where(.prose ol, .prose ol > li) {
   list-style: persian;
 }
 
-.site-shell {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: var(--mohetios-site-width);
-  margin-inline: auto;
-  padding-inline: 1rem;
-}
-
-@media (min-width: 640px) {
-  .site-shell {
-    padding-inline: 1.5rem;
-  }
-}
-
-.mh-page {
-  color: var(--ui-text);
-}
-
-.mh-display {
-  font-family: var(--font-mh-display, ui-serif, Georgia, serif);
-  letter-spacing: -0.035em;
-  font-feature-settings: 'ss01';
-}
-
-html[lang^='fa'] .mh-display,
-html[dir='rtl'] .mh-display {
-  font-family: var(--font-fa);
-  letter-spacing: 0;
-  font-feature-settings: normal;
-}
-
-.mh-paper-panel {
-  background:
-    linear-gradient(
-      135deg,
-      color-mix(in oklab, var(--ui-bg-muted) 42%, transparent),
-      transparent 58%
-    ),
-    color-mix(in oklab, var(--ui-bg) 94%, var(--ui-bg-muted) 6%);
-}
-
-.mh-figure-panel {
-  background:
-    linear-gradient(
-      135deg,
-      color-mix(in oklab, var(--ui-bg-muted) 40%, transparent),
-      transparent 55%
-    ),
-    color-mix(in oklab, var(--ui-bg) 94%, var(--ui-bg-muted) 6%);
-}
-
-.mh-ruled {
-  border-block: 1px solid var(--ui-border);
-}
-
-.mh-ruled-muted {
-  border-block: 1px solid var(--ui-border-muted);
-}
-
-.mh-rule-b {
-  border-block-end: 1px solid var(--ui-border);
-}
-
-.mh-rule-t {
-  border-block-start: 1px solid var(--ui-border);
-}
-
-.mh-kicker {
-  color: var(--ui-primary);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-html[dir='rtl'] .mh-kicker {
-  letter-spacing: 0;
-  text-transform: none;
-}
-
-.mh-kicker.text-muted {
-  color: var(--ui-text-muted);
-}
-
-.mh-kicker.text-highlighted {
-  color: var(--ui-text-highlighted);
-}
-
-.mh-index-row {
-  border-block-end: 1px solid var(--ui-border-muted);
-}
-
-.mh-index-row:first-child {
-  border-block-start: 1px solid var(--ui-border);
-}
-
-.mh-index-row:last-child {
-  border-block-end: 1px solid var(--ui-border);
-}
-
-.mh-index-sidebar {
-  border-color: var(--ui-border);
-}
-
-.mh-sidebar-scroll {
+@utility scrollbar-thin {
   scrollbar-width: thin;
-  scrollbar-color: color-mix(in oklab, var(--ui-border-accented) 70%, transparent) transparent;
-}
-
-.mh-sidebar-scroll::-webkit-scrollbar {
-  width: 0.35rem;
-}
-
-.mh-sidebar-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.mh-sidebar-scroll::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-  background: color-mix(in oklab, var(--ui-border-accented) 70%, transparent);
-}
-
-.mh-sidebar-scroll::-webkit-scrollbar-thumb:hover {
-  background: var(--ui-border-accented);
-}
-
-.mh-soft-link {
-  color: var(--ui-text-highlighted);
-  text-decoration: none;
-  transition:
-    color 150ms ease,
-    border-color 150ms ease,
-    transform 150ms ease;
-}
-
-.mh-soft-link:hover {
-  color: var(--ui-primary);
+  scrollbar-color: var(--ui-border-accented) transparent;
 }
 
 .prose {
@@ -368,18 +370,6 @@ html[dir='rtl'] .mh-kicker {
   --tw-prose-th-borders: var(--ui-border);
   --tw-prose-td-borders: var(--ui-border-muted);
   max-width: none;
-}
-
-.prose :where(h1, h2, h3, h4) {
-  font-family: var(--font-mh-display);
-  color: var(--ui-text-highlighted);
-  letter-spacing: -0.025em;
-}
-
-html[lang^='fa'] .prose :where(h1, h2, h3, h4),
-html[dir='rtl'] .prose :where(h1, h2, h3, h4) {
-  font-family: var(--font-fa);
-  letter-spacing: 0;
 }
 
 .prose a {
@@ -412,17 +402,4 @@ html[dir='rtl'] .prose :where(h1, h2, h3, h4) {
 .prose :not(pre) > code::before,
 .prose :not(pre) > code::after {
   content: none;
-}
-
-@media (min-width: 1024px) {
-  .site-shell {
-    padding-inline: 2rem;
-  }
-}
-
-.article-reading-column {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: var(--mohetios-reading-width);
-  margin-inline: auto;
 }

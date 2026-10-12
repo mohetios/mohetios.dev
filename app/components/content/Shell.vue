@@ -37,14 +37,14 @@ withDefaults(
         <ContentCodeEnhancer />
         <LazyContentMermaidEnhancer />
 
-        <div class="article-reading-column flex flex-col gap-8">
+        <div class="mx-auto w-full max-w-reading flex flex-col gap-8">
           <slot name="notice" />
 
           <ContentArticleSummary v-if="summary?.length" :items="summary" />
 
           <ContentToc v-if="showToc" :title="$t('content.toc')" :links="tocLinks" class="lg:hidden" />
 
-          <article class="prose prose-lg">
+          <article class="prose prose-lg font-serif prose-headings:tracking-tight">
             <ContentHtml :html="content" />
           </article>
 
@@ -73,7 +73,7 @@ withDefaults(
             </UButton>
 
             <section v-if="surround?.some(Boolean)" class="space-y-3 border-b border-default/70 pb-8">
-              <p class="mh-kicker text-muted">
+              <p class="text-xs font-semibold uppercase tracking-widest text-muted">
                 {{ $t('content.article.continueReading') }}
               </p>
               <ContentSurround :surround="surround || []" />

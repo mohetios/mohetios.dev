@@ -238,10 +238,10 @@ html[dir='rtl'] .prose .mohetios-mermaid .mermaid-action-toolbar {
 @media (min-width: 40rem) {
   .prose :is(pre, table, figure, .mohetios-mermaid) {
     --mohetios-prose-breakout: min(
-      calc((var(--mohetios-article-wide-width) - var(--mohetios-reading-width)) / 2),
-      calc((100vw - var(--mohetios-reading-width)) / 2 - 1rem)
+      calc((var(--container-wide) - var(--container-reading)) / 2),
+      calc((100vw - var(--container-reading)) / 2 - 1rem)
     );
-    max-width: var(--mohetios-article-wide-width);
+    max-width: var(--container-wide);
     width: calc(100% + 2 * var(--mohetios-prose-breakout));
     margin-inline: calc(-1 * var(--mohetios-prose-breakout));
   }

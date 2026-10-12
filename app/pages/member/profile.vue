@@ -45,7 +45,7 @@ const roleColor = computed(() => {
   <UPage>
     <UPageHeader :title="t('profile.title')" :description="t('profile.description')">
       <template #headline>
-        <p class="text-sm font-medium tracking-[0.14em] text-primary uppercase">
+        <p class="text-sm font-medium tracking-widest text-primary uppercase">
           {{ t('profile.eyebrow') }}
         </p>
       </template>
@@ -67,7 +67,7 @@ const roleColor = computed(() => {
               />
 
               <div>
-                <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
+                <p class="text-sm font-medium tracking-widest text-muted uppercase">
                   {{ t('profile.fields.username') }}
                 </p>
 
@@ -89,7 +89,7 @@ const roleColor = computed(() => {
 
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="rounded-xl border border-default bg-muted/30 p-4">
-              <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
+              <p class="text-sm font-medium tracking-widest text-muted uppercase">
                 {{ t('profile.fields.role') }}
               </p>
 
@@ -99,7 +99,7 @@ const roleColor = computed(() => {
             </div>
 
             <div class="rounded-xl border border-default bg-muted/30 p-4">
-              <p class="text-sm font-medium tracking-[0.14em] text-muted uppercase">
+              <p class="text-sm font-medium tracking-widest text-muted uppercase">
                 {{ t('profile.status') }}
               </p>
 

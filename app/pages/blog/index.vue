@@ -61,18 +61,18 @@ function formatDate(date?: string | Date) {
 </script>
 
 <template>
-  <UPage class="mh-page">
+  <UPage>
     <UPageBody :ui="{ base: 'space-y-10 pb-16 sm:space-y-12' }">
       <section
         id="notebook"
         class="grid gap-8 border-b border-default pb-8 lg:grid-cols-[0.6fr_0.4fr] lg:items-end"
       >
         <div class="max-w-4xl space-y-5">
-          <p class="mh-kicker">
+          <p class="text-xs font-semibold uppercase tracking-widest text-primary">
             {{ t('pages.notebook.kicker') }}
           </p>
           <h1
-            class="mh-display max-w-4xl text-4xl leading-tight font-semibold text-balance text-highlighted sm:text-5xl lg:text-6xl"
+            class="font-serif tracking-tight max-w-4xl text-4xl leading-tight font-semibold text-balance text-highlighted sm:text-5xl"
           >
             {{ t('pages.notebook.title') }}
           </h1>
@@ -101,7 +101,7 @@ function formatDate(date?: string | Date) {
           </figure>
 
           <div v-if="tags.length" class="border-y border-default py-4">
-            <p class="mh-kicker">
+            <p class="text-xs font-semibold uppercase tracking-widest text-primary">
               {{ t('pages.notebook.indexTitle') }}
             </p>
             <div class="mt-3 flex flex-wrap gap-2">
@@ -126,7 +126,7 @@ function formatDate(date?: string | Date) {
               <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(1) }}</span>
             </div>
             <h2
-              class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl"
+              class="font-serif tracking-tight text-2xl leading-tight font-semibold text-highlighted sm:text-3xl"
             >
               {{ t('pages.notebook.entriesTitle') }}
             </h2>
@@ -202,7 +202,7 @@ function formatDate(date?: string | Date) {
                 <UIcon name="i-lucide-archive" class="size-5" />
                 <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(2) }}</span>
               </div>
-              <h2 class="mh-display text-2xl font-semibold text-highlighted">
+              <h2 class="font-serif tracking-tight text-2xl font-semibold text-highlighted">
                 {{ t('pages.notebook.archive.title') }}
               </h2>
               <p class="text-sm leading-6 text-muted">
@@ -216,11 +216,11 @@ function formatDate(date?: string | Date) {
         </main>
 
         <aside
-          class="mh-index-sidebar space-y-6 border-t border-default pt-5 lg:sticky lg:top-24 lg:self-start lg:border-s lg:border-t-0 lg:ps-6 lg:pt-0"
+          class="space-y-6 border-t border-default pt-5 lg:sticky lg:top-24 lg:self-start lg:border-s lg:border-t-0 lg:ps-6 lg:pt-0"
         >
           <section v-if="years.length" class="divide-y divide-default border-y border-default">
             <div class="py-4">
-              <h2 class="mh-kicker">
+              <h2 class="text-xs font-semibold uppercase tracking-widest text-primary">
                 {{ t('pages.notebook.yearsTitle') }}
               </h2>
             </div>
@@ -237,7 +237,7 @@ function formatDate(date?: string | Date) {
           </section>
 
           <section v-if="tags.length" id="tags" class="border-y border-default py-5">
-            <h2 class="mh-kicker">
+            <h2 class="text-xs font-semibold uppercase tracking-widest text-primary">
               {{ t('pages.notebook.indexTitle') }}
             </h2>
             <div class="mt-4 flex flex-wrap gap-2">
@@ -263,7 +263,7 @@ function formatDate(date?: string | Date) {
 
           <section id="nearby" class="divide-y divide-default border-y border-default">
             <div class="py-4">
-              <h2 class="mh-kicker">
+              <h2 class="text-xs font-semibold uppercase tracking-widest text-primary">
                 {{ t('pages.notebook.nearbyTitle') }}
               </h2>
             </div>

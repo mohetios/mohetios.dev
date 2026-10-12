@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
   closeMainMenu?: () => void
-  headerVisible?: boolean
 }>()
 
 const { t, localeProperties } = useI18n()
@@ -18,9 +17,6 @@ const {
 
 const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 const drawerDirection = computed(() => (isRtl.value ? 'right' : 'left'))
-const mobileToggleVisibilityClass = computed(() => {
-  return props.headerVisible === false ? '-translate-y-24 opacity-0' : 'translate-y-0 opacity-100'
-})
 const sidebarToggleIcon = computed(() => {
   if (isRtl.value) {
     return isSidebarOpen.value ? 'i-lucide-panel-right-close' : 'i-lucide-panel-right-open'
@@ -70,8 +66,8 @@ watch(
     variant="ghost"
     size="md"
     :icon="sidebarToggleIcon"
-    class="fixed top-[2.875rem] z-50 border border-default bg-default/95 text-muted shadow-sm transition-[inset-inline-start,transform,opacity,color] duration-200 hover:text-primary lg:top-4"
-    :class="[sidebarTogglePositionClass, !isDesktop ? mobileToggleVisibilityClass : '']"
+    class="fixed top-4 z-50 hidden border border-default bg-default/95 text-muted shadow-sm transition-[inset-inline-start,color] duration-200 hover:text-primary lg:inline-flex"
+    :class="sidebarTogglePositionClass"
     :aria-label="isSidebarOpen ? t('actions.closeSidebar') : t('actions.openSidebar')"
     @click="toggleSidebarFromButton"
   />

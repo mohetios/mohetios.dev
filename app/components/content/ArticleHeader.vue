@@ -40,7 +40,7 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
 
 <template>
   <header>
-    <div class="article-reading-column min-w-0 pt-6 pb-8 sm:pt-8">
+    <div class="mx-auto w-full max-w-reading min-w-0 pt-6 pb-8 sm:pt-8">
       <div v-if="backTo" class="mb-6">
         <NuxtLink
           :to="backTo"
@@ -51,12 +51,12 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
         </NuxtLink>
       </div>
 
-      <p v-if="status" class="mh-kicker">
+      <p v-if="status" class="text-xs font-semibold uppercase tracking-widest text-primary">
         {{ status }}
       </p>
 
       <h1
-        class="mh-display mt-2 text-balance text-4xl leading-tight font-semibold text-highlighted sm:text-5xl"
+        class="font-serif tracking-tight mt-2 text-balance text-4xl leading-tight font-semibold text-highlighted sm:text-5xl"
       >
         {{ title }}
       </h1>
@@ -96,7 +96,7 @@ const imageAlt = computed(() => props.thumbnailAlt || props.title)
         </template>
       </div>
 
-      <ContentTags v-if="tags?.length" class="mt-4" :tags="tags" size="sm" />
+      <ContentTags v-if="tags?.length" class="mt-4" :tags="tags" />
 
       <figure v-if="thumbnail" class="mt-6 border-y border-default py-4">
         <img

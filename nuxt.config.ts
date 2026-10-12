@@ -212,17 +212,15 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  // Icons ship in the client bundle; the Iconify CDN fallback is blocked by CSP anyway.
+  icon: {
+    clientBundle: { scan: true },
+    fallbackToApi: false
+  },
+
+  // Fonts are self-hosted via @font-face in main.css; never fetch from a font CDN.
   fonts: {
-    families: [
-      {
-        name: 'Vazirmatn',
-        provider: 'google',
-        global: true,
-        weights: ['100 900'],
-        styles: ['normal'],
-        subsets: ['arabic', 'latin']
-      }
-    ]
+    provider: 'local'
   },
 
   vite: {

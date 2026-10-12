@@ -78,7 +78,7 @@ onMounted(() => {
   <section class="comments-section flex min-w-0 w-full flex-col gap-4">
     <header class="space-y-1.5">
       <h2
-        class="text-sm font-medium tracking-[0.14em] text-highlighted uppercase rtl:normal-case rtl:tracking-normal"
+        class="text-sm font-medium tracking-widest text-highlighted uppercase rtl:normal-case rtl:tracking-normal"
       >
         {{ t('comments.title') }}
       </h2>

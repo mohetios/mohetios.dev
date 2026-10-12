@@ -16,7 +16,7 @@ const localePath = useLocalePath()
       class="inline-flex"
       @click.stop
     >
-      <UBadge color="neutral" variant="soft" :size="size || 'sm'" class="hover:bg-muted">
+      <UBadge color="neutral" variant="soft" :size="size || 'md'" class="hover:bg-muted">
         {{ tag }}
       </UBadge>
     </NuxtLink>

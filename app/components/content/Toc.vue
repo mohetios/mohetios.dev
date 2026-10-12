@@ -10,7 +10,7 @@ defineProps<{
 
 <template>
   <nav v-if="links.length" class="space-y-3" :aria-label="title">
-    <p v-if="title" class="mh-kicker text-muted">
+    <p v-if="title" class="text-xs font-semibold uppercase tracking-widest text-muted">
       {{ title }}
     </p>
     <ContentTocList :links="links" ordered :compact="compact" />

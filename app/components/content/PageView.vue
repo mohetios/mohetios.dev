@@ -140,7 +140,7 @@ const { canonicalUrl: shareUrl } = useMohetiosSeo({
 
       <template #related>
         <section v-if="relatedItems.length" class="space-y-3">
-          <p class="mh-kicker text-muted">
+          <p class="text-xs font-semibold uppercase tracking-widest text-muted">
             {{ relatedLabel }}
           </p>
           <div class="flex flex-col gap-1">

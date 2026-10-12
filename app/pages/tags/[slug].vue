@@ -76,17 +76,17 @@ useMohetiosSeo({
 </script>
 
 <template>
-  <UPage class="mh-page">
+  <UPage>
     <UPageBody :ui="{ base: 'space-y-10 pb-16 sm:space-y-12' }">
       <section
         class="grid gap-8 border-b border-default pb-8 lg:grid-cols-[0.68fr_0.32fr] lg:items-end"
       >
         <div class="max-w-4xl space-y-5">
-          <p class="mh-kicker">
+          <p class="text-xs font-semibold uppercase tracking-widest text-primary">
             {{ t('pages.tagPath.kicker') }}
           </p>
           <h1
-            class="mh-display max-w-4xl text-4xl leading-tight font-semibold text-balance text-highlighted sm:text-5xl lg:text-6xl"
+            class="font-serif tracking-tight max-w-4xl text-4xl leading-tight font-semibold text-balance text-highlighted sm:text-5xl"
           >
             {{ t('pages.tagPath.title', { tag: tagLabel }) }}
           </h1>
@@ -96,7 +96,7 @@ useMohetiosSeo({
         </div>
 
         <div class="hidden border-y border-default py-4 lg:block">
-          <p class="mh-kicker">
+          <p class="text-xs font-semibold uppercase tracking-widest text-primary">
             {{ t('tags.counts') }}
           </p>
           <p class="mt-2 text-sm leading-6 text-muted">
@@ -122,7 +122,7 @@ useMohetiosSeo({
               </span>
             </div>
             <h2
-              class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl"
+              class="font-serif tracking-tight text-2xl leading-tight font-semibold text-highlighted sm:text-3xl"
             >
               {{ section.title }}
             </h2>

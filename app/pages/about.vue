@@ -34,17 +34,17 @@ useMohetiosSeo({
 </script>
 
 <template>
-  <UPage v-if="page" class="mh-page">
+  <UPage v-if="page">
     <UPageBody :ui="{ base: 'space-y-10 pb-16 sm:space-y-12' }">
       <section
         class="grid gap-8 border-b border-default pb-8 lg:grid-cols-[0.6fr_0.4fr] lg:items-end"
       >
         <div class="max-w-4xl space-y-5">
-          <p class="mh-kicker">
+          <p class="text-xs font-semibold uppercase tracking-widest text-primary">
             {{ t('pages.aboutWorkshop.kicker') }}
           </p>
           <h1
-            class="mh-display max-w-4xl text-4xl leading-tight font-semibold text-balance text-highlighted sm:text-5xl lg:text-6xl"
+            class="font-serif tracking-tight max-w-4xl text-4xl leading-tight font-semibold text-balance text-highlighted sm:text-5xl"
           >
             {{ t('pages.aboutWorkshop.title') }}
           </h1>
@@ -73,7 +73,7 @@ useMohetiosSeo({
           </figure>
 
           <div class="border-y border-default py-4">
-            <p class="mh-kicker">
+            <p class="text-xs font-semibold uppercase tracking-widest text-primary">
               {{ t('pages.aboutWorkshop.focus.title') }}
             </p>
             <div class="mt-3 flex flex-wrap gap-2">
@@ -93,7 +93,7 @@ useMohetiosSeo({
               <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(1) }}</span>
             </div>
             <h2
-              class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl"
+              class="font-serif tracking-tight text-2xl leading-tight font-semibold text-highlighted sm:text-3xl"
             >
               {{ t('pages.aboutWorkshop.what.title') }}
             </h2>
@@ -110,7 +110,7 @@ useMohetiosSeo({
               <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(2) }}</span>
             </div>
             <h2
-              class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl"
+              class="font-serif tracking-tight text-2xl leading-tight font-semibold text-highlighted sm:text-3xl"
             >
               {{ t('pages.aboutWorkshop.name.title') }}
             </h2>
@@ -128,7 +128,7 @@ useMohetiosSeo({
             <UIcon name="i-lucide-wrench" class="size-5" />
             <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(3) }}</span>
           </div>
-          <h2 class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
+          <h2 class="font-serif tracking-tight text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
             {{ t('pages.aboutWorkshop.how.title') }}
           </h2>
         </div>
@@ -152,7 +152,7 @@ useMohetiosSeo({
             <UIcon name="i-lucide-archive" class="size-5" />
             <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(4) }}</span>
           </div>
-          <h2 class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
+          <h2 class="font-serif tracking-tight text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
             {{ t('pages.aboutWorkshop.focus.title') }}
           </h2>
         </div>
@@ -175,7 +175,7 @@ useMohetiosSeo({
             <UIcon name="i-lucide-book-open" class="size-5" />
             <span class="text-sm font-semibold tabular-nums">{{ sectionNumber(5) }}</span>
           </div>
-          <h2 class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
+          <h2 class="font-serif tracking-tight text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
             {{ t('about.latestWriting.title') }}
           </h2>
           <UButton
@@ -216,7 +216,7 @@ useMohetiosSeo({
         class="grid gap-4 border-y border-default py-7 sm:grid-cols-[1fr_auto] sm:items-center"
       >
         <div class="space-y-2">
-          <h2 class="mh-display text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
+          <h2 class="font-serif tracking-tight text-2xl leading-tight font-semibold text-highlighted sm:text-3xl">
             {{ t('about.contactCta.title') }}
           </h2>
           <p class="text-sm leading-6 text-muted">

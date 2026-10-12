@@ -7,18 +7,18 @@ useMohetiosSeo({
 </script>
 
 <template>
-  <UPage class="mh-page">
+  <UPage>
     <UPageBody :ui="{ base: 'space-y-10 pb-16 sm:space-y-12' }">
       <section
         id="workshop"
         class="grid items-center gap-8 border-b border-default pb-8 lg:grid-cols-[0.55fr_0.45fr] lg:gap-12 lg:pb-10"
       >
         <div class="space-y-5">
-          <p class="mh-kicker">
+          <p class="text-xs font-semibold uppercase tracking-widest text-primary">
             {{ t('home.hero.kicker') }}
           </p>
           <h1
-            class="mh-display max-w-3xl text-4xl leading-tight font-semibold text-balance text-highlighted sm:text-5xl lg:text-5xl"
+            class="font-serif tracking-tight max-w-3xl text-4xl leading-tight font-semibold text-balance text-highlighted sm:text-5xl"
           >
             {{ t('home.hero.title') }}
           </h1>

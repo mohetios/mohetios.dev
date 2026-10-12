@@ -33,17 +33,10 @@ export function useSiteSidebar() {
   const desktopOpen = computed(() => desktopPreference.value !== 'closed')
   const isSidebarOpen = computed(() => (isDesktop.value ? desktopOpen.value : mobileOpen.value))
 
-  const sidebarTogglePositionClass = computed(() => {
-    if (!isDesktop.value) {
-      return 'start-4'
-    }
-
-    if (isSidebarOpen.value) {
-      return 'start-[16.75rem] sm:start-[18.75rem]'
-    }
-
-    return 'start-4'
-  })
+  // Breakpoint-driven so the server render already matches the open desktop sidebar.
+  const sidebarTogglePositionClass = computed(() =>
+    desktopOpen.value ? 'start-4 lg:start-[18.75rem]' : 'start-4'
+  )
 
   function setDesktopOpen(open: boolean) {
     const next: SidebarPreference = open ? 'open' : 'closed'
