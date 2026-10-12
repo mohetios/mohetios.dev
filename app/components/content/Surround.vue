@@ -16,7 +16,7 @@ const { t } = useI18n()
   <div class="grid gap-6 sm:grid-cols-2">
     <NuxtLink
       v-if="surround[0]"
-      :to="toPublicPath(surround[0].path)"
+      :to="surround[0].path"
       class="group flex min-w-0 flex-col gap-1 py-2 no-underline transition-colors duration-150"
     >
       <span class="mh-kicker inline-flex items-center gap-1.5 text-muted">
@@ -33,7 +33,7 @@ const { t } = useI18n()
 
     <NuxtLink
       v-if="surround[1]"
-      :to="toPublicPath(surround[1].path)"
+      :to="surround[1].path"
       class="group flex min-w-0 flex-col gap-1 py-2 no-underline transition-colors duration-150 sm:items-end sm:text-end"
     >
       <span class="mh-kicker inline-flex items-center gap-1.5 text-muted sm:justify-end">

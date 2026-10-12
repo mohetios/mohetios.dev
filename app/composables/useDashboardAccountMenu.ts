@@ -1,26 +1,11 @@
 import type { DropdownMenuItem } from '@nuxt/ui'
-import type { SupportedLocale } from '~~/shared/constants/locales'
-
 export function useDashboardAccountMenu() {
   const { t, locale, locales } = useI18n()
   const localePath = useLocalePath()
   const switchLocalePath = useSwitchLocalePath()
   const auth = useAuth()
 
-  const nextLocale = computed(() => {
-    return locales.value.find((item) => item.code !== locale.value)
-  })
-  const nextLocaleLabel = computed(() => {
-    if (!nextLocale.value) {
-      return ''
-    }
-
-    const switchLabelKey = nextLocale.value.switchLabelKey
-
-    return typeof switchLabelKey === 'string'
-      ? t(switchLabelKey)
-      : nextLocale.value.name || nextLocale.value.code
-  })
+  const nextLocale = computed(() => locales.value.find((item) => item.code !== locale.value))
 
   const accountLabel = computed(
     () => auth.user.value?.username || t('dashboard.sidebar.accountName')
@@ -53,9 +38,9 @@ export function useDashboardAccountMenu() {
       ...(nextLocale.value
         ? [
             {
-              label: nextLocaleLabel.value,
+              label: nextLocale.value.name,
               icon: 'i-lucide-languages',
-              onSelect: () => switchDashboardLocale(nextLocale.value?.code)
+              to: switchLocalePath(nextLocale.value.code)
             }
           ]
         : []),
@@ -70,17 +55,6 @@ export function useDashboardAccountMenu() {
   async function logout() {
     await auth.logout()
     await navigateTo(localePath('/login'))
-  }
-
-  async function switchDashboardLocale(code?: SupportedLocale) {
-    if (!code) {
-      return
-    }
-
-    const path = switchLocalePath(code)
-    if (path) {
-      await navigateTo(path)
-    }
   }
 
   return {

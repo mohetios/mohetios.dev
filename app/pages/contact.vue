@@ -15,10 +15,7 @@ if (!page.value || page.value.draft) {
 useMohetiosSeo({
   title: () => page.value?.title,
   description: () => page.value?.description,
-  path: () => toPublicPath(page.value?.path || path.value),
   image: () => page.value?.thumbnail,
-  locale: () => locale.value,
-  type: 'website'
 })
 
 const contactTopics = computed(() => [

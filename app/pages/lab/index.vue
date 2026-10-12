@@ -13,9 +13,6 @@ const itemNumber = (index: number) => formatListNumber(index, locale.value)
 useMohetiosSeo({
   title: () => t('pages.labIndex.kicker'),
   description: () => t('pages.labIndex.description'),
-  path: () => getLocalizedPublicPath('/lab', locale.value),
-  locale: () => locale.value,
-  type: 'website'
 })
 
 function formatDate(date?: string | Date) {
@@ -110,7 +107,7 @@ function formatDate(date?: string | Date) {
             <NuxtLink
               v-for="note in labNotes"
               :key="note.id"
-              :to="toPublicPath(note.path)"
+              :to="note.path"
               class="group block py-4 transition"
             >
               <div class="grid gap-3 sm:grid-cols-[8rem_1fr_auto] sm:items-start">

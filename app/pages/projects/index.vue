@@ -9,9 +9,6 @@ const sectionNumber = (value: number) =>
 useMohetiosSeo({
   title: () => t('pages.systems.kicker'),
   description: () => t('pages.systems.description'),
-  path: () => getLocalizedPublicPath('/projects', locale.value),
-  locale: () => locale.value,
-  type: 'website'
 })
 </script>
 
@@ -85,7 +82,7 @@ useMohetiosSeo({
             <NuxtLink
               v-for="project in projects"
               :key="project.id"
-              :to="toPublicPath(project.path)"
+              :to="project.path"
               class="group block py-4 transition"
             >
               <div class="grid gap-3 sm:grid-cols-[2rem_1fr_auto] sm:items-start">
@@ -178,7 +175,7 @@ useMohetiosSeo({
           <NuxtLink
             v-for="post in recentPosts"
             :key="post.id"
-            :to="toPublicPath(post.path)"
+            :to="post.path"
             class="group grid gap-3 py-4 sm:grid-cols-[1fr_auto]"
           >
             <div>

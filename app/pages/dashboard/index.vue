@@ -14,7 +14,7 @@ definePageMeta({
   middleware: ['auth']
 })
 
-const { t, te, locale, locales } = useI18n()
+const { t, te, localeProperties } = useI18n()
 const localePath = useLocalePath()
 const toast = useToast()
 
@@ -32,7 +32,6 @@ const { data: dashboardHome, pending: isLoading, error, refresh } = await useDas
 useMohetiosSeo({
   title: () => t('dashboard.home.title'),
   description: () => t('dashboard.home.description'),
-  locale: () => locale.value,
   noindex: true
 })
 
@@ -148,11 +147,7 @@ const activityIconClass: Record<string, string> = {
   new_contact_message: 'text-primary'
 }
 
-const currentLanguage = computed(() => {
-  const language = locales.value.find((item) => item.code === locale.value)?.language
-
-  return typeof language === 'string' ? language : locale.value
-})
+const currentLanguage = computed(() => localeProperties.value.language!)
 
 const timeFormatter = computed(
   () =>

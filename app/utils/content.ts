@@ -2,9 +2,8 @@ import blogJson from '../../.velite/blog.json'
 import labJson from '../../.velite/lab.json'
 import pagesJson from '../../.velite/pages.json'
 import projectsJson from '../../.velite/projects.json'
-import { defaultLocale, supportedLocales } from '#locales'
-
-export { defaultLocale, localeDefinitions, supportedLocales } from '#locales'
+import { supportedLocales } from '../../shared/constants/locales'
+import { stripLocalePrefix, withLocale } from '../../shared/utils/locale-path'
 
 export type TocItem = {
   title: string
@@ -80,114 +79,64 @@ export type TaggedContentItem = {
   featured: boolean
 }
 
-const blog = blogJson as BlogPost[]
-const lab = labJson as LabNote[]
-const projects = projectsJson as Project[]
-const pages = pagesJson as Page[]
+const visible = <T extends { draft?: boolean }>(items: T[]) => items.filter((item) => !item.draft)
 
-function escapeRegExp(value: string) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-}
+const blog = visible(blogJson as BlogPost[])
+const lab = visible(labJson as LabNote[])
+const projects = visible(projectsJson as Project[])
+const pages = visible(pagesJson as Page[])
 
-const localePrefixRegex = new RegExp(
-  `^\\/(${supportedLocales.map((locale) => escapeRegExp(locale)).join('|')})(?=\\/|$)`
-)
+/** Section index pages that exist in every locale. */
+export const publicSections = ['/', '/blog', '/lab', '/projects', '/tags', '/about', '/contact']
 
-const publicSections = ['/', '/blog', '/lab', '/projects', '/tags', '/about', '/contact']
-const staticPublicPaths = new Set(
-  supportedLocales.flatMap((locale) =>
-    publicSections.map((section) => getLocalizedPublicPath(section, locale))
-  )
-)
+const byDateDesc = <T extends { date?: string }>(items: T[]) =>
+  [...items].sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime())
 
-function byDateDesc<T extends { date?: string }>(items: T[]) {
+function byActivityDesc<T extends { date?: string; updated?: string }>(items: T[]) {
   return [...items].sort(
-    (a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime()
+    (a, b) =>
+      new Date(b.updated || b.date || 0).getTime() - new Date(a.updated || a.date || 0).getTime()
   )
 }
 
-function visible<T extends { draft?: boolean }>(items: T[]) {
-  return items.filter((item) => item.draft !== true)
+function inLocale<T extends { path: string }>(items: T[], locale: string, section: string) {
+  return items.filter((item) => item.path.startsWith(`/${locale}/${section}/`))
 }
 
-function normalizeRoutePath(path: string) {
-  if (!path || path === '/') {
-    return '/'
+const limitTo = <T>(items: T[], limit?: number) =>
+  typeof limit === 'number' ? items.slice(0, limit) : items
+
+const findByPath = <T extends { path: string }>(items: T[], path: string) => {
+  const key = path.toLowerCase().replace(/(.)\/$/, '$1')
+
+  return items.find((item) => item.path === key)
+}
+
+export const getBlogPosts = (locale: string, limit?: number) =>
+  limitTo(byDateDesc(inLocale(blog, locale, 'blog')), limit)
+
+export const getLabNotes = (locale: string, limit?: number) =>
+  limitTo(byDateDesc(inLocale(lab, locale, 'lab')), limit)
+
+export const getProjects = (locale: string, limit?: number) =>
+  limitTo(byDateDesc(inLocale(projects, locale, 'projects')), limit)
+
+export const getBlogPost = (path: string) => findByPath(blog, path)
+export const getLabNote = (path: string) => findByPath(lab, path)
+export const getProject = (path: string) => findByPath(projects, path)
+export const getPage = (path: string) => findByPath(pages, path)
+
+export const getContentEntry = (path: string) =>
+  getBlogPost(path) || getLabNote(path) || getProject(path) || getPage(path)
+
+export function getSurround<T extends { path: string }>(items: T[], path: string) {
+  const index = items.findIndex((item) => item.path === path.toLowerCase())
+
+  if (index < 0) {
+    return []
   }
 
-  return `/${path.replace(/^\/+|\/+$/g, '')}`.toLowerCase()
-}
-
-export function stripLocalePrefix(path: string) {
-  const normalized = normalizeRoutePath(path)
-
-  return normalized.replace(localePrefixRegex, '') || '/'
-}
-
-export function getRouteLocale(path: string) {
-  const normalized = normalizeRoutePath(path)
-
-  return normalized.match(localePrefixRegex)?.[1] || defaultLocale
-}
-
-export function toPublicPath(path: string) {
-  return normalizeRoutePath(path)
-}
-
-export function toContentPath(path: string, locale = getRouteLocale(path)) {
-  const normalized = normalizeRoutePath(path)
-
-  if (normalized.startsWith(`/${locale}/`) || normalized === `/${locale}`) {
-    return normalized
-  }
-
-  return normalizeRoutePath(`/${locale}${normalized === '/' ? '' : normalized}`)
-}
-
-export function getLocalizedPublicPath(path: string, locale: string) {
-  const suffix = stripLocalePrefix(toPublicPath(path))
-
-  return normalizeRoutePath(`/${locale}${suffix === '/' ? '' : suffix}`)
-}
-
-function localizedContentPaths() {
-  return new Set(
-    [...visible(blog), ...visible(lab), ...visible(projects), ...visible(pages)].map((item) =>
-      normalizeRoutePath(item.path)
-    )
-  )
-}
-
-function routeExists(path: string) {
-  const publicPath = toPublicPath(path)
-  const contentPath = toContentPath(publicPath, getRouteLocale(publicPath))
-
-  return staticPublicPaths.has(publicPath) || localizedContentPaths().has(contentPath)
-}
-
-export function getLocalizedRoutePath(
-  path: string,
-  targetLocale: string,
-  options: { fallbackToSection?: boolean } = {}
-) {
-  const suffix = stripLocalePrefix(toPublicPath(path))
-  const localizedPath = getLocalizedPublicPath(suffix, targetLocale)
-
-  if (routeExists(localizedPath)) {
-    return localizedPath
-  }
-
-  if (!options.fallbackToSection) {
-    return undefined
-  }
-
-  const section = suffix.match(/^\/(blog|lab|projects|tags)(?=\/|$)/)?.[1]
-
-  if (section) {
-    return `/${targetLocale}/${section}`
-  }
-
-  return `/${targetLocale}`
+  return [items[index + 1] || null, items[index - 1] || null]
 }
 
 export const normalizeTagSlug = (value: string) =>
@@ -195,7 +144,7 @@ export const normalizeTagSlug = (value: string) =>
     .trim()
     .toLowerCase()
     .replace(/&/g, 'and')
-    .replace(/[^a-z0-9\u0600-\u06FF]+/g, '-')
+    .replace(/[^a-z0-9؀-ۿ]+/g, '-')
     .replace(/^-+|-+$/g, '')
 
 export function getTagLabel(tag: string) {
@@ -210,15 +159,6 @@ export function getTagLabel(tag: string) {
     .filter(Boolean)
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ')
-}
-
-function byActivityDesc<T extends { date?: string; updated?: string }>(items: T[]) {
-  return [...items].sort((a, b) => {
-    const aDate = a.updated || a.date || 0
-    const bDate = b.updated || b.date || 0
-
-    return new Date(bDate).getTime() - new Date(aDate).getTime()
-  })
 }
 
 function toTaggedContentItem(
@@ -236,98 +176,44 @@ function toTaggedContentItem(
     date: item.date,
     updated: item.updated,
     tags,
-    tagSlugs: tags.map((tag) => normalizeTagSlug(tag)).filter(Boolean),
+    tagSlugs: tags.map(normalizeTagSlug).filter(Boolean),
     thumbnail: item.thumbnail,
     status: item.status,
     featured: item.featured === true
   }
 }
 
-export function getBlogPosts(locale: string, limit?: number) {
-  const items = visible(blog.filter((post) => post.path.startsWith(`/${locale}/blog/`)))
-  const sorted = byDateDesc(items)
-
-  return typeof limit === 'number' ? sorted.slice(0, limit) : sorted
-}
-
-export function getBlogPost(path: string) {
-  return blog.find((post) => post.path === path.toLowerCase())
-}
-
-export function getLabNotes(locale: string, limit?: number) {
-  const items = visible(lab.filter((note) => note.path.startsWith(`/${locale}/lab/`)))
-  const sorted = byDateDesc(items)
-
-  return typeof limit === 'number' ? sorted.slice(0, limit) : sorted
-}
-
-export function getLabNote(path: string) {
-  return lab.find((note) => note.path === path.toLowerCase())
-}
-
-export function getProjects(locale: string, limit?: number) {
-  const items = visible(
-    projects.filter((project) => project.path.startsWith(`/${locale}/projects/`))
-  )
-  const sorted = byDateDesc(items)
-
-  return typeof limit === 'number' ? sorted.slice(0, limit) : sorted
-}
-
 export function getTaggedContent(locale: string) {
   return byActivityDesc([
-    ...visible(blog)
-      .filter((post) => post.path.startsWith(`/${locale}/blog/`))
-      .map((post) => toTaggedContentItem(post, 'blog')),
-    ...visible(lab)
-      .filter((note) => note.path.startsWith(`/${locale}/lab/`))
-      .map((note) => toTaggedContentItem(note, 'lab')),
-    ...visible(projects)
-      .filter((project) => project.path.startsWith(`/${locale}/projects/`))
-      .map((project) => toTaggedContentItem(project, 'project'))
+    ...getBlogPosts(locale).map((post) => toTaggedContentItem(post, 'blog')),
+    ...getLabNotes(locale).map((note) => toTaggedContentItem(note, 'lab')),
+    ...getProjects(locale).map((project) => toTaggedContentItem(project, 'project'))
   ])
 }
 
-function getTagRoutes(locales: readonly string[] = supportedLocales) {
-  return locales.flatMap((locale) => {
-    const tagSlugs = new Set(
-      getTaggedContent(locale).flatMap((item) => item.tags.map((tag) => normalizeTagSlug(tag)))
-    )
+function getTagPaths(locale: string) {
+  const slugs = new Set(getTaggedContent(locale).flatMap((item) => item.tagSlugs))
 
-    return [...tagSlugs]
-      .filter(Boolean)
-      .map((tagSlug) => getLocalizedPublicPath(`/tags/${tagSlug}`, locale))
-  })
+  return [...slugs].map((slug) => `/${locale}/tags/${slug}`)
 }
 
-export function getPrerenderContentRoutes(locales: readonly string[] = supportedLocales) {
-  return [
-    ...locales
-      .flatMap((locale) => [
-        ...getBlogPosts(locale).map((post) => post.path),
-        ...getLabNotes(locale).map((note) => note.path),
-        ...getProjects(locale).map((project) => project.path)
-      ])
-      .map((path) => toPublicPath(path)),
-    ...visible(pages).map((page) => toPublicPath(page.path)),
-    ...getTagRoutes(locales)
-  ]
+/** Every public, indexable path with its last-modified date, for prerender and sitemap. */
+export function getPublicEntries() {
+  return supportedLocales.flatMap((locale) => [
+    ...publicSections.map((section) => ({ path: withLocale(section, locale), lastmod: undefined })),
+    ...[...getBlogPosts(locale), ...getLabNotes(locale), ...getProjects(locale)].map((item) => ({
+      path: item.path,
+      lastmod: item.updated || item.date
+    })),
+    ...getTagPaths(locale).map((path) => ({ path, lastmod: undefined }))
+  ])
 }
 
-export function getProject(path: string) {
-  return projects.find((project) => project.path === path.toLowerCase())
-}
+const publicPaths = new Set(getPublicEntries().map((entry) => entry.path))
 
-export function getPage(path: string) {
-  return pages.find((page) => page.path === path.toLowerCase())
-}
+/** The same page in another locale, or undefined when it was never translated. */
+export function getTranslatedPath(path: string, locale: string) {
+  const translated = withLocale(stripLocalePrefix(path.toLowerCase()), locale)
 
-export function getSurround<T extends { path: string }>(items: T[], path: string) {
-  const index = items.findIndex((item) => item.path === path.toLowerCase())
-
-  if (index < 0) {
-    return []
-  }
-
-  return [items[index + 1] || null, items[index - 1] || null]
+  return publicPaths.has(translated) ? translated : undefined
 }

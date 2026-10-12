@@ -6,8 +6,7 @@ export const localeDefinitions = [
     dir: 'rtl',
     language: 'fa-IR',
     calendar: 'persian',
-    uiLocale: 'fa_ir',
-    switchLabelKey: 'actions.switchToPersian'
+    uiLocale: 'fa_ir'
   },
   {
     code: 'en',
@@ -16,8 +15,7 @@ export const localeDefinitions = [
     dir: 'ltr',
     language: 'en-US',
     calendar: 'gregory',
-    uiLocale: 'en',
-    switchLabelKey: 'actions.switchToEnglish'
+    uiLocale: 'en'
   }
 ] as const
 
@@ -26,3 +24,7 @@ export type SupportedLocale = (typeof localeDefinitions)[number]['code']
 export const defaultLocale = 'fa' satisfies SupportedLocale
 
 export const supportedLocales = localeDefinitions.map(({ code }) => code)
+
+export function getLocaleDefinition(code: string) {
+  return localeDefinitions.find((definition) => definition.code === code) ?? localeDefinitions[0]
+}

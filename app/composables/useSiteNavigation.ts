@@ -14,8 +14,8 @@ export function useSiteNavigation() {
   ])
 
   function isActive(to: string) {
-    const currentPath = stripLocalePrefix(toPublicPath(route.path))
-    const targetPath = stripLocalePrefix(toPublicPath(to))
+    const currentPath = stripLocalePrefix(route.path)
+    const targetPath = stripLocalePrefix(to)
 
     if (targetPath === '/') {
       return currentPath === '/'

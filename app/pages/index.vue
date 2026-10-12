@@ -1,11 +1,8 @@
 <script setup lang="ts">
-const { locale, t } = useI18n()
+const { t } = useI18n()
 
 useMohetiosSeo({
   description: () => t('site.description'),
-  path: () => getLocalizedPublicPath('/', locale.value),
-  locale: () => locale.value,
-  type: 'website'
 })
 </script>
 

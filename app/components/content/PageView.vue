@@ -38,7 +38,6 @@ const props = defineProps<{
 
 const { locale, t } = useI18n()
 
-const publicPath = computed(() => toPublicPath(props.item.path || props.path))
 const tocLinks = computed(() => getTocNavLinks(props.item.tocData))
 const showToc = computed(() => shouldShowToc(props.item.tocData))
 const surround = computed(() => getSurround(props.collection, props.item.path || props.path))
@@ -89,31 +88,20 @@ const author = computed(() => {
   return props.kind === 'project' ? undefined : 'Ali Zemani'
 })
 
-const { canonicalUrl: shareUrl } = useContentSeo({
+const { canonicalUrl: shareUrl } = useMohetiosSeo({
+  type: 'article',
   title: () => props.item.title,
   description: () => props.item.description,
-  path: () => publicPath.value,
   image: () => props.item.thumbnail,
-  locale: () => locale.value,
   publishedAt: () => props.item.date,
   updatedAt: () => props.item.updated,
-  tags: () => props.item.tags || [],
-  category: () => articleStatus.value
+  tags: () => props.item.tags,
+  section: () => articleStatus.value
 })
 </script>
 
 <template>
   <UPage>
-    <ContentArticleJsonLd
-      :kind="kind"
-      :title="item.title"
-      :description="item.description"
-      :path="item.path"
-      :image="item.thumbnail"
-      :date="item.date"
-      :updated="item.updated"
-    />
-
     <ContentArticleHeader
       :title="item.title"
       :description="item.description"

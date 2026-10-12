@@ -15,25 +15,17 @@ const isHeaderVisible = ref(true)
 let lastScrollY = 0
 let isTicking = false
 
-const nextLocale = computed(
-  () => locales.value.find((item) => item.code !== locale.value) || locales.value[0]
-)
-const nextLocalePath = computed(() =>
-  nextLocale.value
-    ? getLocalizedRoutePath(route.path, nextLocale.value.code, { fallbackToSection: true })
+const nextLocale = computed(() => locales.value.find((item) => item.code !== locale.value))
+// Untranslated pages fall back to their section index instead of a 404.
+const nextLocalePath = computed(() => {
+  const code = nextLocale.value?.code
+  const section = route.path.split('/')[2] || ''
+
+  return code
+    ? getTranslatedPath(route.path, code) || getTranslatedPath(`/${section}`, code) || `/${code}`
     : undefined
-)
-const nextLocaleLabel = computed(() => {
-  if (!nextLocale.value) {
-    return ''
-  }
-
-  const switchLabelKey = nextLocale.value.switchLabelKey
-
-  return typeof switchLabelKey === 'string'
-    ? t(switchLabelKey)
-    : nextLocale.value.name || nextLocale.value.code
 })
+const nextLocaleLabel = computed(() => nextLocale.value?.name)
 
 function toggleMainMenu() {
   const willOpen = !mainMenuOpen.value

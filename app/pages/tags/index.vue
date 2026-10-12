@@ -1,9 +1,7 @@
 <script setup lang="ts">
-const { locale, locales, t } = useI18n()
+const { locale, t, localeProperties } = useI18n()
 const localePath = useLocalePath()
-const isRtl = computed(
-  () => locales.value.find((item) => item.code === locale.value)?.dir === 'rtl'
-)
+const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 const sourceSeparator = computed(() => (isRtl.value ? '، ' : ', '))
 const items = computed(() => getTaggedContent(locale.value))
 const tags = computed(() => {
@@ -49,9 +47,6 @@ const countText = (count: number) =>
 useMohetiosSeo({
   title: () => t('pages.tagsIndex.kicker'),
   description: () => t('pages.tagsIndex.description'),
-  path: () => getLocalizedPublicPath('/tags', locale.value),
-  locale: () => locale.value,
-  type: 'website'
 })
 </script>
 

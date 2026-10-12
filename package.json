@@ -2,9 +2,6 @@
   "name": "mohetios-dev",
   "private": true,
   "type": "module",
-  "imports": {
-    "#locales": "./shared/constants/locales.ts"
-  },
   "scripts": {
     "dev": "pnpm gql:schema && concurrently -k -n velite,nuxt,email,system -c gray,cyan,green,magenta \"velite dev\" \"nuxt dev\" \"pnpm dev:email\" \"pnpm dev:system\"",
     "dev:web": "pnpm gql:schema && concurrently -k -n velite,nuxt -c gray,cyan \"velite dev\" \"nuxt dev\"",

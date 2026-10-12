@@ -1,13 +1,10 @@
 import type { Permission } from '~~/shared/constants/permissions'
 import { isAuthError } from '~/utils/graphql-error'
 
-function getLoginPath(toPath: string) {
-  return getLocalizedPublicPath('/login', getRouteLocale(toPath))
-}
-
 export default defineNuxtRouteMiddleware(async (to) => {
   const localePath = useLocalePath()
   const auth = useAuth()
+  const loginPath = localePath('/login')
 
   const pathWithoutLocale = stripLocalePrefix(to.path)
 
@@ -36,7 +33,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (!token) {
     if (needsAuth) {
       return navigateTo({
-        path: getLoginPath(to.path),
+        path: loginPath,
         query: {
           redirect: to.fullPath
         }
@@ -57,7 +54,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
     if (!user && needsAuth) {
       return navigateTo({
-        path: getLoginPath(to.path),
+        path: loginPath,
         query: {
           redirect: to.fullPath
         }
@@ -75,7 +72,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
       if (needsAuth) {
         return navigateTo({
-          path: getLoginPath(to.path),
+          path: loginPath,
           query: {
             redirect: to.fullPath
           }

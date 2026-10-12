@@ -1,11 +1,9 @@
 <script setup lang="ts">
-const { locale, locales, t } = useI18n()
+const { locale, t, localeProperties } = useI18n()
 const localePath = useLocalePath()
-const brandName = computed(() => getSeoSiteName(t))
+const brandName = computed(() => t('site.name'))
 const route = useRoute()
-const isRtl = computed(
-  () => locales.value.find((item) => item.code === locale.value)?.dir === 'rtl'
-)
+const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 const dashboardSidebarSide = computed(() => (isRtl.value ? 'right' : 'left'))
 
 type DashboardNavItem = {

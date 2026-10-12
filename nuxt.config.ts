@@ -1,12 +1,8 @@
 import { readdirSync } from 'node:fs'
 
-import {
-  defaultLocale,
-  getLocalizedPublicPath,
-  getPrerenderContentRoutes,
-  localeDefinitions,
-  supportedLocales
-} from './app/utils/content'
+import { getPublicEntries, getTranslatedPath, publicSections } from './app/utils/content'
+import { defaultLocale, localeDefinitions, supportedLocales } from './shared/constants/locales'
+import { withLocale } from './shared/utils/locale-path'
 import {
   API_GRAPH_RATE_LIMITER,
   CLOUDFLARE_CSP_ORIGINS,
@@ -43,7 +39,6 @@ const turnstileSiteKey = process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || ''
 //   public site  -> prerendered HTML (Jamstack), data baked in at build time
 //   app routes   -> client-only SPA; the shells are prerendered so the CDN serves them
 //                   and the Worker only handles /graph and /api
-const publicSections = ['/', '/blog', '/lab', '/projects', '/tags', '/about', '/contact']
 const publicPatterns = ['/blog/**', '/lab/**', '/projects/**', '/tags/**']
 // One shell per page file, so new dashboard/member pages are prerendered without config edits.
 const pageSections = (dir: string) =>
@@ -55,9 +50,9 @@ const appPatterns = ['/login', '/member/**', '/dashboard', '/dashboard/**']
 const authRedirectSections = ['/register', '/reset-password']
 
 const localize = (paths: readonly string[]) =>
-  supportedLocales.flatMap((locale) => paths.map((path) => getLocalizedPublicPath(path, locale)))
+  supportedLocales.flatMap((locale) => paths.map((path) => withLocale(path, locale)))
 
-const staticRoutes = localize(publicSections)
+const publicEntries = getPublicEntries()
 const appShellRoutes = localize(appSections)
 
 const routeRuleMap = <T>(paths: readonly string[], rule: T) =>
@@ -66,19 +61,38 @@ const routeRuleMap = <T>(paths: readonly string[], rule: T) =>
 const localizedAuthRedirectRouteRules = Object.fromEntries(
   supportedLocales.flatMap((locale) =>
     authRedirectSections.map((section) => [
-      getLocalizedPublicPath(section, locale),
-      { redirect: getLocalizedPublicPath('/login', locale) }
+      withLocale(section, locale),
+      { redirect: withLocale('/login', locale) }
     ])
   )
 )
 
-function getContentRoutes() {
-  const routes = new Set([...staticRoutes, ...getPrerenderContentRoutes()])
+const prerenderRoutes = [
+  ...publicEntries.map(({ path }) => path),
+  ...appShellRoutes,
+  '/robots.txt',
+  '/sitemap_index.xml'
+]
 
-  return [...routes].sort()
-}
+const absolute = (path: string) => `${siteUrl.replace(/\/$/, '')}${path}`
 
-const prerenderRoutes = [...getContentRoutes(), ...appShellRoutes, '/robots.txt', '/sitemap.xml']
+// lastmod from content dates, plus hreflang pairs for pages that exist in both locales.
+const sitemapUrls = publicEntries.map(({ path, lastmod }) => {
+  const alternatives = localeDefinitions.flatMap(({ code, language }) => {
+    const translated = getTranslatedPath(path, code)
+
+    return translated ? [{ hreflang: language, href: absolute(translated) }] : []
+  })
+  const defaultPath = getTranslatedPath(path, defaultLocale)
+
+  return {
+    loc: path,
+    lastmod,
+    ...(alternatives.length > 1 && defaultPath
+      ? { alternatives: [...alternatives, { hreflang: 'x-default', href: absolute(defaultPath) }] }
+      : {})
+  }
+})
 
 const contentSecurityPolicy = {
   'default-src': ["'self'"],
@@ -170,16 +184,8 @@ export default defineNuxtConfig({
   app: {
     head: {
       titleTemplate: '%s',
+      // Title, description, canonical and social tags are per page (useMohetiosSeo).
       meta: [
-        {
-          name: 'description',
-          content:
-            'A personal engineering lab for software, product thinking, open-source experiments, and long-form technical notes.'
-        },
-        { property: 'og:site_name', content: 'Mohetios.dev' },
-        { property: 'og:type', content: 'website' },
-        { property: 'og:url', content: siteUrl },
-        { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'theme-color', content: '#FCFBF8', media: '(prefers-color-scheme: light)' },
         { name: 'theme-color', content: '#0F1823', media: '(prefers-color-scheme: dark)' }
       ],
@@ -457,8 +463,9 @@ export default defineNuxtConfig({
     langDir: 'locales',
     defaultLocale,
     strategy: 'prefix',
+    baseUrl: siteUrl,
     rootRedirect: {
-      path: getLocalizedPublicPath('/', defaultLocale),
+      path: withLocale('/', defaultLocale),
       statusCode: 302
     },
     detectBrowserLanguage: false,
@@ -493,13 +500,13 @@ export default defineNuxtConfig({
     injectRegister: 'script',
 
     manifest: {
-      id: getLocalizedPublicPath('/dashboard', defaultLocale),
+      id: withLocale('/dashboard', defaultLocale),
       name: 'Mohetios.dev Dashboard',
       short_name: 'Mohetios',
       description: 'Owner console for Mohetios.dev inbox, leads, analytics, and system signals.',
       display: 'standalone',
       display_override: ['window-controls-overlay', 'standalone'],
-      start_url: getLocalizedPublicPath('/dashboard', defaultLocale),
+      start_url: withLocale('/dashboard', defaultLocale),
       scope: '/',
       theme_color: '#FCFBF8',
       background_color: '#FCFBF8',
@@ -528,7 +535,7 @@ export default defineNuxtConfig({
           name: 'Inbox',
           short_name: 'Inbox',
           description: 'Open the dashboard inbox.',
-          url: '/dashboard/inbox',
+          url: withLocale('/dashboard/inbox', defaultLocale),
           icons: [
             {
               src: '/icons/android-chrome-192x192.png',
@@ -541,7 +548,7 @@ export default defineNuxtConfig({
           name: 'Leads',
           short_name: 'Leads',
           description: 'Review dashboard leads.',
-          url: '/dashboard/leads',
+          url: withLocale('/dashboard/leads', defaultLocale),
           icons: [
             {
               src: '/icons/android-chrome-192x192.png',
@@ -564,14 +571,15 @@ export default defineNuxtConfig({
     }
   },
   robots: {
-    sitemap: ['/sitemap.xml'],
+    disallow: localize(['/login', '/member', '/dashboard']),
     cacheControl: 'max-age=14400, must-revalidate',
     credits: false
   },
 
   sitemap: {
-    urls: () => getContentRoutes(),
-    autoLastmod: true,
+    urls: sitemapUrls,
+    exclude: localize(appPatterns),
+    autoLastmod: false,
     discoverImages: false,
     discoverVideos: false,
     minify: true,

@@ -44,7 +44,6 @@ useMohetiosSeo({
   title: () => (isSetupMode.value ? t('auth.register.title') : t('auth.login.title')),
   description: () =>
     isSetupMode.value ? t('auth.register.description') : t('auth.login.description'),
-  locale: () => locale.value,
   noindex: true
 })
 

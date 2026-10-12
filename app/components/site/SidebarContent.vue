@@ -13,15 +13,10 @@ const sidebarIndex = computed(() =>
   }))
 )
 
-const routeSectionPath = computed(() => stripLocalePrefix(toPublicPath(route.path)))
-const contentPath = computed(() => toContentPath(route.path, locale.value))
+const routeSectionPath = computed(() => stripLocalePrefix(route.path))
 
 const contentTocLinks = computed(() => {
-  const item =
-    getBlogPost(contentPath.value) ||
-    getLabNote(contentPath.value) ||
-    getProject(contentPath.value) ||
-    getPage(contentPath.value)
+  const item = getContentEntry(route.path)
 
   return item?.tocData && shouldShowToc(item.tocData) ? getTocNavLinks(item.tocData) : []
 })

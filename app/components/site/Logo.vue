@@ -14,7 +14,7 @@ const props = withDefaults(
 
 const { t, te } = useI18n()
 
-const logoParts = computed(() => getLogoParts(t))
+const logoParts = computed(() => ({ part1: t('site.logo.part1'), part2: t('site.logo.part2') }))
 
 const showTld = computed(() => te('site.logo.tld') && Boolean(t('site.logo.tld')))
 

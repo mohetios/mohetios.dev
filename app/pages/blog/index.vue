@@ -47,9 +47,6 @@ const countText = (count: number) =>
 useMohetiosSeo({
   title: () => t('pages.notebook.kicker'),
   description: () => t('pages.notebook.description'),
-  path: () => getLocalizedPublicPath('/blog', locale.value),
-  locale: () => locale.value,
-  type: 'website'
 })
 
 function formatDate(date?: string | Date) {
@@ -157,7 +154,7 @@ function formatDate(date?: string | Date) {
             <NuxtLink
               v-for="post in posts"
               :key="post.id"
-              :to="toPublicPath(post.path)"
+              :to="post.path"
               class="group block py-4 transition"
             >
               <div class="grid gap-3 sm:grid-cols-[8rem_1fr_auto] sm:items-start">

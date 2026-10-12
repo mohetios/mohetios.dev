@@ -4,16 +4,14 @@ import {
   DASHBOARD_RANGE_LABEL_KEYS
 } from '~~/shared/constants/dashboard-range'
 
-const { locale, locales, t } = useI18n()
+const { t, localeProperties } = useI18n()
 const localePath = useLocalePath()
 
 const route = useRoute()
 const preset = useDashboardToolbarPreset()
 const runtime = useDashboardToolbarRuntime()
 const range = useDashboardRangePreference()
-const isRtl = computed(
-  () => locales.value.find((item) => item.code === locale.value)?.dir === 'rtl'
-)
+const isRtl = computed(() => localeProperties.value.dir === 'rtl')
 const dashboardSidebarSide = computed(() => (isRtl.value ? 'right' : 'left'))
 
 watch(

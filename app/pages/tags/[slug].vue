@@ -67,10 +67,10 @@ const sectionNumber = (index: number) => formatListNumber(index, locale.value)
 
 useMohetiosSeo({
   title: () => t('pages.tagPath.seoTitle', { tag: tagLabel.value }),
-  description: () => t('pages.tagPath.description'),
-  path: () => getLocalizedPublicPath(`/tags/${tagSlug.value}`, locale.value),
-  locale: () => locale.value,
-  type: 'website',
+  // Unique per tag: the generic tagline plus the titles it collects.
+  description: () =>
+    [t('pages.tagPath.description'), ...matchedItems.value.slice(0, 4).map((item) => item.title)]
+      .join(' · '),
   noindex: () => !matchedItems.value.length
 })
 </script>
@@ -132,7 +132,7 @@ useMohetiosSeo({
             <NuxtLink
               v-for="item in section.items"
               :key="item.id"
-              :to="toPublicPath(item.path)"
+              :to="item.path"
               class="group block py-4"
             >
               <div class="grid gap-3 sm:grid-cols-[8rem_1fr_auto] sm:items-start">

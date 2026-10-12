@@ -29,10 +29,7 @@ if (!page.value || page.value.draft) {
 useMohetiosSeo({
   title: () => t('pages.aboutWorkshop.kicker'),
   description: () => t('pages.aboutWorkshop.description'),
-  path: () => toPublicPath(page.value?.path || path.value),
   image: () => page.value?.thumbnail,
-  locale: () => locale.value,
-  type: 'website'
 })
 </script>
 
@@ -195,7 +192,7 @@ useMohetiosSeo({
           <NuxtLink
             v-for="post in recentPosts"
             :key="post.id || post.path"
-            :to="toPublicPath(post.path)"
+            :to="post.path"
             class="group grid gap-3 py-4 sm:grid-cols-[1fr_auto]"
           >
             <div>

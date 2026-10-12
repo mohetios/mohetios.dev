@@ -6,13 +6,9 @@ defineProps<{
   loading?: boolean
 }>()
 
-const { t, locale, locales } = useI18n()
+const { t, localeProperties } = useI18n()
 const localePath = useLocalePath()
-const currentLanguage = computed(() => {
-  const language = locales.value.find((item) => item.code === locale.value)?.language
-
-  return typeof language === 'string' ? language : locale.value
-})
+const currentLanguage = computed(() => localeProperties.value.language!)
 
 const timeFormatter = computed(
   () =>

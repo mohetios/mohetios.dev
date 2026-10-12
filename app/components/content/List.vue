@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   title: string
   description?: string
   to: string
@@ -13,13 +13,12 @@ const props = defineProps<{
   plain?: boolean
 }>()
 
-const publicTo = computed(() => toPublicPath(props.to))
 </script>
 
 <template>
   <NuxtLink
     v-if="plain"
-    :to="publicTo"
+    :to="to"
     class="group block py-2.5 no-underline transition-colors duration-150"
   >
     <p
@@ -32,7 +31,7 @@ const publicTo = computed(() => toPublicPath(props.to))
     </p>
   </NuxtLink>
 
-  <UPageCard v-else :to="publicTo" variant="subtle" class="h-full">
+  <UPageCard v-else :to="to" variant="subtle" class="h-full">
     <template v-if="!compact" #header>
       <ContentCardMedia :title="title" :thumbnail="thumbnail" />
     </template>

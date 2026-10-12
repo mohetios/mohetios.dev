@@ -31,7 +31,7 @@ const itemNumber = (index: number) => formatListNumber(index, locale.value)
           <NuxtLink
             v-for="(item, index) in labNotes"
             :key="item.id"
-            :to="toPublicPath(item.path)"
+            :to="item.path"
             class="group flex min-h-24 py-3.5"
           >
             <div class="w-full space-y-1">
@@ -79,7 +79,7 @@ const itemNumber = (index: number) => formatListNumber(index, locale.value)
           <NuxtLink
             v-for="(post, index) in posts"
             :key="post.id"
-            :to="toPublicPath(post.path)"
+            :to="post.path"
             class="group flex min-h-24 py-3.5"
           >
             <div class="w-full space-y-1">
@@ -129,7 +129,7 @@ const itemNumber = (index: number) => formatListNumber(index, locale.value)
           <NuxtLink
             v-for="(project, index) in projects"
             :key="project.id"
-            :to="toPublicPath(project.path)"
+            :to="project.path"
             class="group flex min-h-24 py-3.5"
           >
             <div class="w-full space-y-1">

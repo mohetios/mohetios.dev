@@ -6,8 +6,6 @@ import {
   type DashboardAnalyticsRange
 } from '~~/shared/constants/dashboard-range'
 import { getDashboardToolbarPreset } from '~~/shared/constants/dashboard-toolbar-presets'
-import { stripLocalePrefix } from '~/utils/content'
-
 const DASHBOARD_RANGE_COOKIE = 'mohetios_dashboard_range'
 
 type DashboardToolbarRuntime = {
