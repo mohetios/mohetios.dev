@@ -1,8 +1,7 @@
 import { readdirSync } from 'node:fs'
 
 import { getPublicEntries, getTranslatedPath, publicSections } from './app/utils/content'
-import { defaultLocale, localeDefinitions, supportedLocales } from './shared/constants/locales'
-import { withLocale } from './shared/utils/locale-path'
+import { defaultLocale, localeDefinitions, supportedLocales, withLocale } from '#locales'
 import {
   API_GRAPH_RATE_LIMITER,
   CLOUDFLARE_CSP_ORIGINS,

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { stripLocalePrefix } from '#locales'
 import type { TocItem } from '~/utils/content'
 
 const { locale, t } = useI18n()

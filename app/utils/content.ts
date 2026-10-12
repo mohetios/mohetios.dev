@@ -2,8 +2,7 @@ import blogJson from '../../.velite/blog.json'
 import labJson from '../../.velite/lab.json'
 import pagesJson from '../../.velite/pages.json'
 import projectsJson from '../../.velite/projects.json'
-import { supportedLocales } from '../../shared/constants/locales'
-import { stripLocalePrefix, withLocale } from '../../shared/utils/locale-path'
+import { stripLocalePrefix, supportedLocales, withLocale } from '#locales'
 
 export type TocItem = {
   title: string

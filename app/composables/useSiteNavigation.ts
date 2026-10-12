@@ -1,3 +1,5 @@
+import { stripLocalePrefix } from '#locales'
+
 export function useSiteNavigation() {
   const { t } = useI18n()
   const localePath = useLocalePath()

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { stripLocalePrefix } from '#locales'
 const { locale, t, localeProperties } = useI18n()
 const localePath = useLocalePath()
 const brandName = computed(() => t('site.name'))

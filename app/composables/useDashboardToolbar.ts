@@ -1,3 +1,4 @@
+import { stripLocalePrefix } from '#locales'
 import type { Ref } from 'vue'
 
 import {

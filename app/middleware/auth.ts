@@ -1,3 +1,4 @@
+import { stripLocalePrefix } from '#locales'
 import type { Permission } from '~~/shared/constants/permissions'
 import { isAuthError } from '~/utils/graphql-error'
 
