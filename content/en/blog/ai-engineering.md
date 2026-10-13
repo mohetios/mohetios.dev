@@ -2,7 +2,7 @@
 title: 'AI Engineering: Building Applications with Foundation Models'
 description: Chip Huyen's guide to building applications with foundation models, covering evaluation, RAG, fine-tuning, data, architecture, cost, and latency.
 date: 2026-10-13
-thumbnail: /content/ai-engineering-cover.jpg
+thumbnail: /content/ai-engineering-cover.webp
 thumbnailAlt: Cover of AI Engineering by Chip Huyen
 thumbnailCredit: O'Reilly Media
 tags:

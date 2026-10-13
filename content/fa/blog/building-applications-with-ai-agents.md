@@ -2,7 +2,7 @@
 title: ساخت اپلیکیشن با عامل‌های هوش مصنوعی
 description: معرفی راهنمای مایکل آلبادا برای طراحی عامل‌های هوش مصنوعی؛ ابزار، حافظه، جریان اجرا، هماهنگی عامل‌ها و ارزیابی رفتار سیستم.
 date: 2026-10-13
-thumbnail: /content/building-applications-with-ai-agents-cover.jpg
+thumbnail: /content/building-applications-with-ai-agents-cover.webp
 thumbnailAlt: جلد کتاب Building Applications with AI Agents نوشته‌ی مایکل آلبادا
 thumbnailCredit: O'Reilly Media
 tags:

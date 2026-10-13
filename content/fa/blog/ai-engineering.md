@@ -2,7 +2,7 @@
 title: مهندسی هوش مصنوعی؛ ساخت اپلیکیشن با مدل‌های پایه
 description: معرفی کتاب چیپ هوین درباره‌ی ساخت اپلیکیشن با مدل‌های پایه؛ از انتخاب مدل و ارزیابی تا RAG، تنظیم دقیق، معماری و هزینه‌ی اجرا.
 date: 2026-10-13
-thumbnail: /content/ai-engineering-cover.jpg
+thumbnail: /content/ai-engineering-cover.webp
 thumbnailAlt: جلد کتاب AI Engineering نوشته‌ی چیپ هوین
 thumbnailCredit: O'Reilly Media
 tags:

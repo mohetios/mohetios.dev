@@ -2,7 +2,7 @@
 title: Building Applications with AI Agents
 description: Michael Albada's practical guide to agent design, tool use, memory, orchestration, multiagent systems, user experience, and evaluation.
 date: 2026-10-13
-thumbnail: /content/building-applications-with-ai-agents-cover.jpg
+thumbnail: /content/building-applications-with-ai-agents-cover.webp
 thumbnailAlt: Cover of Building Applications with AI Agents by Michael Albada
 thumbnailCredit: O'Reilly Media
 tags:
