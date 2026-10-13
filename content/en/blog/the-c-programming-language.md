@@ -11,29 +11,17 @@ tags:
 - programming-fundamentals
 ---
 
-## Reading Notes
+Brian W. Kernighan and Dennis M. Ritchie's _The C Programming Language_ is distinguished by the precision of its explanations and examples. Small programs keep the language, data flow, and responsibilities of each function close to the surface.
 
-_The C Programming Language_ is still worth keeping nearby because it is compact, direct, and unusually clear. It does not try to make C feel bigger than it is.
+## A Compact Account of C
 
-The book's lasting value is the style of thinking it encourages: small programs, precise language, careful interfaces, and respect for what the machine is doing.
+Control flow, functions, pointers and arrays, structures, input/output, and library interfaces form the core material. The book develops ideas with relatively little surrounding machinery, making it useful for careful reading and reference.
 
-## Useful Ideas
+The lasting lesson is to make behavior and interfaces explainable. In C, assumptions about memory and execution have consequences; understanding an example requires more than recognizing its syntax.
 
-### Clarity Beats Volume
+## Reading a Classic Today
 
-The book is short because the explanations are disciplined. That makes it a useful contrast to programming books that add size without adding precision.
-
-### C Rewards Exact Thinking
-
-C does not protect the programmer from many mistakes. That makes exact thinking part of the language.
-
-### Interfaces Can Be Small
-
-Many examples show how much can be done with small functions and clear data flow.
-
-## Why I Keep It Nearby
-
-This is the C reference I want within reach when returning to the language after time away. It is both historical and still practical.
+Learners and returning C programmers can use it alongside current language and compiler documentation. Its historical importance does not make it a complete guide to modern secure C programming. The value lies in the clarity of the fundamentals and the discipline of describing a program precisely.
 
 ## Get the Book
 

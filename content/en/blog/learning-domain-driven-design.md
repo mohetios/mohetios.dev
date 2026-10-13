@@ -11,33 +11,17 @@ tags:
 - domain-modeling
 ---
 
-## Reading Notes
+Software boundaries become easier to justify when the business problem is understood. Vlad Khononov's _Learning Domain-Driven Design_ connects domain knowledge, shared language, and implementation choices, offering a practical way to reason about where complexity belongs.
 
-_Learning Domain-Driven Design_ is a practical bridge between architecture and business understanding.
+## Models and Boundaries
 
-The book is useful because it does not present DDD as a ceremony or a vocabulary exercise. It treats domain modeling as a way to discover where software complexity comes from and where different models need different boundaries.
+The book covers core, supporting, and generic subdomains; bounded contexts and their relationships; and patterns including transaction scripts, active record, domain models, Event Sourcing, CQRS, and sagas.
 
-For product engineering, the central lesson is direct: a system's architecture should reflect the business problem, not just the engineering team's favorite layers or services.
+Its useful distinction is between an architectural option and a requirement. Simple logic may need a simple implementation; a complex model may need stronger boundaries. A term can have different meanings in different contexts, so communication between them needs an explicit translation.
 
-## Useful Ideas
+## When the Model Needs Attention
 
-### Start With the Domain
-
-Before choosing microservices, event sourcing, CQRS, or any other pattern, the team needs to understand the domain. Which parts are core? Which are supporting? Which are generic enough to buy or outsource?
-
-That distinction prevents overengineering low-value areas and underinvesting in the parts that create product advantage.
-
-### Boundaries Are Language Boundaries
-
-Bounded contexts are not only deployment units. They are places where words mean specific things. If two teams use the same word with different meanings, the software probably needs a translation boundary too.
-
-### Tactical Patterns Need Context
-
-Transaction scripts, active record, domain models, event-sourced models, CQRS, and sagas are not maturity levels. They are tools. The right pattern depends on the complexity and volatility of the business logic.
-
-## Why I Keep It Nearby
-
-This book is helpful when a codebase starts mixing business concepts together and every feature creates accidental coupling. It gives a vocabulary for separating concerns without turning architecture into abstract diagram work.
+Engineers facing growing business logic, unclear ownership, or accidental coupling will find a vocabulary for examining those problems. The domain and language chapters provide a foundation before introducing more services. The patterns help when they explain a boundary and match the complexity of the work.
 
 ## Get the Book
 

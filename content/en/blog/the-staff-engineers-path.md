@@ -11,31 +11,17 @@ tags:
 - organizational-design
 ---
 
-## Reading Notes
+Technical leadership includes work whose value extends beyond an individual's code output. Tanya Reilly's _The Staff Engineer's Path_ makes that work concrete: finding direction, reducing uncertainty, and helping teams deliver difficult projects without requiring a move into management.
 
-_The Staff Engineer's Path_ is about the point where engineering work becomes less about personal output and more about making technical direction possible.
+## Direction and Execution
 
-The book is useful because it does not pretend that staff engineering is just "coding, but better." It describes a different job: seeing across teams, shaping strategy, creating leverage, setting standards, and helping projects survive reality.
+The book covers strategy, influence, work across teams, standards, and execution. Choosing a direction and enabling others to pursue it are considered together.
 
-## Useful Ideas
+This connection to outcomes is important. Strategy should reduce ambiguity; influence needs trust and clear reasoning. Execution still involves risks, work breakdown, tradeoffs, and removing obstacles. Broader responsibility remains connected to delivery.
 
-### Leadership Without Management
+## Understanding the Role
 
-A staff engineer often leads without being the manager. That means influence has to come from clarity, trust, technical judgment, and the ability to move groups toward a decision.
-
-This is harder than authority, but it is also more durable when done well.
-
-### Strategy Is a Technical Skill
-
-Technical strategy is not a document full of future hopes. It is a sequence of choices that makes some work easier and some work unnecessary. Good strategy reduces ambiguity for everyone else.
-
-### Execution Still Matters
-
-The role is not pure architecture. Staff engineers still need to make projects land: unblock teams, notice risks, split work, communicate tradeoffs, and keep quality from becoming somebody else's problem.
-
-## Why I Keep It Nearby
-
-This book is a useful calibration tool for senior engineers who are trying to grow without drifting into vague influence work. It keeps the role grounded in actual technical outcomes.
+Experienced engineers considering staff work, people already contributing across teams, and managers seeking to understand the role will find a useful reference. It helps examine what wider technical responsibility requires in practice, beyond the title itself.
 
 ## Get the Book
 

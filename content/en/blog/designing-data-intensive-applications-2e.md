@@ -11,39 +11,17 @@ tags:
 - stream-processing
 ---
 
-## Reading Notes
+The guarantees of a data system become visible when an edit is saved, a machine fails, or two replicas disagree. _Designing Data-Intensive Applications_ explains the mechanisms behind those outcomes. Martin Kleppmann and Chris Riccomini's second edition provides a vocabulary for reasoning about data architecture beyond a particular vendor.
 
-_Designing Data-Intensive Applications_ is the kind of book that changes how an engineer hears product requirements.
+## Understanding the Tradeoffs
 
-The surface topic is data systems: storage engines, replication, consistency, transactions, streams, batch processing, and distributed coordination. The deeper value is the way the book trains you to ask better questions before choosing infrastructure.
+Data models, storage engines, replication, consistency, transactions, distributed coordination, batch processing, and streams are examined through their implications for reliability, scale, and maintainability.
 
-For product engineering, this matters because most product problems eventually become data problems:
+This makes the book valuable for connecting infrastructure to product behavior. Consistency affects when a change becomes visible; schemas, event formats, and migration decisions can constrain future work long after the original code has been replaced.
 
-- What should be the source of truth?
-- Which reads must be fresh, and which can be stale?
-- What happens when a write succeeds in one place and fails somewhere else?
-- Is the system optimized for transactions, analytics, sync, search, or workflow?
-- Which failure modes are acceptable to users?
+## Reading and Returning to It
 
-The second edition is useful because modern architecture has moved further into cloud services, managed databases, serverless systems, data platforms, and AI-adjacent workloads. The old fundamentals still matter, but the decision surface is wider.
-
-## Useful Ideas
-
-### Architecture Is Tradeoff Management
-
-The book is strongest when it refuses easy answers. Reliable systems are not built by picking the popular database. They are built by understanding the shape of the data, the latency budget, the expected failures, and the operational model.
-
-### Data Outlives Code
-
-Code can be replaced more easily than data. Schema decisions, event formats, migration paths, and retention rules become long-term product constraints. This is a good reminder to design data flows with future readers and future migrations in mind.
-
-### Distributed Systems Are Product Design
-
-Consistency models are not only backend theory. They decide what users see after saving, editing, sharing, syncing, or collaborating. A product that hides these decisions still exposes them through confusing behavior.
-
-## Why I Keep It Nearby
-
-This is a reference book for moments when a system starts growing beyond a single database and a single request cycle. It helps turn vague architecture discussions into concrete questions about durability, ordering, isolation, observability, and recovery.
+Backend and product engineers will find a substantial reference for questions about durability, ordering, freshness, and recovery. Individual chapters become especially useful when a concrete design decision gives the theory a context.
 
 ## Get the Book
 

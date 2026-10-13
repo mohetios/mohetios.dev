@@ -11,33 +11,17 @@ tags:
 - product-polish
 ---
 
-## Reading Notes
+An interface can function correctly while remaining difficult to read. Adam Wathan and Steve Schoger's _Refactoring UI_ approaches that problem through concrete visual changes, giving developers a practical vocabulary for improving a screen.
 
-_Refactoring UI_ is a design book written for people who think in implementation details.
+## Hierarchy Before Decoration
 
-Its strongest idea is that better interface design can come from repeatable tactics. You do not need to wait for artistic confidence before improving hierarchy, spacing, typography, color, depth, and empty states.
+Visual hierarchy, spacing, typography, color, depth, and empty states are examined in relation to the task a feature needs to support. Size, contrast, weight, and layout become tools for making that purpose legible.
 
-That makes it especially useful for product engineers who often build early versions of tools before a dedicated designer is involved.
+The book's strength is diagnosis. When everything has equal visual weight, a new palette may leave the problem intact. A spacing scale and a smaller set of type choices can improve readability while making later screens easier to build.
 
-## Useful Ideas
+## Applying the Advice
 
-### Start With the Feature
-
-The book pushes against designing from a blank layout. Start with what the interface needs to do, then choose the structure that supports that job.
-
-This keeps the work grounded in behavior rather than decoration.
-
-### Hierarchy Before Styling
-
-Many weak interfaces are not ugly because of the color palette. They are unclear because everything has the same visual weight. Size, weight, contrast, and spacing should tell the user what matters first.
-
-### Systems Beat Guessing
-
-Spacing scales, type scales, color ranges, and component patterns reduce random choices. A small system makes the next screen easier to design and easier to implement.
-
-## Why I Keep It Nearby
-
-This is a practical reference for turning a rough developer-built UI into something readable, intentional, and shippable. It is less about taste and more about noticing common interface problems quickly.
+Developers building or refining an early interface will find a useful design reference. Visual tactics should be considered alongside usability feedback: the resulting screen still needs to help someone complete the intended task.
 
 ## Get the Book
 

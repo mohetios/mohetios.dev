@@ -11,29 +11,17 @@ tags:
 - data-analysis
 ---
 
-## Reading Notes
+_Numerical Python_ connects programming with applied mathematics through calculations, plots, and experiments. It presents Python as an environment for moving from a mathematical question to a computation and an inspectable result.
 
-_Numerical Python_ belongs between programming and applied math. It is about using Python as a practical environment for arrays, numerical methods, visualization, and scientific workflows.
+## Arrays, Methods, and Visualization
 
-That makes it useful for experiments where a full application would be too heavy, but a spreadsheet or one-off script would be too weak.
+NumPy arrays, broadcasting, vectorized operations, SciPy's numerical methods, and visualization with Matplotlib and notebooks form the material. Together they support work that needs more structure than a one-off script without requiring a full application.
 
-## Useful Ideas
+The value is in keeping the method and its assumptions visible. A library performs the calculation, but the model and the meaning of the output still need examination. Plotting offers another way to inspect that reasoning.
 
-### Arrays Are the Core Abstraction
+## A Computational Reference
 
-NumPy changes Python from a general scripting language into a useful numerical environment. Understanding arrays, broadcasting, and vectorized operations is the foundation.
-
-### Scientific Work Needs Feedback
-
-Matplotlib and notebooks matter because numerical work is exploratory. Seeing the result quickly changes how problems are understood.
-
-### Libraries Encode Methods
-
-SciPy is valuable because it packages numerical methods behind tested interfaces. The important work is knowing what problem is being solved and what assumptions the method brings.
-
-## Why I Keep It Nearby
-
-This is a practical reference for simulation, analysis, signal experiments, and the computational side of physics and engineering notes.
+Developers with some Python experience can use the book for analysis, simulation, and numerical experiments. It works alongside the mathematics of the problem: computational tools help implement a model, while understanding that model remains essential.
 
 ## Get the Book
 

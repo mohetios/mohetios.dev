@@ -11,38 +11,17 @@ tags:
 - connected-data
 ---
 
-## Reading Notes
+Relationships are central to recommendations, identity, and network analysis. _The Practitioner's Guide to Graph Data_ explains how to model those connections before selecting a storage engine, giving graph-shaped questions a clear starting point.
 
-_The Practitioner's Guide to Graph Data_ is about a specific shift in thinking: many real problems are easier to understand as relationships instead of rows.
+## From Relationships to Queries
 
-Social networks make that obvious, but the pattern appears everywhere. Fraud detection, recommendations, entity resolution, identity graphs, knowledge graphs, pathfinding, and Customer 360 systems all depend on how things connect.
+Nodes, edges, traversal, paths, graph technologies, and queries are introduced alongside applications such as fraud detection, entity resolution, knowledge graphs, and Customer 360. Ingestion, consistent identities, query performance, partitioning, and keeping derived relationships current connect the model with production work.
 
-## Useful Ideas
+The distinction between modeling and infrastructure is useful. Expressing a problem as a graph can clarify it even when a relational database remains sufficient for implementation.
 
-### Graph Thinking Comes Before Graph Tools
+## Choosing the Right Context
 
-The database choice is secondary. First, the team needs to ask relationship-shaped questions:
-
-- Which entities matter?
-- Which relationships carry meaning?
-- Which paths are useful?
-- Which connections should be weighted, filtered, or explained?
-
-Once the questions are clear, graph technology becomes easier to evaluate.
-
-### Production Graph Work Is Distributed Work
-
-Graph examples can look small in tutorials. In production, the hard parts include data ingestion, identity resolution, query performance, partitioning, and keeping derived relationships current.
-
-That makes graph systems a good meeting point for data engineering, application architecture, and product modeling.
-
-### Relationships Are User Experience
-
-A "shared friends" section, a recommendation list, or a trust score is not only a backend result. It changes how users understand context. The product needs to make those relationships legible.
-
-## Why I Keep It Nearby
-
-This book is useful when a relational model starts feeling technically correct but conceptually awkward. It helps identify when the domain is really about connections, paths, and neighborhoods.
+Developers and data engineers working with connections, neighborhoods, or paths will find a practical perspective. A graph database makes sense when relationships are central to the queries and the benefit justifies operating another system. Sketching the model first helps assess that need.
 
 ## Get the Book
 

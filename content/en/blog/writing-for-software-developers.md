@@ -11,29 +11,17 @@ tags:
 - clear-communication
 ---
 
-## Reading Notes
+Explaining an implementation requires a different structure from recording how it was built. Philip Kiely's _Writing for Software Developers_ turns that distinction into a practical writing workflow centered on a particular reader and the knowledge they need.
 
-_Writing for Software Developers_ is about turning engineering knowledge into useful public writing.
+## From Topic to Publication
 
-The book is practical because it treats writing as a professional workflow: choose a topic, understand the reader, shape an outline, draft, edit, publish, and learn from the response. That is close to engineering work, which makes the advice easier to apply.
+Choosing topics, understanding an audience, outlining, drafting, editing, publishing, and learning from responses are covered alongside pitching, distribution, and the business side of technical writing.
 
-## Useful Ideas
+The reader model gives these stages direction. A beginner tutorial, a migration guide, and a maintainer's deep dive need different prerequisites, pacing, and evidence. Clear headings and examples support readers who search for an answer, test it, and return later.
 
-### Developers Read With Intent
+## Writing that Others Can Use
 
-Technical readers usually arrive with a problem. They skim, search, copy, test, and return later. A good article respects that behavior with structure, examples, clear headings, and honest prerequisites.
-
-### The Reader Model Matters
-
-Before writing, define who the piece is for and what they already know. A tutorial for a beginner, a migration guide for a working engineer, and a deep dive for a maintainer need different pacing and different proof.
-
-### Publishing Is Part of the Work
-
-The book does not stop at writing. It covers pitching, editing, distribution, and the business side of technical content. That makes it useful for engineers who want writing to become a durable part of their career.
-
-## Why I Keep It Nearby
-
-This is a useful guide for turning implementation experience into articles that help other developers instead of only documenting what happened.
+Developers producing articles or tutorials, and people considering technical writing as part of their work, will find a practical guide. Its value is the shift from an implementation record to an explanation shaped around what the reader needs to understand.
 
 ## Get the Book
 

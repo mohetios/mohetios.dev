@@ -11,29 +11,17 @@ tags:
 - usability-testing
 ---
 
-## Reading Notes
+A technically correct product can still be based on a mistaken understanding of its users. Erika Hall's _Just Enough Research_ offers practical ways to examine assumptions before they become features, with research sized to a decision a team actually needs to make.
 
-_Just Enough Research_ is a reminder that research is not a department. It is a way to stop guessing.
+## Questions, Methods, and Evidence
 
-The book is valuable for product engineering because engineers are often close to implementation risk but far from customer evidence. Without research, teams can build technically correct systems for misunderstood problems.
+The book covers framing questions, understanding users and their context, choosing methods, and interpreting results. Interviews, observation, usability tests, surveys, and existing information such as support requests reveal different aspects of a problem.
 
-## Useful Ideas
+Its attention to evidence makes it useful. A stated preference differs from observed behavior. A small study may expose a flawed assumption without establishing how every user behaves.
 
-### Research Should Answer Decisions
+## Working with Small Teams
 
-Good research is not just collecting opinions. It should make a decision less risky. The question is not "what can we ask users?" but "what do we need to know before choosing?"
-
-### Small Research Is Still Research
-
-Not every team needs a large study. Interviews, observation, support-ticket review, usability tests, and lightweight surveys can all expose assumptions if the team is honest about what each method can and cannot prove.
-
-### Evidence Beats Internal Confidence
-
-Product teams are good at creating narratives. Research is useful because it interrupts those narratives with actual behavior, constraints, vocabulary, and priorities from the people affected by the product.
-
-## Why I Keep It Nearby
-
-This book is a good antidote to building from vibes. It gives enough structure to ask better questions without turning research into a heavy process that teams avoid.
+Developers, designers, and product teams can use this approach to investigate uncertainty before implementation. The structure keeps research manageable while making its purpose clear: identify what remains unknown and what evidence would inform the next choice.
 
 ## Get the Book
 

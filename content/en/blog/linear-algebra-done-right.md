@@ -11,29 +11,17 @@ tags:
 - proofs
 ---
 
-## Reading Notes
+Sheldon Axler's _Linear Algebra Done Right_ develops linear algebra around vector spaces and linear maps. Its emphasis on structure and proof makes it a foundation for understanding what a transformation means, beyond carrying out a matrix procedure.
 
-_Linear Algebra Done Right_ is a fundamentals book. It is not tied to one programming language, framework, or toolchain, which is exactly why it remains useful.
+## Definitions and Reasoning
 
-Linear algebra sits under graphics, physics, numerical computing, optimization, machine learning, signal processing, and many forms of data analysis. A stronger model here improves work in many other areas.
+Vector spaces, linear maps, eigenvalues, and eigenvectors are connected through definitions and mathematical arguments. The reader follows why results hold, building a model that can support later computational work.
 
-## Useful Ideas
+That perspective is relevant to graphics, physics, simulation, optimization, signal processing, and machine learning. Transformations and invariant directions have meanings that extend beyond an individual calculation.
 
-### Structure Comes First
+## A Mathematical Foundation
 
-The book emphasizes vector spaces and linear maps before rushing into computation. That helps make the subject feel less like matrix manipulation and more like a language for structure.
-
-### Abstraction Has Practical Value
-
-The abstract view is not ornamental. It gives names to patterns that show up repeatedly in computation and physics.
-
-### Eigenvalues Are Not Isolated Tricks
-
-Eigenvalues and eigenvectors become more meaningful when they are connected to transformations and invariant directions.
-
-## Why I Keep It Nearby
-
-This is a long-term reference for rebuilding mathematical fluency. It supports graphics, simulation, scientific computing, and physics work.
+Readers should be willing to spend time with proofs and abstract reasoning. This is not the quickest route to numerical coding; its value is the understanding behind the computation. It remains a useful reference when a stronger mathematical foundation is the goal.
 
 ## Get the Book
 

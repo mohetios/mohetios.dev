@@ -11,29 +11,17 @@ tags:
 - programming-fundamentals
 ---
 
-## Reading Notes
+_Let Us C_ is a practice-oriented route through the mechanics of C. Yashavant Kanetkar's sequence of examples and exercises helps bridge the gap between recognizing a program and being able to write one.
 
-_Let Us C_ is a practice-oriented C book. It is useful less as a modern systems reference and more as a long sequence of exercises through the mechanics of the language.
+## Practice Across the Language
 
-That matters because C rewards repetition. Syntax is easy to skim, but pointers, arrays, strings, structs, and file handling need practice before they become reliable tools.
+Control flow, functions, pointers, arrays, strings, structures, and file handling provide the material. Repetition gives each concept more than one context and makes small mistakes easier to identify.
 
-## Useful Ideas
+The book works well with a compiler open: run an example, change it, and examine the result. This active approach is particularly useful for pointers and memory-related behavior that can be misleading when only read on a page.
 
-### Exercises Build Fluency
+## A Workbook, with Context
 
-C knowledge becomes useful when it can survive small mistakes. Repeated examples help expose the difference between recognizing code and being able to write it.
-
-### Fundamentals Stay Relevant
-
-Control flow, functions, arrays, structs, and files still map directly to many embedded and systems tasks.
-
-### Old Style Needs Judgment
-
-Older C material is valuable, but it should be read with modern compiler warnings, safer habits, and current tooling in mind.
-
-## Why I Keep It Nearby
-
-This is a workbook-style companion for C practice. It is strongest when used actively, with a compiler open and warnings turned on.
+Learners seeking exercises and developers returning to fundamentals can use it as a companion. Older idioms need comparison with current C guidance, compiler warnings, and safer programming habits. Its strength is practice, rather than a treatment of modern systems architecture.
 
 ## Get the Book
 

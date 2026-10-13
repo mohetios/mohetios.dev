@@ -11,29 +11,17 @@ tags:
 - fft
 ---
 
-## Reading Notes
+Sound gives signal processing a concrete starting point. Allen B. Downey's _Think DSP_ connects Python experiments with the mathematics behind waves, letting a signal be generated, heard, inspected, and changed as the concepts develop.
 
-_Think DSP_ teaches digital signal processing through programming. It does not start by stacking all the mathematical notation first and only later reaching sound, spectra, and filters. It turns that path around.
+## Time, Frequency, and System Behavior
 
-That makes it useful to me because it connects numerical Python, waves, sound, and data analysis. When a signal can be generated, seen, modified, and then explained mathematically, DSP feels less like an abstract wall.
+Audio signals, spectra, harmonics, the Fourier transform and FFT, filters, convolution, and linear time-invariant systems form the material. Python provides a way to move between time and frequency representations.
 
-## Useful Ideas
+The relationship between those views gives the approach its value. A spectrum reveals information that a waveform alone may not make clear; filtering shows how a system transforms an input. Observable effects provide context for the calculations.
 
-### Signals Should Be Seen and Heard
+## An Experimental Introduction
 
-The book moves through audio examples. That keeps ideas like waves, spectra, and harmonics from staying as definitions. They become things that can be generated and inspected.
-
-### The Spectrum Is a Working View
-
-The Fourier transform is not just an isolated formula. It is a way to see which frequencies make up a signal and how changes in time show up in the frequency domain.
-
-### Filters Show System Behavior
-
-Filtering, convolution, and LTI systems help move the view from raw data to behavior. The question becomes what a system does to an input and how that effect can be predicted.
-
-## Why I Keep It Nearby
-
-This is a practical reference for returning to DSP through experiments: audio, FFTs, spectral analysis, and the connection between scientific computing and wave physics.
+Readers with some Python experience will find an accessible route into DSP through audio. Further mathematical study still has a place. The book is especially useful for approaching a concept through a small experiment and then following its explanation.
 
 ## Get the Book
 

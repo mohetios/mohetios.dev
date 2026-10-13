@@ -11,29 +11,17 @@ tags:
 - memory-management
 ---
 
-## Reading Notes
+_Modern C for Absolute Beginners_ makes memory, pointers, and compilation explicit parts of learning to program. Slobodan Dmitrovic introduces C through a beginner-oriented progression that also helps explain what higher-level languages often hide.
 
-_Modern C for Absolute Beginners_ belongs in the shelf because C still teaches things many higher-level languages hide: memory layout, compilation, pointers, undefined behavior, and the cost of each abstraction.
+## From Source to a Running Program
 
-For modern engineering, C is not only a language for legacy code. It is a way to build a more accurate mental model of computers.
+The book covers C fundamentals, variables and arrays, pointers, memory allocation and lifetime, headers, translation units, linking, and build choices. These topics connect source code with the executable that runs on the machine.
 
-## Useful Ideas
+The approach makes precision consequential. C has relatively little language machinery, but memory errors and assumptions about behavior can have serious effects. Short programs make those details easier to inspect.
 
-### Memory Is Concrete
+## An Entry into Systems Programming
 
-C makes memory visible. Variables, arrays, pointers, allocation, and lifetime stop being vague implementation details and become part of the work.
-
-### Compilation Matters
-
-The path from source code to executable code is worth understanding. Headers, translation units, linking, and build flags all affect how a program actually exists.
-
-### Simplicity Has Sharp Edges
-
-C is small enough to learn, but not forgiving enough to use casually. That combination makes it a useful teacher.
-
-## Why I Keep It Nearby
-
-This is a good on-ramp for revisiting systems programming without pretending the reader already lives in C every day.
+Beginners and developers returning from higher-level languages can use it to build or refresh their foundations. It is an introduction rather than a complete systems education, providing a starting point for further work with the language and the machine.
 
 ## Get the Book
 

@@ -11,29 +11,17 @@ tags:
 - programming-fundamentals
 ---
 
-## Reading Notes
+Simon Long's _Learn to Code with C_ introduces programming through small programs that can be compiled, changed, and inspected. The Raspberry Pi setting keeps the path from an explanation to a running example concrete.
 
-_Learn to Code with C_ is a beginner-friendly route into programming through C. The Raspberry Pi context makes the book feel practical rather than abstract.
+## Learning Through Short Programs
 
-That is useful because C can otherwise become either too academic or too intimidating. Small programs on a real machine keep the feedback loop concrete.
+Types, conditions, loops, functions, arrays, and input/output form the core material. The examples remain small enough to follow values and control flow without a large project's setup obscuring the language.
 
-## Useful Ideas
+That scale is the book's advantage. Changing a line and observing its effect exposes misunderstandings early, while giving each concept enough practical context to become familiar.
 
-### Small Programs Are Enough
+## Starting Points
 
-For learning C, small programs are not toy work. They are where the important details show up: types, conditions, loops, functions, arrays, and input/output.
-
-### Hardware Context Helps
-
-The Raspberry Pi angle is helpful because it connects code to a machine the reader can actually run and modify.
-
-### Fundamentals Before Frameworks
-
-The book is a reminder that programming skill is still built from small, clear ideas before it becomes architecture.
-
-## Why I Keep It Nearby
-
-This is a useful starting point for teaching, revisiting basics, or warming up before deeper embedded C work.
+Beginners will find a manageable route into C; returning developers can use it to revisit fundamentals before embedded work. Further practice with pointers, memory, and the target system's constraints is still needed. The book establishes an accessible starting point for that work.
 
 ## Get the Book
 

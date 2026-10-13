@@ -12,29 +12,17 @@ tags:
 - browser-storage
 ---
 
-## Reading Notes
+A progressive web app needs a defined response to interrupted connectivity. _Building Progressive Web Applications with Vue.js_ follows that problem through a Vue application, connecting the interface with browser features for local data, offline use, and installation.
 
-_Building Progressive Web Applications with Vue.js_ is a practical guide to making web apps behave more like installed software: fast startup, offline behavior, background work, install prompts, and deeper browser integration.
+## The Application Beyond the Network
 
-The book is useful because it treats PWA features as product capabilities, not only browser APIs. Offline support, push notifications, and background sync are only valuable when they match a real user workflow.
+Service workers, caching, manifests, IndexedDB, background sync, and push notifications form the core material. Together they explain how data can remain available between visits and how the application reconnects with its backend.
 
-## Useful Ideas
+The book is useful for treating these APIs as product behavior. Cache freshness, pending changes, and synchronization status affect what the user can trust and continue doing when a connection fails.
 
-### Service Workers Change the Runtime
+## Using the Examples
 
-A service worker sits between the app and the network. That makes it powerful, but also risky. Cache rules, update behavior, and fallback responses become part of the application contract.
-
-### Offline Is a Product Decision
-
-Offline support should not mean "cache everything." A good PWA decides which screens must keep working, which data can be stale, and how the UI explains sync state to the user.
-
-### Browser Storage Needs Design
-
-IndexedDB and cache storage are not just implementation details. They shape how much data the app can retain, how recovery works, and how users move between online and offline sessions.
-
-## Why It Still Matters
-
-Even when a project ships as a native app, PWA thinking is useful. It forces the team to reason about network failure, local state, installation friction, and perceived performance.
+Frontend developers can use it to understand PWA foundations in a concrete project. The toolchain is older, so setup code and browser support need checking against current documentation. The enduring lesson is to define offline behavior, rather than stop at adding installation support.
 
 ## Get the Book
 

@@ -21,56 +21,18 @@ comments: true
 newsletter: true
 ---
 
-## About the Book
+Bringing compiled code into a browser introduces a boundary around memory, data transfer, and execution. _WebAssembly in Action_ explains how to work across that boundary, using C/C++ modules with JavaScript and HTML. Gerard Gallant gives module integration as much attention as compilation.
 
-WebAssembly in Action teaches you how to write and run high-performance browser-based applications using C++ and other languages supported by WebAssembly. In it, you'll learn to create native WebAssembly modules, interact with JavaScript components, and maximize performance with web workers and pthreads. And you'll love how the clearly organized sections make it a breeze to find the important details about every function, feature, and technique.
+## Working with Modules
 
-### About the Technology
+The book moves from module structure and compilation to reusing C++ code, calling JavaScript, and communicating through function pointers. Dynamic linking, web workers and pthreads, Node.js execution, the WebAssembly Text Format, debugging, and testing follow.
 
-Write high-performance browser-based applications without relying only on JavaScript! By compiling to the WebAssembly binary format, your C, C++, or Rust code runs at near-native speed in the browser. WebAssembly delivers greater speed, opportunities to reuse existing code, and access to newer and faster libraries. Plus, you can easily interact with JavaScript when you need to.
+This progression makes the application contract visible: imports and exports, memory ownership, and the interface between languages all need to be understood. A successful build is only one stage of that work.
 
-### What's inside
+## Prerequisites and Scope
 
-• Dynamic linking of multiple modules at runtime
-• Communicating between modules and JavaScript
-• Debugging with WebAssembly Text Format
-• Threading with web workers and pthreads
+Basic C/C++, JavaScript, and HTML are useful prerequisites. The book suits developers bringing existing code or a specific computation to the web. Current toolchain and browser documentation should accompany the examples, and performance gains need measurement against build and data-transfer costs.
 
-### About the Reader
-
-Written for developers with a basic understanding of C/C++, JavaScript, and HTML.
-
-### About the Author
-
-Gerard Gallant is a Microsoft Certified Professional and a Senior Software Developer at Dovico Software. He blogs regularly on Blogger.com and DZone.com.
-
-## Table of contents
-
-### PART 1 - FIRST STEPS
-
-1. Meet WebAssembly
-2. A look inside WebAssembly modules
-3. Creating your first WebAssembly module
-
-### PART 2 - WORKING WITH MODULES
-
-4. Reusing your existing C++ codebase
-5. Creating a WebAssembly module that calls into JavaScript
-6. Creating a WebAssembly module that talks to JavaScript using function pointers
-
-### PART 3 - ADVANCED TOPICS
-
-7. Dynamic linking: The basics
-8. Dynamic linking: The implementation
-9. Threading: Web workers and pthreads
-10. WebAssembly modules in Node.js
-
-### PART 4 - DEBUGGING AND TESTING
-
-11. WebAssembly text format
-12. Debugging
-13. Testing — and then what?
-
-## How to Get
+## Get the Book
 
 - Manning Publications (Buy): [WebAssembly in Action](https://www.manning.com/library/webassembly-in-action)

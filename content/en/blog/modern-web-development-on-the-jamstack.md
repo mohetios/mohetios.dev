@@ -11,33 +11,17 @@ tags:
 - web-performance
 ---
 
-## Reading Notes
+_Modern Web Development on the JAMstack_ is a compact introduction to separating content preparation, delivery, and runtime behavior. Its central question is whether a page needs to be rebuilt for every visitor, or can be prepared before the request arrives.
 
-_Modern Web Development on the JAMstack_ is a short introduction to a web architecture that became important because it made a simple promise: move as much work as possible out of the request path.
+## Build Time and Runtime
 
-Instead of rendering every page dynamically on every visit, a JAMstack site prerenders markup, serves assets from a CDN, and uses APIs or serverless functions for the parts that genuinely need runtime behavior.
+The book covers prerendered markup, CDN delivery, JavaScript and APIs, content management, deployment workflows, and migration. Durable content moves into build time; dynamic interactions receive a separate execution path.
 
-That model is especially useful for personal sites, documentation, marketing pages, blogs, and product surfaces where content changes often enough to need a workflow, but not so often that every request should hit a full application server.
+Mohetios.dev follows a related model: Markdown is the source, Velite prepares content at build time, and Nuxt presents it on Cloudflare Pages. Forms, comments, and protected data still need backend behavior, permissions, and explicit caching decisions.
 
-## Useful Ideas
+## Architecture Before Tools
 
-### Static Does Not Mean Simple
-
-Static output can still support rich products. The important distinction is where the work happens: build time for durable content, edge delivery for speed, and APIs for dynamic behavior.
-
-### Performance Is Architectural
-
-Fast pages are not only the result of minified assets. They come from avoiding unnecessary runtime computation, reducing origin dependency, and designing cacheable delivery paths from the beginning.
-
-### Operations Shape Developer Experience
-
-Traditional CMS and server-rendered stacks often mix authoring, rendering, caching, deployment, and security into one operational surface. JAMstack separates those concerns, which can make small teams faster and safer.
-
-## Notes for This Site
-
-Mohetios.dev follows much of this logic. Markdown content is committed as source, Nuxt Content turns it into queryable pages, and Cloudflare Pages can serve the generated output close to readers.
-
-The tradeoff is that dynamic features need more deliberate design. Comments, search, personalization, and forms should not be added casually; each one changes the deployment and caching model.
+Developers evaluating static generators or CMSs will find a concise architectural starting point. The tools have changed, but the build-versus-runtime distinction remains useful. Long builds, difficult previews, and dynamic features spread across services are costs to consider alongside simpler delivery.
 
 ## Get the Book
 

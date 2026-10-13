@@ -11,31 +11,17 @@ tags:
 - dapp-architecture
 ---
 
-## Reading Notes
+_Getting Started with Ethereum_ introduces the development workflow around a smart contract. Davi Bauer places Solidity alongside the networks, wallets, storage, and frontend code needed to build an Ethereum application.
 
-_Getting Started with Ethereum_ is a broad introduction to the Ethereum development stack.
+## The Parts of a DApp
 
-The book is useful for beginners because it does not start and end with Solidity syntax. It walks through the surrounding workflow: wallets, local development networks, testing, deployment, contract verification, decentralized storage, naming, oracles, and application integration.
+The book covers contracts, local networks, testing, deployment, and verification. Truffle, Ganache, MetaMask, OpenZeppelin, tokens and NFTs, IPFS and Filecoin, ENS, Chainlink, and frontend integration provide the surrounding context.
 
-## Useful Ideas
+That breadth helps explain the application's separate responsibilities: contract state, off-chain files, wallet permissions, and external data. Local networks and testnets provide environments for learning transaction behavior before working with real assets.
 
-### Smart Contracts Need a Toolchain
+## An Introductory Map
 
-Writing a contract is only one part of the work. A developer also needs to compile it, test it, deploy it, verify it, fund wallets, connect frontends, and understand which network they are touching.
-
-That full loop is where many beginners get stuck.
-
-### Decentralized Apps Are Multiple Systems
-
-An Ethereum application may involve contracts, IPFS, Filecoin, ENS, Chainlink, wallets, hosted gateways, testnets, and frontend code. The product architecture is distributed even when the feature looks small.
-
-### Testnets Are Learning Environments
-
-Local chains and testnets make the workflow safer. They let developers practice contract deployment and transaction behavior without turning every mistake into a financial event.
-
-## Why I Keep It Nearby
-
-This is a useful map for understanding the moving pieces around Ethereum development. It is less about becoming an expert in one sitting and more about knowing the shape of the ecosystem.
+The book suits developers curious about Ethereum who want to understand how its pieces cooperate. Current network and tool documentation is needed alongside older examples. Tutorials do not replace contract security reviews, and technical learning should remain separate from financial claims.
 
 ## Get the Book
 
